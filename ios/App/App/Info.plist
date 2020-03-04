@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Restvo</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>nl</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>pt-BR</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLSchemes</key>
+	<string>com.restvo.app</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>com.restvo.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>restvo</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+		<string>citymapper</string>
+		<string>comgooglemaps</string>
+		<string>navigon</string>
+		<string>transit</string>
+		<string>waze</string>
+		<string>yandexnavi</string>
+		<string>uber</string>
+		<string>tomtomhome</string>
+		<string>com.sygic.aura</string>
+		<string>here-route</string>
+		<string>moovit</string>
+		<string>lyft</string>
+		<string>mapsme</string>
+		<string>cabify</string>
+		<string>baidumap</string>
+		<string>taxis99</string>
+		<string>iosamap</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Save events to your calendar.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Join video call, send photo messages to friends, update photos for communities, groups, and personal profile.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Your contacts will be uploaded and stored on our encrypted servers and will be used only for finding friends on Restvo.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Search the Restvo map using current location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Search the Restvo map using current location.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Use voice in video call or to input text into the chat box.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Send photo messages to friends, update photos for communities, groups, and personal profile.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Send photo messages to friends, update photos for communities, groups, and personal profile.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Use voice to input text into the chat box.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>voip</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+</dict>
+</plist>
