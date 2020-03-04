@@ -1,0 +1,49 @@
+{
+  "name": "Restvo",
+  "version": "1.6.20",
+  "description": "Connect with Mentors",
+  "main": "index.js",
+  "scripts": {
+    "electron:start": "electron ./",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -mw --x64 --ia32",
+    "publish": "build -mw --x64 --ia32 -p always"
+  },
+  "build": {
+    "appId": "com.restvo.electron",
+    "productName": "Restvo",
+    "buildVersion": "1",
+    "copyright": "Copyright © 2019 Restvo Inc.",
+    "mac": {
+      "category": "Social Networking"
+    },
+    "win": {
+      "target": "NSIS"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "calvinckho",
+        "repo": "restvoApp"
+      }
+    ]
+  },
+  "dependencies": {
+    "@capacitor/electron": "^1.4.0",
+    "electron-is-dev": "^1.1.0",
+    "electron-log": "^1.3.0",
+    "electron-push-receiver": "^2.1.3",
+    "electron-updater": "^4.2.0",
+    "source-map-support": "^0.5.11"
+  },
+  "devDependencies": {
+    "electron": "^4.1.1",
+    "electron-builder": "^20.39.0"
+  },
+  "keywords": [
+    "capacitor",
+    "electron"
+  ],
+  "author": "",
+  "license": "ISC"
+}
