@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="CallNumber">
+    <param name="android-package" value="mx.ferreyra.callnumber.CFCallNumber"/>
+  </feature>
+
+  <feature name="AppVersion">
+    <param name="android-package" value="uk.co.whiteoctober.cordova.AppVersion"/>
+  </feature>
+
+  <feature name="Badge">
+    <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
+  </feature>
+
+  <feature name="Calendar">
+    <param name="android-package" value="nl.xservices.plugins.Calendar"/>
+  </feature>
+
+  <feature name="Contacts">
+    <param name="android-package" value="org.apache.cordova.contacts.ContactManager"/>
+  </feature>
+
+  <feature name="EmailComposer">
+    <param name="android-package" value="de.appplant.cordova.emailcomposer.EmailComposer"/>
+  </feature>
+
+  <feature name="Geolocation">
+    <param name="android-package" value="org.apache.cordova.geolocation.Geolocation"/>
+  </feature>
+
+  <feature name="NativeGeocoder">
+    <param name="android-package" value="cordova.plugin.nativegeocoder.NativeGeocoder"/>
+  </feature>
+
+  <feature name="CDVOrientation">
+    <param name="android-package" value="cordova.plugins.screenorientation.CDVOrientation"/>
+  </feature>
+
+  <feature name="SpeechRecognition">
+    <param name="android-package" value="com.pbakondy.SpeechRecognition"/>
+  </feature>
+
+  <feature name="Sms">
+    <param name="android-package" value="com.cordova.plugins.sms.Sms"/>
+  </feature>
+
+  
+</widget>
