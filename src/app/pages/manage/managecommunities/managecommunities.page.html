@@ -1,0 +1,84 @@
+<ion-header *ngIf="userData.user">
+  <ion-toolbar class="bulletin-nav">
+    <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
+      <ion-button fill="clear" color="grey">
+        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-menu-toggle>
+    <ion-title>Manage</ion-title>
+    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">
+      <ion-avatar slot="start">
+        <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
+        <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        {{userData.user.first_name}} {{userData.user.last_name}}
+      </ion-label>
+    </ion-item>
+    <ion-buttons slot="end" *ngIf="!userData.user">
+      <ion-button routerLink="/register">
+        Sign In
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="userData && userData.currentCommunityAdminStatus" forceOverscroll="false">
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" size-sm="12" size-md="3" size-lg="3">
+        <ion-list>
+          <ion-item (click)="clickManageMenu('insight')">
+            <ion-icon slot="start" name="stats" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'insight')}">Insight</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('activities')" *ngIf="restvoStaff">
+            <ion-icon slot="start" name="american-football" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'activities')}">Activities</ion-label>
+            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.activities?.length" name="alert"></ion-icon>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('members')">
+            <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'members')}">Members</ion-label>
+            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.members?.length" name="alert"></ion-icon>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('topics')">
+            <ion-icon slot="start" name="chatbubbles" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'topics')}">Topics</ion-label>
+            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.topics?.length" name="alert"></ion-icon>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('groups')">
+            <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
+            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.groups?.length" name="alert"></ion-icon>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('administrators')">
+            <ion-icon slot="start" name="key" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'administrators')}">Administrators</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('plan')">
+            <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plan')}">Plan</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('billing')" *ngIf="stripeCustomer">
+            <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('platforms')" *ngIf="restvoStaff">
+            <ion-icon slot="start" name="cog" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'platforms')}">Platforms</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('development')" *ngIf="restvoStaff">
+            <ion-icon slot="start" name="code-working" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'development')}">Development</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">
+        <ion-router-outlet></ion-router-outlet>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

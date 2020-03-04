@@ -1,0 +1,31 @@
+app-managefeature {
+
+  ion-button {
+    ion-badge {
+      position: absolute;
+      top: 0.1rem;
+      right: 0.1rem;
+
+      & ~ ion-icon {
+        outline-color: whitesmoke;
+      }
+    }
+  }
+
+  .full-height {
+    height: 100%;
+  }
+
+  ion-router-outlet {
+    border-left: 1px solid var(--ion-color-lightgrey);
+  }
+
+  ion-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bold-font {
+    font-weight: bold;
+  }
+}

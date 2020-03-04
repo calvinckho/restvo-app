@@ -1,0 +1,22 @@
+app-billing {
+
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  .field {
+    flex: 1;
+    padding: 5% 15px;
+    background: transparent;
+    font-weight: 400;
+    color: #31325f;
+    outline: none;
+    cursor: text;
+  }
+
+  table {
+    display: table;
+    overflow-x: scroll;
+  }
+}

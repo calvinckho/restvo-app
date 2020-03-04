@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Search Community</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <!--list communities-->
+    <ion-item *ngFor="let community of communities" (click)="showCommunityProfile(community)">
+      <ion-avatar slot="start">
+        <img *ngIf="community.background" [src]="community.background"/>
+        <img *ngIf="!community.background" src="assets/img/group-default.png"/>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{community.name}} <span *ngIf="community.verified != true">(pending approval)</span></h2>
+        <p>{{community.industry.value}}</p>
+        <p><ion-icon name="pin"></ion-icon>{{" "}}{{community.meeting_location.city}}<span [hidden]="(community.meeting_location.city.length==0)||(community.meeting_location.state.length==0)">{{", "}}</span>{{community.meeting_location.state}}<span [hidden]="(community.meeting_location.city.length==0)&&(community.meeting_location.state.length==0)">{{" "}}</span>{{community.meeting_location.country}}</p>
+      </ion-label>
+      <ion-icon slot="end" *ngIf="community.alreadyJoined == true" name="checkmark"></ion-icon>
+    </ion-item>
+    <ion-infinite-scroll position="bottom" (ionInfinite)="listcommunities($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <p [hidden]="!needToCreateChurchProfile">If you cannot find your community, click the button below to create a new community profile. </p>
+    <ion-button expand="full" shape="round" color="primary" (click)="createChurchProfile()">Create a Community Profile</ion-button>
+  </ion-list>
+</ion-content>

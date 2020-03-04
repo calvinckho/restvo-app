@@ -1,0 +1,80 @@
+<ion-app>
+  <ion-split-pane contentId="main-app" [when]="userData.splitPaneState">
+    <ion-menu menuId="main" side="start" contentId="main-app" mode="md">
+      <ion-content>
+        <ion-toolbar class="title-container" id="main-menu-toolbar">
+          <ion-item>
+            <ion-label>Restvo</ion-label>
+            <!--<ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
+            <ion-label *ngIf="userData.defaultProgram">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>-->
+          </ion-item>
+        </ion-toolbar>
+        <ion-list>
+          <ion-item (click)="changeTab('dashboard/insight/' + userData.defaultProgram._id)" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
+            <ion-icon slot="start" name="md-people"></ion-icon>
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
+          <ion-item (click)="changeTab('discover/home/' + userData.defaultProgram._id)" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
+            <ion-icon slot="start" name="md-people"></ion-icon>
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
+          <ion-item (click)="changeTab('discover')" *ngIf="!userData.defaultProgram">
+            <ion-icon slot="start" name="md-people"></ion-icon>
+            <ion-label>Discover</ion-label>
+          </ion-item>
+          <ion-item slot="start" (click)="changeTab('news')" *ngIf="!userData.UIAdminMode">
+            <ion-icon slot="start" name="ios-paper"></ion-icon>
+            <ion-label>News</ion-label>
+          </ion-item>
+          <ion-item (click)="changeTab('myconversations')">
+            <ion-icon slot="start"  name="ios-chatboxes"></ion-icon>
+            <ion-label>Chat</ion-label>
+            <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="grey" slot="end">{{chatService.connectTabBadge}}</ion-badge>
+          </ion-item>
+          <ion-item (click)="changeTab('me')">
+            <ion-icon slot="start" name="md-person"></ion-icon>
+            <ion-label>Me</ion-label>
+            <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="chatService.toggleRestStatus($event)" *ngIf="chatService && userData.user">
+              {{userData.UIrestStatus}}
+            </ion-badge>
+          </ion-item>
+          <ion-item *ngIf="userData.currentCommunityAdminStatus" (click)="changeTab('manage')">
+            <ion-icon slot="start" name="bulb"></ion-icon>
+            <ion-label>Manage</ion-label>
+          </ion-item>
+          <ion-item (click)="settings()">
+            <ion-icon slot="start" name="cog"></ion-icon>
+            <ion-label>
+              Settings
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap">Mentoring Mode</ion-label>
+            <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode()"></ion-toggle>
+          </ion-item>
+
+          <div style="height: 100px;" *ngIf="userData.developerModeClick < 3 && networkService.domain === 'https://server.restvo.com'" (click)="userData.developerModeClick = userData.developerModeClick + 1"></div>
+
+          <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
+            <ion-list-header>Developer Mode</ion-list-header>
+            <ion-item>
+              <ion-label position="stacked">Backend:</ion-label>
+              <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="developer-selector" [(ngModel)]="networkService.domain" (ionChange)="saveToLocalStorage()">
+                <ion-select-option value="https://server.restvo.com" class="ion-text-wrap">Production Server</ion-select-option>
+                <ion-select-option value="https://server.dev.restvo.com" class="ion-text-wrap">Development Cron Server (4010)</ion-select-option>
+                <ion-select-option value="https://server1.dev.restvo.com" class="ion-text-wrap">11 Dev Server (4011)</ion-select-option>
+                <ion-select-option value="https://server2.dev.restvo.com" class="ion-text-wrap">12 Dev Server (4012)</ion-select-option>
+                <ion-select-option value="https://server3.dev.restvo.com" class="ion-text-wrap">13 Dev Server (4013)</ion-select-option>
+                <ion-select-option value="https://server4.dev.restvo.com" class="ion-text-wrap">14 Dev Server (4014)</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <p style="font-size: 12px; color: black;">Address: {{networkService.domain}}</p>
+            </ion-item>
+          </div>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-app" [swipeGesture]="false"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

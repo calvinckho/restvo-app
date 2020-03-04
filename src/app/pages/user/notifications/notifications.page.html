@@ -1,0 +1,47 @@
+<ion-header  *ngIf="modalPage">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Notifications</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="userData && userData.user">
+  <!--Push Notifications-->
+  <ion-item lines="none" color="grey">Push Notifications</ion-item>
+  <ion-item>
+    <ion-label>Chat Messages</ion-label>
+    <ion-select [(ngModel)]="UIpushNotifyUnreadChatMessages" (ionChange)="saveChange('Push', $event)" slot="end">
+      <ion-select-option value="none">Off</ion-select-option>
+      <ion-select-option value="instant">Instant</ion-select-option>
+      <!--<ion-select-option value="daily">Daily</ion-select-option>-->
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label>System Messages</ion-label>
+    <ion-select [(ngModel)]="UIpushNotifySystemMessages" (ionChange)="saveChange('Push', $event)" slot="end">
+      <ion-select-option value="none">Off</ion-select-option>
+      <ion-select-option value="instant">Instant</ion-select-option>
+      <!--<ion-select-option value="daily">Daily</ion-select-option>-->
+    </ion-select>
+  </ion-item>
+  <!--Email Notifications-->
+  <ion-item lines="none" color="grey">Email Notifications</ion-item>
+  <ion-item>
+    <ion-label>Chat Messages</ion-label>
+    <ion-select [(ngModel)]="UIemailNotifyUnreadChatMessages" (ionChange)="saveChange('Email', $event)" slot="end">
+      <ion-select-option value="none">Off</ion-select-option>
+      <!--<ion-select-option value="instant">Instant</ion-select-option>-->
+      <ion-select-option value="daily">Daily</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label>System Messages</ion-label>
+    <ion-select [(ngModel)]="UIemailNotifySystemMessages" (ionChange)="saveChange('Email', $event)" slot="end">
+      <ion-select-option value="none">Off</ion-select-option>
+      <!--<ion-select-option value="instant">Instant</ion-select-option>-->
+      <ion-select-option value="daily">Daily</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-content>

@@ -1,0 +1,46 @@
+<ion-content class="ion-padding">
+  <ion-grid class="full-height">
+    <ion-row class="ion-align-items-center full-height">
+      <ion-col>
+        <form [formGroup]="passForm">
+          <ion-list lines="none">
+            <div class="title" style="margin: 10% 0 20% 0;">Reset Your Password</div>
+            <ion-item lines="full">
+              <ion-input #password [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
+              <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
+            </ion-item>
+            <ion-item *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
+              <p class="form-error" slot="end" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
+                This is a required field.
+              </p>
+              <p class="form-error" slot="end" *ngIf="!passForm.controls.password.pristine && passForm.controls.password?.errors?.minlength">
+                Password must have more than 5 characters
+              </p>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
+            </ion-item>
+            <ion-item  *ngIf="!passForm.controls.passwordConfirmation.pristine && (!passForm.controls.passwordConfirmation.valid || passForm.hasError('mismatchedPasswords'))">
+              <p class="form-error" slot="end" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation.hasError('required')">
+                This is a required field.
+              </p>
+              <p class="form-error" slot="end" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation?.errors?.minlength">
+                Password must have more than 5 characters
+              </p>
+              <p class="form-error" slot="end" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.hasError('mismatchedPasswords')">
+                Password do not match
+              </p>
+            </ion-item>
+            <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
+          </ion-list>
+          <ion-row style="margin-top: 20%;">
+            <ion-col>
+              <ion-button [disabled]="!passForm.valid || !password" expand="full" shape="round" color="primary" (click)="recover()">Recover</ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

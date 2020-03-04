@@ -1,0 +1,24 @@
+app-focus-photo {
+
+  ion-content {
+    --background: var(--ion-color-dark);
+  }
+
+  #back-icon{
+    margin-left: 10%;
+    color: #FFFFFF !important;
+    width: 30%;
+  }
+
+  .container {
+    height: 100%;
+  }
+
+  .image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    margin: 0 auto;
+  }
+
+}

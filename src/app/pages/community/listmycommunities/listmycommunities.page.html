@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>
+      My Community
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="searchChurch()"><ion-icon name="add"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--get new data when page is refreshed-->
+  <ion-refresher (ionRefresh)="refresh($event)" slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <p class="ion-padding" [hidden]="!noChurchAdded">Tap the + sign to add a community.</p>
+  <ion-list>
+    <ion-item *ngFor="let community of mycommunities" (click)="showChurchProfile(community)">
+      <ion-avatar slot="start">
+        <img *ngIf="community.background" [src]="community.background"/>
+        <img *ngIf="!community.background" src="assets/img/group-default.png"/>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{community.name}} <span *ngIf="community.verified != true">(pending approval)</span></h2>
+        <p>{{community.industry.value}}</p>
+        <p><ion-icon name="pin"></ion-icon>{{" "}}{{community.meeting_location.city}}<span [hidden]="!community.meeting_location.city||!community.meeting_location.state">{{", "}}</span>{{community.meeting_location.state}}<span [hidden]="!community.meeting_location.city&&!community.meeting_location.state">{{" "}}</span>{{community.meeting_location.country}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,133 @@
+<ion-header *ngIf="modalPage || showHeader" id="preference-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" id="clickback"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title *ngIf="organizer">Onboarding Process</ion-title>
+    <ion-title *ngIf="!organizer">About Me</ion-title>
+  </ion-toolbar>
+  <!--<ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+  </ion-toolbar>-->
+</ion-header>
+
+<ion-content>
+    <ion-grid style="height: 100%" *ngIf="ionSpinner">
+        <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+            <ion-spinner name="dots"></ion-spinner>
+        </ion-row>
+    </ion-grid>
+  <ion-list *ngIf="organizer">
+    <ion-buttons class="ion-justify-content-center ion-margin-vertical">
+      <ion-button shape="round" fill="solid" color="primary" size="small" (click)="chooseOnboardingProcess($event)">Add Onboarding Process</ion-button>
+    </ion-buttons>
+      <ion-list-header>
+          <ion-label>Participants</ion-label>
+      </ion-list-header>
+        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[2]">
+          <ion-thumbnail slot="start">
+            <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+            <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+          </ion-thumbnail>
+          <div>
+            <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
+            <ion-label>
+              <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+            </ion-label>
+          </div>
+
+          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
+          <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+        </ion-item>
+      <ion-list-header>
+          <ion-label>Leaders</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[4]">
+          <ion-thumbnail slot="start">
+              <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+              <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+          </ion-thumbnail>
+          <div>
+              <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
+              <ion-label>
+                  <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+              </ion-label>
+          </div>
+
+          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
+          <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+      </ion-item>
+      <ion-list-header>
+          <ion-label>Organizers</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[3]">
+          <ion-thumbnail slot="start">
+              <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+              <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+          </ion-thumbnail>
+          <div>
+              <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
+              <ion-label>
+                  <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+              </ion-label>
+          </div>
+
+          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
+          <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+      </ion-item>
+      <ion-list-header>
+          <ion-label>Unused</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
+          <ion-thumbnail slot="start">
+              <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+              <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+          </ion-thumbnail>
+          <div>
+              <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
+              <ion-label>
+                  <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+              </ion-label>
+          </div>
+
+          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
+          <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
+          <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+      </ion-item>
+    <ion-item-divider *ngIf="organizer" class="ion-text-wrap">
+      Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> Onboarding process</span><span *ngIf="moments.length > 1"> Onboarding processes</span>
+    </ion-item-divider>
+  </ion-list>
+    <ion-list *ngIf="!organizer">
+        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)">
+            <ion-thumbnail slot="start">
+                <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+                <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+            </ion-thumbnail>
+            <div>
+                <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
+                <ion-label>
+                    <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+                </ion-label>
+            </div>
+
+            <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+            <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
+            <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
+            <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+        </ion-item>
+        <ion-item-divider class="ion-text-wrap">
+            Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> About Me section</span><span *ngIf="moments.length > 1"> About Me sections</span>
+        </ion-item-divider>
+    </ion-list>
+      <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePreferences($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+</ion-content>

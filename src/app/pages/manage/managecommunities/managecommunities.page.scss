@@ -1,0 +1,125 @@
+app-managecommunities {
+
+  ion-button {
+    ion-badge {
+      position: absolute;
+      top: 0.1rem;
+      right: 0.1rem;
+
+      & ~ ion-icon {
+        outline-color: whitesmoke;
+      }
+    }
+  }
+
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  ion-grid {
+    height: 100%;
+  }
+
+  ion-row {
+    height: 100%;
+  }
+
+  ion-col {
+    height: 100%;
+  }
+
+  ion-router-outlet {
+    border-left: 1px solid var(--ion-color-lightgrey);
+  }
+
+  ion-avatar img {
+    width: 40px !important;
+    height : 40px !important;
+    object-fit: cover;
+  }
+
+  .bold-font {
+    font-weight: bold;
+  }
+
+  .group-container {
+    max-width: 70%;
+  }
+
+  .group-name {
+    font-size: 18px;
+  }
+
+  .personnel {
+    max-height: 40px;
+    line-height: 20px; /* Height / no. of lines to display */
+    overflow: hidden;
+  }
+
+  .memberInfo {
+    margin-right: 0.1px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .sub-nav {
+    color: black;
+    padding: 4%;
+    border-radius: 25px;
+    font-size: large;
+    background: none;
+  }
+
+  //.discover-card-title {
+  //  position: absolute;
+  //  top: 36%;
+  //  font-size: 2.0em;
+  //  width: 100%;
+  //  font-weight: bold;
+  //  color: #fff;
+  //}
+
+  .discover-card-subtitle {
+    font-size: 1.0em;
+    position: absolute;
+    top: 52%;
+    width: 100%;
+    color: #fff;
+  }
+
+  .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9;
+    top: 0;
+    left: 0;
+    overflow:hidden;
+  }
+
+  .walkthrough {
+    color: white;
+    font-size: large;
+    position: absolute;
+  }
+
+  .walkthrough.people {
+    width: 70%;
+    top: 30%;
+    left: 15%;
+  }
+
+  .walkthrough.topics {
+    width: 70%;
+    top: 30%;
+    left: 15%;
+  }
+  .walkthrough.communities {
+    width: 70%;
+    top: 30%;
+    right: 5%;
+  }
+}

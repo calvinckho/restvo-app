@@ -1,0 +1,74 @@
+app-about {
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  .edit-button {
+    position: absolute;
+    right: 10px;
+    top: 0;
+  }
+
+  .section-title {
+    color: white;
+    --background: var(--ion-color-grey);
+    text-align: left;
+    font-size: large;
+  }
+
+  .name {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .image-cropper {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto;
+  }
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .label-title {
+    font-weight: bold;
+    color: var(--ion-color-grey);
+  }
+
+  .user-detail {
+    color: var(--ion-color-grey);
+    text-align: right;
+    min-width: 70%;
+  }
+
+  .relationship-action {
+    color: white;
+  }
+
+  .infoSharingDiv{
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .question-answer-container {
+    text-wrap: normal;
+  }
+
+  .question {
+    margin: 8px 12px;
+    font-size: 16px;
+  }
+
+  .answer {
+    margin: 8px 12px;
+    font-size: 16px;
+    color: grey;
+    font-style: italic;
+  }
+}

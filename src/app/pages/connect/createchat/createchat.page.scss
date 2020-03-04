@@ -1,0 +1,55 @@
+app-createchat {
+
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  .default-background {
+    display: table;
+    min-height: 150px;
+    background-size: cover;
+    width: 100%;
+  }
+
+  .edit-icon {
+    position: absolute;
+    width: 20px;
+    right: 2px;
+    bottom: 2px;
+  }
+
+  .default-title {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 2.0em;
+    color: #fff;
+    -webkit-text-stroke: thin;
+/*    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;*/
+  }
+
+  .selected-buttons {
+    display: block;
+    max-height: 100px;
+    overflow-y: scroll;
+    width: 100%;
+    padding: 0 5px;
+  }
+
+  ion-card {
+    height: 30%;
+  }
+
+  .group-type-title {
+    margin: 10% 0;
+  }
+
+  form {
+    background-color: var(--ion-color-secondary);
+  }
+}

@@ -1,0 +1,71 @@
+<ion-header id="pickfeature-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()" id="back-button"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="done()" *ngIf="selectedNotes.length">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let relationship of relationships_notes; index as i">
+    <ion-label class="program-title ion-margin" *ngIf="relationship.title">{{relationship.title}}</ion-label>
+    <ion-grid class="program-grid">
+      <ion-row class="program-row">
+        <ion-col *ngIf="allowCreate && i === 0" class="ion-align-self-center" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">
+          <ion-card class="program-card" (click)="createMoment()" id="create-new-moment">
+            <ion-card-header class="ion-no-padding" color="lightgrey">
+              <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
+                <ion-icon name="add" color="darkgrey"></ion-icon>
+              </ion-row>
+            </ion-card-header>
+            <div class="program-name dark">Create</div>
+          </ion-card>
+        </ion-col>
+        <ion-col class="ion-align-self-center" *ngFor="let doc of relationship.docs; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((doc.question || doc.calendar_title || doc.content_title).toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || doc.answer[1].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1)">
+          <ion-card class="program-card" (click)="selectSample(doc)">
+            <ion-card-header class="ion-no-padding">
+              <div class="program-photo-container">
+                <ion-img class="program-photo" [src]="(doc.assets && doc.assets.length && doc.assets[0]) | background: doc.question_id"></ion-img>
+              </div>
+            </ion-card-header>
+            <div class="program-type"><ion-badge color="button1">{{doc.content_title}}</ion-badge></div>
+            <div class="program-name light">{{doc.question || doc.calendar_title || doc.content_title}}</div>
+            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, doc)" fill="clear" size="small">
+              <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
+            </ion-button>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="selected-grid">
+      <ion-row>
+        <ion-col class="ion-align-self-center" *ngFor="let moment of selectedNotes; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">
+          <ion-card class="program-card" (click)="openFeature(moment)">
+            <ion-card-header class="ion-no-padding">
+              <div class="program-photo-container">
+                <ion-img class="program-photo" [src]="(moment.assets && moment.assets.length && moment.assets[0]) | background: moment._id"></ion-img>
+              </div>
+            </ion-card-header>
+            <div class="program-type"><ion-badge color="button1">{{moment.resource['en-US'].value[0]}}</ion-badge></div>
+            <div class="program-name light">{{moment.matrix_string[0][0]}}</div>
+            <ion-button class="remove-moment ion-no-padding ion-no-margin" (click)="removeMoment(i)" fill="clear" size="small">
+              <ion-icon name="close" color="secondary"></ion-icon>
+            </ion-button>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

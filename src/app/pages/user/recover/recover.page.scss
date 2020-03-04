@@ -1,0 +1,105 @@
+app-recover {
+
+  ion-content {
+    min-height: 100vh;
+    //--background: url('https://wee.nyc3.digitaloceanspaces.com/app/restvo_tent_background.jpg'); //assets/img/mobile-onboarding-main.jpg')
+    /*--background-size: cover;*/
+  }
+
+
+  ion-list {
+    background: transparent !important;
+    margin: 0;
+  }
+
+  ion-input {
+    //--color: var(--ion-color-secondary);
+  }
+
+  p, li {
+    margin-left: 10px;
+    margin-right: 10px;
+    //color: var(--ion-color-secondary);
+    font-size: 12px;
+    text-align: left;
+  }
+
+  h4 {
+    //color: var(--ion-color-secondary);
+    margin-bottom: 10%;
+  }
+
+  a {
+    color: rgb(65,166,222);
+  }
+
+  ion-item {
+    padding-left: 10px !important;
+    margin-bottom: 10px;
+    --background: transparent !important;
+    font-size: 0.9em;
+  }
+
+  ion-select {
+    //color: var(--ion-color-secondary);
+    font-size: 17px;
+    //border-bottom: 2px solid  #ffa535;
+  }
+
+  .form {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  ion-button {
+    //color: var(--ion-color-secondary);
+  }
+
+  ion-list {
+    margin: 0;
+  }
+
+  .full-height {
+    height: 100%;
+  }
+
+  .password-icon{
+    //color: var(--ion-color-secondary);
+    font-size:2rem !important;
+    position: relative !important;
+    top: 5px !important;
+    margin: 0 auto !important;
+  }
+
+  .default-avatar {
+    width: 60%;
+    margin: 15% auto 15% auto;
+    display: block;
+    background: transparent;
+  }
+
+  .title {
+    //color: var(--ion-color-secondary);
+    font-size: 24px;
+    font-style: bold;
+    text-align: center;
+  }
+
+  .comment {
+    //color: var(--ion-color-secondary);
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .form-error {
+    //color: var(--ion-color-secondary);
+  }
+
+
+  .custom-back-button {
+    margin: 10% 0 20% 0;
+  }
+
+}
+
+

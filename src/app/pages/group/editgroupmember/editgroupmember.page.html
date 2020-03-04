@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{member.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      Leadership Status
+    </ion-list-header>
+    <ion-item>
+      <ion-label>Group Leader</ion-label>
+      <ion-toggle [(ngModel)]="UIisLeaderTag" (ionChange)="leaderStatusChange($event)" [disabled]="disableTag"></ion-toggle>
+    </ion-item>
+    <ion-item *ngIf="!this.group.churchId && this.group.leaders.length === 1 && this.UIisLeaderTag">
+      <ion-icon name="alert" class="ion-margin-right"></ion-icon><p>You cannot remove this user's leadership status because this user is the only leader in this group.</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer no-shadow>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" shape="round" color="tertiary" (click)="eraseUserMessages()" [disabled]="disableTag">Erase User's Messages</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" shape="round" color="danger" (click)="removeMemberFromGroup()">Remove User from Group</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

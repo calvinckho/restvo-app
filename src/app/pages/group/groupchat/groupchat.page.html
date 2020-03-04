@@ -1,0 +1,527 @@
+<ion-header *ngIf="chatService.currentChatProps[propIndex]">
+  <ion-toolbar mode="ios">
+    <ion-buttons slot="start">
+      <ion-button *ngIf="!modalPage" color="secondary" disabled="true"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)" *ngIf="modalPage"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <div style="width: 36px" *ngIf="modalPage && platform.width() >= 768"></div>
+      <div style="width: 36px"></div>
+    </ion-buttons>
+    <ion-title (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)">
+        <ion-icon name="open"></ion-icon>
+      </ion-button>
+      <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}">
+        <ion-icon name="videocam" color="primary"></ion-icon>
+      </ion-button>
+      <ion-button (click)="seeMoreInfo()">
+        <ion-icon name="more" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="chatService.currentChatProps[propIndex]">
+  <!--This is the Chat page-->
+  <!--get new data when page is refreshed-->
+  <ion-infinite-scroll position="top" (ionInfinite)="loadMoreMessages($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-list class="chat-list" lines="none">
+    <ion-item *ngIf="messages?.length === 0 && chatFinishedLoading">
+      <p class="message-timestamp ion-text-center" >Be the first one to say 'hi' to your group.</p>
+    </ion-item>
+    <div *ngFor="let message of messages; trackBy: customTrackBy">
+      <!--Individual Chat Bubble-->
+      <ion-item *ngIf="message.timestamp">
+        <p class="message-timestamp ion-text-center">{{message.createdAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+      </ion-item>
+      <ion-item class="message-wrapper" *ngIf="!message.timestamp && (message.author && message.author._id !== userData.user._id)" (longPressed)="seeUserInfo($event, message.author)">
+        <!--the recipient's message-->
+        <ion-avatar class="sender-avatar" [ngClass]="{'online': (chatService.onlineUsers.indexOf(message.author._id) > -1)}" slot="start" (click)="seeUserInfo($event, message.author)">
+          <img *ngIf="message.author && message.author.avatar" [src]="message.author.avatar" />
+          <img *ngIf="(message.author && !message.author.avatar) || message.author_pending_member" src="assets/img/avatar-default.jpg" />
+        </ion-avatar>
+        <div class="sender-message-container">
+          <div class="author" *ngIf="chatService.currentChatProps[this.propIndex]?.group && message.author">
+            {{ message.author.first_name }}{{" "}}{{ message.author.last_name }}
+          </div>
+          <div class="author" *ngIf="chatService.currentChatProps[this.propIndex]?.group && message.author_pending_member">
+            {{ message.author_pending_member.name }}
+          </div>
+          <!--User Defined Activity-->
+          <ion-grid class="multiple-photos" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'User Defined Activity' && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] !== 'Poll'">
+            <ion-row class="ion-justify-content-start ion-no-padding">
+              <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size-xs="8" size-sm="8" size-md="6" size-lg="6" size-xl="4">
+                <ion-card class="program-card" (click)="openRestvoFeature(message.moment)">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="chat-program-photo-container">
+                      <ion-img class="program-photo" [src]="(message.moment.assets && message.moment.assets.length && message.moment.assets[0]) | background: message.moment._id"></ion-img>
+                    </div>
+                  </ion-card-header>
+                  <div class="program-type"><ion-badge color="button1">{{message.moment.resource['en-US'].value[0]}}</ion-badge></div>
+                  <div class="program-name light">{{message.moment.matrix_string[0][0]}}</div>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Poll'">
+            <p>This poll is no longer available</p>
+          </div>
+          <!-- Poll: in 1.6.3+, field = 'User Defined Activity' and message.moment.resource['en-US'].value[0] === 'Poll' -->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'User Defined Activity' && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll'" (click)="openRestvoFeature(message.moment)">
+            <ion-thumbnail class="pollIconDiv">
+              <ion-img class="pollIcon" src="assets/img/Poll_Gray.png"></ion-img>
+            </ion-thumbnail>
+            <p class="pollQuestion" style="color: black;">{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][1]}}</p>
+            <div class="pollContainer" *ngFor="let display of message.poll.display; index as count">
+              <div class="optionsContainer">
+                <p class="option">{{count+1}}. {{display.option}}</p>
+              </div>
+              <div class="votesContainer">
+                <p class="votecount" *ngIf="message.poll.winner.length == 0 || !message.poll.winner.includes(count)" >Votes: {{display.count}}</p>
+              </div>
+              <div class="userContainer">
+                <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+                <ion-button size="small" shape="round" fill='solid' color="grey" class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="momentService.submitVote($event, message.moment, count)">Cast Vote</ion-button>
+              </div>
+            </div>
+            <div class="unresolvedPollFooter">
+              <p>{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][4]}}: {{message.poll.totalVoteCount}}</p>
+              <p>{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][6]}}: {{message.moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            </div>
+          </div>
+          <!--Track: obsolete in 1.6.3+-->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Track'" (click)="openRestvoFeature(message.moment)">
+            <ion-thumbnail>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+            </ion-thumbnail>
+            <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+            <!--<p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>-->
+            <p class="moment-name">{{message.moment.matrix_string[0][1]}}</p>
+          </div>
+          <!-- Event: obsolete in 1.6.3+ since it now uses the User Defined Activity -->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Event'" (click)="openRestvoFeature(message.moment)">
+            <ion-thumbnail>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+            </ion-thumbnail>
+            <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+            <p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            <p class="moment-notes">{{message.moment.matrix_string[1][0]}}</p>
+          </div>
+          <!-- Meetup: obsolete in 1.6.3+ since it now uses the User Defined Activity -->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Meetup'" (click)="openRestvoFeature(message.moment)">
+            <ion-thumbnail>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+            </ion-thumbnail>
+            <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+            <p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            <p class="moment-notes">{{message.moment.matrix_string[1][0]}}</p>
+          </div>
+          <!-- Goal: obsolete in 1.6.3+ since it now uses the User Defined Activity -->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Goal'" (click)="openRestvoFeature(message.moment)">
+            <ion-thumbnail>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+            </ion-thumbnail>
+            <p *ngIf="message.moment.matrix_string?.length > 0" class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+            <p *ngIf="message.moment.calendar" class="moment-date" >Accomplish By: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            <p *ngIf="message.moment.matrix_string?.length > 0" class="moment-notes">{{message.moment.matrix_string[1][0]}}</p>
+          </div>
+          <!-- Location -->
+          <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource && message.moment.resource.field === 'Location'">
+            <a [href]="message.addressURL" target="_blank">
+              <ion-thumbnail>
+                <ion-img [src]="message.moment.matrix_string[0]"></ion-img>
+              </ion-thumbnail>
+              <p class="moment-name" >Location</p>
+            </a>
+          </div>
+          <!--Contact-->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Contact'">
+            <div *ngIf="message.moment.matrix_number[0][0] === 0" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
+              <ion-icon name="book" large></ion-icon>
+              <p [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][6]"></p>
+            </div>
+            <div *ngIf="message.moment.matrix_number[0][0] === 1" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
+              <ion-icon name="book" large></ion-icon>
+              <p [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][4]"></p>
+            </div>
+            <div *ngIf="message.moment.matrix_number[0][0] === 2" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
+              <ion-icon name="book" large></ion-icon>
+              <p [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][8]"></p>
+            </div>
+          </div>
+          <!-- Others: Including All Future Features Displaying Basic Info -->
+          <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource && ['User Defined Activity','Track','Event','Meetup','Poll','Goal','Location','Contact'].indexOf(message.moment.resource.field) < 0">
+            <ion-thumbnail>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+              <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+            </ion-thumbnail>
+            <p class="moment-name" >{{message.moment.resource['en-US'].value[0]}}: {{message.moment.matrix_string[0][0]}}</p>
+          </div>
+          <!--Multiple attachments-->
+          <ion-grid *ngIf="message.attachments && message.attachments.length > 0">
+            <ion-row class="ion-justify-content-start ion-no-padding">
+              <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto" *ngFor="let attachment of message.attachments" >
+                <ion-thumbnail [ngClass]="{'wide-thumbnail': message.attachments.length === 1}" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                  <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                </ion-thumbnail>
+                <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-end">
+              <ion-col>
+                <ion-icon class="reply-icon photo" name="undo" (click)="sendQuoteAndReply(message)"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <div class="chat-bubble left" *ngIf="!message.moment && message.body?.length > 0">
+            <div class="quote-bubble left ion-text-wrap" *ngIf="message.quote && (message.quote.body || (message.quote.attachments && message.quote.attachments.length > 0))">
+              <div class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
+              <!-- Attachments inside a quote -->
+              <ion-grid *ngIf="message.quote.attachments && message.quote.attachments.length > 0">
+                <ion-row class="ion-no-padding">
+                  <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto" *ngFor="let attachment of message.attachments">
+                    <ion-thumbnail *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                      <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                    </ion-thumbnail>
+                    <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                    <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                    <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                    <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                    <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+            <!-- Message Text Body -->
+            <p class="message" *ngIf="message.body" [innerHTML]="message.body | nl2br"></p>
+            <!-- Detect if a video is embedded in the text -->
+            <div class="video-frame youtube" plyr [plyrSources]="[{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube'}]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="message.body && message.body.indexOf('www.youtube.com/watch?v=') > -1" (click)="resourceService.clickVideo($event, [{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube' }])"></div>
+
+            <ion-icon *ngIf="message.body?.length <= 30" class="reply-icon-short" name="undo" (click)="sendQuoteAndReply(message)"></ion-icon>
+            <ion-icon *ngIf="message.body?.length > 30" class="reply-icon" name="undo" (click)="sendQuoteAndReply(message)"></ion-icon>
+          </div>
+        </div>
+      </ion-item>
+
+      <!--your message-->
+      <ion-item class="message-wrapper" *ngIf="!message.createdAtFormatted && message.author && message.author._id === userData.user._id">
+        <!--User Defined Activity-->
+        <ion-grid class="multiple-photos" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'User Defined Activity' && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] !== 'Poll'">
+          <ion-row class="ion-justify-content-end ion-no-padding">
+            <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size-xs="8" size-sm="8" size-md="6" size-lg="6" size-xl="4">
+              <ion-card class="program-card" (click)="openRestvoFeature(message.moment)">
+                <ion-card-header class="ion-no-padding">
+                  <div class="chat-program-photo-container">
+                    <ion-img class="program-photo" [src]="(message.moment.assets && message.moment.assets.length && message.moment.assets[0]) | background: message.moment._id"></ion-img>
+                  </div>
+                </ion-card-header>
+                <div class="program-type"><ion-badge color="button1">{{message.moment.resource['en-US'].value[0]}}</ion-badge></div>
+                <div class="program-name light">{{message.moment.matrix_string[0][0]}}</div>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <!--Poll: obsolete in 1.6.3+-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Poll'">
+          <p>This poll is no longer available</p>
+        </div>
+        <!-- Poll: in 1.6.3+, field = 'User Defined Activity' and message.moment.resource['en-US'].value[0] === 'Poll' -->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && (message.moment.resource.field === 'User Defined Activity' && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll' )" (click)="openRestvoFeature(message.moment)">
+          <ion-thumbnail class="pollIconDiv">
+            <ion-img class="pollIcon" src="assets/img/Poll_Gray.png"></ion-img>
+          </ion-thumbnail>
+          <p class="pollQuestion">{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][1]}}</p>
+          <div class="pollContainer" *ngFor="let display of message.poll.display; index as count">
+            <div class="optionsContainer">
+              <p class="option" >{{count+1}}. {{display.option}}</p>
+            </div>
+            <div class="votesContainer">
+              <p class="votecount">Votes: {{display.count}}</p>
+            </div>
+            <div class="userContainer">
+              <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+              <ion-button size="small" shape="round" fill='solid' color="darkgrey" class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="momentService.submitVote($event, message.moment, count)">Cast Vote</ion-button>
+            </div>
+          </div>
+          <div class="unresolvedPollFooter">
+            <p>{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][4]}}: {{message.poll.totalVoteCount}}</p>
+            <p>{{message.moment.resource['en-US'].matrix_string[message.poll.componentId][6]}}: {{message.moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          </div>
+        </div>
+        <!--Track: obsolete in 1.6.3+-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Track'" (click)="openRestvoFeature(message.moment)">
+          <ion-thumbnail>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+          </ion-thumbnail>
+          <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+          <!--<p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>-->
+          <p class="moment-name">{{message.moment.matrix_string[0][1]}}</p>
+        </div>
+        <!--Event: obsolete in 1.6.3+ since it now uses the User Defined Activity-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Event'" (click)="openRestvoFeature(message.moment)">
+          <ion-thumbnail>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+          </ion-thumbnail>
+          <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          <p class="moment-name">{{message.moment.matrix_string[1][0]}}</p>
+        </div>
+        <!--Meetup: obsolete in 1.6.3+ since it now uses the User Defined Activity-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Meetup'" (click)="openRestvoFeature(message.moment)">
+          <ion-thumbnail>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+          </ion-thumbnail>
+          <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          <p class="moment-name">{{message.moment.matrix_string[1][0]}}</p>
+        </div>
+        <!--Goal: obsolete in 1.6.3+ since it now uses the User Defined Activity-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource && message.moment.resource.field === 'Goal'" (click)="openRestvoFeature(message.moment)">
+          <ion-thumbnail>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+          </ion-thumbnail>
+          <p class="moment-name" >{{message.moment.resource['en-US'].matrix_string[0][0]}}: {{message.moment.matrix_string[0][0]}}</p>
+          <p *ngIf="message.moment.calendar" class="moment-date" >Accomplish By: {{message.moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          <p class="moment-notes">{{message.moment.matrix_string[1][0]}}</p>
+        </div>
+        <!--Location-->
+        <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource && message.moment.resource.field === 'Location'">
+          <a [href]="message.addressURL" target="_blank">
+            <ion-thumbnail>
+              <ion-img [src]="message.moment.matrix_string[0]"></ion-img>
+            </ion-thumbnail>
+            <p class="moment-name">Location</p>
+          </a>
+        </div>
+        <!--Contact-->
+        <div class="moment right" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Contact'" >
+          <div *ngIf="message.moment.matrix_number[0][0] === 0" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
+            <ion-icon name="book" large></ion-icon>
+            <p [innerHTML]="message.moment.resource['en-US'].matrix_string[0][7] + ' ' + chatService.currentChatProps[propIndex].name"></p>
+          </div>
+          <div *ngIf="message.moment.matrix_number[0][0] === 1" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
+            <ion-icon name="book" large></ion-icon>
+            <p [innerHTML]="message.moment.resource['en-US'].matrix_string[0][5] + ' ' + chatService.currentChatProps[propIndex].name"></p>
+          </div>
+          <div *ngIf="message.moment.matrix_number[0][0] === 2" (click)="seeUserInfo($event, chatService.currentChatProps[propIndex].recipient)" class="ion-text-wrap">
+            <ion-icon name="book" large></ion-icon>
+            <p [innerHTML]="message.moment.resource['en-US'].matrix_string[0][9] + ' ' + chatService.currentChatProps[propIndex].name"></p>
+          </div>
+        </div>
+        <!-- Others: Including All Future Features Displaying Basic Info -->
+        <div class="moment right" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource && ['User Defined Activity','Track','Event','Meetup','Poll','Goal','Location','Contact'].indexOf(message.moment.resource.field) < 0" class="ion-text-wrap">
+          <ion-thumbnail>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+            <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+          </ion-thumbnail>
+          <p class="moment-name" >{{message.moment.resource['en-US'].value[0]}}: {{message.moment.matrix_string[0][0]}}</p>
+        </div>
+        <!--Multiple attachments-->
+        <ion-grid class="multiple-photos" *ngIf="message.attachments && message.attachments.length > 0">
+          <ion-row class="ion-justify-content-end ion-no-padding">
+            <ion-col class="ion-align-self-center ion-no-padding ion-padding-start ion-padding-top" size="auto" *ngFor="let attachment of message.attachments">
+                <ion-thumbnail [ngClass]="{'wide-thumbnail': message.attachments.length === 1}" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                  <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                </ion-thumbnail>
+                <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <div class="chat-bubble right" slot="end" *ngIf="!message.moment && message.body?.length > 0">
+          <!-- Attachments inside a quote -->
+          <div class="quote-bubble right ion-text-wrap" *ngIf="message.quote && (message.quote.body || (message.quote.attachments && message.quote.attachments.length > 0))">
+            <p class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></p>
+            <!--Multiple attachments-->
+            <ion-grid *ngIf="message.quote.attachments && message.quote.attachments.length > 0">
+              <ion-row class="ion-no-padding">
+                <ion-col class="ion-align-self-center ion-no-padding ion-padding-start ion-padding-top" size="auto" *ngFor="let attachment of message.attachments" >
+                  <ion-thumbnail *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                    <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                  </ion-thumbnail>
+                  <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                  <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+          <!-- Text Body -->
+          <p class="message" *ngIf="message.body" [innerHTML]="message.body | nl2br"></p>
+          <!-- Detect if Video is attached -->
+          <div class="video-frame youtube" plyr [plyrSources]="[{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube'}]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="message.body && message.body.indexOf('www.youtube.com/watch?v=') > -1" (click)="resourceService.clickVideo($event, [{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube' }])"></div>
+          <!-- Attachments -->
+        </div>
+        <div class="message-tag" slot="end">
+          <div class="message-tag-centered">
+            <ion-avatar class="self-avatar">
+              <img *ngIf="message.author.avatar" [src]="message.author.avatar" />
+              <img *ngIf="!message.author.avatar" src="assets/img/avatar-default.png" />
+            </ion-avatar>
+            <div class="status-div">
+              <p class="status" id="failed" *ngIf="message.status === 'failed'" (click)="resendMessage(message)">Not Sent</p>
+              <p class="status"  *ngIf="message.status === 'confirmed'">Delivered</p>
+              <!--<ion-icon class="status" *ngIf="message.status === 'failed'" name="alert" (click)="resendMessage(message)"></ion-icon>-->
+              <!--<ion-icon class="status" *ngIf="message.status === 'confirmed'" name="checkmark"></ion-icon>-->
+            </div>
+          </div>
+        </div>
+      </ion-item>
+    </div>
+  </ion-list>
+</ion-content>
+
+<ion-footer *ngIf="chatService.currentChatProps[propIndex]" class="message-footer">
+  <!-- Code start for quotation-->
+  <ion-toolbar class="replyQuote-wrapper ion-no-padding" lines="none" *ngIf="sendQuoteAndReplyTag">
+    <div class="replyQuote-bubble">
+      <ion-row>
+        <ion-col size="11">
+          <div class="message" *ngIf="replyQuote.body" [innerHTML]="replyQuote.body | nl2br"></div>
+          <ion-grid class="ion-no-padding" *ngIf="replyQuote.attachments && replyQuote.attachments.length > 0">
+            <ion-row class="ion-no-padding ion-justify-content-center">
+              <ion-col class="ion-align-self-center ion-no-padding ion-padding-horizontal" size="auto" *ngFor="let attachment of replyQuote.attachments" >
+                <ion-thumbnail *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                  <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                </ion-thumbnail>
+                <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <p class="ion-no-margin author" *ngIf="replyQuote.author">{{ replyQuote.author.first_name }}{{" "}}{{ replyQuote.author.last_name }}</p>
+          <p class="ion-no-margin author" *ngIf="replyQuote.author_pending_member">{{ replyQuote.author_pending_member.name }}</p>
+        </ion-col>
+        <ion-col size="1">
+          <ion-icon class="closeReply" name="close-circle" (click)="closeReplyQuote()"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-toolbar>
+  <!-- Code end for quotation-->
+  <ion-toolbar class="ion-no-padding">
+    <div class="message-form">
+      <ion-buttons>
+        <ion-button class="moreButton" fill="clear" (click)="messageMoreOptions()" [disabled]="!chatFinishedLoading">
+          <ion-icon name="add-circle" size="large" color="grey"></ion-icon>
+        </ion-button>
+        <div id="expandable-right" *ngIf="moreMediaOptions">
+          <ion-button class="moreButton" fill="clear" (click)="takePhotoAndUpload()" [disabled]="!chatFinishedLoading">
+            <ion-icon name="md-camera" size="large" color="grey"></ion-icon>
+          </ion-button>
+          <ion-button class="moreButton" *ngIf="platform.is('cordova')" fill="clear" (click)="selectPhotoFromDeviceAndUpload($event)" [disabled]="!chatFinishedLoading">
+            <ion-icon name="md-image" size="large" color="grey"></ion-icon>
+          </ion-button>
+          <ion-button class="moreButton" *ngIf="!platform.is('cordova')" fill="clear" [hidden]="!chatFinishedLoading">
+            <label for="image" style="height: 32px"><ion-icon name="md-image" size="large" color="grey"></ion-icon></label>
+            <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*" />
+          </ion-button>
+          <ion-button class="moreButton" fill="clear" [hidden]="!chatFinishedLoading">
+            <label for="file" style="height: 32px"><ion-icon name="folder" size="large" color="grey"></ion-icon></label>
+            <input type="file" class="file-picker" name="file" id="file" (change)="selectFileFromDeviceAndUpload($event)"/>
+          </ion-button>
+        </div>
+        <ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions" [hidden]="moreMediaOptions">
+          <ion-icon name="ios-arrow-forward" size="large" color="grey"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize [(ngModel)]="composedMessage" autocorrect="on" (ionFocus)="moreMediaOptions = false">
+        <!--Multiple attachments-->
+        <ion-grid *ngIf="awsService.sessionAssets.length">
+          <ion-row>
+            <ion-col class="ion-align-self-center" size="auto" *ngFor="let attachment of awsService.sessionAssets; index as i;">
+              <div *ngIf="attachment && attachment.length">
+                <ion-thumbnail [ngClass]="{'small-thumbnail': awsService.sessionAssets.length > 1}" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1">
+                  <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                </ion-thumbnail>
+                <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+                <ion-button class="remove-media ion-no-padding ion-no-margin" (click)="removeMedia(i)" fill="clear" size="small">
+                  <ion-icon name="close" color="secondary"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-grid class="selected-grid" *ngIf="selectedMoments.length">
+          <ion-row>
+            <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size-xs="12" size-sm="12" size-md="6" size-lg="6" size-xl="4">
+              <ion-card class="program-card" (click)="openRestvoFeature(moment)">
+                <ion-card-header class="ion-no-padding">
+                  <div class="program-photo-container">
+                    <ion-img class="program-photo" [src]="(moment.assets && moment.assets.length && moment.assets[0]) | background: moment._id"></ion-img>
+                  </div>
+                </ion-card-header>
+                <div class="program-type"><ion-badge color="button1">{{moment.resource['en-US'].value[0]}}</ion-badge></div>
+                <div class="program-name light">{{moment.matrix_string[0][0]}}</div>
+                <ion-button class="remove-moment ion-no-padding ion-no-margin" (click)="removeMoment(i)" fill="clear" size="small">
+                  <ion-icon name="close" color="secondary"></ion-icon>
+                </ion-button>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-textarea>
+      <ion-buttons>
+        <ion-button class="actionButton" (click)="sendMessage()" fill="clear" *ngIf="((composedMessage.length || awsService.sessionAssets.length || selectedMoments.length) && !listening) || !platform.is('cordova')" [disabled]="!(composedMessage.length || awsService.sessionAssets.length || selectedMoments.length)">
+          <img class="sendImage" src="assets/img/Send_Gray.png"/>
+        </ion-button>
+        <ion-button class="actionButton" (click)="toggleVoiceRecognition()" fill="clear" *ngIf="platform.is('cordova') && (!(composedMessage.length || awsService.sessionAssets.length || selectedMoments.length) || listening)" >
+          <img class="recordAudioImg" [ngClass]="{'fade': listening}" src="assets/img/microphone.png"/>
+        </ion-button>
+      </ion-buttons>
+    </div>
+  </ion-toolbar>
+  <ion-toolbar id="expandable" *ngIf="moreOptions" class="ion-no-padding">
+    <div class="moreoptions">
+      <ion-slides class="program-slides" [options]="{slidesPerView: 3.5, grabCursor: true}">
+        <ion-slide class="program-slide" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : 20; index as i; trackBy: customTrackBy" [hidden]="!(calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && calendarItem.moment.resource['en-US'].value[0] !== 'Onboarding Process')">
+          <ion-card class="program-card" (click)="selectCalendarItem($event, calendarItem)" *ngIf="calendarItem.moment">
+            <ion-card-header class="ion-no-padding">
+              <div class="program-photo-container">
+                <ion-img class="program-photo" [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
+              </div>
+            </ion-card-header>
+            <div class="program-type"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
+            <div class="program-name light">{{calendarItem.moment.matrix_string[0][0]}}</div>
+          </ion-card>
+        </ion-slide>
+        <ion-slide class="program-slide">
+          <ion-card class="program-card" (click)="openPickFeature($event, 'User Defined Activity')">
+            <ion-card-header class="ion-no-padding" color="lightgrey">
+              <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
+                <ion-icon name="ios-more" color="darkgrey"></ion-icon>
+              </ion-row>
+            </ion-card-header>
+            <div class="program-name dark">More</div>
+          </ion-card>
+        </ion-slide>
+      </ion-slides>
+    </div>
+  </ion-toolbar>
+</ion-footer>

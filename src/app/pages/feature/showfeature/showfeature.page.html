@@ -1,0 +1,1413 @@
+<ion-header *ngIf="modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
+  <ion-toolbar>
+    <ion-menu-toggle menu="main" *ngIf="!modalPage && authService.token && platform.width() < 768" slot="start" fill="clear">
+      <ion-button fill="clear" color="grey">
+        <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="grey">{{chatService.connectTabBadge}}</ion-badge>
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-menu-toggle>
+    <ion-buttons *ngIf="authService.token && (modalPage || platform.width() >= 768)" slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'ios-arrow-up' : 'ios-arrow-down')"></ion-icon></ion-note></ion-title>
+    <ion-buttons slot="end">
+      <div *ngIf="userData.user && ['owner','admin','staff'].indexOf(userData.user.role) > -1">
+        <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
+          <ion-icon name="list-box"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="loadCompleted && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
+          <ion-icon name="albums"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngIf="relationshipId && calendarItem">
+        <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
+          Done
+        </ion-button>
+      </div>
+      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
+        <ion-icon name="share"></ion-icon>
+      </ion-button>
+      <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
+        <ion-text>Sign In</ion-text>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-bottom">
+  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && !(router.url.includes('discover/home') || router.url.includes('manage/activity'))">
+    <!--Invitation Section-->
+    <ion-item-sliding side="end" *ngIf="!hasLeaderAccess && (participant_type === 4) && token">
+      <ion-item (click)="acceptInvitation($event)" lines="none">
+        <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
+        <div class="ion-text-wrap">
+          <ion-label class="ion-margin-top">Accept Invitation</ion-label>
+          <p class="short-paragraph">Click to accept invitation to participate as a {{leaderLabel.toLowerCase()}}.</p>
+        </div>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="acceptInvitation($event)">
+          Accept
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    <ion-item-sliding side="end" *ngIf="!hasOrganizerAccess && (this.participant_type === 3) && this.token">
+      <ion-item (click)="acceptInvitation($event)" lines="none">
+        <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
+        <div class="ion-text-wrap">
+          <ion-label class="ion-margin-top">Accept Invitation</ion-label>
+          <p class="short-paragraph">Click to accept invitation to participate as a {{organizerLabel.toLowerCase()}}.</p>
+        </div>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="acceptInvitation($event)">
+          Accept
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    <!--Special Privileges-->
+    <ion-item *ngIf="hasOrganizerAccess || hasLeaderAccess" (click)="this.expandPrivilegesView()" lines="none">
+      <ion-icon name="key" slot="start" color="danger"></ion-icon>
+      <div class="ion-text-wrap message-container">
+        <ion-label class="ion-margin-top">You have Special Privileges</ion-label>
+        <p class="message-detail">Click to access your privileges.</p>
+      </div>
+      <ion-icon *ngIf="expandedPrivilegesView" name="ios-arrow-up" color="primary" slot="end"></ion-icon>
+      <ion-icon *ngIf="!expandedPrivilegesView" name="ios-arrow-down" color="primary" slot="end"></ion-icon>
+    </ion-item>
+    <div *ngIf="!joinDisabled">
+      <!--Already Joined-->
+      <ion-item *ngIf="hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
+        <ion-icon name="person" slot="start" color="danger"></ion-icon>
+        <div class="ion-text-wrap message-container">
+          <ion-label class="ion-margin-top">You are a {{participantLabel}}</ion-label>
+          <p class="message-detail">Click to see more options.</p>
+        </div>
+        <ion-icon name="ios-arrow-down" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <!--Not yet Joined - permission check-->
+      <ion-item *ngIf="authService.token && !token && !hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
+        <ion-icon name="person" slot="start" color="danger"></ion-icon>
+        <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+      </ion-item>
+    </div>
+    <!--Privileges View-->
+    <div *ngIf="expandedPrivilegesView && hasOrganizerAccess" lines="none">
+      <ion-item lines="none">
+        <ion-label>{{organizerLabel}}</ion-label>
+      </ion-item>
+      <ion-item-group class="ion-margin-start">
+        <ion-item (click)="moreOrganizerActions()">
+          <ion-label class="ion-margin-top">View Actions</ion-label>
+          <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+        </ion-item>
+      </ion-item-group>
+    </div>
+    <div *ngIf="expandedPrivilegesView && (hasLeaderAccess || (hasOrganizerAccess && moment.array_boolean?.length > 7 && this.moment.array_boolean[7]))" lines="none">
+      <ion-item lines="none">
+        <ion-label>{{leaderLabel}}</ion-label>
+      </ion-item>
+      <ion-item-group class="ion-margin-start">
+        <ion-item (click)="moreLeaderOptions()">
+          <ion-label class="ion-margin-top">View Actions</ion-label>
+          <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+        </ion-item>
+      </ion-item-group>
+    </div>
+    <div *ngIf="expandedPrivilegesView" lines="none">
+      <ion-item lines="none">
+        <ion-label>{{participantLabel}}</ion-label>
+      </ion-item>
+      <ion-item-group class="ion-margin-start">
+        <ion-item (click)="moreParticipantOptions()">
+          <ion-label class="ion-margin-top">View Actions</ion-label>
+          <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+        </ion-item>
+      </ion-item-group>
+    </div>
+  </ion-toolbar>
+  <ion-grid style="height: 100%" *ngIf="!loadCompleted">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-list *ngIf="loadCompleted && mode === 'list'" class="ion-no-padding">
+    <!--Content Calendar Item-->
+    <div *ngIf="calendarItem">
+      <ion-item lines="none">
+        <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
+        <ion-textarea class="moment-input" autocapitalize="true" [autofocus]="true" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
+      </ion-item>
+      <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
+        <ion-item lines="none">
+          <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
+          <div class="moment-input">Due Date</div>
+        </ion-item>
+        <ion-item lines="none" class="ion-margin-start">
+          <ion-label class="moment-label" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
+          <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
+        </ion-item>
+
+        <ion-card class="monthview" *ngIf="dateType">
+          <div class="month-title-container">
+            <ion-icon name="ios-arrow-back" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+            <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
+            <ion-icon name="ios-arrow-forward" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+          </div>
+          <div class="monthview-day-headers">S</div>
+          <div class="monthview-day-headers">M</div>
+          <div class="monthview-day-headers">T</div>
+          <div class="monthview-day-headers">W</div>
+          <div class="monthview-day-headers">T</div>
+          <div class="monthview-day-headers">F</div>
+          <div class="monthview-day-headers">S</div>
+
+          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
+            <div (click)="changeCalendarItemSelectedDate(dayOfMonth.date)" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" class="monthview-element-content">
+              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
+              <div *ngIf="dayOfMonth.date != ' ' ">
+                {{dayOfMonth.date.getDate()}}
+              </div>
+              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index;">
+                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+
+        <!-- list features after being filtered -->
+        <ion-list *ngIf="dateType" lines="none" class="list-container ion-padding">
+          <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
+            <ion-item *ngIf="calendarService.calendar.mode == 'month' && (calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )" id="feature" lines="none">
+              <ion-label class="moment-icon" slot="start">
+                <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
+              </ion-label>
+              <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
+              <div class="item-container" slot="end">
+                <ion-label>{{calendarItem.title}}</ion-label>
+                <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+                <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+              </div>
+            </ion-item>
+          </div>
+        </ion-list>
+      </ion-item-group>
+      <ion-item *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
+        <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="ios-flag"></ion-icon></div>
+        <div class="moment-input">Assigned To</div>
+        <ion-label hidden="true">Goals</ion-label>
+        <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end">
+          <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="(moment._id === '5e4b39cd76ffc96ae6aba323') || (moment._id === '5e4c28d694fd1963ac0a5b1e')"> <!--Public Note or Private Note-->
+        <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="key"></ion-icon></div>
+        <div class="moment-input">Permission</div>
+        <ion-label hidden="true">Permission</ion-label>
+        <ion-select [(ngModel)]="moment._id" interface="action-sheet" (ionBlur)="anyChangeMade = true" slot="end">
+          <ion-select-option value="5e4c28d694fd1963ac0a5b1e">Private</ion-select-option>
+          <ion-select-option value="5e4b39cd76ffc96ae6aba323">Shared in Relationship</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div *ngFor="let item of moment.resource.matrix_number[0]; trackBy: customTrackBy; index as i" [hidden]="moment.resource.matrix_number[0].includes(20020) && (i > moment.resource.matrix_number[0].indexOf(20020)) && (moment.resource.matrix_number[3][i] !== tabSelection)">
+      <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
+        <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i][0] | nl2br"></div>
+      </ion-item>
+      <ion-item class="section" color="lightgrey" *ngIf="item === 10050" lines="none"> <!--section header-->
+        <ion-label color="darkgrey" class="section-label ion-text-uppercase">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+      </ion-item>
+      <ion-item-group *ngIf="item === 10100"> <!--location-->
+        <ion-item lines="none">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="navigate"></ion-icon></div>
+          <ion-label class="label-title">Location</ion-label>
+          <ion-label class="detail ion-text-wrap ion-text-right">{{moment.location.location}} </ion-label>
+        </ion-item>
+        <a [href]="addressURL" target="_blank" *ngIf="mapURL.length">
+          <div class="map-container">
+            <img [src]="mapURL" />
+          </div>
+        </a>
+      </ion-item-group>
+      <ion-item-group *ngIf="item === 20000"> <!--Visibility-->
+        <ion-item *ngIf="moment.array_community && moment.array_community.length && moment.matrix_number[i][0]" lines="none">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="home"></ion-icon></div>
+          <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][2]}}</ion-label>
+          <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let community of moment.array_community; index as i"><span *ngIf="i > 0">, </span>{{community.name}}</span></ion-label>
+        </ion-item>
+        <ion-item *ngIf="moment.categories && moment.categories.length && moment.matrix_number[i][1]" lines="none">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="bookmark"></ion-icon></div>
+          <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][6]}}</ion-label>
+          <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as i"><span *ngIf="i > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
+        </ion-item>
+      </ion-item-group>
+      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter"> <!--Tabs-->
+        <ion-toolbar mode="md">
+          <ion-segment (ionChange)="changeTabSelection($event)" [value]="tabSelection" mode="md">
+            <ion-segment-button class="tab-button" *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j" [value]="tabId" mode="md">{{moment.matrix_string[i][j]}}</ion-segment-button>
+          </ion-segment>
+        </ion-toolbar>
+      </ion-item>
+      <ion-item-group *ngIf="item === 10200"> <!--start/end date and time-->
+        <ion-item *ngIf="moment.calendar">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
+          <ion-label class="label-title">Start Time</ion-label>
+          <ion-label class="detail ion-text-wrap ion-text-right">{{moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
+        </ion-item>
+        <ion-item *ngIf="moment.calendar">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
+          <ion-label class="label-title">End Time</ion-label>
+          <ion-label class="detail ion-text-wrap ion-text-right">{{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
+        </ion-item>
+      </ion-item-group>
+      <div *ngIf="item === 10210"> <!--To-Dos and Goals-->
+        <!--Overall Progress-->
+        <ion-card style="background: var(--ion-color-lightgrey)" mode="md">
+          <ion-card-content class="goal-content overall ion-no-padding">
+            <ion-badge color="grey" class="favorite-goal-type">Overall Progress</ion-badge>
+            <div class="progress">
+              <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
+            </div>
+            <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container" >
+              <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="progressView = (progressView === section ? null : section)" >
+                <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                  {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                </div>
+                <ion-button slot="end" fill="clear">
+                  <ion-icon [name]="progressView === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && progressView === section" (click)="openContent($event, calendarItem)">
+                  <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                    <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                    <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                  </ion-button>
+                  <ion-label class="goal-todo-title">{{calendarItem.title}}</ion-label>
+                  <ion-note class="goal-todo-date" slot="end">{{calendarItem.startDate | datetime: 'm:s,d:n'}}</ion-note>
+                  <!--<div class="calendar-item-content" (click)="openContent($event, calendarItem)">                  </div>-->
+                </ion-item>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
+          <!--Favorite Goals-->
+          <ion-card mode="md" class="ion-no-padding">
+            <ion-card-content class="goal-content favorite ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+              <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
+              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 3 && moment.matrix_number[i][3]) ? 'bold' : 'none'),'font-size': ((moment.matrix_number[i].length > 2) ? moment.matrix_number[i][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
+              </ion-item>
+              <div class="progress">
+                <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
+              </div>
+              <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i)" fill="clear" size="small">
+                <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+              </ion-buttons>
+            </ion-card-content>
+          </ion-card>
+          <!--Goals tagged under the Favorite Goal-->
+          <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
+            <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+              <ion-card-content class="ion-no-padding goal-content" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+                <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
+                <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                  <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
+                  <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+                </ion-item>
+                <!--<div class="progress">
+                  <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
+                </div>-->
+                <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
+                  <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+                </ion-buttons>
+                <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
+                  <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
+                    <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                      {{section}}
+                      <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                    </div>
+                    <!--<ion-badge color="grey" [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }}</ion-badge>-->
+                    <ion-button slot="end" fill="clear">
+                      <ion-icon [name]="goal[2] === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                    </ion-button>
+                  </ion-item>
+                  <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                    <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
+                      <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                        <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                        <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                      </ion-button>
+                      <ion-label class="goal-todo-title">{{calendarItem.title}}</ion-label>
+                      <ion-note class="goal-todo-date" slot="end">{{calendarItem.startDate | datetime: 'm:s,d:n'}}</ion-note>
+                    </ion-item>
+                  </div>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+        </div>
+        <!--Goals with no valid Favorite Goal Tags-->
+        <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy" >
+          <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+            <ion-card-content class="goal-content ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+              <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
+              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
+                <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+              </ion-item>
+              <!--<div class="progress">
+                <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
+              </div>-->
+              <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
+                <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+              </ion-buttons>
+              <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
+                <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
+                  <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                    {{section}}
+                    <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                  </div>
+                  <ion-button slot="end" fill="clear">
+                    <ion-icon [name]="goal[2] === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                  <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
+                    <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                      <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                      <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                    </ion-button>
+                  <ion-label class="goal-todo-title">{{calendarItem.title}}</ion-label>
+                  <ion-note class="goal-todo-date" slot="end">{{calendarItem.startDate | datetime: 'm:s,d:n'}}</ion-note>
+                  </ion-item>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+      <!--Media Viewer in List View-->
+      <ion-grid *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360) && moment.matrix_number[i]?.length && moment.matrix_number[i][0]) && moment.matrix_string[i]?.length" class="ion-no-padding"> <!--Hide/Show Media Setting-->
+        <ion-row *ngIf="((item === 10010 && moment.matrix_number[i][0]) || item === 10300 || item === 10310 || item === 10360 || item === 40010)" class="ion-justify-content-evenly ion-no-padding">
+          <div [ngStyle]="{'width': (100/(moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) - (((moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) === 1) ? 0 : 0) + '%'}" class="photo-split-view ion-no-padding" *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
+            <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
+              <ion-img [src]="url"></ion-img>
+            </ion-thumbnail>
+            <div class="icon-container">
+              <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+              <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+              <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+              <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            </div>
+            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+            <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+          </div>
+        </ion-row>
+        <!--Video Player-->
+        <ion-item *ngIf="item === 10320 && moment.matrix_string[i]?.length && moment.matrix_string[i][0].length" lines="none">
+          <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i][0], 'type': 'video/' + (moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase()) > -1"  (click)="$event.stopPropagation()"></div>
+        </ion-item>
+        <!--Youtube Player-->
+        <ion-item *ngIf="item === 10330 && moment.matrix_string[i]?.length && moment.matrix_string[i][0].length" lines="none">
+          <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i][0], 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+        </ion-item>
+      </ion-grid>
+      <!--Video Conference-->
+      <ion-item *ngIf="item === 10600" lines="none">
+        <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="videocam"></ion-icon></div>
+        <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][0]}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="item === 10600" lines="none">
+        <ion-button (click)="joinVideoConference()" style="margin: 0 auto">{{moment.resource['en-US'].matrix_string[i][2]}} {{moment.resource['en-US'].matrix_string[i][0]}}</ion-button> <!--Join Conference-->
+      </ion-item>
+      <!--Notes-->
+      <ion-item *ngIf="item === 12000" lines="none" class="ion-no-padding">
+        <ion-grid>
+          <ion-row class="note-row">
+            <ion-col *ngFor="let note of notes; index as i" size-xs="6" size-sm="4" size-md="4" size-lg="3" size-xl="2">
+              <ion-card class="note-card" (click)="openNote(note)">
+                <div class="note-header">
+                  <ion-label class="note-title">{{note.question || note.calendar_title || note.content_title}}</ion-label>
+                  <div class="note-date">{{note.updatedAt | datetime : 'm:n,d:n,y:n'}}</div>
+                  <ion-icon class="note-private" *ngIf="note.content_id === '5e4c28d694fd1963ac0a5b1e'" name="lock" slot="end"></ion-icon>
+                </div>
+                <div class="note-content-backdrop">
+                  <div class="note-content-doc">
+                    <div class="note-content-textbox" [innerHTML]="note.answer[1] | nl2br"></div>
+                  </div>
+                </div>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <div class="component" *ngIf="item === 10500"> <!--People-->
+        <!--Show Participants-->
+        <div *ngIf="moment.matrix_number[i][0]">
+          <ion-item lines="none" class="section" color="lightgrey">
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][3] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][5]}}</ion-label>
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][3]">{{moment.matrix_string[i][3]}}</ion-label>
+          </ion-item>
+          <ion-grid style="max-height: 20%; overflow: scroll">
+            <ion-row class="participant-row">
+              <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
+                <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                  <div class="participant-centered">
+                    <ion-avatar class="participant-avatar" slot="start">
+                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                    </ion-avatar>
+                    <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                    <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                  </div>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+        <!--Show Organizers-->
+        <div *ngIf="moment.matrix_number[i][1]">
+          <ion-item lines="none" class="section" color="lightgrey">
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][5] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][7]}}</ion-label>
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][5]">{{moment.matrix_string[i][5]}}</ion-label>
+          </ion-item>
+          <ion-grid style="max-height: 20%; overflow: scroll">
+            <ion-row class="participant-row">
+              <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
+                <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                  <div class="participant-centered">
+                    <ion-avatar class="participant-avatar" slot="start">
+                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                    </ion-avatar>
+                    <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                    <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                  </div>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+        <!--Show Leaders-->
+        <div *ngIf="moment.matrix_number[i][2]">
+          <ion-item lines="none" class="section" color="lightgrey">
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][1] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][9]}}</ion-label>
+            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][1]">{{moment.matrix_string[i][1]}}</ion-label>
+          </ion-item>
+          <ion-grid style="max-height: 20%; overflow: scroll">
+            <ion-row class="participant-row">
+              <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
+                <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                  <div class="participant-centered">
+                    <ion-avatar class="participant-avatar" slot="start">
+                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                    </ion-avatar>
+                    <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                    <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                  </div>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </div>
+      <div class="component" *ngIf="item === 10370"> <!--Plan-->
+        <ion-slides class="program-slides" #plansSlides [options]="{slidesPerView: 3.5, grabCursor: true}">
+          <ion-slide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
+            <ion-card class="program-card" (click)="openProgram($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+              <ion-card-content class="ion-no-padding">
+                <div class="program-photo-container">
+                  <img class="program-photo" [src]="program.assets[0] | background: program._id" onerror="this.src='assets/img/onboarding-4.jpg'" />
+                </div>
+              </ion-card-content>
+              <div class="program-name">{{program.matrix_string[0][0]}}</div>
+            </ion-card>
+          </ion-slide>
+        </ion-slides>
+      </div>
+      <div class="component" *ngIf="item === 30000"> <!--Poll-->
+        <ion-item lines="none">
+          <div class="moment-label"><img class="side-image" src="assets/img/Poll_Gray.png" /></div>
+          <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][0]}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="moment-label ion-text-wrap">{{moment.resource['en-US'].matrix_string[i][1]}}</ion-label>
+        </ion-item>
+        <div class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i]]; index as pollOptionIndex">
+          <div class="optionsContainer">
+            <p class="option ion-text-wrap">{{pollOptionIndex+1}}. {{display.option}}</p>
+          </div>
+          <div class="votesContainer">
+            <p class="votecount">{{moment.resource['en-US'].matrix_string[i][5]}}: {{display.count}}</p>
+          </div>
+          <div class="userContainer">
+            <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+            <ion-button size="small" shape="round" fill='solid' class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="voteOnPoll($event, i, pollOptionIndex)">{{moment.resource['en-US'].matrix_string[i][12]}}</ion-button>
+          </div>
+        </div>
+        <ion-item>
+          <div class="unresolvedPollFooter">
+            <p>{{moment.resource['en-US'].matrix_string[i][4]}}: {{totalVoteCount[moment.resource.matrix_number[2][i]]}}</p>
+            <p>{{moment.resource['en-US'].matrix_string[i][6]}}: {{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          </div>
+        </ion-item>
+      </div>
+      <!--Old Multiple Choice in List View-->
+      <div class="component" *ngIf="item === 40000">
+        <ion-item lines="none">
+          <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
+          <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][0]}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i][1]}}</div>
+        </ion-item>
+        <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i]]; index as interactableOptionIndex" (click)="respondToInteractable($event, i, interactableOptionIndex)">
+            <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.option}}</ion-label>
+          <ion-icon color="button1" *ngIf="!display.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
+          <ion-icon color="button1" *ngIf="display.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+        </ion-item>
+        <ion-list class="results-list" *ngIf="hasOrganizerAccess">
+          <ion-item *ngIf="resource._id">
+            <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+          </ion-item>
+          <div *ngFor="let response of responses">
+            <div *ngFor="let interactable of response.matrix_number">
+              <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i]">
+                <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                  <ion-avatar slot="start">
+                    <img *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                    <img *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                  </ion-avatar>
+                  {{response.user.first_name}} {{response.user.last_name}}
+                  <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionIndex of interactable | slice : 5; index as j">{{moment.matrix_string[i][selectionIndex]}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                </ion-item>
+              </div>
+            </div>
+         </div>
+        </ion-list>
+      </div>
+      <!-- Text Answer in List View -->
+      <div class="component" *ngIf="item === 40010">
+        <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
+          <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
+        </ion-item>
+        <ion-item lines="none" class="ion-margin-vertical">
+          <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
+                        (onContentChanged)="respondToTextArea($event, i)" [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
+                        [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].indexOf(userData.user.role) > -1) ? 42 : 0) + 'px'}" format="object"></quill-editor>
+        </ion-item>
+        <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i]].collaborative">
+          <ion-item *ngIf="resource._id">
+            <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+          </ion-item>
+          <!--<ion-item lines="none">
+            <div class="moment-label"><ion-icon class="side-icon" color="grey" name="help"></ion-icon></div>
+            <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][0]}}</ion-label>
+          </ion-item>-->
+          <div *ngFor="let response of responses">
+            <div *ngFor="let interactable of response.matrix_string; let interactableIndex = index;">
+              <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i].toString()">
+                <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                  <div (click)="seeUserInfo($event, response.user)" class="moreoptions-centered">
+                    <ion-avatar class="moreoptions-avatar">
+                      <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                      <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                    </ion-avatar>
+                    <ion-label class="moreoptions-label ion-text-center ion-text-wrap">{{response.user.first_name}} {{response.user.last_name}}</ion-label>
+                  </div>
+                  <ion-label class="detail ion-text-wrap">{{response.matrix_string[interactableIndex][1]}}</ion-label>
+                </ion-item>
+              </div>
+            </div>
+          </div>
+        </ion-list>
+      </div>
+      <!--Multiple Choice - List of Choices - in List View-->
+      <div class="component" *ngIf="item === 40020 && moment.matrix_number[i].length > 2 && moment.matrix_number[i][2] === 1"> <!--Multiple Choice-->
+        <ion-item lines="none">
+          <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
+          <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i][0]}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i][1]}}</div>
+        </ion-item>
+        <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i, display.value.createdAt)">
+          <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>
+          <ion-icon color="button1" *ngIf="!display.value.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
+          <ion-icon color="button1" *ngIf="display.value.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+        </ion-item>
+        <ion-list class="results-list" *ngIf="hasOrganizerAccess || hasLeaderAccess">
+          <ion-item *ngIf="resource._id">
+            <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+          </ion-item>
+          <div *ngFor="let response of responses">
+            <div *ngFor="let interactable of response.matrix_number">
+              <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i]">
+                <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                  <ion-avatar slot="start">
+                    <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                    <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                  </ion-avatar>
+                  {{response.user.first_name}} {{response.user.last_name}}
+                  <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionCreatedAt of interactable | slice : 5; index as j">{{interactableDisplay[moment.resource.matrix_number[2][i]][selectionCreatedAt.toString()].option}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                </ion-item>
+              </div>
+            </div>
+          </div>
+        </ion-list>
+      </div>
+      <!--Multiple Choice - Picture Tiles - in List View-->
+      <div class="component" *ngIf="item === 40020 && moment.matrix_number[i].length > 2 && !moment.matrix_number[i][2]">
+        <ion-item>
+          <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i][1]}}</div>
+        </ion-item>
+        <ion-grid class="tile-grid">
+          <ion-row class="tile-row">
+            <ion-col class="tile-col" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i]] | keyvalue" class="ion-align-self-center" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+              <ion-card class="tile-card" (click)="respondToInteractable($event, i, display.value.createdAt)">
+                <ion-card-header class="ion-no-padding">
+                  <div class="tile-photo-container">
+                    <img class="tile-photo" [src]="display.value.image | background: display.value.option" />
+                    <!--<ion-img class="tile-photo" *ngIf="!display.value.image" src="assets/img/avatar-default.jpg"></ion-img>-->
+                  </div>
+                </ion-card-header>
+                <ion-icon *ngIf="display.value.selectedByUser" class="tile-option-selected" name="checkmark-circle" color="button2"></ion-icon>
+                <div class="tile-name  ion-text-wrap">{{display.value.option}}</div>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-list class="results-list" *ngIf="hasOrganizerAccess || hasLeaderAccess">
+          <ion-item *ngIf="resource._id">
+            <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+          </ion-item>
+          <div *ngFor="let response of responses">
+            <div *ngFor="let interactable of response.matrix_number">
+              <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i]">
+                <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                  <ion-avatar slot="start">
+                    <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                    <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                  </ion-avatar>
+                  {{response.user.first_name}} {{response.user.last_name}}
+                  <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionCreatedAt of interactable | slice : 5; index as j">{{interactableDisplay[moment.resource.matrix_number[2][i]][selectionCreatedAt.toString()].option}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                </ion-item>
+              </div>
+            </div>
+          </div>
+        </ion-list>
+      </div>
+      <!--Directory-->
+      <div class="component" *ngIf="item === 50000">
+        <!--Swiper-->
+        <div *ngIf="!moment.matrix_number[i][3]">
+          <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy" class="ion-justify-content-center">
+            <p>The Directory is Empty.</p>
+          </ion-row>
+          <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.1, grabCursor: true, updateOnWindowResize: true}">
+            <ion-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
+              <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+                <ion-card-header>
+                  <div class="person-photo-container">
+                    <ion-img class="person-photo" src="assets/img/avatar-default.jpg"></ion-img>
+                  </div>
+                </ion-card-header>
+                <div class="top-pattern"></div>
+                <div class="middle-pattern"></div>
+                <div class="bottom-pattern"></div>
+                <ion-card-content class="person-content ion-no-padding">
+                  <ion-item lines="none" class="person-content-item ion-no-margin">
+                    <div class="person-content-left" style="margin-top: 10px">
+                      <div class="person-name ion-text-md-uppercase" style="height: 18px">
+                        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                      </div>
+                      <div class="person-title">
+                        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+                      </div>
+                    </div>
+                    <div class="person-content-right" [ngClass]="{'content-border': true }">
+                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
+                      <div><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></div>
+                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
+                      <div><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></div>
+                    </div> <!--Short Biography-->
+                  </ion-item>
+                </ion-card-content>
+              </ion-card>
+            </ion-slide>
+            <ion-slide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
+              <ion-card class="person-card" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+                <ion-card-header>
+                  <div class="person-photo-container">
+                    <ion-img class="person-photo" *ngIf="person.avatar" [src]="person.avatar"></ion-img>
+                    <ion-img class="person-photo" *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                  </div>
+                </ion-card-header>
+                <div class="top-pattern"></div>
+                <div class="middle-pattern"></div>
+                <div class="bottom-pattern"></div>
+                <ion-card-content class="person-content ion-no-padding">
+                  <ion-item lines="none" class="person-content-item ion-no-margin">
+                    <div class="person-content-left">
+                      <div class="person-name ion-text-md-uppercase">
+                        {{person.first_name}} {{person.last_name}}
+                      </div>
+                      <div class="person-title" [innerHTML]="person.title"></div>
+                    </div>
+                    <div class="person-content-right" [ngClass]="{'content-border': person.bio }" [innerHTML]="person.bio"></div> <!--Short Biography-->
+                  </ion-item>
+                </ion-card-content>
+              </ion-card>
+            </ion-slide>
+          </ion-slides>
+        </div>
+        <!--List-->
+        <div *ngIf="moment.matrix_number[i][3] === 1">
+          <ion-list>
+            <ion-item class="people-list-container" *ngFor="let person of matchedPeople" (click)="seeUserInfo($event, person)">
+              <ion-thumbnail slot="start">
+                <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
+                <ion-img *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+              </ion-thumbnail>
+              <ion-col class="person-list-container">
+                <div class="person-list ion-text-wrap">
+                  {{person.first_name}} {{person.last_name}}
+                </div>
+                <div class="person-content-list" [innerHTML]="person.user_data_1"></div> <!--Short Biography-->
+                <div class="preference">
+                  <span *ngFor="let preference of person.preferences">
+                    <ion-badge class="preference-badge" *ngFor="let answer of preference.answers">{{answer}}</ion-badge>
+                  </span>
+                </div>
+              </ion-col>
+              <ion-col slot="end" class="note-col">
+                <p class="note ion-text-end">Score: {{person.score}}</p>
+              </ion-col>
+            </ion-item>
+            <ion-item-divider class="ion-text-wrap">
+              Displaying {{matchedPeople.length}} pe<span *ngIf="matchedPeople.length < 2">rson</span><span *ngIf="matchedPeople.length > 1">ople</span>
+            </ion-item-divider>
+          </ion-list>
+          <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+        <!--Map-->
+        <div id="mapCanvas" *ngIf="moment.matrix_number[i][3] === 2"></div>
+        <ion-content *ngIf="moment.matrix_number[i][3] === 2">
+          <ion-list class="result-list">
+            <ion-item *ngFor="let data of mapService.mapData; index as i" lines="none">
+              <p class="index">{{i+1}}.</p>
+              <ion-card class="map-card ion-text-wrap" (click)="mapService.clickList(data)">
+                <ion-item lines="none">
+                  <ion-thumbnail slot="start">
+                    <img [src]="data.images[0] | background: data._id"/>
+                  </ion-thumbnail>
+                  <ion-col class="item-container">
+                    <div class="item-name ion-text-wrap">{{data.name}}</div>
+                    <p class="category">{{data.category}} <span style="font-style: normal" *ngIf="userData.user && userData.user.churches[userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894' && data.churches && data.churches.length && !data.user">({{data.churches[0].name}})</span></p>
+                    <p [hidden]="!data.location">{{" "}}{{data.location?.city}}<span [hidden]="(!data.location?.city)||(!data.location?.state)">{{", "}}</span>{{data.location?.state}}<span [hidden]="(!data.location?.city)&&(!data.location?.state)">{{" "}}</span></p>
+                  </ion-col>
+                </ion-item>
+              </ion-card>
+            </ion-item>
+          </ion-list>
+          <ion-infinite-scroll position="bottom" (ionInfinite)="loadMoreSearchResults($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ion-content>
+      </div>
+    </div>
+  </ion-list>
+  <ion-slides pager [options]="slideOpts" *ngIf="loadCompleted && mode === 'slider'">
+    <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
+      <ion-grid class="slide-grid">
+        <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
+        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+          <ion-col [ngClass]="{'slide-col': (item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+            <ion-item color="lightgrey" *ngIf="item === 10050" lines="none"> <!--section header-->
+              <ion-label color="darkgrey" class="ion-text-uppercase">{{moment.resource['en-US'].matrix_string[i][1]}}</ion-label>
+            </ion-item>
+            <ion-item-group *ngIf="item === 10100"> <!--location-->
+              <ion-item lines="none">
+                <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="navigate"></ion-icon></div>
+                <ion-label class="label-title">Location</ion-label>
+                <ion-label class="detail ion-text-wrap">{{moment.location.location}} </ion-label>
+              </ion-item>
+              <a [href]="addressURL" target="_blank" *ngIf="mapURL.length">
+                <div class="map-container">
+                  <img [src]="mapURL" />
+                </div>
+              </a>
+            </ion-item-group>
+            <ion-item-group *ngIf="item === 20000"> <!--Visibility-->
+              <ion-item *ngIf="moment.array_community && moment.array_community.length" lines="none">
+                <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="home"></ion-icon></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]}}</ion-label>
+                <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let community of moment.array_community; index as j"><span *ngIf="j > 0">, </span>{{community.name}}</span></ion-label>
+              </ion-item>
+              <ion-item *ngIf="moment.categories && moment.categories.length" lines="none">
+                <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="bookmark"></ion-icon></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][6]}}</ion-label>
+                <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as j"><span *ngIf="j > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
+              </ion-item>
+            </ion-item-group>
+            <!--Tab (20020) is not available in slideshow view-->
+            <ion-item-group *ngIf="item === 10200"> <!--start/end date and time-->
+              <ion-item *ngIf="moment.calendar">
+                <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
+                <ion-label class="label-title">Start Time</ion-label>
+                <ion-label class="detail ion-text-wrap">{{moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
+              </ion-item>
+              <ion-item *ngIf="moment.calendar">
+                <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
+                <ion-label class="label-title">End Time</ion-label>
+                <ion-label class="detail ion-text-wrap">{{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
+              </ion-item>
+            </ion-item-group>
+            <div class="component" *ngIf="item === 10370"> <!--Plan-->
+              <ion-slides class="program-slides" #plansSlides [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+                <ion-slide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
+                  <ion-card class="program-card" (click)="openProgram($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="program.assets[0] | background: program._id" onerror="this.src='assets/img/avatar-default.jpg'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">{{program.matrix_string[0][0]}}</div>
+                  </ion-card>
+                </ion-slide>
+              </ion-slides>
+            </div>
+            <!--Photo Viewer in Slider View-->
+            <div *ngIf="(item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010)">
+              <div [ngStyle]="{'width': 100/(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) - (((moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) === 1) ? 30 : 0) + '%'}" class="photo-split-view" *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
+                <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
+                  <ion-img [src]="url"></ion-img>
+                </ion-thumbnail>
+                <div class="icon-container">
+                  <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                </div>
+                <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+                <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+              </div>
+            </div>
+            <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
+              <div class="textarea center ion-text-wrap ion-justify-content-center" [innerHTML]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br"></div>
+            </ion-item>
+            <!--Video Player-->
+            <ion-item *ngIf="item === 10320 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].length" lines="none">
+              <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0], 'type': 'video/' + (moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) > -1"  (click)="$event.stopPropagation()"></div>
+            </ion-item>
+            <!--Youtube Player-->
+            <ion-item *ngIf="item === 10330 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].length" lines="none">
+              <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0], 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
+            </ion-item>
+            <!--Video Conference-->
+            <ion-item *ngIf="item === 10600" lines="none">
+              <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="videocam"></ion-icon></div>
+              <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
+            </ion-item>
+            <ion-item *ngIf="item === 10600" lines="none">
+              <ion-button (click)="joinVideoConference()" style="margin: 0 auto">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]}} {{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-button> <!--Join Conference-->
+            </ion-item>
+            <div class="component" *ngIf="item === 10500"> <!--People-->
+              <!--<ion-item lines="none">
+                <div class="moment-label" slot="start"> <ion-icon class="side-icon" color="grey" name="people"></ion-icon></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+              </ion-item>-->
+              <ion-toolbar class="filter" *ngIf="(this.moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] + this.moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1] + this.moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]) > 1">
+                <ion-segment [(ngModel)]="participantsView">
+                  <ion-segment-button *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" value="participants">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]}}</ion-segment-button>
+                  <ion-segment-button *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1] && moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]" value="leaders">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][9]}}</ion-segment-button>
+                  <ion-segment-button *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]" value="leaders">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-segment-button>
+                  <ion-segment-button *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]" value="organizers">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][7]}}</ion-segment-button>
+                </ion-segment>
+              </ion-toolbar>
+              <!--Show Participants-->
+              <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && participantsView === 'participants'">
+                <ion-item lines="none" class="section" color="lightgrey">
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3] && moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]}}</ion-label>
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3]">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3]}}</ion-label>
+                </ion-item>
+                <ion-grid style="max-height: 20%; overflow: scroll">
+                  <ion-row class="participant-row">
+                    <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
+                      <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                        <div class="participant-centered">
+                          <ion-avatar class="participant-avatar" slot="start">
+                            <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                            <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                          </ion-avatar>
+                          <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                          <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                        </div>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </div>
+              <!--Show Organizers-->
+              <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1] && participantsView === 'organizers'">
+                <ion-item lines="none" class="section" color="lightgrey">
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5] && moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][7]}}</ion-label>
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]}}</ion-label>
+                </ion-item>
+                <ion-grid style="max-height: 20%; overflow: scroll">
+                  <ion-row class="participant-row">
+                    <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
+                      <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                        <div class="participant-centered">
+                          <ion-avatar class="participant-avatar" slot="start">
+                            <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                            <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                          </ion-avatar>
+                          <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                          <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                        </div>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </div>
+              <!--Show Leaders-->
+              <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] && participantsView === 'leaders'">
+                <ion-item lines="none" class="section" color="lightgrey">
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1] && moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][9]}}</ion-label>
+                  <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+                </ion-item>
+                <ion-grid style="max-height: 20%; overflow: scroll">
+                  <ion-row class="participant-row">
+                    <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
+                      <ion-item lines="none" (click)="seeUserInfo($event, user)">
+                        <div class="participant-centered">
+                          <ion-avatar class="participant-avatar" slot="start">
+                            <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                            <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                          </ion-avatar>
+                          <!--<ion-icon class="moreParticipantOptions-joined" color="tertiary" name="create"></ion-icon>-->
+                          <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                        </div>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </div>
+            <div class="component" *ngIf="item === 30000"> <!--Poll-->
+              <ion-item lines="none">
+                <div class="moment-label"><img class="side-image" src="assets/img/Poll_Gray.png" /></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label class="ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+              </ion-item>
+              <div class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as pollOptionIndex">
+                <div class="optionsContainer">
+                  <p class="option ion-text-wrap">{{pollOptionIndex+1}}. {{display.option}}</p>
+                </div>
+                <div class="votesContainer">
+                  <p class="votecount">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]}}: {{display.count}}</p>
+                </div>
+                <div class="userContainer">
+                  <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+                  <ion-button size="small" shape="round" fill='solid' class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="voteOnPoll($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, pollOptionIndex)">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][12]}}</ion-button>
+                </div>
+              </div>
+              <ion-item>
+                <div class="unresolvedPollFooter">
+                  <p>{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]}}: {{totalVoteCount[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]}}</p>
+                  <p>{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][6]}}: {{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+                </div>
+              </ion-item>
+            </div>
+            <div class="component" *ngIf="item === 40010"> <!--text answer-->
+              <ion-item lines="none" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]">
+                <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
+              </ion-item>
+              <ion-item lines="none">
+                <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])"
+                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" placeholder="Your Answer" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" [format]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].format"></quill-editor>
+              </ion-item>
+              <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].collaborative">
+                <ion-item *ngIf="resource._id">
+                  <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+                </ion-item>
+                <div *ngFor="let response of responses">
+                  <div *ngFor="let interactable of response.matrix_string; let interactableIndex = index;">
+                    <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]">
+                      <ion-item class="ion-margin-horizontal">
+                        <div (click)="seeUserInfo($event, response.user)" class="moreoptions-centered">
+                          <ion-avatar class="moreoptions-avatar">
+                            <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                            <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                          </ion-avatar>
+                          <ion-label class="moreoptions-label ion-text-center">{{response.user.first_name}} {{response.user.last_name}}</ion-label>
+                        </div>
+                        <ion-label class="detail ion-text-wrap" slot="end">{{response.matrix_string[interactableIndex][1]}}</ion-label>
+                      </ion-item>
+                    </div>
+                  </div>
+                </div>
+              </ion-list>
+            </div>
+            <div *ngIf="item === 10210"> <!--To-Dos and Goals-->
+              <!--Overall Progress-->
+              <ion-card style="background: var(--ion-color-lightgrey)" mode="md">
+                <ion-card-content class="goal-content overall ion-no-padding">
+                  <ion-badge color="grey" class="favorite-goal-type">Overall Progress</ion-badge>
+                  <div class="progress">
+                    <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
+                  </div>
+                  <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container" >
+                    <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="progressView = (progressView === section ? null : section)" >
+                      <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                        {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                      </div>
+                      <ion-button slot="end" fill="clear">
+                        <ion-icon [name]="progressView === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                      </ion-button>
+                    </ion-item>
+                    <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                      <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && progressView === section">
+                        <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                          <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                          <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                        </ion-button>
+                        <div class="calendar-item-content" (click)="openContent($event, calendarItem)">
+                          <ion-label>{{calendarItem.title}}</ion-label>
+                          <ion-note>{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+                        </div>
+                        <div class="calendar-item-tag">
+                        </div>
+                      </ion-item>
+                    </div>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+              <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
+                <!--Favorite Goals-->
+                <ion-card mode="md" class="ion-no-padding">
+                  <ion-card-content class="goal-content favorite ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+                    <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) ? moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
+                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                      <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none'), 'font-size': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2) ? moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) ? moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
+                    </ion-item>
+                    <div class="progress">
+                      <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
+                    </div>
+                    <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                      <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+                    </ion-buttons>
+                  </ion-card-content>
+                </ion-card>
+                <!--Goals tagged under the Favorite Goal-->
+                <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
+                  <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+                    <ion-card-content class="ion-no-padding goal-content" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+                      <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
+                      <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                        <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+                      </ion-item>
+                      <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                        <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+                      </ion-buttons>
+                      <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
+                        <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
+                          <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                            {{section}}
+                            <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                          </div>
+                          <ion-button slot="end" fill="clear">
+                            <ion-icon [name]="goal[2] === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                          </ion-button>
+                        </ion-item>
+                        <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                          <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
+                            <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                              <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                              <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                            </ion-button>
+                            <div class="calendar-item-content" (click)="openContent($event, calendarItem)">
+                              <ion-label>{{calendarItem.title}}</ion-label>
+                              <ion-note>{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+                            </div>
+                            <div class="calendar-item-tag">
+                            </div>
+                          </ion-item>
+                        </div>
+                      </div>
+                    </ion-card-content>
+                  </ion-card>
+                </div>
+              </div>
+              <!--Goals with no valid Favorite Goal Tags-->
+              <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy" >
+                <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+                  <ion-card-content class="goal-content ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+                    <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
+                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                      <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="3" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+                    </ion-item>
+                    <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                      <ion-button><ion-icon name="ios-more" color="darkgrey"></ion-icon></ion-button>
+                    </ion-buttons>
+                    <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
+                      <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
+                        <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                          {{section}}
+                          <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                        </div>
+                        <ion-button slot="end" fill="clear">
+                          <ion-icon [name]="goal[2] === section ? 'ios-arrow-up' : 'ios-arrow-down'" color="darkgrey"></ion-icon>
+                        </ion-button>
+                      </ion-item>
+                      <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                        <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
+                          <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                            <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                            <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="ios-checkmark-circle"></ion-icon>
+                          </ion-button>
+                          <div class="calendar-item-content" (click)="openContent($event, calendarItem)">
+                            <ion-label>{{calendarItem.title}}</ion-label>
+                            <ion-note>{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+                          </div>
+                          <div class="calendar-item-tag">
+                          </div>
+                        </ion-item>
+                      </div>
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+            </div>
+            <div class="component" *ngIf="item === 50000"> <!--Directory-->
+              <ion-item lines="none">
+                <div class="moment-label"><ion-icon class="side-icon" color="grey" name="contacts"></ion-icon></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+              </ion-item>
+              <!--<ion-toolbar class="filter">
+                <ion-segment [value]="currentView" (ionChange)="changeView($event)">
+                  <ion-segment-button value="list">People</ion-segment-button>
+                  <ion-segment-button value="nearby">Nearby</ion-segment-button>
+                </ion-segment>
+              </ion-toolbar>-->
+              <div *ngIf="!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3] || moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3] === 1">
+                <ion-list>
+                  <!--List-->
+                  <ion-item class="people-list-container" *ngFor="let person of matchedPeople" (click)="seeUserInfo($event, person)">
+                    <ion-thumbnail slot="start">
+                      <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
+                      <ion-img *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                    </ion-thumbnail>
+                    <ion-col class="person-list-container">
+                      <div class="person-list ion-text-wrap ion-text-md-uppercase">
+                        {{person.first_name}} {{person.last_name}}
+                      </div>
+                      <div class="person-content-list" [innerHTML]="person.user_data_1"></div> <!--Short Biography-->
+                      <div class="preference">
+                      <span *ngFor="let preference of person.preferences">
+                        <ion-badge class="preference-badge" *ngFor="let answer of preference.answers">{{answer}}</ion-badge>
+                      </span>
+                      </div>
+                    </ion-col>
+                    <ion-col slot="end" class="note-col">
+                      <p class="note ion-text-end">Score: {{person.score}}</p>
+                    </ion-col>
+                  </ion-item>
+                  <ion-item-divider class="ion-text-wrap">
+                    Displaying {{matchedPeople.length}} pe<span *ngIf="matchedPeople.length < 2">rson</span><span *ngIf="matchedPeople.length > 1">ople</span>
+                  </ion-item-divider>
+                </ion-list>
+                <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">
+                  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+              </div>
+              <!--Map-->
+              <div id="mapCanvas" *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3] === 2"></div>
+              <ion-content *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][3] === 2">
+                <ion-list class="result-list">
+                  <ion-item *ngFor="let data of mapService.mapData; index as i" lines="none">
+                    <p class="index">{{i+1}}.</p>
+                    <ion-card class="map-card ion-text-wrap" (click)="mapService.clickList(data)">
+                      <ion-item lines="none">
+                        <ion-thumbnail slot="start">
+                          <img [src]="data.images[0] | background: data._id"/>
+                        </ion-thumbnail>
+                        <ion-col class="item-container">
+                          <div class="item-name ion-text-wrap">{{data.name}}</div>
+                          <p class="category">{{data.category}} <span style="font-style: normal" *ngIf="userData.user && userData.user.churches[userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894' && data.churches && data.churches.length && !data.user">({{data.churches[0].name}})</span></p>
+                          <p [hidden]="!data.location">{{" "}}{{data.location?.city}}<span [hidden]="(!data.location?.city)||(!data.location?.state)">{{", "}}</span>{{data.location?.state}}<span [hidden]="(!data.location?.city)&&(!data.location?.state)">{{" "}}</span></p>
+                        </ion-col>
+                      </ion-item>
+                    </ion-card>
+                  </ion-item>
+                </ion-list>
+                <ion-infinite-scroll position="bottom" (ionInfinite)="loadMoreSearchResults($event)">
+                  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+              </ion-content>
+              <ion-spinner name="dots" *ngIf="ionSpinner"></ion-spinner>
+            </div>
+            <!--Old Multiple Choice-->
+            <div class="component" *ngIf="item === 40000">
+              <ion-item lines="none">
+                <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
+                <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
+              </ion-item>
+              <ion-item>
+                <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
+              </ion-item>
+              <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, interactableOptionIndex)">
+                <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.option}}</ion-label>
+                <ion-icon color="button1" *ngIf="!display.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
+                <ion-icon color="button1" *ngIf="display.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+              </ion-item>
+              <ion-list class="results-list" *ngIf="hasOrganizerAccess">
+                <ion-item *ngIf="resource._id">
+                  <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+                </ion-item>
+                <div *ngFor="let response of responses">
+                  <div *ngFor="let interactable of response.matrix_number">
+                    <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]">
+                      <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                        <ion-avatar slot="start">
+                          <ion-img *ngIf="response.user.avatar" [src]="response.user.avatar"></ion-img>
+                          <ion-img *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                        </ion-avatar>
+                        {{response.user.first_name}} {{response.user.last_name}}
+                        <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionIndex of interactable | slice : 5; index as j">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][selectionIndex]}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                      </ion-item>
+                    </div>
+                  </div>
+                </div>
+              </ion-list>
+            </div>
+            <!--Multiple Choice - List of Choices-->
+            <div class="component" *ngIf="item === 40020 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] === 1"> <!--Multiple Choice-->
+              <ion-item lines="none">
+                <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
+                <div class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
+              </ion-item>
+              <ion-item>
+                <ion-label class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+              </ion-item>
+              <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
+                <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>
+                <ion-icon color="button1" *ngIf="!display.value.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
+                <ion-icon color="button1" *ngIf="display.value.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+              </ion-item>
+              <ion-list class="results-list" *ngIf="hasOrganizerAccess">
+                <ion-item *ngIf="resource._id">
+                  <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+                </ion-item>
+                <div *ngFor="let response of responses">
+                  <div *ngFor="let interactable of response.matrix_number">
+                    <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]">
+                      <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                        <ion-avatar slot="start">
+                          <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                          <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                        </ion-avatar>
+                        {{response.user.first_name}} {{response.user.last_name}}
+                        <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionCreatedAt of interactable | slice : 5; index as j">{{interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][selectionCreatedAt.toString()].option}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                      </ion-item>
+                    </div>
+                  </div>
+                </div>
+              </ion-list>
+            </div>
+            <!--Multiple Choice - Picture Tiles-->
+            <div class="component" *ngIf="item === 40020  && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && !moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1]"> <!--Tile Choice with Photos-->
+              <ion-item>
+                <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
+              </ion-item>
+              <ion-grid class="tile-grid">
+                <ion-row class="tile-row">
+                  <ion-col class="tile-col" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue" class="ion-align-self-center" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+                    <ion-card class="tile-card" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
+                      <ion-card-header class="ion-no-padding">
+                        <div class="tile-photo-container">
+                          <ion-img class="tile-photo" [src]="display.value.image | background: display.value.option"></ion-img>
+                        </div>
+                      </ion-card-header>
+                      <ion-icon *ngIf="display.value.selectedByUser" class="tile-option-selected" name="checkmark-circle" color="button2"></ion-icon>
+                      <div class="tile-name ion-text-wrap">{{display.value.option}}</div>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ion-list class="results-list" *ngIf="hasOrganizerAccess">
+                <ion-item *ngIf="resource._id">
+                  <ion-label>{{resource['en-US'].value[25]}}:</ion-label>
+                </ion-item>
+                <div *ngFor="let response of responses">
+                  <div *ngFor="let interactable of response.matrix_number">
+                    <div *ngIf="interactable[0] === moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]">
+                      <ion-item (click)="seeUserInfo($event, response.user)" class="ion-margin-horizontal">
+                        <ion-avatar slot="start">
+                          <img class="response-user-img" *ngIf="response.user.avatar" [src]="response.user.avatar"/>
+                          <img class="response-user-img" *ngIf="!response.user.avatar" src="assets/img/avatar-default.jpg"/>
+                        </ion-avatar>
+                        {{response.user.first_name}} {{response.user.last_name}}
+                        <ion-label class="detail ion-text-wrap" slot="end"><span *ngFor="let selectionCreatedAt of interactable | slice : 5; index as j">{{interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][selectionCreatedAt.toString()].option}}<span *ngIf="j < interactable?.length - 6">{{", "}}</span></span></ion-label>
+                      </ion-item>
+                    </div>
+                  </div>
+                </div>
+              </ion-list>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-slide>
+  </ion-slides>
+  <div *ngIf="categoryIds.indexOf('5c915324e172e4e64590e346') > -1 || categoryIds.indexOf('5c915475e172e4e64590e348') > -1">
+    <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Communities/Programs Section Header-->
+      <ion-label color="darkgrey" class="section-label">Featured Communities</ion-label>
+    </ion-item>
+    <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+      <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
+        <ion-card class="program-card" (click)="openProgram($event, program)">
+          <ion-card-header class="ion-no-padding">
+            <div class="program-photo-container">
+              <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
+            </div>
+          </ion-card-header>
+          <div class="program-name">{{program.matrix_string[0][0]}}</div>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </div>
+  <!--Space to create cushion for the Fab buttons-->
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || moment.resource.matrix_number[0].includes(12000))"></div>
+</ion-content>
+<ion-footer lines="none">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || moment.resource.matrix_number[0].includes(12000))">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <!--create To-Do-->
+      <ion-fab-button (click)="createCalendarItem($event, (moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 3) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][3] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][17])" color="primary" *ngIf="customSchedule && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">{{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-fab-button>
+      <!--create Goal-->
+      <ion-fab-button (click)="promptNewGoalName($event)" color="primary" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8] && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">Goal</ion-fab-button>
+      <!--create Note-->
+      <ion-fab-button (click)="createCalendarItem($event, '5e4b39cd76ffc96ae6aba323')" color="primary" *ngIf="moment.resource.matrix_number[0].includes(12000) && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(12000)])">Note</ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+  <ion-toolbar *ngIf="calendarItem">
+    <ion-button expand="block" shape="round" (click)="deleteCalendarItem($event)" color="primary">Delete</ion-button>
+  </ion-toolbar>
+</ion-footer>

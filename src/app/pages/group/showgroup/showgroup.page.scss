@@ -1,0 +1,41 @@
+app-showgroup {
+
+  .default-background {
+    display: table;
+    min-height: 150px;
+    background-size: cover;
+    width: 100%;
+  }
+
+  .opaque {
+    opacity: 0.6;
+  }
+
+  .default-title {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 2.0em;
+    color: #fff;
+    -webkit-text-stroke: thin;
+/*    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;*/
+  }
+
+  .section-title {
+    color: white;
+    --background: var(--ion-color-grey);
+    text-align: left;
+    font-size: large;
+  }
+
+  .avatar {
+    width: 40px !important;
+    height : 40px !important;
+    object-fit: cover;
+  }
+}
+

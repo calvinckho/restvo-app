@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{group.name}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="default-background" [ngStyle]="{'background-image': 'url(' + (group.background | background: group._id) + ')'}"><!-- [ngClass]="{ 'opaque' : group.hasOwnProperty('background')}">-->
+    <div class="default-title" *ngIf="group.name">
+      {{group.name}}
+    </div>
+  </div>
+  <!--group details-->
+  <div class="ion-padding">
+    <p *ngIf="(group.beginAt && group.endAt)"><ion-icon name="calendar"></ion-icon>&nbsp;{{group.beginAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}} - {{group.endAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+    <div *ngIf="group.churchId && group.meeting_location">
+      <p [hidden]="!group.meeting_location.location"><ion-icon name="pin"></ion-icon>&nbsp;{{group.meeting_location.location}}</p>
+      <p><ion-icon name="pin"></ion-icon>&nbsp;{{group.meeting_location.street}}<span [hidden]="(group.meeting_location.street.length==0)">{{", "}}</span>{{group.meeting_location.city}}<span [hidden]="(group.meeting_location.city.length==0)||(group.meeting_location.state.length==0)">{{", "}}</span>{{group.meeting_location.state}}<span [hidden]="(group.meeting_location.city.length==0)&&(group.meeting_location.state.length==0)">&nbsp;</span>{{group.meeting_location.country}}</p>
+    </div>
+    <p *ngIf="group.details" [innerHTML]="group.details"></p>
+  </div>
+  <ion-list>
+    <ion-item lines="none" color="grey">Leaders</ion-item>
+    <ion-item *ngFor="let leader of group.leaders" (click)="seeUserInfo($event, leader)">
+      <ion-avatar slot="start">
+        <img *ngIf="leader.avatar" [src]="leader.avatar"/>
+        <img *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"/>
+      </ion-avatar>
+      {{leader.first_name}} {{leader.last_name}}
+    </ion-item>
+  </ion-list>
+
+  <ion-row *ngIf="joinGroupTag"><ion-col><ion-button [hidden]="!joinGroupTag" expand="full" shape="round" color="primary" fill="solid" (click)="joinGroup()">Join Group</ion-button></ion-col></ion-row>
+</ion-content>

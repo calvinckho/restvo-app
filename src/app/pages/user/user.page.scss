@@ -1,0 +1,78 @@
+app-user {
+
+  ion-button {
+    ion-badge {
+      position: absolute;
+      top: 0.1rem;
+      right: 0.1rem;
+
+      & ~ ion-icon {
+        outline-color: whitesmoke;
+      }
+    }
+  }
+
+  ion-grid {
+    height: 100%;
+  }
+
+  ion-row {
+    height: 100%;
+  }
+
+  ion-col {
+    height: 100%;
+  }
+
+  ion-router-outlet {
+    border-left: 1px solid var(--ion-color-lightgrey);
+  }
+
+  ion-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bold-font {
+    font-weight: bold;
+  }
+
+  .image-cropper {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 5% auto;
+  }
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .profile-pic {
+    width: 100%;
+    margin: auto;
+    display: block;
+  }
+
+  .calling_code {
+    float: left;
+    max-width: 20%;
+    padding: 8px;
+  }
+
+  .phone_number {
+    position: absolute;
+    left: 20%;
+    bottom: 2px;
+    max-width: 50%;
+  }
+
+  .verify_button {
+    right: 5px;
+    margin-top: 12px;
+  }
+}
+

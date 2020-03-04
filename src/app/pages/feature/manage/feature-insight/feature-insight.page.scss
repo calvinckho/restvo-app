@@ -1,0 +1,42 @@
+app-feature-insight {
+
+  .column-label {
+    text-align: center;
+  }
+
+  .column {
+    width: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .insight-person-avatar {
+      margin: 0 auto;
+    }
+
+    .insight-person-label {
+      margin: 5px auto 0 auto;
+      color: grey;
+      font-size: 12px;
+    }
+  }
+
+  .program {
+    width: 12%;
+    text-align: center;
+  }
+
+  .progress {
+    text-align: center;
+    width: 20%; // 32%
+  }
+
+  .last-date {
+    //color: var(--ion-color-dark);
+    text-align: center;
+    width: 18%;
+  }
+
+  .small-font {
+    font-size: 12px;
+  }
+}

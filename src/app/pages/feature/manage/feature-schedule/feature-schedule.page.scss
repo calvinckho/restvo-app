@@ -1,0 +1,144 @@
+app-feature-schedule {
+
+  ion-item ion-datetime{
+    position:relative !important;
+  }
+
+  .moment-label {
+    width: 25px;
+    height: 25px;
+    margin-right: 20px;
+  }
+
+  .moment-input {
+    width: 90%;
+    float: left;
+    opacity: 0.5;
+    padding: 5px 0;
+  }
+
+  .side-image {
+    margin: auto;
+  }
+
+  .monthview {
+    width: 85%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding-bottom: 10px;
+    --color: var(--ion-color-dark);
+  }
+
+  .month-title-container {
+    width: 100%;
+  }
+
+  .month-title {
+    width: calc((100% / 7) * 5);
+    text-align: center;
+    display: inline-block;
+  }
+
+  .calendar-arrow {
+    width: calc(100% / 7);
+    position: relative;
+    display: inline-block;
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+  }
+
+  .content-count {
+    padding-left: 2%;
+    width: 8%;
+  }
+
+  .content-date {
+    font-size: 12px;
+    padding-left: 2%;
+    margin-right: 8px;
+    width: 20%;
+  }
+
+  // Order
+
+  .program-row {
+    max-height: 30%;
+    overflow: scroll;
+  }
+
+  .program-card {
+    width: auto;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .program-photo-container {
+    height: 80px;
+    overflow: hidden;
+  }
+
+  .program-photo {
+    object-fit: cover;
+    cursor: pointer;
+    //opacity: 50%;
+    height: 100%;
+    //width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .program-type {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .program-name {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 15;
+  }
+
+  .remove-moment {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+
+  .dark {
+    color: var(--ion-color-darkgrey);
+  }
+
+  .light {
+    color: white;
+  }
+
+  .full-height {
+    height: 100%;
+  }
+
+  .grid-row {
+    //align-items: center !important;
+    overflow: scroll;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  .info-moment {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+}

@@ -1,0 +1,165 @@
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Events, ModalController, Platform} from "@ionic/angular";
+import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Auth} from "../../../../services/auth.service";
+import {Chat} from "../../../../services/chat.service";
+import {UserData} from "../../../../services/user.service";
+import {Moment} from "../../../../services/moment.service";
+import {Resource} from "../../../../services/resource.service";
+import {ManagefeaturePage} from "../managefeature.page";
+
+@Component({
+  selector: 'app-feature-childactivities',
+  templateUrl: './feature-childactivities.page.html',
+  styleUrls: ['./feature-childactivities.page.scss'],
+  encapsulation: ViewEncapsulation.None
+})
+export class FeatureChildActivitiesPage implements OnInit {
+
+  @Input() modalPage: any;
+  @Input() moment: any; // the moment object
+  @Input() categoryId: any; // the category ID
+  momentId: any;
+  categoryLabel = '';
+  ionSpinner = false;
+  samples: any;
+  searchKeyword = '';
+  refreshNeeded = false;
+
+  constructor(
+      public route: ActivatedRoute,
+      public router: Router,
+      public events: Events,
+      public platform: Platform,
+      public authService: Auth,
+      public chatService: Chat,
+      public userData: UserData,
+      public momentService: Moment,
+      public resourceService: Resource,
+      public modalCtrl: ModalController
+  ) { }
+
+  async ngOnInit() {
+    this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+    await this.resourceService.loadSystemResources();
+    this.setupChildActivitiesPage();
+  }
+
+  refreshUserStatusHandler = () => {
+    this.setupChildActivitiesPage();
+  };
+
+  async setupChildActivitiesPage() {
+    if (this.userData && this.userData.user) {
+      if (this.moment) {
+        this.momentId = this.moment._id;
+      } else {
+        this.momentId = this.route.snapshot.paramMap.get('id'); // the moment object
+        this.moment = await this.momentService.load(this.momentId);
+        this.moment.categories = this.moment.categories.map((c) => c._id);
+      }
+      this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
+      this.categoryLabel = this.resourceService.categories.find((c) => c._id === this.categoryId)['en-US'].value[0] + 's';
+      this.loadChildActivities();
+    }
+  }
+
+  // load Program child activities
+  async loadChildActivities() {
+      this.samples = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
+  }
+
+  async openChildActivity(moment) {
+    if (this.modalPage || this.platform.width() < 768) {
+      // for community or program, manage mode
+      if ((moment.categories.map((c) => c._id).includes('5c915324e172e4e64590e346') || moment.categories.map((c) => c._id).includes('5c915475e172e4e64590e348'))) {
+        this.events.publish('manageMoment', { moment: moment, modalPage: true });
+      } else { // for relationship and other Activities, open Moment
+        this.events.publish('openMoment', { moment: moment, modalPage: true });
+      }
+    } else {
+      if (this.router.url.includes('app/manage')) { // if opened from Manage mode
+        this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
+      } else { // such case does not exist yet. User should always open from the User -> About Me
+        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+      }
+    }
+  }
+
+  async chooseChildActivity() {
+      let componentProps: any;
+      componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, modalPage: true };
+      if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
+          componentProps.programId = this.momentId;
+      } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
+          componentProps.parent_programId = this.momentId;
+          componentProps.maxMomentCount = 1;
+          if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
+            componentProps.allowCreate = false;
+          }
+      } else { // pick other activities
+          componentProps.parent_programId = this.momentId;
+      }
+    const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
+    await modal.present();
+    const {data: moments} = await modal.onDidDismiss();
+    if (moments && moments.length) {
+      // if choosing Plans as child activities
+      if (this.categoryId === '5c915476e172e4e64590e349') {
+        // only if schedule is enabled (e.g. relationships)
+        if (this.moment.resource.matrix_number[0].includes(10210)) {
+          await this.momentService.adoptPlan({
+            operation: 'adopt plan',
+            planIds: moments.map((moment) => moment._id),
+            parent_programId: this.momentId,
+          });
+        }
+      } else {
+        for (const moment of moments) {
+          // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+          moment.calendar = { // reset the calendar
+            title: moment.matrix_string[0][0],
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+              firstReminderMinutes: 0,
+              secondReminderMinutes: 0,
+              reminders: []
+            }
+          };
+          moment.parent_programs = [this.momentId];
+        }
+        const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
+        for (const clonedMoment of clonedMoments) {
+          const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+          if (index > -1) {
+            clonedMoment.resource = moments[index].resource; // clone the populated resource
+          }
+        }
+        this.samples.unshift(...clonedMoments);
+      }
+    }
+  }
+
+  async openActivity(event, activity) {
+    event.stopPropagation();
+    this.events.publish('openMoment', { moment: activity, modalPage: true });
+  }
+
+  async removeActivity(event, activity) {
+    event.stopPropagation();
+    this.momentService.adoptPlan({
+      operation: 'un-adopt plan',
+      planIds: [activity._id],
+      parent_programId: this.momentId
+    });
+  }
+
+  closeModal() {
+    this.modalCtrl.dismiss();
+  }
+
+}

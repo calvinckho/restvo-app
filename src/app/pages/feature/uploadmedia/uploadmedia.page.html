@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Upload Media</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="finish()">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-toolbar class="filter">
+    <ion-segment [(ngModel)]="mediaType">
+      <ion-segment-button value="photo">Photo</ion-segment-button>
+      <ion-segment-button value="video">Video</ion-segment-button>
+      <ion-segment-button value="file">File</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-item *ngIf="mediaType === 'photo'">
+    <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></label>
+    <div *ngIf="platform.is('cordova')" class="moment-input" (click)="selectPhotoFromDeviceAndUpload($event)">Choose from Photo Album</div>
+    <input *ngIf="!platform.is('cordova')" type="file" class="moment-input" name="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
+  </ion-item>
+  <div *ngIf="mediaType === 'photo'">
+    <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords to search Pixabay" debounce="500"></ion-searchbar>
+    <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
+      <ion-row>
+        <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">
+          <ion-thumbnail class="stock-preview" (click)="selectStockPhoto(photo)">
+            <ion-img [src]="photo.previewURL"></ion-img>
+          </ion-thumbnail>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <ion-item *ngIf="mediaType === 'video'">
+    <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></label>
+    <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
+  </ion-item>
+  <ion-item *ngIf="mediaType === 'video'">
+    <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></div>
+    <div class="moment-input" (click)="promptVideoUrl('youtube')">
+      <span>Select Youtube</span>
+    </div>
+  </ion-item>
+  <ion-item *ngIf="mediaType === 'file'">
+    <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
+    <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
+  </ion-item>
+  <!--Video-->
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="selected-grid">
+      <ion-row>
+        <ion-col *ngFor="let url of urls; index as i" size-xs="4" size-sm="3" size-md="2" size-lg="2" class="ion-margin-horizontal">
+          <div class="selected-item">
+            <ion-thumbnail class="thumbnail-item" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
+              <ion-img [src]="url"></ion-img>
+            </ion-thumbnail>
+            <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+            <div *ngIf="url.toLowerCase().includes('youtu')" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+
+            <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <ion-button *ngIf="!url.toLowerCase().includes('youtu')" class="remove-media ion-no-padding ion-no-margin" (click)="removeMedia(i)" fill="clear" size="small">
+              <ion-icon name="close" color="secondary"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="url.toLowerCase().includes('youtu')" class="remove-video ion-no-padding ion-no-margin" (click)="removeMedia(i)" fill="clear" size="small">
+              <ion-icon name="close" color="secondary"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

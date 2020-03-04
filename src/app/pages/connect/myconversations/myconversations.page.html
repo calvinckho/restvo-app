@@ -1,0 +1,230 @@
+<ion-header>
+  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
+    <ion-item-sliding side="end">
+      <ion-item lines="none"  color="lightgrey">
+        <ion-avatar slot="start">
+          <ion-img src="assets/img/icon.png"></ion-img>
+        </ion-avatar>
+        <div class="details" class="ion-text-wrap">
+          <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
+          <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
+        </div>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+        <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
+          Dismiss
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
+      <ion-button fill="clear" color="grey">
+        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-menu-toggle>
+    <ion-title>Chat</ion-title>
+    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">
+      <ion-avatar slot="start">
+        <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
+        <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        {{userData.user.first_name}} {{userData.user.last_name}}
+      </ion-label>
+    </ion-item>
+    <ion-buttons slot="end" *ngIf="!userData.user">
+      <ion-button routerLink="/register" color="grey">
+        Sign In
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="createNewChat()" [disabled]="!finishedLoading"  color="grey">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="platform.width() < 768">
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
+  </ion-toolbar>
+  <!--<ion-toolbar *ngIf="moreOptions">
+    <div class="moreoptions-container">
+      <ion-grid class="moreoptions-grid">
+        <ion-row class="moreoptions-community-name ion-text-center" >Create</ion-row>
+        <ion-row class="moreoptions-row">
+          <ion-col class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
+            <ion-item lines="none" (click)="createNewChat()">
+              <div class="moreoptions-centered">
+                <ion-avatar class="moreoptions-avatar">
+                  <img src="assets/img/avatar-default.jpg"/>
+                </ion-avatar>
+                <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
+                <ion-label class="moreoptions-label ion-text-center" >Chat</ion-label>
+              </div>
+            </ion-item>
+          </ion-col>
+          <ion-col class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
+            <ion-item lines="none" (click)="createNewGroup()">
+              <div class="moreoptions-centered">
+                <ion-avatar class="moreoptions-avatar">
+                  <img src="assets/img/avatar-group.png"/>
+                </ion-avatar>
+                <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
+                <ion-label class="moreoptions-label ion-text-center" >Group</ion-label>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-toolbar>-->
+  <ion-toolbar [hidden]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) && (!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder)">
+    <ion-item-sliding side="end" [hidden]="(userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder">
+      <ion-item (click)="requestPushNotificationPermission($event)" lines="none">
+        <ion-avatar slot="start">
+          <ion-img src="assets/img/push-notification.png"></ion-img>
+        </ion-avatar>
+        <div class="ion-text-wrap message-container">
+          <ion-label class="ion-margin-top">Enable Push Notification</ion-label>
+          <p class="message-detail">Get notified when other Restvo users message you.</p>
+        </div>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="dismissEnablePushNotification()">
+          Dismiss
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    <ion-item-sliding side="end" [hidden]="!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder">
+      <ion-item (click)="pressImportContactList($event)" lines="none">
+        <ion-avatar slot="start">
+          <ion-img src="assets/img/address-book.jpg"></ion-img>
+        </ion-avatar>
+        <div class="ion-text-wrap message-container">
+          <ion-label class="ion-margin-top">Import Address Book</ion-label>
+          <p class="message-detail">Connect with friends, family, and coworkers on Restvo.</p>
+        </div>
+        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="dismissImportContactList()">
+          Dismiss
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--get new obj when page is refreshed-->
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="height: 100%">
+    <ion-row style="height: 100%">
+      <ion-col [ngStyle]="{'height': (platform.width() >= 768) ? 'calc(100% - 58px)' : '100%'}" class="conversations-panel ion-no-padding" size-xs="12" size-sm="12" size-md="5" size-lg="4">
+        <ion-toolbar *ngIf="platform.width() >= 768">
+          <ion-searchbar #searchBar slot="start" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
+        </ion-toolbar>
+        <ion-content>
+          <ion-virtual-scroll [items]="datas" approxItemHeight="100px">
+            <ion-item-sliding *virtualItem="let obj">
+              <div *ngIf="obj.conversation.type === 'connect'">
+                <ion-item>
+                  <ion-avatar class="user-avatar" [ngClass]="{'online': (chatService.onlineUsers.indexOf(obj.data.participant._id) > -1), 'fade': (chatService.liveVideoChats.hasOwnProperty(obj.conversation._id) && chatService.liveVideoChats[obj.conversation._id].users.length)}" slot="start" (click)="seeUserInfo($event, obj)">
+                    <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
+                    <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                  </ion-avatar>
+                  <div class="details ion-text-wrap" (click)="pushToMessagePage($event, obj)">
+                    <ion-label>{{obj.data.name}}</ion-label>
+                    <p class="short-paragraph" [innerHTML]="obj.message.preview | nl2br"></p>
+                  </div>
+                  <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
+                  <ion-badge *ngIf="obj.data.badge > 0" slot="end">{{obj.data.badge}}</ion-badge>
+                </ion-item>
+                <ion-item-options>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'all'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'connect', obj)">
+                    <ion-icon name="volume-off"></ion-icon>
+                    Off
+                  </ion-item-option>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'none'" style="width: 15.8%; height: 100%; background-color: #66cdaa;" color="success" (click)="togglePushNotification($event, 'connect', obj)">
+                    <ion-icon name="volume-up"></ion-icon>
+                    On
+                  </ion-item-option>
+                </ion-item-options>
+              </div>
+              <div *ngIf="obj.conversation.type === 'group'">
+                <ion-item>
+                  <ion-avatar class="user-avatar" slot="start" [ngClass]="{'online': (chatService.liveConversations.hasOwnProperty(obj.conversation._id) && chatService.liveConversations[obj.conversation._id].users.length), 'fade': (chatService.liveVideoChats.hasOwnProperty(obj.conversation._id) && chatService.liveVideoChats[obj.conversation._id].users.length)}" (click)="pushToMessagePage($event, obj)">
+                    <ion-img *ngIf="obj.conversation.group.background" [src]="obj.conversation.group.background"></ion-img>
+                    <ion-img *ngIf="!obj.conversation.group.background" src="assets/img/group-default.png"></ion-img>
+                  </ion-avatar>
+                  <div class="details ion-text-wrap" (click)="pushToMessagePage($event, obj)">
+                    <ion-label>{{obj.conversation.group.name}}</ion-label>
+                    <p class="short-paragraph" [innerHTML]="obj.message.preview | nl2br"></p>
+                  </div>
+                  <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
+                  <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
+                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0">{{obj.data.badge}}</ion-badge>
+                </ion-item>
+                <ion-item-options>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'group', obj)">
+                    <ion-icon name="volume-off"></ion-icon>
+                    Off
+                  </ion-item-option>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'all'" style="width: 15.8%; height: 100%;  background-color: #f6c653;" color="warning" (click)="togglePushNotification($event, 'group', obj)">
+                    <ion-icon name="person"></ion-icon>
+                    Leader
+                  </ion-item-option>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'none'" style="width: 15.8%; height: 100%; background-color: #66cdaa;" color="success" (click)="togglePushNotification($event, 'group', obj)">
+                    <ion-icon name="volume-up"></ion-icon>
+                    On
+                  </ion-item-option>
+                </ion-item-options>
+              </div>
+              <div *ngIf="obj.conversation.type === 'moment'">
+                <ion-item>
+                  <ion-avatar class="user-avatar" slot="start" [ngClass]="{'online': (chatService.liveConversations.hasOwnProperty(obj.conversation._id) && chatService.liveConversations[obj.conversation._id].users.length), 'fade': (chatService.liveVideoChats.hasOwnProperty(obj.conversation._id) && chatService.liveVideoChats[obj.conversation._id].users.length)}" (click)="pushToMessagePage($event, obj)">
+                    <ion-img *ngIf="obj.data.asset" [src]="obj.data.asset"></ion-img>
+                    <ion-img *ngIf="!obj.data.asset" src="assets/img/group-default.png"></ion-img>
+                  </ion-avatar>
+                  <div class="details ion-text-wrap" (click)="pushToMessagePage($event, obj)">
+                    <ion-label>{{obj.data.name}}</ion-label>
+                    <p class="short-paragraph" [innerHTML]="obj.message.preview | nl2br"></p>
+                  </div>
+                  <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
+                  <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
+                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0">{{obj.data.badge}}</ion-badge>
+                </ion-item>
+                <ion-item-options>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'moment', obj)">
+                    <ion-icon name="volume-off"></ion-icon>
+                    Off
+                  </ion-item-option>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'all'" style="width: 15.8%; height: 100%;  background-color: #f6c653;" color="warning" (click)="togglePushNotification($event, 'moment', obj)">
+                    <ion-icon name="person"></ion-icon>
+                    Leader
+                  </ion-item-option>
+                  <ion-item-option *ngIf="obj.data.pushNotification === 'none'" style="width: 15.8%; height: 100%; background-color: #66cdaa;" color="success" (click)="togglePushNotification($event, 'moment', obj)">
+                    <ion-icon name="volume-up"></ion-icon>
+                    On
+                  </ion-item-option>
+                </ion-item-options>
+              </div>
+            </ion-item-sliding>
+          </ion-virtual-scroll>
+        </ion-content>
+      </ion-col>
+      <ion-col size-xs="0" size-sm="0" size-md="7" size-lg="8" class="ion-no-padding">
+        <ion-router-outlet></ion-router-outlet>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+

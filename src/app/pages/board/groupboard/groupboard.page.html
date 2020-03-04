@@ -1,0 +1,228 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal(false)"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-slides #titles class="titles" (ionSlideDidChange)="titleSlideChange($event)">
+      <ion-slide>
+        <div class="title ion-padding-vertical">{{group.name}}</div>
+      </ion-slide>
+      <ion-slide *ngIf="userData.user">
+        <div class="title ion-padding-vertical">Members</div>
+      </ion-slide>
+    </ion-slides>
+    <ion-buttons slot="end">
+      <ion-button color="secondary" (click)="createNewPost()" *ngIf="page === 'board' && userData.user">
+      <ion-icon name="add"></ion-icon>
+      </ion-button>
+      <ion-button (click)="presentPopover($event)" *ngIf="page !== 'board' && userData.user">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="!userData.user">
+        <ion-icon name="add" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-row *ngIf="group" class="title-dots-row">
+      <div class="title-dots-container">
+        <div class="title-dot title-dot-left" (click)="title_slides.slideTo(0)" [ngClass]="{'active': page === 'board'}"></div>
+        <div class="title-dot title-dot-right" (click)="title_slides.slideTo(1)" [ngClass]="{'active': page === 'members'}"></div>
+      </div>
+    </ion-row>
+    <div *ngIf="group" class="header-bottom-padding"></div>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <!--This is the Chat page-->
+  <div *ngIf="page === 'board'">
+    <div class="default-background" [ngStyle]="{'background-image': 'url(' + (group.background | background: group._id) + ')'}"><!-- [ngClass]="{ 'opaque' : group.hasOwnProperty('background')}">-->
+      <div class="default-title" *ngIf="group.name">
+        {{group.name}}
+      </div>
+    </div>
+    <!--group details-->
+    <div class="ion-padding">
+      <p *ngIf="(group.beginAt && group.endAt)"><ion-icon name="calendar"></ion-icon>&nbsp;{{group.beginAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}} - {{group.endAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+      <div *ngIf="group.churchId && group.meeting_location">
+        <p [hidden]="!group.meeting_location.location"><ion-icon name="pin"></ion-icon>&nbsp;{{group.meeting_location.location}}</p>
+        <p><ion-icon name="pin"></ion-icon>&nbsp;{{group.meeting_location.street}}<span [hidden]="(group.meeting_location.street.length==0)">{{", "}}</span>{{group.meeting_location.city}}<span [hidden]="(group.meeting_location.city.length==0)||(group.meeting_location.state.length==0)">{{", "}}</span>{{group.meeting_location.state}}<span [hidden]="(group.meeting_location.city.length==0)&&(group.meeting_location.state.length==0)">&nbsp;</span>{{group.meeting_location.country}}</p>
+      </div>
+      <p *ngIf="group.details" [innerHTML]="group.details"></p>
+    </div>
+    <ion-list>
+      <ion-item lines="none" color="grey">Leaders</ion-item>
+      <ion-item *ngFor="let leader of group.leaders" (click)="seeUserInfo($event, leader)">
+        <ion-avatar slot="start">
+          <img *ngIf="leader.avatar" [src]="leader.avatar"/>
+          <img *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"/>
+        </ion-avatar>
+        {{leader.first_name}} {{leader.last_name}}
+      </ion-item>
+    </ion-list>
+    <ion-row *ngIf="joinGroupTag"><ion-col><ion-button [hidden]="!joinGroupTag" expand="full" shape="round" color="primary" fill="solid" (click)="joinGroup()">Subscribe to Topic</ion-button></ion-col></ion-row>
+
+    <ion-item lines="none" color="grey">News</ion-item>
+    <ion-refresher (ionRefresh)="refresh($event)" slot="fixed">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <!--get new data when page is refreshed-->
+    <ion-item *ngIf="noPost" lines="none">
+      <p class="no-post-message ion-text-center">This feed is empty.</p>
+    </ion-item>
+    <ion-card *ngFor="let post of boardposts" (click)="openPost(post)">
+      <ion-item lines="none">
+        <ion-avatar slot="start" (click)="seeUserInfo($event, post.author)">
+          <img *ngIf="post.author.avatar" [src]="post.author.avatar"/>
+          <img *ngIf="!post.author.avatar" src="assets/img/avatar-default.jpg"/>
+        </ion-avatar>
+        <div class="author-container">
+          <div class="author ion-text-wrap" >
+            {{post.author.first_name}} {{post.author.last_name}}
+            <ion-icon name="alert" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+          </div>
+        </div>
+        <ion-col slot="end" class="note-col">
+          <p class="note" class="ion-text-end">{{post.updatedAt | datetime: 'm:l,d:n,y:n'}}</p>
+          <p class="note" class="ion-text-end">{{displayTimeElapsed(post.updatedAt)}}</p>
+        </ion-col>
+      </ion-item>
+      <div class="photo-frame" *ngIf="post.attachments?.length">
+        <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" (click)="focusPhoto($event, post.attachments[0])"/>
+        <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+        <a [href]="post.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+        <a [href]="post.attachments[0]" *ngIf="(['pdf']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+        <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+        <div plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'video/' + (post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, post.attachments[0])" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+      </div>
+      <div class="photo-frame" *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)">
+          <div plyr [plyrSources]="post.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, post.media[0]._id)"></div>
+      </div>
+      <ion-card-content>
+        <p class="short-paragraph" [innerHTML]="post.body | nl2br"></p>
+      </ion-card-content>
+      <ion-item *ngIf="post.moments && post.moments.length && post.moments[0]._id">
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'User Defined Activity'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <div>
+            <img class="moment-image" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+            <img class="moment-image" *ngIf="post.moments[0].assets.length == 0" src="assets/img/onboarding-3.jpg">
+          </div>
+          <p class="moment-name" >{{post.moments[0].resource['en-US'].value[0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+        </div>
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Track'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <div>
+            <img class="moment-image" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+            <img class="moment-image" *ngIf="post.moments[0].assets.length == 0" src="assets/img/onboarding-3.jpg">
+          </div>
+          <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+          <p class="moment-name">{{post.moments[0].matrix_string[1][0]}}</p>
+        </div>
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Event'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <div>
+            <img class="moment-image" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+            <img class="moment-image" *ngIf="post.moments[0].assets.length == 0" src="assets/img/onboarding-3.jpg">
+          </div>
+          <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+          <p class="moment-name">{{post.moments[0].matrix_string[1][0]}}</p>
+        </div>
+        <!--Meetup-->
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Meetup'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <div>
+            <img class="moment-image" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+            <img class="moment-image" *ngIf="post.moments[0].assets.length == 0" src="assets/img/onboarding-3.jpg">
+          </div>
+          <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+          <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+          <p class="moment-name">{{post.moments[0].matrix_string[1][0]}}</p>
+        </div>
+        <!--Goal-->
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Goal'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <div>
+            <img class="moment-image" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+            <img class="moment-image" *ngIf="post.moments[0].assets.length == 0" src="assets/img/onboarding-3.jpg">
+          </div>
+          <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+          <p *ngIf="post.moments[0].calendar" class="moment-date" >Accomplish By: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+          <p class="moment-notes">{{post.moments[0].matrix_string[1][0]}}</p>
+        </div>
+        <!-- Poll -->
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0] && post.moments[0].resource && post.moments[0].resource.field === 'Poll'">
+          <p>This poll is no longer available</p>
+        </div>
+        <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'User Defined Activity' && post.moments[0].resource.hasOwnProperty('en-US') && post.moments[0].resource['en-US'].value[0] === 'Poll'"  (click)="openRestvoFeature($event, post.moments[0])">
+          <ion-thumbnail class="pollIconDiv">
+            <ion-img class="pollIcon" src="assets/img/Poll_Gray.png"></ion-img>
+          </ion-thumbnail>
+          <p class="pollQuestion">{{post.moments[0].matrix_string[0][0]}}</p>
+          <div class="pollContainer" *ngFor="let display of post.poll.display; index as count">
+            <div class="optionsContainer">
+              <p class="option" >{{count+1}}. {{display.option}}</p>
+            </div>
+            <div class="votesContainer">
+              <p class="votecount">Votes: {{display.count}}</p>
+            </div>
+            <div class="userContainer">
+              <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+              <ion-button size="small" shape="round" fill='solid' color="darkgrey" class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="momentService.submitVote($event, post.moments[0], count)">Cast Vote</ion-button>
+            </div>
+          </div>
+          <div class="unresolvedPollFooter" *ngIf="post.moments[0].resource.field === 'User Defined Activity'">
+            <p>{{post.moments[0].resource['en-US'].matrix_string[1][4]}}: {{post.poll.totalVoteCount}}</p>
+            <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+          </div>
+        </div>
+      </ion-item>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" size="small" (click)="likePost($event, post)">
+            <ion-icon name="thumbs-up"></ion-icon>
+            {{post.likes?.length}} Likes
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" size="small" (click)="openPost(post)">
+            <ion-icon name="text"></ion-icon>
+            {{post.comments?.length}} Comments
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" size="small" (click)="presentPickPeoplePopover($event)">
+            <ion-icon name="share-alt"></ion-icon>Share
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-infinite-scroll position="bottom" (ionInfinite)="listcommunityboardposts($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+  <!--This is the Members page-->
+  <div *ngIf="page === 'members'">
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
+    <ion-list>
+      <ion-item *ngFor="let member of members" (click)="seeUserInfo($event, member)">
+        <ion-avatar slot="start">
+          <img *ngIf="member.avatar" [src]="member.avatar"/>
+          <img *ngIf="!member.avatar" src="assets/img/avatar-default.jpg"/>
+        </ion-avatar>
+        {{member.name}} <span *ngFor="let icon of member.icons"><ion-icon name={{icon}}></ion-icon> </span><ion-badge *ngIf="member.badge">{{member.role}}</ion-badge>
+        <ion-icon slot="end" [hidden]="!editMemberTag" name="cog" (click)="editMember($event, member)"></ion-icon>
+      </ion-item>
+      <div style="margin-top: 20%;"></div>
+    </ion-list>
+    <ion-infinite-scroll position="bottom" (ionInfinite)="listgroupmembers($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-fab vertical="bottom" horizontal="center">
+      <ion-fab-button color="primary" (click)="addMemberActionSheet()"><ion-icon name="person-add"></ion-icon></ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>
+
+<!--
+<ion-footer *ngIf="page === 'board'" class="message-footer">
+  <ion-fab vertical="bottom" horizontal="center" *ngIf="isGroupLeader">
+    <ion-fab-button (click)="createNewPost()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+</ion-footer>-->

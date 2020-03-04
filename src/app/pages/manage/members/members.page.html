@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar *ngIf="modalPage">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Members</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="userData && userData.user" (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let member of members" (click)="editMember($event, member)">
+      <ion-avatar slot="start">
+        <img *ngIf="member.avatar" [src]="member.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
+        <img *ngIf="!member.avatar" src="assets/img/avatar-default.jpg"/>
+      </ion-avatar>
+      <ion-label>{{member.name}}</ion-label>
+      <ion-icon *ngIf="member.reportStatus?.length" name="alert"></ion-icon>
+      <ion-badge slot="end" color={{member.color}}>{{member.role}}</ion-badge>
+    </ion-item>
+    <ion-item-divider class="ion-text-wrap">
+      Displaying {{members.length}} member<span *ngIf="members.length > 1">s</span>
+    </ion-item-divider>
+  </ion-list>
+  <ion-infinite-scroll position="bottom" (ionInfinite)="manageMorePeople($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+</ion-content>

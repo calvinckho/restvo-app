@@ -1,0 +1,75 @@
+<ion-header *ngIf="modalPage">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Insight</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" size-sm="6" size-md="6" size-lg="6" size-xl="4">
+        <ion-card *ngIf="churchService && churchService.numberOfActiveUsers">
+          <ion-card-header>
+            <ion-card-title>
+              Active Users
+            </ion-card-title>
+            <ion-note class="padding-start">
+              (last month)
+            </ion-note>
+          </ion-card-header>
+          <ion-card-content>
+            <h1 class="ion-text-center">{{churchService.numberOfActiveUsers}}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6" size-md="6" size-lg="6" size-xl="4">
+        <ion-card *ngIf="churchService && churchService.currentManagedCommunity">
+          <ion-card-header>
+            <ion-card-title>
+              Total Users
+            </ion-card-title>
+            <ion-note class="padding-start">
+              (as of today)
+            </ion-note>
+          </ion-card-header>
+          <ion-card-content>
+            <h1 class="ion-text-center">{{churchService.currentManagedCommunity.members.length}}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6" size-md="6" size-lg="6" size-xl="4">
+        <ion-card *ngIf="churchService && churchService.currentManagedCommunity">
+          <ion-card-header>
+              <ion-card-title>
+                All Topics + Groups
+              </ion-card-title>
+              <ion-note class="padding-start">
+                (as of today)
+              </ion-note>
+          </ion-card-header>
+          <ion-card-content>
+            <h1 class="ion-text-center">{{churchService.currentManagedCommunity.groups.length}}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6" size-md="6" size-lg="6" size-xl="4">
+        <ion-card *ngIf="churchService && churchService.currentManagedCommunity">
+          <ion-card-header>
+            <ion-card-title>
+              Administrators
+            </ion-card-title>
+            <ion-note class="padding-start">
+              (as of today)
+            </ion-note>
+          </ion-card-header>
+          <ion-card-content>
+            <h1 class="ion-text-center">{{churchService.currentManagedCommunity.admins.length}}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

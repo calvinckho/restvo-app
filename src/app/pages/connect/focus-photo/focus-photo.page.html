@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{filename}}</ion-title>
+    <ion-buttons slot="end">
+      <a [href]="imageUri" download>
+        <ion-button color="secondary">Save</ion-button>
+      </a>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <pinch-zoom class="container">
+    <img [src]="imageUri">
+  </pinch-zoom>
+</ion-content>
+

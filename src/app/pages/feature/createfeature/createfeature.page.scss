@@ -1,0 +1,294 @@
+app-createfeature {
+  ion-item {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  ion-slides {
+    height: 100%;
+  }
+
+  a {
+    margin: 25px 10%;
+  }
+
+  .slide-grid {
+    height: 100%;
+    overflow: scroll;
+  }
+
+  .slide-row {
+    height: 100%;
+    padding-bottom: 42px;
+    //overflow-y: scroll
+  }
+
+  .slide-row-align {
+    align-items: center !important;
+  }
+
+  .slide-col {
+    height: 100%;
+  }
+
+  .summary-label {
+    width: 20%;
+  }
+
+  .selected-item {
+    height: 100px;
+    //width: 100%;
+  }
+
+  .thumbnail-item {
+    margin: 0 auto;
+    --size: 100px;
+  }
+
+  .remove-media {
+    position: absolute;
+    top: 4px;
+    right: calc(100%/2 - 45px);
+    z-index: 15;
+  }
+
+  .slide-list {
+    height: 100%;
+    overflow: scroll;
+  }
+
+  .participant-row {
+    //padding: 0 10px;
+    width: 100%;
+  }
+
+  .participant {
+    width: 100%;
+  }
+
+  .participant-centered {
+    width: 100%;
+    height: 65px;
+    margin: auto 0 auto 0;
+
+    .participant-avatar {
+      margin: 0 auto;
+      top: 0
+    }
+
+    .participant-joined {
+      position: absolute;
+      left: 60%;
+      top: 28px;
+    }
+
+    .participant-label {
+      margin: 5px auto 0 auto;
+      color: grey;
+      font-size: 12px;
+    }
+  }
+
+  .person-card {
+    height: 100%;
+    width: 400px;
+    object-fit: contain;
+    margin: 0 12px;
+    //background-color: #f0f0f0;
+    //z-index: -2;
+
+    // Added the slant pattern!
+    .top-pattern {
+      position: absolute;
+      top: 0;
+      height: 15%;
+      width: 100%;
+      background-color: #62bebf;
+      z-index: -1;
+    }
+
+    .middle-pattern {
+      position: absolute;
+      top: 15%;
+      height: 50%;
+      width: 100%;
+      border-style: solid;
+      border-width: 0 1300px 500px 0;
+      border-color: transparent #62bebf transparent transparent;
+      z-index: -1;
+    }
+
+    .bottom-pattern {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #f0f0f0;
+      z-index: -2;
+    }
+  }
+
+  .person-content {
+    //height: 92px;
+    overflow: scroll;
+    //margin: 15px 15px 0 15px;
+  }
+
+  .person-content-item {
+  }
+
+  .person-content-left {
+    //margin: 10px 0;
+    width: 40%;
+    display: inline-block;
+  }
+
+  .person-content-right {
+    //margin: 10px 0;
+    width: 60%;
+    height: 72px;
+    display: inline-block;
+  }
+
+  .person-list-container {
+    width: 100%;
+  }
+
+  .person-list {
+    margin: 10px 0 2px 0;
+    display: block;
+    width: 100%;
+  }
+
+  .person-content-list {
+    color: grey;
+    font-size: 14px;
+    max-height: 72px;
+    line-height: 24px; /* Height / no. of lines to display */
+    overflow: hidden;
+  }
+
+  .person-photo-container {
+    height: 300px;
+    overflow: hidden;
+    //border-radius: 50%;
+    //margin: 5% auto;
+  }
+
+  .person-photo {
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 50%;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .icon-container {
+    margin: 0 auto;
+    width: 60px;
+  }
+
+  .center {
+    margin: 0 auto;
+  }
+
+  .selected-item {
+    height: 100px;
+    //width: 100%;
+  }
+
+  .add-icon {
+    height: 80px;
+    width: 80px;
+  }
+
+  .moment-type {
+    width: 60px;
+    margin-right: 10px;
+  }
+
+  .module-number {
+    padding-left: 2%;
+    width: 8%;
+    opacity: 0.5;
+    min-width: 20px;
+  }
+
+  .program-slides {
+    padding: 12px;
+  }
+
+  .program-slide {
+    max-width: 150px;
+  }
+
+  .program-card {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+
+  .program-photo-container {
+    height: 80px;
+    overflow: hidden;
+    //border-radius: 50%;
+    //margin: 5% auto;
+  }
+
+  .program-photo {
+    object-fit: cover;
+    cursor: pointer;
+    //opacity: 50%;
+    height: 100%;
+    //width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .program-type {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .program-name {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 15;
+  }
+
+  .light {
+    color: white;
+  }
+
+  .remove-moment {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+
+  .remove-video {
+    position: absolute;
+    top: 4px;
+    right: -95px;
+    z-index: 15;
+  }
+}

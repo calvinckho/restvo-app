@@ -1,0 +1,57 @@
+app-editgroup {
+  
+  .opaque {
+    opacity: 0.6;
+  }
+
+  .default-background {
+    display: table;
+    min-height: 150px;
+    background-size: cover;
+    width: 100%;
+  }
+
+  .edit-icon-container {
+    width: 32px;
+    display: table-cell;
+    text-align: right;
+    vertical-align: bottom;
+    padding: 5px;
+  }
+
+  .edit-icon {
+    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+  }
+
+  .default-title {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 2.0em;
+    color: #fff;
+    -webkit-text-stroke: thin;
+/*    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;*/
+  }
+
+  .detailstextarea textarea{
+    width: 100%t;
+    height: 20vh;
+  }
+
+  .file-picker {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}

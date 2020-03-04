@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar *ngIf="modalPage">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Manage Platforms</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let community of communities" (click)="showCommunityProfile(community)">
+      <ion-thumbnail slot="start">
+        <img *ngIf="community.background" [src]="community.background"/>
+        <img *ngIf="!community.background" src="assets/img/group-default.png"/>
+      </ion-thumbnail>
+      <ion-label>
+        <h2 class="ion-text-wrap">{{community.name}}
+          <!--<ion-badge color="danger" *ngIf="community.admin">Admin</ion-badge>-->
+          <ion-badge color="warning" *ngIf="!community.verified">Pending Approval</ion-badge>
+          <ion-badge color="tertiary" *ngIf="community.system_verified">Approved</ion-badge>
+        </h2>
+        <p>{{community.industry.value}}</p>
+        <p class="personnel ion-text-wrap">Admin<span *ngIf="community.admins?.length > 1">s</span>: <span *ngFor="let admin of community.admins; index as i"><span *ngIf="i > 0">, </span>{{admin.name}}</span></p>
+        <p><ion-icon name="pin"></ion-icon>{{" "}}{{community.meeting_location.city}}<span [hidden]="(community.meeting_location.city.length==0)||(community.meeting_location.state.length==0)">{{", "}}</span>{{community.meeting_location.state}}<span [hidden]="(community.meeting_location.city.length==0)&&(community.meeting_location.state.length==0)">{{" "}}</span>{{community.meeting_location.country}}</p>
+      </ion-label>
+      <ion-badge slot="end">{{community.members.length}}</ion-badge>
+    </ion-item>
+    <ion-item-divider class="ion-text-wrap">
+      Displaying {{communities.length}}&nbsp;<span *ngIf="communities.length <= 1"> community</span><span *ngIf="communities.length > 1"> communities</span>
+    </ion-item-divider>
+  </ion-list>
+  <ion-infinite-scroll position="bottom" (ionInfinite)="manageMoreCommunities($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+</ion-content>

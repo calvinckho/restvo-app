@@ -1,0 +1,124 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+/** Ionic CSS Variables **/
+:root {
+
+  --ion-font-family: "Roboto", sans-serif;
+
+  /** primary **/
+  --ion-color-primary: #e2666a;
+  --ion-color-primary-rgb: 225,102,105;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #0ec254;
+  --ion-color-primary-tint: #28e070;
+
+  /** secondary **/
+  --ion-color-secondary: #fff;
+  --ion-color-secondary-rgb: 12,209,232;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255,255,255;
+  --ion-color-secondary-shade: #0bb8cc;
+  --ion-color-secondary-tint: #24d6ea;
+
+  /** tertiary **/
+  --ion-color-tertiary: #4A90E2;
+  --ion-color-tertiary-rgb: 74,144,226;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255,255,255;
+  --ion-color-tertiary-shade: #0bb8cc;
+  --ion-color-tertiary-tint: #24d6ea;
+
+  /** success **/
+  --ion-color-success: #10dc60;
+  --ion-color-success-rgb: 16,220,96;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255,255,255;
+  --ion-color-success-shade: #0ec254;
+  --ion-color-success-tint: #28e070;
+
+  /** warning **/
+  --ion-color-warning: #f6c653;
+  --ion-color-warning-rgb: 255,206,0;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255,255,255;
+  --ion-color-warning-shade: #e0b500;
+  --ion-color-warning-tint: #ffd31a;
+
+  /** danger **/
+  --ion-color-danger: #F65374;
+  --ion-color-danger-rgb: 246,198,83;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255,255,255;
+  --ion-color-danger-shade: #d33939;
+  --ion-color-danger-tint: #f25454;
+
+  /** light **/
+  --ion-color-light: #f0f0f0;
+  --ion-color-light-rgb: 244,244,244;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0,0,0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  /** medium is also a default color **/
+
+  /** dark **/
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34,34,34;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255,255,255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /** custom color. it requires adding a new class in global.scss that uses these css variables  **/
+
+  /** grey **/
+  --ion-color-grey: #909090;
+  --ion-color-grey-rgb: 144,144,144;
+  --ion-color-grey-contrast: #ffffff;
+  --ion-color-grey-contrast-rgb: 255,255,255;
+  --ion-color-grey-shade: #86888f;
+  --ion-color-grey-tint: #a2a4ab;
+
+  /** lightgrey **/
+  --ion-color-lightgrey: #F0F0F0;
+  --ion-color-lightgrey-rgb: 240,240,240;
+  --ion-color-lightgrey-contrast: #ffffff;
+  --ion-color-lightgrey-contrast-rgb: 255,255,255;
+  --ion-color-lightgrey-shade: #86888f;
+  --ion-color-lightgrey-tint: #a2a4ab;
+
+  /** dark grey **/
+  --ion-color-darkgrey: #6A6A6A;
+  --ion-color-darkgrey-rgb: 106,106,106;
+  --ion-color-darkgrey-contrast: #ffffff;
+  --ion-color-darkgrey-contrast-rgb: 255,255,255;
+  --ion-color-darkgrey-shade: #616368;
+  --ion-color-darkgrey-tint: #a2a4ab;
+
+  /** button 1 **/
+  --ion-color-button1: #4267B2;
+  --ion-color-button1-rgb: 66,103,178;
+  --ion-color-button1-contrast: #ffffff;
+  --ion-color-button1-contrast-rgb: 255,255,255;
+  --ion-color-button1-shade: #0bb8cc;
+  --ion-color-button1-tint: #24d6ea;
+
+  /** button 2 **/
+  --ion-color-button2: #66cdaa;
+  --ion-color-button2-rgb: 102,205,170;
+  --ion-color-button2-contrast: #ffffff;
+  --ion-color-button2-contrast-rgb: 255,255,255;
+  --ion-color-button2-shade: #0ec254;
+  --ion-color-button2-tint: #28e070;
+
+  /** button 3 **/
+  --ion-color-button3: #f6c653;
+  --ion-color-button3-rgb: 246,198,83;
+  --ion-color-button3-contrast: #ffffff;
+  --ion-color-button3-contrast-rgb: 255,255,255;
+  --ion-color-button3-shade: #0ec254;
+  --ion-color-button3-tint: #28e070;
+}

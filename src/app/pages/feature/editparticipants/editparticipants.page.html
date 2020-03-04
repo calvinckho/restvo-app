@@ -1,0 +1,104 @@
+<ion-header *ngIf="modalPage">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal(false)"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-grid>
+      <ion-row>
+        <ion-col> <!--css is defined in editfeature.page.scss-->
+          <div class="title" [ngClass]="{'ios': platform.is('ios')}">{{title}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+  <ion-item lines="none">
+    <ion-label>{{participantsLabel}}</ion-label>
+  </ion-item>
+  <ion-grid *ngIf="moment._id" class="user-list-preview">
+    <ion-row class="participant-row">
+      <ion-col class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <img src="assets/img/avatar-default.jpg"/>
+            </ion-avatar>
+            <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{participantLabel}}</ion-label> <!--Add Participant-->
+          </div>
+        </ion-item>
+      </ion-col>
+      <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="seeUserInfo($event, user)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+              <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+            </ion-avatar>
+            <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'participant', j)"></ion-icon>
+            <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-item lines="none">
+    <ion-label>{{leadersLabel}}</ion-label>
+  </ion-item>
+  <ion-grid *ngIf="moment._id" class="user-list-preview">
+    <ion-row class="participant-row">
+      <ion-col class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <img src="assets/img/avatar-default.jpg"/>
+            </ion-avatar>
+            <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{leaderLabel}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-col>
+      <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="seeUserInfo($event, user)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+              <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+            </ion-avatar>
+            <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'leader', j)"></ion-icon>
+            <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-item lines="none">
+    <ion-label>{{organizersLabel}}</ion-label>
+  </ion-item>
+  <ion-grid class="user-list-preview" *ngIf="moment._id">
+    <ion-row class="participant-row">
+      <ion-col class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <img src="assets/img/avatar-default.jpg"/>
+            </ion-avatar>
+            <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{organizerLabel}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-col>
+      <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
+        <ion-item lines="none" (click)="seeUserInfo($event, user)">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+              <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+            </ion-avatar>
+            <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'organizer', j)"></ion-icon>
+            <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

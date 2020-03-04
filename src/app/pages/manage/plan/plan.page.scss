@@ -1,0 +1,39 @@
+app-plan {
+
+  ion-spinner {
+    position: absolute;
+    margin: 48%;
+  }
+
+  ion-card {
+    margin: 5% 10% 5% 10%;
+    padding: 5% 0 8%;
+  }
+
+  ion-item {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  ion-slides {
+    width: 100%;
+  }
+
+  ion-grid {
+    width: 100%;
+  }
+
+  ion-slide {
+    width: 100%;
+  }
+
+  .field {
+    flex: 1;
+    padding: 0 15px;
+    background: transparent;
+    font-weight: 400;
+    color: #31325f;
+    outline: none;
+    cursor: text;
+  }
+}

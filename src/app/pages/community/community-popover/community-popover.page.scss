@@ -1,0 +1,19 @@
+app-community-popover {
+
+  ion-content {
+    --background: var(--ion-color-primary);
+  }
+
+  .popover-item {
+    color: var(--ion-color-secondary);
+    --background: var(--ion-color-primary);
+    font-size: small;
+    text-align: center;
+  }
+
+  .item-divider {
+    height: 1px;
+    width: 100%;
+    --background: var(--ion-color-secondary);
+  }
+}

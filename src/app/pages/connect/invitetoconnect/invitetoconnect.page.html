@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeywords" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="page === 1">
+    <ion-virtual-scroll [items]="contact_list" [trackBy]="customTrackBy">
+      <ion-item *virtualItem="let contact" (click)="select(contact)">
+        <ion-icon *ngIf="!(contact.select || contact.joined)" name="radio-button-off" slot="start"></ion-icon>
+        <ion-icon *ngIf="contact.select" name="radio-button-on" slot="start"></ion-icon>
+        <ion-icon *ngIf="contact.joined" name="checkmark" slot="start"></ion-icon>
+        <div>
+          {{contact.name}}
+        <ion-note *ngIf="type === 'SMS Message' && contact.type ==='contact'">{{contact.phoneNumbers[0].value}}</ion-note>
+          <ion-note *ngIf="type === 'Email' && contact.type ==='contact'">{{contact.emails[0].value}}</ion-note>
+        </div>
+      </ion-item>
+      <ion-spinner *ngIf="ionSpinner"></ion-spinner>
+    </ion-virtual-scroll>
+
+    <ion-list *ngIf="type !== 'Restvo Users'">
+      <ion-item>
+        <ion-label><ion-icon name="person"></ion-icon></ion-label>
+        <ion-input [(ngModel)]="name" placeholder="Full name" type="name"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="type === 'SMS Message'">
+        <ion-label><ion-icon name="phone-portrait"></ion-icon></ion-label>
+        <ion-input [(ngModel)]="mobile_phone" placeholder="Mobile Number" type="tel" (input)="checkInputFields()"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="type === 'Email'">
+        <ion-label><ion-icon name="mail"></ion-icon></ion-label>
+        <ion-input [(ngModel)]="email" placeholder="Email" type="text" (input)="checkInputFields()"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <p class="ion-text-wrap ion-padding" *ngIf="!userData.user.importContactList" (click)="enableImportContact()" class="enable-import">Tired of manually typing in the contact info? Click here to access your phone's contact list.</p>
+  </div>
+  <div *ngIf="page === 2">
+    <ion-list>
+      <ion-item *ngFor="let church of mychurches" (click)="selectItem(church)">
+        <ion-icon *ngIf="!church.select" name="radio-button-off" slot="start"></ion-icon>
+        <ion-icon *ngIf="church.select" name="radio-button-on" slot="start"></ion-icon> {{church.name}}
+      </ion-item>
+    </ion-list>
+  </div>
+  <div *ngIf="page === 3">
+    <ion-list>
+      <div *ngFor="let church of mychurches">
+        <ion-list-header>{{church.name}}</ion-list-header>
+        <ion-item *ngFor="let group of church.groups" (click)="selectItem(group)">
+          <ion-icon *ngIf="!group.select" name="radio-button-off" slot="start"></ion-icon>
+          <ion-icon *ngIf="group.select" name="radio-button-on" slot="start"></ion-icon> {{group.name}}
+        </ion-item>
+      </div>
+
+    </ion-list>
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar *ngIf="page === 1">
+      <ion-button [hidden]="!selectedGroups.length && !selectedChurches.length" expand="full" shape="round" (click)="sendInvitations()" color="primary" [disabled]="!((mobile_phone.length && name.length) || (email.length && name.length) || (totalSelected) > 0)">Send {{totalSelected}} Invitation(s)</ion-button>
+      <ion-button [hidden]="selectedGroups.length || selectedChurches.length" expand="full" shape="round" (click)="goToStep2()" color="primary" [disabled]="!((mobile_phone.length && name.length) || (email.length && name.length) || (totalSelected) > 0)">Select {{totalSelected}} Friend(s)</ion-button>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="page === 2">
+      <ion-button expand="full" shape="round" *ngIf="totalSelected === 0" (click)="goToStep3($event)" color="primary">Skip</ion-button>
+      <ion-button expand="full" shape="round" *ngIf="totalSelected > 0" (click)="goToStep3($event)" color="primary">Select {{totalSelected}} Community</ion-button>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="page === 3">
+      <ion-button expand="full" shape="round" *ngIf="totalSelected === 0" (click)="finish($event)" color="primary">Skip</ion-button>
+      <ion-button expand="full" shape="round" *ngIf="totalSelected > 0" (click)="finish($event)" color="primary">Select {{totalSelected}} Group(s)</ion-button>
+  </ion-toolbar>
+</ion-footer>
+

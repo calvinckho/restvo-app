@@ -1,0 +1,134 @@
+<ion-content scrollEvents (ionScroll)="scrollEvent()">
+  <div data-ix="preloader" class="page-loader"></div>
+  <div data-ix="page-wrapper-load" class="page-wrapper">
+    <div class="popup-wrapper">
+      <div class="contact-window popup-window">
+        <h4 class="contact-window-header">Get In Touch</h4>
+        <div class="w-form">
+          <form id="email-form" name="email-form" data-name="Email Form" class="contact-window-form"><label for="name" class="form-label">Name:</label><input type="text" id="name" name="name" data-name="Name" placeholder="Enter your name" maxlength="256" class="input w-input"><label for="email-2" class="form-label">Email:</label><input type="email" id="email-2" name="email-2" data-name="Email 2" placeholder="Enter your email address" maxlength="256" required="" class="input w-input"><label for="field" class="form-label">Message:</label><textarea id="field" name="field" placeholder="How can we help you?" maxlength="5000" required="" data-name="Field" class="input text-area w-input"></textarea><input type="submit" value="Submit Message" data-wait="Please wait..." class="button form-button w-button"></form>
+          <div class="form-success window-success w-form-done">
+            <div>Thank you! Your submission has been received!</div>
+          </div>
+          <div class="form-error window-error w-form-fail">
+            <div>Oops! Something went wrong while submitting the form</div>
+          </div>
+        </div>
+      </div>
+      <div data-ix="hide-popup" class="popup-overlay"></div>
+    </div>
+    <div data-collapse="medium" data-animation="default" data-duration="400" data-ix="nav-bar" class="nav-bar navbar navbar-2 w-nav"><a routerLink="/home" class="nav-link-4 w-nav-link w--current">‍</a><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/rv_logo-256_3.png" width="40" height="40" alt="" class="logo image-6 image-7 image-8 image-9 image-10 image-11 image-12 image-13 image-14">
+      <div class="text-block-7">Restvo</div>
+      <div class="wrapper nav-bar-wrapper w-container">
+        <nav role="navigation" class="nav-menu w-nav-menu">
+          <a routerLink="/map" class="nav-link-2 w-nav-link"><span class="text-span">Discover</span></a>
+          <a routerLink="/mission" class="nav-link-2 w-nav-link"><span class="text-span">Mission</span></a>
+          <a routerLink="/feature" class="nav-link-2 w-nav-link w--current"><span class="text-span">Features</span></a>
+          <a routerLink="/pricing" class="nav-link-2 w-nav-link"><span class="text-span">Pricing</span></a>
+          <a routerLink="/register" class="nav-link-2 w-nav-link"><span class="text-span">Login</span></a>
+          <a routerLink="/index" class="nav-link-3 w-nav-link"><span class="text-span"><strong class="bold-text">Download</strong></span></a>
+        </nav>
+        <div class="menu-button w-nav-button">
+          <div class="icon w-icon-nav-menu"></div>
+        </div>
+      </div>
+    </div>
+    <div class="page-header-features features">
+      <h1 data-ix="fade-up-1">Restvo Features</h1>
+    </div>
+    <div id="Scroll-Section" class="section grey-section">
+      <div class="section-header-wrapper">
+        <div class="section-small-header">Our Features</div>
+        <h2 class="section-header">What Makes Restvo Unique?</h2>
+        <p class="section-description">What makes Restvo different? We are a faith-filled community dedicated to building deeper and more meaningful relationships with modern technology.<br><br>We believe that technology can help us build deeper personal relationships with friends, family, and coworkers (not just to get us more followers).</p>
+      </div>
+      <div class="wrapper w-container">
+        <div class="service-cards">
+          <div data-ix="fade-up-1" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/web-design-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Web App</h6>
+            <p class="paragraph-small">The #1 church growth tool for pastors, leaders, and administrators with in-depth analytics plus insights for church growth.</p>
+          </div>
+          <div data-ix="fade-up-2" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/mobile-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Mobile Applications</h6>
+            <p class="paragraph-small">Our free app is the only relationship platform that gives custom recommendations for both personal and small group growth.</p>
+          </div>
+          <div data-ix="fade-up-3" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/branding-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Branding &amp; Identity</h6>
+            <p class="paragraph-small">Want to brand your church on the app? No problem! You can create your own church and community profile within Restvo.</p>
+          </div>
+          <div data-ix="fade-up-1" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/web-dev-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Web Development</h6>
+            <p class="paragraph-small">Our awesome team is dedicated to serving the local church and global Church by developing the best technology for ministry.</p>
+          </div>
+          <div data-ix="fade-up-2" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/marketing-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Church Data Analytics</h6>
+            <p class="paragraph-small">Have you ever wanted a easy snapshot of your church growth and giving? Our Restvo app and webapp takes care of that for you!</p>
+          </div>
+          <div data-ix="fade-up-3" class="service-card _33-width"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/seo-icon.png" width="64" alt="">
+            <h6 class="service-card-header">Maximize Your Outreach</h6>
+            <p class="paragraph-small">Reaching your neighbors is challenging in today&#x27;s society. Restvo maximizes your outreach in your local community!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section grey-section no-top-padding no-bottom-padding">
+      <div class="wrapper w-container">
+        <div class="side-feature">
+          <div data-ix="fade-right" class="side-feature-content">
+            <div class="side-feature-info w-clearfix">
+              <div class="section-small-header">Restvo Vision</div>
+              <h2 class="section-header">Smart, Simple, and Restful</h2>
+              <p class="section-description">Our vision is to empower local churches to be more effective in reaching their local communities. We understand how difficult ministry is! Restvo is designed by two pastors who have a huge passion helping people build relationships and also become more restful in everyday life.</p><a href="#" class="side-feature-video-link w-inline-block"></a></div>
+          </div>
+          <div data-ix="fade-left" class="side-feature-image"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/illustration-user.png" width="470" srcset="https://wee.nyc3.digitaloceanspaces.com/app/webflow/illustration-user-p-500.png 500w, https://wee.nyc3.digitaloceanspaces.com/app/webflow/illustration-user.png 940w" sizes="(max-width: 479px) 100vw, (max-width: 767px) 48vw, (max-width: 991px) 41vw, 470px" alt=""></div>
+        </div>
+        <div class="side-feature mobile-reverse">
+          <div data-ix="fade-right" class="side-feature-image"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/Illustration-circle.png" width="470" srcset="https://wee.nyc3.digitaloceanspaces.com/app/webflow/Illustration-circle-p-500.png 500w, https://wee.nyc3.digitaloceanspaces.com/app/webflow/Illustration-circle.png 940w" sizes="(max-width: 479px) 100vw, (max-width: 767px) 48vw, (max-width: 991px) 41vw, 470px" alt=""></div>
+          <div data-ix="fade-left" class="side-feature-content">
+            <div class="side-feature-info">
+              <div class="section-small-header">Restvo Platform</div>
+              <h2 class="section-header">Personal Growth &amp; Team Tool</h2>
+              <p class="section-description">Restvo is the #1 personal relationship and community growth tool. Our unique platform continual improves thru an innovative process of research, design, development, and support giving you personal insights into your personal growth and small group health.</p>
+            </div>
+          </div>
+        </div>
+        <div class="side-feature">
+          <div data-ix="fade-right" class="side-feature-content">
+            <div class="side-feature-info">
+              <div class="section-small-header">Restvo Clients</div>
+              <h2 class="section-header">Trusted by churches <br>and communities</h2>
+              <p class="section-description">Checkout all of our clients who love using Restvo. You can hear more real-life story examples by checking out our Testimonials page. <br><br>Download our free app today to get started!</p><a routerLink="/index" class="button contact-ready-button w-button">Free Download</a></div>
+          </div>
+          <div data-ix="fade-left" class="side-feature-image"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/Churches-and-Brands.png" width="423" srcset="https://wee.nyc3.digitaloceanspaces.com/app/webflow/Churches-and-Brands-p-500.png 500w, https://wee.nyc3.digitaloceanspaces.com/app/webflow/Churches-and-Brands.png 800w" sizes="(max-width: 479px) 100vw, (max-width: 767px) 48vw, (max-width: 991px) 41vw, 423px" alt=""></div>
+        </div>
+      </div>
+    </div>
+    <div class="section no-top-padding no-bottom-padding"></div>
+  </div>
+  <div id="footer" class="section no-top-padding no-bottom-padding">
+    <div class="wrapper w-container">
+      <div id="footerhomepage" class="footer-v3">
+        <div class="footer-mobile-about"><a routerLink="/index" data-ix="logo" class="footer-logo w-nav-brand"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/rv_logo-256_2.png" width="100" alt="" class="image-16"></a>
+          <p class="paragraph-small">At Restvo, we make life less stressful and more meaningful in everyday conversations and communities.</p>
+          <div class="footer-v3-social"><a href="https://twitter.com/RestvoInc" target="_blank" class="link-block-3 w-inline-block"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/twitter-icon.svg" alt="" class="image-22"></a><a href="https://www.facebook.com/RestvoInc/" target="_blank" class="footer-v3-social-link w-inline-block"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/facebook-icon.svg" alt="" class="image-21"></a><a href="https://www.instagram.com/restvo/" target="_blank" class="footer-v3-social-link w-inline-block"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/instagram.png" width="16" alt="" class="image-20"></a><a href="https://www.linkedin.com/company/18489634/" target="_blank" class="footer-v3-social-link w-inline-block"><img src="https://wee.nyc3.digitaloceanspaces.com/app/webflow/linkedin.png" width="16" alt="" class="image-19"></a></div>
+        </div>
+        <div class="footer-v3-nav">
+          <h6>Our Product</h6><a routerLink="/index" class="footer-v3-link">Home</a><a routerLink="/mission" class="footer-v3-link">Mission</a><a routerLink="/feature" class="footer-v3-link w--current">Features</a><a routerLink="/app/dashboard" class="footer-v3-link">Testimonials</a><a routerLink="/index" class="footer-v3-link">Download</a><a routerLink="/pricing" class="footer-v3-link">Pricing</a><a routerLink="/faq" class="footer-v3-link">FAQs</a></div>
+        <div class="footer-v3-nav">
+          <h6>Our Company</h6><a routerLink="/aboutus" class="footer-v3-link">About Us</a><a href="contact.html" class="footer-v3-link">Contact Us</a><a href="privacy.html" class="footer-v3-link">Privacy Policy</a><a routerLink="/app/dashboard" class="footer-v3-link">Blog &amp; Updates</a></div>
+        <div class="footer-v3-subscribe w-form">
+          <form id="Subscribe-Form" name="wf-form-Subscribe-Form" data-name="Subscribe Form" class="footer-subscribe-form">
+            <h6>Want updates and special offers from Restvo?</h6><input type="email" id="email-2" name="email" data-name="Email 2" placeholder="Enter your email address" maxlength="256" required="" class="input footer-subscribe-input w-input"><input type="submit" value="Subscribe" data-wait="Please wait..." class="button footer-subscribe-button w-button"></form>
+          <div class="form-success w-form-done">
+            <div>Thank you! Your submission has been received!</div>
+          </div>
+          <div class="form-error w-form-fail">
+            <div>Oops! Something went wrong while submitting the form</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="text-block-22">© 2018, Restvo, Inc. All Rights Reserved.</div>
+    </div>
+  </div>
+</ion-content>

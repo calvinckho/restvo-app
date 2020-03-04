@@ -1,0 +1,27 @@
+app-discover {
+
+  ion-button {
+    ion-badge {
+      position: absolute;
+      top: 0.1rem;
+      right: 0.1rem;
+
+      & ~ ion-icon {
+        outline-color: whitesmoke;
+      }
+    }
+  }
+
+  .message-container {
+    width: 100%;
+  }
+
+  .message-detail {
+    width: 85%;
+    color: grey;
+    margin: 8px 0 16px 0;
+    max-height: 36px;
+    line-height: 18px; /* Height / no. of lines to display */
+    overflow: hidden;
+  }
+}

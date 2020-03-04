@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar *ngIf="modalPage">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Development</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-buttons class="ion-justify-content-center" margin-top>
+    <ion-button shape="round" fill="solid" color="primary" size="small" (click)="createActivity($event)">Create Sample Activity</ion-button>
+  </ion-buttons>
+  <ion-list>
+    <div *ngFor="let parent of moments">
+      <ion-label class="program-title ion-margin">{{parent.matrix_string[0][0]}}</ion-label>
+      <ion-item *ngFor="let moment of parent.sample_activities" (click)="showActivity(moment)">
+        <ion-thumbnail slot="start">
+          <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
+          <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
+        </ion-thumbnail>
+        <ion-label>
+          <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+        </ion-label>
+        <ion-badge [color]="momentService.loadIcon(moment.resource.field).color">{{moment.resource['en-US'].value[0]}}</ion-badge>
+        <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
+      </ion-item>
+    </div>
+    <ion-item-divider class="ion-text-wrap">
+      Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> activity</span><span *ngIf="moments.length > 1"> activities</span>
+    </ion-item-divider>
+  </ion-list>
+  <ion-infinite-scroll position="bottom" (ionInfinite)="manageMoreActivities($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,19 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "downlevelIteration": true, //needed to use [...new Set(Array)] in myconversation.page.ts
+    "allowJs": true, //needed for manually added js file
+    "skipLibCheck": true,
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  }
+}

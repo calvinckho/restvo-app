@@ -1,0 +1,451 @@
+app-editfeature {
+  ion-card-header {
+    z-index: 10;
+  }
+
+  ion-item {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  ion-item ion-datetime{
+    position:relative !important;
+  }
+
+  ion-item ion-select{
+    position:relative !important;
+  }
+
+  .title {
+    text-wrap: normal;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .ios {
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .stock-preview {
+    --size: 100px;
+  }
+
+  .pixabay-grid {
+    max-height: 200px;
+    overflow: scroll;
+  }
+
+  a {
+    margin: 15px 10%;
+  }
+
+  .editTemplate {
+    opacity: 0.5;
+  }
+
+  #custom-select {
+    padding: 0;
+    width: 100% !important;
+    //width: 90% !important;
+    //float: left;
+  }
+
+  .delete-container {
+    width: 14%;
+    float: right;
+  }
+
+  .goal {
+    width: 70%;
+    margin-left: 20%;
+    margin-right: 40%;
+
+  }
+
+  .moment-label {
+    width: 25px;
+    height: 25px;
+    margin-right: 20px;
+  }
+
+  .option-number {
+    margin-right: 3%;
+  }
+
+  .side-image {
+    margin: auto;
+  }
+
+  .side-icon {
+    height: 100%;
+    width: 100%;
+    margin-left: 4%;
+  }
+
+  .map-container {
+    margin: 0 auto;
+    width: 90%;
+  }
+
+  .monthview {
+    width: 85%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding-bottom: 10px;
+    --color: var(--ion-color-dark);
+  }
+
+  .month-title-container {
+    width: 100%;
+  }
+
+  .month-title {
+    width: calc((100% / 7) * 5);
+    text-align: center;
+    display: inline-block;
+  }
+
+  .calendar-arrow {
+    width: calc(100% / 7);
+    position: relative;
+    display: inline-block;
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+  }
+
+  .list-container {
+    overflow: scroll;
+    max-height: 400px;
+    margin: 0 auto;
+    max-width: 400px;
+  }
+
+  .item-container {
+    width: 60%;
+    margin: 5px;
+    float: left;
+  }
+
+  .module-number {
+    padding-left: 2%;
+    width: 8%;
+    opacity: 0.5;
+    min-width: 20px;
+  }
+
+  .moment-type {
+    width: 60px;
+    margin-right: 10px;
+  }
+
+  .moment-input {
+    width: 90%;
+    float: left;
+    opacity: 0.5;
+    padding: 5px 0;
+  }
+
+  .small-font {
+    font-size: 12px;
+  }
+
+  .dynamicOptions{
+    margin-left: 12%;
+
+    ::placeholder{
+      color: #cecece;
+    }
+  }
+
+  .section-header {
+    font-size: 18px;
+  }
+
+  .addRemoveButtons{
+    width: 40%;
+    height: 100%;
+    padding-top: 5%;
+    color: #cecece;
+  }
+
+  #addButton{
+    margin-left: 5%;
+    width: 50%;
+  }
+
+  .addRemoveText{
+    font-size: 15px;
+    width: 100%;
+    float: right;
+  }
+
+  .monthview-day-headers {
+    width: calc(100% / 7);
+    float: left;
+    position: relative;
+    color: var(--ion-color-grey);
+    text-align: center;
+  }
+
+  .monthview-element {
+    width: calc(100% / 7);
+    float: left;
+    position: relative;
+    padding-bottom: calc(100% / 9);
+  }
+
+  .monthview-element .monthview-element-content {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    text-align: center;
+    margin: 5px;
+    padding-top: 5px;
+    position: absolute;
+  }
+
+  .past-calendar-item {
+    background-color: var(--ion-color-grey);
+  }
+
+  .monthview-dot-container {
+    text-align: center;
+    display: inline-block;
+  }
+
+  .monthview-element-dot {
+    height: 5px;
+    width: 5px;
+    margin: 0px .5px 0px .5px;
+    border-radius: 50%;
+    background-color: var(--ion-color-primary);
+  }
+
+  .underline-datestring {
+    text-decoration: underline;
+  }
+
+  .selected-date {
+    background-color: var(--ion-color-lightgrey);
+    border-radius: 50%;
+  }
+
+  .avatar {
+    width: 40px !important;
+    height : 40px !important;
+    object-fit: cover;
+  }
+
+  .time-input {
+    text-align: right;
+    width: 30%;
+  }
+
+  .moment-photo-frame {
+    width: 80%;
+    margin-bottom: 10px;
+  }
+
+  .moment-photo {
+    width: 100%;
+    height: 100%;
+  }
+
+  .remove-photo {
+    width: 20%;
+  }
+
+  .moment-icon {
+    max-width: 20px;
+    margin: 0 5px;
+  }
+
+  .current-date {
+    font-weight: bold;
+  }
+
+  .component-options {
+    padding: 0 10px;
+  }
+
+  .plan-module-options {
+    display: block;
+    max-height: 100px;
+    overflow-y: scroll;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .participant-row {
+    //padding: 0 10px;
+    width: 100%;
+  }
+
+  .participant {
+    width: 100%;
+  }
+
+  .participant-centered {
+    width: 100px;
+    height: 65px;
+    margin: auto 0 auto 0;
+
+    .participant-avatar {
+      margin: 0 auto;
+      top: 0
+    }
+
+    .participant-joined {
+      position: absolute;
+      left: 60%;
+      top: 28px;
+    }
+
+    .participant-label {
+      margin: 5px auto 0 auto;
+      color: grey;
+      font-size: 12px;
+    }
+  }
+
+  .person-card {
+    height: 100%;
+    width: 400px;
+    object-fit: contain;
+    margin: 0 12px;
+
+    // Added the slant pattern!
+    .top-pattern {
+      position: absolute;
+      top: 0;
+      height: 15%;
+      width: 100%;
+      background-color: #62bebf;
+      z-index: 1;
+    }
+
+    .middle-pattern {
+      position: absolute;
+      top: 15%;
+      height: 50%;
+      width: 100%;
+      border-style: solid;
+      border-width: 0 1300px 500px 0;
+      border-color: transparent #62bebf transparent transparent;
+      z-index: 1;
+    }
+
+    .bottom-pattern {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background-color: var(--ion-color-light);
+    }
+  }
+
+  .person-content {
+    overflow: scroll;
+    --background: var(--ion-color-light);
+  }
+
+  .person-content-item {
+    --background: transparent;
+  }
+
+  .person-content-left {
+    width: 40%;
+    display: inline-block;
+  }
+
+  .person-content-right {
+    width: 60%;
+    height: 72px;
+    display: inline-block;
+  }
+
+  .person-list-container {
+    width: 100%;
+  }
+
+  .person-list {
+    margin: 10px 0 2px 0;
+    display: block;
+    width: 100%;
+  }
+
+  .person-content-list {
+    color: grey;
+    font-size: 14px;
+    max-height: 72px;
+    line-height: 24px; /* Height / no. of lines to display */
+    overflow: hidden;
+  }
+
+  .person-photo-container {
+    height: 300px;
+    overflow: hidden;
+    //border-radius: 50%;
+    //margin: 5% auto;
+  }
+
+  .person-photo {
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 50%;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .thumbnail-item {
+    margin: 0 auto;
+    --size: 100px;
+  }
+
+  .remove-media {
+    position: absolute;
+    top: 4px;
+    right: calc(100%/2 - 45px);
+    z-index: 15;
+  }
+
+  .remove-video {
+    position: absolute;
+    top: 4px;
+    right: -95px;
+    z-index: 15;
+  }
+
+  .icon-container {
+    margin: 0 auto;
+    width: 60px;
+  }
+
+  .center {
+    margin: 0 auto;
+  }
+
+  .selected-item {
+    height: 100px;
+    //width: 100%;
+  }
+
+  .add-icon {
+    height: 80px;
+    width: 80px;
+  }
+
+  .user-list-preview {
+    max-height: 150px;
+    overflow: scroll;
+  }
+}

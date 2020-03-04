@@ -1,0 +1,59 @@
+app-profile {
+
+  ion-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .image-cropper {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 5% auto 0;
+  }
+
+  .browser-upload {
+    width: 200px;
+    margin: 5% auto;
+  }
+
+  .camera-icon {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    bottom: 8px;
+    right: calc(100%/2 - 80px);
+  }
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .profile-pic {
+    width: 100%;
+    margin: auto;
+    display: block;
+  }
+
+  .calling_code {
+    float: left;
+    max-width: 20%;
+    padding: 8px;
+  }
+
+  .phone_number {
+    position: absolute;
+    left: 20%;
+    bottom: 2px;
+    max-width: 50%;
+  }
+
+  .verify_button {
+    right: 5px;
+    margin-top: 12px;
+  }
+}
+

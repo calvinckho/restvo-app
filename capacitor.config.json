@@ -1,0 +1,17 @@
+{
+  "appId": "com.restvo.app",
+  "appName": "App",
+  "bundledWebRuntime": false,
+  "webDir": "www",
+  "ios": {
+    "minVersion": "11"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    },
+    "Keyboard": {
+      "resize": "ionic"
+    }
+  }
+}

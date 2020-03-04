@@ -1,0 +1,195 @@
+<ion-header *ngIf="modalPage">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Schedule</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="schedule">
+  <ion-toolbar class="filter">
+    <ion-segment [(ngModel)]="view">
+      <ion-segment-button value="timeline">Timeline</ion-segment-button>
+      <ion-segment-button value="content" [disabled]="!scheduleId">Content</ion-segment-button>
+      <ion-segment-button value="settings" [disabled]="!scheduleId">Settings</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-list *ngIf="view === 'timeline'">
+    <ion-item-group>
+      <ion-item lines="none">
+        <div class="moment-label"> <img class="side-image" src="assets/img/Calendar_Gray.png"></div>
+        <div class="moment-input">Timeline</div>
+        <ion-buttons slot="end" class="ion-no-margin">
+          <ion-button fill="clear" (click)="deleteSchedule()" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label (click)="focusCalendarDateField('start')"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+        <ion-datetime *ngIf="recurrenceStartTime" (ionCancel)="dateType='end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+      </ion-item>
+      <ion-item lines="none" *ngIf="dateType != 'start'">
+        <ion-label (click)="focusCalendarDateField('end')"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
+        <ion-datetime *ngIf="recurrenceEndTime" placeholder="12:00 pm" (ionCancel)="dateType=''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+      </ion-item>
+
+      <ion-card class="monthview" *ngIf="dateType">
+        <div class="month-title-container">
+          <ion-icon name="ios-arrow-back" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+          <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
+          <ion-icon name="ios-arrow-forward" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+        </div>
+        <div class="monthview-day-headers">S</div>
+        <div class="monthview-day-headers">M</div>
+        <div class="monthview-day-headers">T</div>
+        <div class="monthview-day-headers">W</div>
+        <div class="monthview-day-headers">T</div>
+        <div class="monthview-day-headers">F</div>
+        <div class="monthview-day-headers">S</div>
+
+        <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
+          <div class="monthview-element-content" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+            <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
+            <div *ngIf="dayOfMonth.date != ' ' ">
+              {{dayOfMonth.date.getDate()}}
+            </div>
+            <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index;">
+              <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+            </div>
+          </div>
+        </div>
+      </ion-card>
+      <ion-item lines="none" *ngIf="!allDay && dateType == 'start'">
+        <ion-label (click)="dateType = 'end'">End: {{recurrenceEndDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
+        <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+      </ion-item>
+    </ion-item-group>
+    <ion-item lines="none">
+      <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Frequency</ion-label>
+      <ion-select [(ngModel)]="schedule.options.recurrence" (ionChange)="touchSchedule('update schedule')" slot="end">
+        <ion-select-option value=''>None</ion-select-option>
+        <ion-select-option value='daily'>Daily</ion-select-option>
+        <ion-select-option value='weekly'>Weekly</ion-select-option>
+        <ion-select-option value='monthly'>Monthly</ion-select-option>
+        <ion-select-option value='yearly'>Yearly</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
+      <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
+      <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" (ionChange)="touchSchedule('update schedule')" slot="end"></ion-input>
+    </ion-item>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
+        <span>Create Schedule</span>
+      </ion-button>
+      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence"> <!--Only available for non-Plan child Activity-->
+        <span>Repopulate Timeline</span>
+      </ion-button>
+    </ion-row>
+    <ion-item-divider></ion-item-divider>
+    <ion-row *ngIf="this.schedule._id && !timeline.length" class="ion-justify-content-center">
+      <p>Your timeline is empty. Use the 'Content' tab to add content.</p>
+    </ion-row>
+    <ion-row *ngIf="!this.schedule._id" class="ion-justify-content-center">
+      <p>Click 'Create Schedule' to begin.</p>
+    </ion-row>
+    <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
+      <ion-item *virtualItem="let calendaritem; let j = index;">
+        <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
+        <span class="content-count">{{j+1}}.</span>
+        <span class="content-date">{{calendaritem.startDate | datetime: 'm:s,d:n,y:n'}}</span>
+        <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" [hidden]="calendaritem.moment._id"></ion-input>
+        <span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>
+        <ion-buttons slot="end" class="ion-no-margin">
+          <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
+          <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-virtual-scroll>
+  </ion-list>
+    <ion-list *ngIf="view === 'content'">
+      <ion-item lines="none">
+        <div class="moment-label"><img class="side-image" src="assets/img/Folder_Gray.png"></div>
+        <div class="moment-input">Mentoring {{this.categoryLabel}}</div>
+      </ion-item>
+      <ion-toolbar>
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
+      </ion-toolbar>
+      <ion-grid class="program-grid">
+        <ion-row class="program-row">
+          <ion-col class="ion-align-self-center" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">
+            <ion-card class="program-card" (click)="chooseChildActivity()" id="create-new-moment">
+              <ion-card-header class="ion-no-padding" color="lightgrey">
+                <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
+                  <ion-icon name="add" color="darkgrey"></ion-icon>
+                </ion-row>
+              </ion-card-header>
+              <div class="program-name dark">Add</div>
+            </ion-card>
+          </ion-col>
+          <ion-col class="ion-align-self-center" *ngFor="let content of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((content.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || content.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
+            <ion-card class="program-card" (click)="chooseContent(content)">
+              <ion-card-header class="ion-no-padding">
+                <div class="program-photo-container">
+                  <ion-img class="program-photo" [src]="(content.assets && content.assets.length && content.assets[0]) | background: content._id"></ion-img>
+                </div>
+              </ion-card-header>
+              <div class="program-type"><ion-badge color="button1">{{content.resource['en-US'].value[0]}}</ion-badge></div>
+              <div class="program-name light">{{content.matrix_string[0][0]}}</div>
+              <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openActivity($event, content)" fill="clear" size="small">
+                <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
+              </ion-button>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-item-divider></ion-item-divider>
+      <ion-item lines="none">Content List</ion-item>
+        <ion-row *ngIf="!timeline.length" class="ion-justify-content-center">
+            <p>You have not selected any content yet.</p>
+        </ion-row>
+      <ion-reorder-group (ionItemReorder)="reorderContents($event)" disabled="false">
+        <ion-virtual-scroll [items]="schedule.child_moments" approxItemHeight="48px">
+          <ion-item *virtualItem="let content; let j = index;">
+          <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
+          <ion-badge slot="start" class="moment-type">{{content.resource['en-US'].value[0]}}</ion-badge>
+          <span class="content-count">{{j+1}}.</span>
+          <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
+          <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
+          <ion-buttons slot="end" class="ion-no-margin">
+            <ion-button fill="clear" color="grey" (click)="openActivity($event, content)"><ion-icon name="cog"></ion-icon></ion-button>
+            <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-item>
+        </ion-virtual-scroll>
+      </ion-reorder-group>
+    </ion-list>
+  <ion-list *ngIf="view === 'settings'">
+    <ion-item lines="none">
+      <div class="moment-label"><img class="side-image" src="assets/img/Settings_Gray.png"></div>
+      <div class="moment-input">Settings</div>
+    </ion-item>
+    <ion-item-group class="ion-margin-left" lines="full">
+      <ion-item lines="none" [disabled]="this.parentCategoryId !== '5c915476e172e4e64590e349'"> <!--Only enable for Plan-->
+        <ion-label class="ion-margin-left">Floating Start Date</ion-label>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[0]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label class="ion-margin-left">Unique Answers for Each Repeated Content</ion-label>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[1]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label class="ion-margin-left">Add to Participant's Timeline</ion-label>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[2]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label class="ion-margin-left">Add to Leader's Timeline</ion-label>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[4]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label class="ion-margin-left">Add to Admin's Timeline</ion-label>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[3]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+</ion-content>

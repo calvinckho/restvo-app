@@ -1,0 +1,248 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{resource['en-US'].matrix_string[0][2]}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openActionSheet($event);">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="height: 100%" *ngIf="!loadCompleted">
+    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-card>
+    <ion-item class="header-container" lines="none">
+      <ion-avatar slot="start" (click)="seeUserInfo($event, post.author)">
+        <img class="avatar" *ngIf="post.author.avatar" [src]="post.author.avatar"/>
+        <img class="avatar" *ngIf="!post.author.avatar" src="assets/img/avatar-default.jpg"/>
+      </ion-avatar>
+      <div class="post-author-container">
+        <div class="post-author ion-text-wrap" >
+          {{post.author.first_name}} {{post.author.last_name}}
+          <ion-icon name="alert" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+        </div>
+      </div>
+      <ion-col slot="end" class="note-col">
+        <p class="note" class="ion-text-end">{{post.createdAt | datetime: 'm:l,d:n,y:n'}}</p>
+        <p class="note" class="ion-text-end">{{displayTimeElapsed(post.createdAt)}}</p>
+      </ion-col>
+    </ion-item>
+    <div class="photo-frame" *ngIf="post.attachments?.length">
+      <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" (click)="focusPhoto($event, post.attachments[0])"/>
+      <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <a [href]="post.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <a [href]="post.attachments[0]" *ngIf="(['pdf']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <div plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'video/' + (post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+    </div>
+    <div class="photo-frame" *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)">
+      <div plyr [plyrSources]="post.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (plyrError)="videoError($event)"></div>
+    </div>
+    <ion-card-content>
+      <p class="short-paragraph" [innerHTML]="post.body | nl2br"></p>
+    </ion-card-content>
+    <div class="photo-frame" *ngIf="post.moments && post.moments.length && post.moments[0]._id && post.moments[0].resource && ['User Defined Activity','Track','Event','Goal','Meetup'].indexOf(post.moments[0].resource.field) > -1">
+      <img class="photo" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
+    </div>
+    <ion-item *ngIf="post.moments && post.moments.length && post.moments[0]._id" lines="none">
+      <ion-thumbnail *ngIf="['User Defined Activity','Track','Event','Goal','Meetup','Poll'].indexOf(post.moments[0].resource.field) > -1  && post.moments[0].resource.hasOwnProperty('en-US') && post.moments[0].resource['en-US'].value[0] !== 'Poll'" slot="start">
+        <img [src]="momentService.loadIcon(post.moments[0].resource.field).url" />
+      </ion-thumbnail>
+      <!--User Defined Activity-->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'User Defined Activity'  && post.moments[0].resource.hasOwnProperty('en-US') && post.moments[0].resource['en-US'].value[0] !== 'Poll'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <p class="moment-name" >{{post.moments[0].resource['en-US'].value[0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+      </div>
+      <!--Track-->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Track'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+        <p class="moment-name">{{post.moments[0].matrix_string[0][1]}}</p>
+      </div>
+      <!--Event-->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Event'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+        <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+        <p class="moment-name">{{post.moments[0].matrix_string[1][0]}}</p>
+      </div>
+      <!--Meetup-->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'Meetup'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+        <p class="moment-date" >Date: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+        <p class="moment-name">{{post.moments[0].matrix_string[1][0]}}</p>
+      </div>
+      <!--Goal-->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource && post.moments[0].resource.field === 'Goal'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <p class="moment-name" >{{post.moments[0].resource['en-US'].matrix_string[0][0]}}: {{post.moments[0].matrix_string[0][0]}}</p>
+        <p *ngIf="post.moments[0].calendar" class="moment-date" >Accomplish By: {{post.moments[0].calendar.startDate | datetime: 'm:l,d:n,y:n'}}</p>
+        <p class="moment-notes">{{post.moments[0].matrix_string[1][0]}}</p>
+      </div>
+      <!-- Poll -->
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0] && post.moments[0].resource && post.moments[0].resource.field === 'Poll'">
+        <p>This poll is no longer available</p>
+      </div>
+      <div class="moment ion-text-wrap" *ngIf="post.moments[0].resource && post.moments[0].resource.field === 'User Defined Activity' && post.moments[0].resource.hasOwnProperty('en-US') && post.moments[0].resource['en-US'].value[0] === 'Poll'"  (click)="openRestvoFeature($event, post.moments[0])">
+        <ion-thumbnail class="pollIconDiv">
+          <ion-img class="pollIcon" src="assets/img/Poll_Gray.png"></ion-img>
+        </ion-thumbnail>
+        <p class="pollQuestion">{{post.moments[0].matrix_string[0][0]}}</p>
+        <div class="pollContainer" *ngFor="let display of post.poll.display; index as count">
+          <div class="optionsContainer">
+            <p class="option" >{{count+1}}. {{display.option}}</p>
+          </div>
+          <div class="votesContainer">
+            <p class="votecount">Votes: {{display.count}}</p>
+          </div>
+          <div class="userContainer">
+            <ion-icon class="uservoted" *ngIf="display.votedByUser" name="checkmark"></ion-icon>
+            <ion-button size="small" shape="round" fill='solid' color="darkgrey" class="uservote ion-text-wrap" *ngIf="!display.votedByUser" (click)="momentService.submitVote($event, post.moments[0], count)">Cast Vote</ion-button>
+          </div>
+        </div>
+        <div class="unresolvedPollFooter" *ngIf="post.moments[0].resource.field === 'User Defined Activity'">
+          <p>{{post.moments[0].resource['en-US'].matrix_string[1][4]}}: {{post.poll.totalVoteCount}}</p>
+          <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+        </div>
+      </div>
+    </ion-item>
+    <ion-row>
+      <ion-col>
+        <ion-button fill="clear" size="small" (click)="likePost($event)">
+          <ion-icon name="thumbs-up"></ion-icon>
+          {{post.likes?.length}} Likes
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button fill="clear" size="small">
+          <ion-icon name="text"></ion-icon>
+          {{post.comments?.length}} Comments
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button fill="clear" size="small" (click)="presentPickPeoplePopover($event)">
+          <ion-icon name="share-alt"></ion-icon>Share</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="hasAdminAccess || isGroupLeader || post.author._id === userData.user._id">
+      <ion-col>
+        <ion-button fill="clear" size="small" (click)="editPost()">
+          <ion-icon name="cog"></ion-icon>
+          {{resource['en-US'].matrix_string[0][12]}} {{resource['en-US'].matrix_string[0][2]}}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button fill="clear" size="small" (click)="deletePost()">
+          <ion-icon name="trash"></ion-icon>
+          {{resource['en-US'].matrix_string[0][10]}} {{resource['en-US'].matrix_string[0][2]}}
+        </ion-button>
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+    <ion-item class="comment" *ngFor="let lv1_comment of post.comments" lines="none">
+      <ion-avatar slot="start" (click)="seeUserInfo($event, lv1_comment.author)">
+        <img class="avatar" *ngIf="lv1_comment.author && lv1_comment.author.avatar" [src]="lv1_comment.author.avatar"/>
+        <img class="avatar" *ngIf="(lv1_comment.author && !lv1_comment.author.avatar) || lv1_comment.author_pending_member" src="assets/img/avatar-default.jpg"/>
+      </ion-avatar>
+      <div class="message-content">
+        <div class="comment-author" *ngIf="lv1_comment.author">
+          {{ lv1_comment.author.first_name }}{{" "}}{{ lv1_comment.author.last_name }}
+        </div>
+        <div class="chat-bubble left" *ngIf="!lv1_comment.moment">
+          <div class="ion-text-wrap">
+            <p class="message" *ngIf="lv1_comment.body" [innerHTML]="lv1_comment.body | nl2br"></p>
+          </div>
+          <div class="photo-frame" *ngIf="lv1_comment.attachments?.length">
+            <ion-thumbnail *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" >
+              <ion-img [src]="lv1_comment.attachments[0]" (click)="focusPhoto($event, lv1_comment.attachments[0])"></ion-img>
+            </ion-thumbnail>
+            <a [href]="lv1_comment.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="lv1_comment.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="lv1_comment.attachments[0]" *ngIf="(['pdf']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="lv1_comment.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <div plyr [plyrSources]="[{ 'src': lv1_comment.attachments[0], 'type': 'video/' + (lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+          </div>
+          <div class="photo-frame" *ngIf="lv1_comment.media?.length" (click)="resourceService.clickVideo($event, lv1_comment.media[0].sources)">
+            <div plyr [plyrSources]="lv1_comment.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (plyrError)="videoError($event)"></div>
+          </div>
+          <!--<ion-icon class="reply-icon" name="undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
+        </div>
+      </div>
+    </ion-item>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="message-footer">
+  <!-- Code start for quotation-->
+  <ion-toolbar class="replyQuote-wrapper" *ngIf="selectParentTag">
+    <div class="replyQuote-bubble">
+      <div ion-row>
+        <div ion-col col-11>
+          <div class="message" *ngIf="parent.body" [innerHTML]="parent.body | nl2br"></div>
+          <div *ngFor="let attachment of parent.attachments">
+            <img [src]="attachment" />
+          </div>
+          <div class="message-detail" *ngIf="parent.author">
+            <em><b>{{ parent.author.first_name }}{{" "}}{{ parent.author.last_name }}</b></em>
+          </div>
+          <div class="message-detail" *ngIf="parent.author_pending_member">
+            <em><b>{{ parent.author_pending_member.name }}</b></em>
+          </div>
+        </div>
+        <div ion-col>
+          <ion-icon class="closeReply" name="close-circle" (click)="closeSelectParent()"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </ion-toolbar>
+  <!-- Code end for quotation-->
+  <ion-toolbar class="ion-no-padding">
+    <div class="message-form">
+      <ion-button fill="clear" (click)="messageMoreOptions()">
+        <img class="moreButton" src="assets/img/Plus_Button_Grey.png"/>
+      </ion-button>
+      <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="composedComment" autocorrect="on"></ion-textarea>
+      <ion-button (click)="sendComment()" fill="clear" [disabled]="!composedComment?.length">
+        <img id="sendImage" src="assets/img/Send_Gray.png"/>
+      </ion-button>
+      <!--<ion-button (click)="recordAudio()" fill="clear" *ngIf="platform.is('cordova') && !composedComment.length && listening === false" >
+        <img class="recordAudioImg" src="assets/img/microphone.png"/>
+      </ion-button>
+      <ion-button (click)="stopListening()" fill="clear" *ngIf="listening === true">
+        <img class="recordAudioImg" src="assets/img/no-microphone.png"/>
+      </ion-button>-->
+    </div>
+  </ion-toolbar>
+  <ion-toolbar id="expandable" *ngIf="moreOptions" class="ion-no-padding">
+    <div class="moreoptions">
+      <ion-grid class="moreGrid">
+        <ion-row class="topRow" ion-align-self-center>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="takePhotoAndUpload()" src="assets/img/Camera_Gray.png" /><div class="moreLabel">Camera</div></ion-col>
+          <ion-col *ngIf="platform.is('cordova')" class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2">
+            <img class="colelement" (click)="selectPhotoFromDeviceAndUpload($event)" src="assets/img/Album_Gray.png" />
+            <div class="moreLabel">Album</div>
+          </ion-col>
+          <ion-col *ngIf="!platform.is('cordova')" class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2">
+            <label for="image"><img class="colelement" src="assets/img/Album_Gray.png" /></label>
+            <div class="moreLabel">Album</div>
+            <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
+          </ion-col>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2">
+            <label for="file"><img class="colelement" src="assets/img/Folder_Gray.png" /></label>
+            <div class="moreLabel">Upload</div>
+            <input type="file" class="file-picker" name="file" id="file" (change)="selectFileFromDeviceAndUpload($event, 'file')" />
+          </ion-col>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'User Defined Activity')" src="assets/img/Calendar_Gray.png" /><div class="moreLabel">Library</div></ion-col>
+          <!--<ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="shareLocation()" src="assets/img/Location_Grey.png"><p class="moreLabel">Location</p></ion-col>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Meetup')" src="assets/img/transparent-avatar.png" /><div class="moreLabel">Meetup</div></ion-col>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Goal')" src="assets/img/Peak_Gray.png" /><div class="moreLabel">Goal</div></ion-col>
+          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Poll')" src="assets/img/Poll_Gray.png" /><div class="moreLabel">Poll</div></ion-col>-->
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-toolbar>
+</ion-footer>

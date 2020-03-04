@@ -1,0 +1,177 @@
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+@import "~@ionic/angular/css/display.css";
+
+// include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with @import statements, or add them external stylings in your build process.
+@import "~quill/dist/quill.bubble.css";
+@import "~quill/dist/quill.snow.css";
+
+// http://ionicframework.com/docs/v2/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+/** {
+  font-family: Roboto;
+}*/
+
+//iPhone safe area settings: refer to https://blog.phonegap.com/displaying-a-phonegap-app-correctly-on-the-iphone-x-c4a85664c493
+body ion-footer {
+  /*padding-top: constant(safe-area-inset-top); !* iOS 11.0 *!
+  padding-top: env(safe-area-inset-top); !* iOS 11.2 *!*/
+  background-color: var(--ion-color-secondary); //for general theme of white background, etc. the board carousel's white backdrop when no graphics is loaded yet
+}
+
+ion-menu-toggle {
+  --padding-start: 12px;
+}
+
+ion-header {
+  ion-toolbar {
+    --min-height: 58px;
+  }
+}
+
+ion-item {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+:root {
+  ion-img {
+    /**
+     * Bug fix for:
+     * https://github.com/ionic-team/ionic/issues/18734
+     */
+    min-height: 1px !important;
+  }
+}
+
+p {
+  font-size: 14px;
+}
+
+.item-divider ion-label {
+  --color: var(--ion-color-primary);
+  font-weight: bold;
+}
+
+.level-5 {
+  z-index: 10000 !important;;
+}
+
+.level-10 {
+  z-index: 20000 !important;;
+}
+
+.level-15 {
+  z-index: 30000 !important;
+}
+
+ion-datetime {
+  z-index: 30000 !important;
+}
+
+.file-picker {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+ion-spinner {
+  display: block;
+  margin: auto;
+}
+
+.centered {
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  border: none;
+  text-align: center;
+}
+
+// this is a class definition that utilizes the color settings stored in theme/variables.scss
+.ion-color-grey {
+  --ion-color-base: var(--ion-color-grey);
+  --ion-color-base-rgb: var(--ion-color-grey-rgb);
+  --ion-color-contrast: var(--ion-color-grey-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-grey-contrast-rgb);
+  --ion-color-shade: var(--ion-color-grey-shade);
+  --ion-color-tint: var(--ion-color-grey-tint);
+}
+
+.ion-color-lightgrey {
+  --ion-color-base: var(--ion-color-lightgrey);
+  --ion-color-base-rgb: var(--ion-color-lightgrey-rgb);
+  --ion-color-contrast: var(--ion-color-lightgrey-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-lightgrey-contrast-rgb);
+  --ion-color-shade: var(--ion-color-lightgrey-shade);
+  --ion-color-tint: var(--ion-color-lightgrey-tint);
+}
+
+.ion-color-darkgrey {
+  --ion-color-base: var(--ion-color-darkgrey);
+  --ion-color-base-rgb: var(--ion-color-darkgrey-rgb);
+  --ion-color-contrast: var(--ion-color-darkgrey-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-darkgrey-contrast-rgb);
+  --ion-color-shade: var(--ion-color-darkgrey-shade);
+  --ion-color-tint: var(--ion-color-darkgrey-tint);
+}
+
+.ion-color-button1 {
+  --ion-color-base: var(--ion-color-button1);
+  --ion-color-base-rgb: var(--ion-color-button1-rgb);
+  --ion-color-contrast: var(--ion-color-button1-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-button1-contrast-rgb);
+  --ion-color-shade: var(--ion-color-button1-shade);
+  --ion-color-tint: var(--ion-color-button1-tint);
+}
+
+.ion-color-button2 {
+  --ion-color-base: var(--ion-color-button2);
+  --ion-color-base-rgb: var(--ion-color-button2-rgb);
+  --ion-color-contrast: var(--ion-color-button2-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-button2-contrast-rgb);
+  --ion-color-shade: var(--ion-color-button2-shade);
+  --ion-color-tint: var(--ion-color-button2-tint);
+}
+
+.ion-color-button3 {
+  --ion-color-base: var(--ion-color-button3);
+  --ion-color-base-rgb: var(--ion-color-button3-rgb);
+  --ion-color-contrast: var(--ion-color-button3-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-button3-contrast-rgb);
+  --ion-color-shade: var(--ion-color-button3-shade);
+  --ion-color-tint: var(--ion-color-button3-tint);
+}
+

@@ -1,0 +1,41 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/svg/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [{
+      "name": "api-freshness",
+      "urls": [
+        "/api",
+        "!/api/auth/protected"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "3d",
+        "timeout": "10s"
+      }
+    }
+  ]
+}
