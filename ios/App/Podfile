@@ -10,5 +10,6 @@ target 'App' do
   pod 'CapacitorJitsiMeet', :path => '../../node_modules/capacitor-jitsi-meet'
   pod 'CapacitorShareExtension', :path => '../../node_modules/capacitor-share-extension'
   pod 'CordovaPlugins', :path => '../capacitor-cordova-ios-plugins'
+  pod 'CordovaPluginsResources', :path => '../capacitor-cordova-ios-plugins'
   # Do not delete
 end
