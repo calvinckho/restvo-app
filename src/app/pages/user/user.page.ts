@@ -3,7 +3,7 @@ import {Location} from '@angular/common';
 import { Storage } from '@ionic/storage';
 import { UserData } from '../../services/user.service';
 import {
-    Events, LoadingController,
+    LoadingController,
     ModalController,
     Platform
 } from '@ionic/angular';
@@ -68,7 +68,6 @@ export class UserPage {
     ];
 
     constructor(private router: Router,
-                private events: Events,
                 private route: ActivatedRoute,
                 private storage: Storage,
                 private location: Location,

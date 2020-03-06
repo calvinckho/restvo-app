@@ -679,6 +679,8 @@ app-groupchat {
 
   .program-name {
     position: absolute;
+    max-height: 28px;
+    overflow: hidden;
     bottom: 2%;
     left: 2%;
     font-size: 12px;

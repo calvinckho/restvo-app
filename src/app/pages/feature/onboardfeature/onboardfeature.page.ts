@@ -411,7 +411,7 @@ export class OnboardfeaturePage {
         event.stopPropagation();
         if (moment.resource.matrix_number[0].find((c) => c === 10600)) {
             if (moment.conversation) {
-                this.events.publish('toggleVideoChat', {
+                this.chatService.toggleVideoChat({
                     videoChatRoomId: moment.conversation,
                     channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
                     startWithAudioMuted: true,

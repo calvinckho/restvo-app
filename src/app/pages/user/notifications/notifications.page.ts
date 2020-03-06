@@ -12,6 +12,8 @@ import {Location} from "@angular/common";
 export class NotificationsPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any;
+
+    subscriptions: any = {};
     UIenabledPushNotification: boolean;
     UIpushNotifyUnreadChatMessages: boolean;
     UIpushNotifySystemMessages: boolean;
@@ -24,19 +26,15 @@ export class NotificationsPage implements OnInit, OnDestroy {
                 private events: Events) { }
 
     async ngOnInit() {
-        this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
     }
 
     refreshUserStatusHandler = async (data) => {
-        await this.prepareUserSettings();
-    };
-
-    async ionViewWillEnter() {
         if (this.userData && this.userData.user) {
             await this.prepareUserSettings();
         }
         this.userData.splitPaneState = 'md';
-    }
+    };
 
     async prepareUserSettings() {
         this.UIpushNotifyUnreadChatMessages = this.userData.user.pushNotifyUnreadChatMessages;
@@ -81,6 +79,6 @@ export class NotificationsPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
     }
 }

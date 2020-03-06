@@ -8,6 +8,7 @@ import { Chat } from './chat.service';
 import { Events } from '@ionic/angular';
 import { Group } from '../interfaces/group'
 import {Board} from "./board.service";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Groups {
@@ -76,14 +77,17 @@ export class Groups {
         await this.userData.load();
         this.events.publish('closeGroupView', group._id);
         if (group.conversation) {
-            this.events.publish('incomingStatusUpdate', group.conversation, group);
-            this.events.publish('chat socket emit', group.conversation, {action: 'leave group', groupId: group._id});
+            //this.events.publish('refreshGroupStatus', group.conversation, group);
+            this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
+            //this.events.publish('chat socket emit', group.conversation, {action: 'leave group', groupId: group._id});
+            this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'leave group', groupId: group._id}});
+
         }
         if (group.board) {
             this.userData.communitiesboards = await this.boardService.loadUserChurchBoards();
             this.events.publish('refreshCommunityBoardsPage');
         }
-        this.events.publish('refreshUserStatus', {type: 'leave group', groupId: group._id});
+        this.userData.refreshUserStatus({type: 'leave group', groupId: group._id});
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'leave group', groupId: group._id});
         return promise;
     }

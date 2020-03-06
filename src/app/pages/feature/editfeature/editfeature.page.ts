@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation, OnDestroy} from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Plyr } from "plyr";
 import {SwUpdate} from "@angular/service-worker";
@@ -34,7 +34,7 @@ import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover
   styleUrls: ['./editfeature.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditfeaturePage implements OnInit {
+export class EditfeaturePage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
 
   @Input() modalPage: any; // whether the page is opened with hte modalController
@@ -46,6 +46,8 @@ export class EditfeaturePage implements OnInit {
     @Input() type = 2; // type 2: participant onboarding, 3: organizer onboarding, 4: leader onboarding
     // for child Activity
     @Input() parent_programId: any; // parent Program ID
+
+    subscriptions: any = {};
     editTemplate = false;
   templateChanged = false;
 
@@ -180,17 +182,11 @@ export class EditfeaturePage implements OnInit {
 
   async ngOnInit() {
       this.events.subscribe('refreshMoment', this.refreshMomentHandler);
-      this.events.subscribe('refreshUserStatus', this.reloadEditPage);
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
 
-    async ionViewWillEnter() {
-        if (this.userData.user) {
-            this.setup();
-        }
-    }
-
     reloadEditPage = async () => { // refresh the Edit Page
-      if (!this.initialSetupCompleted) {
+      if (!this.initialSetupCompleted && this.userData.user) {
           this.setup();
       }
     };
@@ -885,7 +881,7 @@ export class EditfeaturePage implements OnInit {
                     this.referenceActivities[index] = modifiedMoment;
                 }
             } else { // otherwise, enter show Activity view
-                this.events.publish('openMoment', { moment: this.referenceActivities[index], modalPage: true });
+                this.momentService.openMoment( { moment: this.referenceActivities[index], modalPage: true });
             }
         }
     }
@@ -1274,7 +1270,7 @@ export class EditfeaturePage implements OnInit {
             buttons: [{ text: 'Proceed',
                 handler: async () => {
                     if (this.modalPage) {
-                        this.events.publish('openPreferences', { programId: this.moment._id, type: type, organizer: true, modalPage: true });
+                        this.momentService.openPreferences({ programId: this.moment._id, type: type, organizer: true, modalPage: true });
                     } else {
                         this.router.navigate(['/app/discover/preferences', { programId: this.moment._id, type: type, organizer: true, showHeader: true }]);
                     }
@@ -1334,9 +1330,13 @@ export class EditfeaturePage implements OnInit {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {
           this.location.back();
-          this.events.publish('refreshUserStatus', {});
+          this.userData.refreshUserStatus({});
       }
       this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
       this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+  }
+
+  ngOnDestroy(): void {
+      this.subscriptions['refreshUserStatus'].unsubscribe();
   }
 }

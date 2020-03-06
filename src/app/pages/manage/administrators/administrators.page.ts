@@ -37,7 +37,7 @@ export class AdministratorsPage implements OnInit {
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
         if (needsToRefresh) {
             console.log("refreshing...");
-            this.events.publish('refreshUserStatus', {type: 'change community'});
+            this.userData.refreshUserStatus({type: 'change community'});
         }
     }
 

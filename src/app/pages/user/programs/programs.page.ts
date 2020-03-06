@@ -1,4 +1,4 @@
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {UserData} from "../../../services/user.service";
 import {Events, ModalController} from "@ionic/angular";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
@@ -11,9 +11,12 @@ import {Storage} from "@ionic/storage";
   styleUrls: ['./programs.page.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ProgramsPage {
+export class ProgramsPage implements OnInit, OnDestroy {
 
   @Input() modalPage: any;
+
+  subscriptions: any = {};
+  resources: any;
   programs: any;
 
   constructor(
@@ -24,15 +27,14 @@ export class ProgramsPage {
       private modalCtrl: ModalController
   ) { }
 
-  async ionViewWillEnter() {
-    if (this.userData.user) {
-      this.loadPrograms();
-    }
-      this.events.subscribe('refreshUserStatus', this.refreshHandler);
+  async ngOnInit() {
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
   }
 
     refreshHandler = () => {
-        this.loadPrograms();
+        if (this.userData.user) {
+            this.loadPrograms();
+        }
     };
 
   async loadPrograms() {
@@ -84,7 +86,7 @@ export class ProgramsPage {
         this.modalCtrl.dismiss();
     }
 
-    ionViewWillLeave() {
-        this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
+    ngOnDestroy() {
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

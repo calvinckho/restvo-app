@@ -447,7 +447,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         } else { // on mobile devices
             // if admin and opening community or program
             if (program.user_list_2.includes(this.userData.user._id) && (program.categories.includes('5c915324e172e4e64590e346') || program.categories.includes('5c915475e172e4e64590e348'))) {
-                this.events.publish('manageMoment', { moment: program, modalPage: true });
+                this.momentService.manageMoment({ moment: program, modalPage: true });
             } else {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: { moment: { _id: program._id }, modalPage: true}} );
                 await modal.present();
@@ -457,7 +457,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     async finishOnboarding(event) {
         event.stopPropagation();
-        this.events.publish('openOnboarding', { modalPage: true });
+        this.authService.openOnboarding({ modalPage: true });
     }
 
     async createMentoring() {

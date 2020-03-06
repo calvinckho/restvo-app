@@ -87,7 +87,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   }
 
   // for current user refreshing the app
-  refreshUserStatusHandler = async (data) => {
+  loadAndProcessMomentHandler = async (data) => {
     // data.type - 'update moment and calendar participation' or null or others. In all cases, reload moment and redo permission
       // ready to check authentication status
     this.loadInsight();

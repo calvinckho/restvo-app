@@ -26,6 +26,7 @@ export class GroupsPage {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any;
+    subscriptions: any = {};
     //variables to search topics
     ionSpinner = false;
     groups: any = [];
@@ -49,8 +50,8 @@ export class GroupsPage {
             this.setupManageGroups();
         }
 
-        // PWA fast load listener + reload listener
-        this.events.subscribe('refreshUserStatus', this.refreshHandler);
+        // link refresh user observable to refresh handler
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
     refreshHandler = (data) => {
@@ -145,6 +146,6 @@ export class GroupsPage {
     }
 
     ionViewWillLeave() {
-        this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

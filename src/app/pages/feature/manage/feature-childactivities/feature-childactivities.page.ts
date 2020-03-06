@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Events, ModalController, Platform} from "@ionic/angular";
 import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -15,11 +15,12 @@ import {ManagefeaturePage} from "../managefeature.page";
   styleUrls: ['./feature-childactivities.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class FeatureChildActivitiesPage implements OnInit {
+export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   @Input() modalPage: any;
   @Input() moment: any; // the moment object
   @Input() categoryId: any; // the category ID
+  subscriptions: any = {};
   momentId: any;
   categoryLabel = '';
   ionSpinner = false;
@@ -41,12 +42,12 @@ export class FeatureChildActivitiesPage implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
     await this.resourceService.loadSystemResources();
-    this.setupChildActivitiesPage();
+    // link the refreshUserStatus Observable with the loadChildActivities handler. It fires on page loads and subsequent user status refresh
+    this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadChildActivitiesHandler);
   }
 
-  refreshUserStatusHandler = () => {
+  reloadChildActivitiesHandler = async () => {
     this.setupChildActivitiesPage();
   };
 
@@ -74,9 +75,9 @@ export class FeatureChildActivitiesPage implements OnInit {
     if (this.modalPage || this.platform.width() < 768) {
       // for community or program, manage mode
       if ((moment.categories.map((c) => c._id).includes('5c915324e172e4e64590e346') || moment.categories.map((c) => c._id).includes('5c915475e172e4e64590e348'))) {
-        this.events.publish('manageMoment', { moment: moment, modalPage: true });
+        this.momentService.manageMoment({ moment: moment, modalPage: true });
       } else { // for relationship and other Activities, open Moment
-        this.events.publish('openMoment', { moment: moment, modalPage: true });
+        this.momentService.openMoment( { moment: moment, modalPage: true });
       }
     } else {
       if (this.router.url.includes('app/manage')) { // if opened from Manage mode
@@ -146,7 +147,7 @@ export class FeatureChildActivitiesPage implements OnInit {
 
   async openActivity(event, activity) {
     event.stopPropagation();
-    this.events.publish('openMoment', { moment: activity, modalPage: true });
+    this.momentService.openMoment({ moment: activity, modalPage: true });
   }
 
   async removeActivity(event, activity) {
@@ -162,4 +163,7 @@ export class FeatureChildActivitiesPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions['refreshUserStatus'].unsubscribe();
+  }
 }

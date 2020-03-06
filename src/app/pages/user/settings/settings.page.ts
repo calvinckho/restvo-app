@@ -20,6 +20,8 @@ import { Aws } from "../../../services/aws.service";
 export class SettingsPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any;
+
+    subscriptions: any = {};
     loading: any;
     appName = '';
     appVersionNumber = '';
@@ -47,20 +49,15 @@ export class SettingsPage implements OnInit, OnDestroy {
               public userData: UserData) { }
 
     async ngOnInit() {
-        this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
     }
 
     refreshUserStatusHandler = async (data) => {
-        await this.prepareUserSettings();
-    };
-
-    async ionViewWillEnter() {
-        if (this.userData && this.userData.user) {
-            await this.prepareUserSettings();
+        if (this.authService.token) {
+            this.prepareUserSettings();
         }
         this.userData.splitPaneState = 'md';
-    }
-
+    };
 
     async prepareUserSettings() {
         await this.userData.load();
@@ -183,6 +180,6 @@ export class SettingsPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'].subscribe(this.refreshUserStatusHandler);
     }
 }

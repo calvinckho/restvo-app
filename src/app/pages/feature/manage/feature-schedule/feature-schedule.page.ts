@@ -84,12 +84,12 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async ngOnInit() {
-    super.ngOnInit();
-    await this.resourceService.loadSystemResources();
+    await super.ngOnInit();
     this.setupSchedulePage();
   }
 
-  refreshUserStatusHandler = async () => {
+  // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
+  reloadChildActivitiesHandler = async () => {
     this.setupSchedulePage();
     this.setupChildActivitiesPage();
   };
@@ -134,7 +134,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     if (calendarItem.uniqueAnswersPerCalendar && calendarItem._id) {
       componentProps.calendarId = calendarItem._id;
     }
-    this.events.publish('openMoment', componentProps);
+    this.momentService.openMoment(componentProps);
   }
 
   async promptTouchSchedule() {

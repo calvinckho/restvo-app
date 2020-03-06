@@ -1,7 +1,15 @@
 app-about {
-  ion-spinner {
+  .browser-upload {
+    width: 200px;
+    margin: 5% auto;
+  }
+
+  .camera-icon {
+    width: 25px;
+    height: 25px;
     position: absolute;
-    margin: 48%;
+    bottom: 8px;
+    right: calc(100%/2 - 60px);
   }
 
   .edit-button {

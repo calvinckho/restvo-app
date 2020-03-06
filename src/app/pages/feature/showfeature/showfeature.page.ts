@@ -55,6 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
+    subscriptions: any = {};
   mode = 'list';
   slideOpts = {
       updateOnWindowResize: true,
@@ -235,9 +236,36 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
       this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
       this.events.subscribe('refreshMoment', this.refreshMomentHandler);
-      this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+      // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.loadAndProcessMomentHandler);
       this.events.subscribe('searchMap', () => { this.searchMap(); });
-      await this.setup();
+      await this.processVerificationToken();
+  }
+
+  // for current user refreshing the app
+  loadAndProcessMomentHandler = async (data) => {
+      if (this.calendarId) {
+          await this.loadCalendarItem();
+      }
+      if (this.moment._id) { // if called by modalCtrl.create()
+          await this.loadMoment();
+      } else { // if called by router outlet
+          this.moment._id = this.route.snapshot.paramMap.get('id') || '5d5785b462489003817fee18';
+          await this.loadMoment();
+      }
+      this.categoryIds = this.moment.categories ? this.moment.categories.map((c) => c._id) : [];
+
+      if (this.moment && this.moment._id) {
+        // ready to check authentication status
+        if (this.authService.token && this.userData.user) {
+            this.setupPermission();
+        } else {
+            this.setupPermissionCompleted = true;
+        }
+      }
+      // load list of plans. it does not require authentication
+      await this.loadPrograms();
+
       // if user has not joined, or if token is provided
       if ((this.authService.token && !this.token && !this.hasAddedToAttendEventList && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
@@ -245,100 +273,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       } else {
           this.hasSpecialPrivilege = true;
       }
-  }
-
-  async setup() {
-      if (this.calendarId) {
-          await this.loadCalendarItem();
-      }
-    if (this.moment._id) { // if called by modalCtrl.create()
-        await this.loadMoment();
-    } else { // if called by router outlet
-        this.moment._id = this.route.snapshot.paramMap.get('id') || '5d5785b462489003817fee18';
-        await this.loadMoment();
-    }
-    this.token = this.route.snapshot.paramMap.get('token');
-    this.verification_token = this.route.snapshot.paramMap.get('verify');
-    this.participant_type = this.route.snapshot.paramMap.get('type') ? parseInt(this.route.snapshot.paramMap.get('type'), 10) : null;
-    this.categoryIds = this.moment.categories ? this.moment.categories.map((c) => c._id) : [];
-    if (this.verification_token) {
-        try {
-            this.loading = await this.loadingCtrl.create({
-                message: 'Verifying...'
-            });
-            await this.loading.present();
-            const result: any = await this.authService.verifyEmail({verification_token: this.verification_token});
-            if (result.success && result.token) {
-                this.authService.cachedRouteParams = null; // remove the route params, including the verification token
-                // this will reload the app by first validating the returned auth token
-                const res: any = await this.authService.checkAuthenticationWithToken(result.token);
-                this.loading.dismiss();
-                if (res.content === 'Success') {
-                    console.log('Token authorized');
-                    this.userData.user = res.user;
-                    this.userData.processLoadedUserData();
-                    await this.userData.loadStoredCommunity();
-                    this.userData.refreshAppPages();
-                } else {
-                    console.log('Token is not authorized');
-                    const alert = await this.alertCtrl.create({
-                        header: 'Something went wrong',
-                        message: 'Please try again later.',
-                        buttons: [{
-                            text: 'OK',
-                            handler: () => {
-                            }
-                        }],
-                        cssClass: 'level-15'
-                    });
-                    alert.present();
-                    this.setupPermissionCompleted = true;
-                }
-            } else {
-                this.loading.dismiss();
-                const alert = await this.alertCtrl.create({
-                    header: 'Account Activated',
-                    message: result.msg,
-                    buttons: [{
-                        text: 'OK',
-                        handler: () => {
-                        }
-                    }],
-                    cssClass: 'level-15'
-                });
-                alert.present();
-            }
-        } catch (err) {
-            this.loading.dismiss();
-            console.log('Error in authentication');
-        }
-        this.setupPermissionCompleted = true;
-    }
-    if (this.authService.token && this.userData.user) {
-      this.setupPermission();
-    } else {
-      this.setupPermissionCompleted = true;
-    }
-    // load list of plans. it does not require authentication
-    await this.loadPrograms();
-  }
-
-  // for current user refreshing the app
-  refreshUserStatusHandler = async (data) => {
-      if (this.calendarId) {
-          await this.loadCalendarItem();
-      }
-    // data.type - 'update moment and calendar participation' or null or others. In all cases, reload moment and redo permission
-    await this.loadMoment();
-    if (this.moment && this.moment._id) {
-        // ready to check authentication status
-        if (this.authService.token && this.userData.user) {
-            this.setupPermission();
-            this.loadPrograms();
-        } else {
-            this.setupPermissionCompleted = true;
-        }
-    }
   };
 
   // for refreshing moment either because of real-time interactables, or for refreshing participation
@@ -1019,7 +953,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.router.navigateByUrl('/app/activity/' + this.moment._id);
         }, 500);
       }
-      this.events.publish('toggleVideoChat', {
+      this.chatService.toggleVideoChat({
         videoChatRoomId: this.moment.conversation,
         videoChatRoomSubject: this.moment.matrix_string[0][0],
         channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
@@ -1262,7 +1196,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 this.responses.splice(index, 1, response);
             }
             if (this.moment.program) {
-                this.events.publish('refreshUserStatus', {});
+                this.userData.refreshUserStatus({});
             }
         }, 3000);
     }
@@ -1467,7 +1401,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const navTransition = actionSheet.dismiss();
                 navTransition.then( async () => {
                     if (this.modalPage) {
-                        this.events.publish('openPreferences', { programId: this.moment._id, modalPage: true });
+                        this.momentService.openPreferences({ programId: this.moment._id, modalPage: true });
                     } else {
                         this.router.navigate(['/app/preferences/' + this.moment._id, { showHeader: true }]);
                     }
@@ -1486,7 +1420,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       if (this.modalPage) {
                           const moment = this.moment;
                           moment.name = this.moment.matrix_string[0][0];
-                          this.events.publish('openChat', {conversationId: this.moment.conversation, moment: moment});
+                          this.chatService.openChat({conversationId: this.moment.conversation, moment: moment});
                       } else {
                           this.chatService.currentChatProps.push({
                               conversationId: this.moment.conversation,
@@ -1548,7 +1482,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 handler: () => {
                     const navTransition = actionSheet.dismiss();
                     navTransition.then( async () => {
-                        this.events.publish('manageMoment', { moment: this.moment, modalPage: this.modalPage });
+                        this.momentService.manageMoment({ moment: this.moment, modalPage: this.modalPage });
                     });
                 },
             }]);
@@ -1602,7 +1536,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             if (this.modalPage) {
                                 const moment = this.moment;
                                 moment.name = this.moment.matrix_string[0][0] + ' (' + this.organizersLabel + ')';
-                                this.events.publish('openChat', {conversationId: this.moment.conversation_2, moment: moment});
+                                this.chatService.openChat({conversationId: this.moment.conversation_2, moment: moment});
                             } else {
                                 this.chatService.currentChatProps.push({
                                     conversationId: this.moment.conversation_2,
@@ -1655,7 +1589,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     const navTransition = actionSheet.dismiss();
                     navTransition.then( async () => {
                         if (this.modalPage) {
-                            this.events.publish('openPreferences', { programId: this.moment._id, modalPage: true });
+                            this.momentService.openPreferences({ programId: this.moment._id, modalPage: true });
                         } else {
                             this.router.navigate(['/app/preferences/' + this.moment._id, { showHeader: true }]);
                         }
@@ -1674,7 +1608,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         if (this.modalPage) {
                             const moment = this.moment;
                             moment.name = this.moment.matrix_string[0][0] + ' (' + this.leadersLabel + ')';
-                            this.events.publish('openChat', {conversationId: this.moment.conversation_3, moment: moment});
+                            this.chatService.openChat({conversationId: this.moment.conversation_3, moment: moment});
                         } else {
                             this.chatService.currentChatProps.push({
                                 conversationId: this.moment.conversation_3,
@@ -2199,6 +2133,66 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.showSpecialAccess = !this.showSpecialAccess;
   }
 
+
+    async processVerificationToken() {
+        this.token = this.route.snapshot.paramMap.get('token');
+        this.verification_token = this.route.snapshot.paramMap.get('verify');
+        this.participant_type = this.route.snapshot.paramMap.get('type') ? parseInt(this.route.snapshot.paramMap.get('type'), 10) : null;
+        if (this.verification_token) {
+            try {
+                this.loading = await this.loadingCtrl.create({
+                    message: 'Verifying...'
+                });
+                await this.loading.present();
+                const result: any = await this.authService.verifyEmail({verification_token: this.verification_token});
+                if (result.success && result.token) {
+                    this.authService.cachedRouteParams = null; // remove the route params, including the verification token
+                    // this will reload the app by first validating the returned auth token
+                    const res: any = await this.authService.checkAuthenticationWithToken(result.token);
+                    this.loading.dismiss();
+                    if (res.content === 'Success') {
+                        console.log('Token authorized');
+                        this.userData.user = res.user;
+                        this.userData.processLoadedUserData();
+                        await this.userData.loadStoredCommunity();
+                        this.userData.refreshAppPages();
+                    } else {
+                        console.log('Token is not authorized');
+                        const alert = await this.alertCtrl.create({
+                            header: 'Something went wrong',
+                            message: 'Please try again later.',
+                            buttons: [{
+                                text: 'OK',
+                                handler: () => {
+                                }
+                            }],
+                            cssClass: 'level-15'
+                        });
+                        alert.present();
+                        this.setupPermissionCompleted = true;
+                    }
+                } else {
+                    this.loading.dismiss();
+                    const alert = await this.alertCtrl.create({
+                        header: 'Account Activated',
+                        message: result.msg,
+                        buttons: [{
+                            text: 'OK',
+                            handler: () => {
+                            }
+                        }],
+                        cssClass: 'level-15'
+                    });
+                    alert.present();
+                }
+            } catch (err) {
+                this.loading.dismiss();
+                console.log('Error in authentication');
+            }
+            this.setupPermissionCompleted = true;
+        }
+    }
+
   async noNetworkConnection(){
     const networkAlert = await this.alertCtrl.create({
       header: 'No Internet Connection',
@@ -2225,7 +2219,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    this.events.unsubscribe('refreshUserStatus', this.refreshUserStatusHandler);
+    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
     this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
   }
 }

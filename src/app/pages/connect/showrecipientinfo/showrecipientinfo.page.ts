@@ -25,6 +25,7 @@ export class ShowrecipientinfoPage implements OnInit {
     @Input() recipient: any = { _id: '', first_name: '', last_name: '', role: '', avatar: '' };
     @Input() programId: any; // optional, if a program context is provided
 
+    subscriptions: any = {};
     loading: any;
     result: any = [];
     isConnected: boolean = false;
@@ -63,27 +64,20 @@ export class ShowrecipientinfoPage implements OnInit {
             this.setToggle();
         }
         this.manageMode = this.recipient.wee_user;
-        this.events.subscribe('refreshUserStatus', this.refreshHandler);
+        this.recipient._id = this.recipient._id || this.route.snapshot.paramMap.get('id');
+        // link refreshUserStatus Observable with refresh handler. It fires on page loads and subsequent user status refresh
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
     refreshHandler = () => {
-        this.setup();
-    };
-
-    setup() {
-        if (!this.userData.user || (this.recipient && ((this.recipient.role === 'Contact') || (this.recipient.role === 'Pending')))) {
-            this.loadCompleted = true;
-        } else {
-            this.checkConnection();
-        }
-    }
-
-    ionViewWillEnter() {
-        this.recipient._id = this.recipient._id || this.route.snapshot.paramMap.get('id');
         if (this.recipient._id) {
-            this.setup();
+            if (!this.userData.user || (this.recipient && ((this.recipient.role === 'Contact') || (this.recipient.role === 'Pending')))) {
+                this.loadCompleted = true;
+            } else {
+                this.checkConnection();
+            }
         }
-    }
+    };
 
     async checkConnection(){
         this.result = await this.chatService.getConversationByRecipientId(this.recipient._id, true, this.programId); // API-controlled recipient info access permission
@@ -149,7 +143,7 @@ export class ShowrecipientinfoPage implements OnInit {
             const conversation = this.result.conversation;
             if (conversation.type === 'connect') {
                 if (this.modalPage) {
-                    this.events.publish('openChat', {conversationId: conversation._id, author: this.recipient});
+                    this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
                 } else {
                     this.chatService.currentChatProps.push({
                         conversationId: conversation._id,
@@ -173,7 +167,7 @@ export class ShowrecipientinfoPage implements OnInit {
                                     const navTransition = alert.dismiss();
                                     navTransition.then( async () => {
                                         await this.chatService.unblockConversation(conversation._id, this.recipient._id);
-                                        this.events.publish('openChat', {conversationId: conversation._id, author: this.recipient});
+                                        this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
                                         this.isBlocked = false;
                                         this.isConnected = true;
                                     })
@@ -215,7 +209,7 @@ export class ShowrecipientinfoPage implements OnInit {
                             const newConversationId = await this.chatService.newConversation(this.recipient._id, { composedMessage : welcomeMessage, type: "connect" });
                             this.chatService.refreshTabBadges();
                             this.isConnected = true;
-                            this.events.publish('openChat', {conversationId: newConversationId, author: this.recipient});
+                            this.chatService.openChat({conversationId: newConversationId, author: this.recipient});
 
                         });
                     }}, { text: 'Cancel' }],

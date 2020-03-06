@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
 import {
     Events,
@@ -19,10 +19,11 @@ import {Churches} from "../../../services/church.service";
   styleUrls: ['./members.page.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MembersPage {
+export class MembersPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
     @Input() modalPage: any;
+
+    subscriptions: any = {};
     //variables to search people
     ionSpinner = false;
     community: any;
@@ -44,17 +45,17 @@ export class MembersPage {
               private resourceService: Resource,
               private modalCtrl: ModalController) { }
 
-  ionViewWillEnter() {
-      if(this.userData && this.userData.currentCommunityAdminStatus) {
-          this.setupManagePeople();
-      }
-
-      // PWA fast load listener + reload listener
-      this.events.subscribe('refreshUserStatus', this.refreshHandler);
-  }
+    ngOnInit() {
+        if (this.userData && this.userData.currentCommunityAdminStatus) {
+            this.setupManagePeople();
+        }
+        // link refreshUserStatus Observable with refresh handler.
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
+    }
 
     refreshHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community' || data.type === 'update member'){
+        // because on first subscription, data is null. Thiw will refresh only under special data.type
+        if (data && (data.type === 'update admin' || data.type === 'change community' || data.type === 'update member')){
             this.setupManagePeople();
         }
     };
@@ -127,7 +128,7 @@ export class MembersPage {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
-        this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
+    ngOnDestroy() {
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

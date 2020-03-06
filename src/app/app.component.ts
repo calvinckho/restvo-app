@@ -111,12 +111,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (!this.userData.UIready) return;
         await this.storage.set('UIAdminMode', this.userData.UIAdminMode);
         if (this.userData.UIAdminMode) {
-            /*if (!this.userData.defaultProgram) {
-            }*/
-            this.events.publish('openUserPrograms', { modalPage: this.platform.width() < 768 });
-            /*if (this.userData.defaultProgram && this.userData.defaultProgram.user_list_2.includes(this.userData.user._id)) {
-                this.router.navigateByUrl('/app/dashboard/insight/' + this.userData.defaultProgram._id);
-            }*/
+            this.userData.openUserPrograms({ modalPage: this.platform.width() < 768 });
             this.menuCtrl.close();
         } else {
             if (this.userData.defaultProgram) {

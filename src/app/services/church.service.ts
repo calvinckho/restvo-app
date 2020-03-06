@@ -82,7 +82,7 @@ export class Churches {
         const promise = await this.http.put(this.networkService.domain + '/api/church/clearabusereport/' + churchId, JSON.stringify({reportedUser: recipient}), this.authService.httpAuthOptions)
             .toPromise();
         this.events.publish('refreshManagePage'); //send to self to update managecommunities page
-        this.events.publish('refreshUserStatus', { type: 'update member' });  //send to self to update manage-members page
+        this.userData.refreshUserStatus({ type: 'update member' });  //send to self to update manage-members page
         this.userData.socket.emit('refresh user status', this.userData.user._id, { type: 'update member' }); //send to other devices to update manage-members page
         return promise;
     }

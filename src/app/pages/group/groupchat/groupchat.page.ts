@@ -53,6 +53,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any; //optionally sent if it is a modal page
+
+    subscriptions: any = {};
     propIndex: any;
     // chat
     messages: any = [];
@@ -103,10 +105,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         this.events.subscribe('reloadMessages', this.reloadHandler);
-        // when a new message comes in via socket.io
-        this.events.subscribe('incomingConnectMessage', this.incomingMessageHandler);
+
+        this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
+
         this.events.subscribe('refreshMoment', this.refreshMomentHandler);
-        this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
         this.events.subscribe('closeGroupView', this.closeGroupChatHandler);
         if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
             this.setup();
@@ -563,11 +566,27 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (moment.resource.field === "Location") {
             window.open("http://maps.google.com/?q=" + moment.matrix_number[0] + "+%2C" + moment.matrix_number[1], '_blank');
         } else {
-            const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: moment, modalPage: true}});
-            await modal.present();
-            const {data: refreshNeeded} = await modal.onDidDismiss();
-            if (refreshNeeded) {
-                this.reloadMessages();
+            let params: any;
+            let componentProps: any;
+            params = { };
+            componentProps = { moment: moment, modalPage: true };
+            if (moment.calendar && moment.calendar._id) {
+                params.calendarId = moment.calendar._id;
+                componentProps.calendarId = moment.calendar._id;
+            }
+            if (this.chatService.currentChatProps[this.propIndex].moment) {
+                params.relationshipId = this.chatService.currentChatProps[this.propIndex].moment._id;
+                componentProps.relationshipId = this.chatService.currentChatProps[this.propIndex].moment._id;
+            }
+            if (this.platform.width() >= 768) {
+                this.router.navigate(['/app/activity/' + moment._id, params ], { replaceUrl: false });
+            } else {
+                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
+                await modal.present();
+                const {data: refreshNeeded} = await modal.onDidDismiss();
+                if (refreshNeeded) {
+                    this.reloadMessages();
+                }
             }
         }
     }
@@ -745,11 +764,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
         const badge = this.chatService.currentChatProps && this.chatService.currentChatProps.length > this.propIndex && this.chatService.currentChatProps[this.propIndex].badge;
         if (this.networkService.hasNetwork && badge) {
             count = await this.chatService.resetBadgeCount(conversationId);
-            console.log("refresh?", refreshMyConversations)
             this.chatService.currentChatProps[this.propIndex].badge = 0;
             if (refreshMyConversations) {
-                console.log("refreshing badge")
-                this.events.publish('refreshMyConversations', 'reload', conversationId);
+                this.userData.refreshMyConversations({action: 'reload', data: conversationId});
             }
             if (count) {
                 if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
@@ -953,7 +970,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (this.modalPage && !this.platform.is('cordova')) {
             this.expandChatView(true);
         } else {
-            this.events.publish('toggleVideoChat', {
+            this.chatService.toggleVideoChat({
                 videoChatRoomId: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId,
                 videoChatRoomSubject: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].name,
                 channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
@@ -981,7 +998,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }, 500);
         if (startVideoChat) {
             setTimeout(() => {
-                this.events.publish('toggleVideoChat', {
+                this.chatService.toggleVideoChat({
                     videoChatRoomId: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId,
                     channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
                     startWithAudioMuted: false,
@@ -1007,56 +1024,58 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.awsService.removeFile(url);
     }
 
-    incomingMessageHandler = async (badge, message) => {
-        if (this.chatService.currentChatProps[this.propIndex] && message.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId) {
-            // if it is from another user
-            if ((message.author && message.author._id !== this.userData.user._id) || message.author_pending_member) {
-                // if it is the start of a new day
-                if (new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
-                    this.messages.push({timestamp: true, createdAt: message.createdAt});
-                }
-                // if longer than 1 hours
-                else if (new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
-                    this.messages.push({timestamp: true, createdAt: message.createdAt});
-                }
-                if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                    message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
-                }
-                message.status = "confirmed";
-                // push message
-                this.messages.push(message);
-                if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
-                    // getting a new moment message that requires joining the socket, so refresh the chat
-                    this.reloadMessages();
-                }
-                setTimeout(() => {
-                    this.content.scrollToBottom(50);
-                }, 300);
-            } else {
-                let fromAnotherDevice = true; // assume message comes from user's other devices
-                this.messages.forEach((existing_message) => {
-                    if (message.confirmId && message.confirmId === existing_message.confirmId) {
-                        if (message.body) {
-                            existing_message.body = message.body; // take advantage of the autolinker done by the backend socketEvent.js
-                        }
-                        existing_message.status = "confirmed";
-                        fromAnotherDevice = false; // if it is coming from the same device, flag it
+    incomingMessageHandler = async (message) => {
+        if (message) {
+            if (this.chatService.currentChatProps[this.propIndex] && message.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId) {
+                // if it is from another user
+                if ((message.author && message.author._id !== this.userData.user._id) || message.author_pending_member) {
+                    // if it is the start of a new day
+                    if (new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
+                        this.messages.push({timestamp: true, createdAt: message.createdAt});
                     }
-                });
-                if (fromAnotherDevice) { // if it is from another device, push the message to the chat this.room
+                    // if longer than 1 hours
+                    else if (new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
+                        this.messages.push({timestamp: true, createdAt: message.createdAt});
+                    }
                     if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
                         message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
                     }
                     message.status = "confirmed";
                     // push message
                     this.messages.push(message);
-                    if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll'){
+                    if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
                         // getting a new moment message that requires joining the socket, so refresh the chat
                         this.reloadMessages();
                     }
                     setTimeout(() => {
                         this.content.scrollToBottom(50);
                     }, 300);
+                } else {
+                    let fromAnotherDevice = true; // assume message comes from user's other devices
+                    this.messages.forEach((existing_message) => {
+                        if (message.confirmId && message.confirmId === existing_message.confirmId) {
+                            if (message.body) {
+                                existing_message.body = message.body; // take advantage of the autolinker done by the backend socketEvent.js
+                            }
+                            existing_message.status = "confirmed";
+                            fromAnotherDevice = false; // if it is coming from the same device, flag it
+                        }
+                    });
+                    if (fromAnotherDevice) { // if it is from another device, push the message to the chat this.room
+                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
+                            message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                        }
+                        message.status = "confirmed";
+                        // push message
+                        this.messages.push(message);
+                        if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll'){
+                            // getting a new moment message that requires joining the socket, so refresh the chat
+                            this.reloadMessages();
+                        }
+                        setTimeout(() => {
+                            this.content.scrollToBottom(50);
+                        }, 300);
+                    }
                 }
             }
         }
@@ -1141,11 +1160,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async ngOnDestroy() {
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
         // execute when group-tab is exited
         this.events.unsubscribe('reloadMessages', this.reloadHandler);
         this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
         // when a new message comes in via socket.io
-        this.events.unsubscribe('incomingConnectMessage', this.incomingMessageHandler);
+        this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);
         this.events.unsubscribe('closeGroupView', this.closeGroupChatHandler);
     }
 }

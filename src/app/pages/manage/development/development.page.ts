@@ -129,8 +129,4 @@ export class DevelopmentPage {
   closeModal() {
     this.modalCtrl.dismiss(this.refreshNeeded);
   }
-
-  ionViewWillLeave() {
-    this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
-  }
 }

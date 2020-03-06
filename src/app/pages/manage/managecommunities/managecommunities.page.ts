@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation, ViewChild, OnDestroy} from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Router} from '@angular/router';
 import {
@@ -35,9 +35,10 @@ import {DevelopmentPage} from "../development/development.page";
   styleUrls: ['./managecommunities.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ManagecommunitiesPage {
+export class ManagecommunitiesPage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
 
+    subscriptions: any = {};
     title = '';
     restvoStaff: boolean = false;
     stripeCustomer: any;
@@ -110,14 +111,15 @@ export class ManagecommunitiesPage {
                 private popoverCtrl: PopoverController,
                 private actionSheetCtrl: ActionSheetController) {}
 
-    async ionViewWillEnter() {
+    async ngOnInit() {
         if (this.userData && this.userData.currentCommunityAdminStatus) {
             this.setupManagePage();
             this.title = this.userData.user.churches[this.userData.currentCommunityIndex].name;
         }
-        // PWA fast load listener + reload listener
+
         this.events.subscribe('refreshManagePage', this.refreshHandler);
-        this.events.subscribe('refreshUserStatus', this.refreshUserHandler);
+        // link refresh user observable with refresh user handler
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserHandler);
     }
 
     refreshHandler = () => {
@@ -236,10 +238,10 @@ export class ManagecommunitiesPage {
         await networkAlert.present();
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         this.userData.splitPaneState = 'md';
         // PWA fast load listener + reload listener
         this.events.unsubscribe('refreshManagePage', this.refreshHandler);
-        this.events.unsubscribe('refreshUserStatus', this.refreshUserHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserHandler);
     }
 }

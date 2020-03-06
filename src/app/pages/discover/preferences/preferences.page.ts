@@ -29,6 +29,8 @@ export class PreferencesPage implements OnInit, OnDestroy {
   @Input() programId: any; // the program ID
   @Input() type: number; // 2: participants, 3: organizers, 4: leaders
   @Input() organizer = false;
+
+  subscriptions: any = {};
   moments = [];
   ionSpinner = false;
   pageNum: number = 0;
@@ -53,8 +55,8 @@ export class PreferencesPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-      this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
-      this.setup();
+      // link the refreshUserStatus Observable with the refresh handler. It fires on page load and subsequent user refreshes
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
 
   refreshUserStatusHandler = () => {
@@ -184,7 +186,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
     if (this.modalPage) {
       // because Preference page is started by EditMoment via event listener and not via modalCtrl (hence it can't return the refreshNeeded obj back to EditMoment), it is necessary to publish a 'RefreshUserStatus' event to update EditMoment
       if (this.refreshNeeded) {
-        this.events.publish('RefreshUserStatus', {});
+        this.userData.refreshUserStatus({});
       }
       this.modalCtrl.dismiss(this.refreshNeeded);
     } else {
@@ -193,6 +195,6 @@ export class PreferencesPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.events.unsubscribe('refreshUserStatus', this.refreshUserStatusHandler);
+    this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
   }
 }

@@ -17,6 +17,7 @@ import { InvitetoconnectPage } from "../../connect/invitetoconnect/invitetoconne
 export class ListgroupmembersPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
+    subscriptions: any = {};
     members = [];
     membersPageNum: number = 0;
     membersReachedEnd: boolean = false;
@@ -39,21 +40,23 @@ export class ListgroupmembersPage implements OnInit, OnDestroy {
                 private actionSheetCtrl: ActionSheetController) { }
 
   ngOnInit() {
-      this.events.subscribe('incomingStatusUpdate', this.refreshHandler);
+      this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
   }
     ionViewWillEnter(){
         this.initialize();
     }
 
-    refreshHandler = (conversationId, data) => {
-        if (conversationId === this.group.conversation) {
-            if (data.action === "update leader status"){
-                this.leaderIds = data.leaders.map((c) => {return c._id;});
-                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || (this.group.churchId ? this.userData.currentCommunityAdminStatus : false));
+    refreshHandler = (res) => {
+        if (res) {
+            if (res.conversationId === this.group.conversation) {
+                if (res.data.action === "update leader status"){
+                    this.leaderIds = res.data.leaders.map((c) => {return c._id;});
+                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || (this.group.churchId ? this.userData.currentCommunityAdminStatus : false));
+                }
+                this.reloadDirectory();
+            } else if (res.data._id === this.group._id){
+                this.reloadDirectory();
             }
-            this.reloadDirectory();
-        } else if (data._id === this.group._id){
-            this.reloadDirectory();
         }
     };
 
@@ -242,6 +245,6 @@ export class ListgroupmembersPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
 }

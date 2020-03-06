@@ -23,8 +23,9 @@ import {Churches} from "../../../services/church.service";
 })
 export class TopicsPage {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
     @Input() modalPage: any;
+
+    subscriptions: any = {};
     //variables to search topics
     ionSpinner = false;
     groups: any = [];
@@ -48,8 +49,8 @@ export class TopicsPage {
           this.setupManageGroups();
       }
 
-      // PWA fast load listener + reload listener
-      this.events.subscribe('refreshUserStatus', this.refreshUserHandler);
+      // link the refresh user status observable with the refresh handler
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserHandler);
       this.events.subscribe('refreshBoard', this.refreshBoardHandler);
   }
 
@@ -144,12 +145,12 @@ export class TopicsPage {
         this.setupManageGroups();
     }
 
-    closeModal(){
+    closeModal() {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
     ionViewWillLeave() {
-        this.events.unsubscribe('refreshUserStatus', this.refreshUserHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserHandler);
         this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
     }
 }

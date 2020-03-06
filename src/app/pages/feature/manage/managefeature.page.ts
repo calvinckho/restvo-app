@@ -85,7 +85,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
-    if (!this.initialSetupCompleted) {
+    if (!this.initialSetupCompleted && this.userData.user) {
       this.setup();
     }
     this.loadSchedules();
@@ -180,9 +180,9 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     } else {
       this.selectedMenuOption = '';
       if (menuOption === 'onboarding') {
-        this.events.publish('openPreferences', { programId: this.moment._id, organizer: true, modalPage: true });
+        this.momentService.openPreferences({ programId: this.moment._id, organizer: true, modalPage: true });
       } else if (menuOption === 'profile') {
-        this.events.publish('openMoment', { moment: this.moment, modalPage: true });
+        this.momentService.openMoment( { moment: this.moment, modalPage: true });
       } else {
         const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: { moment: this.moment, categoryId: menuItem.categoryId, parentCategoryId: menuItem.parentCategoryId, title: menuItem.label, scheduleId: (selectedSchedule ? selectedSchedule._id : null), modalPage: true } });
         await manageModal.present();
@@ -200,7 +200,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.modalPage) {
         this.closeModal(false);
       }
-      this.events.publish('openMoment', {moment: this.moment, modalPage: true});
+      this.momentService.openMoment( {moment: this.moment, modalPage: true});
     }
   }
 

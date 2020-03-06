@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content>
+    <ion-grid style="height: 100%" *ngIf="ionSpinner">
+        <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+            <ion-spinner name="dots"></ion-spinner>
+        </ion-row>
+    </ion-grid>
     <form [formGroup]="userForm">
         <ion-list *ngIf="user && user._id">
             <ion-item lines="none" color="grey">

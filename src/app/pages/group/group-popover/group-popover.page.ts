@@ -11,6 +11,7 @@ import { EditgroupPage } from "../editgroup/editgroup.page";
 import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
 import {Aws} from "../../../services/aws.service";
 import { NetworkService } from "../../../services/network-service.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-group-popover',
@@ -19,6 +20,7 @@ import { NetworkService } from "../../../services/network-service.service";
   encapsulation: ViewEncapsulation.None
 })
 export class GroupPopoverPage implements OnInit, OnDestroy {
+    subscriptions: any = {};
 
     @Input() group: any;
     count: any;
@@ -44,6 +46,7 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
                 private navParams: NavParams,
                 private popoverCtrl: PopoverController,
                 private networkService: NetworkService,
+                private authService: Auth,
                 private groupService: Groups,
                 private awsService: Aws,
                 private chatService: Chat,
@@ -61,13 +64,15 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
     }
 
     ionViewDidEnter() {
-        this.events.subscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = (conversationId, data) => {
-        if (this.group.conversation && conversationId === this.group.conversation && data.action === "update leader status") {
-            this.group.leaders = data.leaders;
-            this.setTag();
+    refreshHandler = (res) => {
+        if (res) {
+            if (this.group.conversation && res.conversationId === this.group.conversation && res.data.action === "update leader status") {
+                this.group.leaders = res.data.leaders;
+                this.setTag();
+            }
         }
     };
 
@@ -161,7 +166,9 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
                         navTransition.then(() => {
                             //do nothing for now
                             if(this.group.conversation){
-                                this.events.publish('incomingStatusUpdate', this.group.conversation, this.group);
+                                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group);
+                                this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
+
                             }
                         });
                     }}],
@@ -326,6 +333,6 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
 }

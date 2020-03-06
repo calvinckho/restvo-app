@@ -127,9 +127,9 @@ export class CommunityPopoverPage implements OnInit {
                         //Remove from database
                         await this.userData.leaveCommunity(this.community._id);
                         this.events.publish('refreshDashboardPage');
-                        this.events.publish('refreshMyConversations', 'reload', 'all');
+                        this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                         this.events.publish('refreshCommunityBoardsPage');
-                        this.events.publish('refreshUserStatus', {type: 'change community'});
+                        this.userData.refreshUserStatus({type: 'change community'});
                     });
                 }},
                 {   text: 'Cancel' }],

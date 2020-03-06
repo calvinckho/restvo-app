@@ -19,11 +19,17 @@
   <ion-list *ngIf="programs">
     <div>
       <ion-item lines="none">
-        <div class="image-cropper">
+        <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
           <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
           <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
+          <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
         </div>
         <ion-button class="edit-button" fill="clear" *ngIf="!modalPage" (click)="openOnbaordingProcess('')">Edit All</ion-button>
+      </ion-item>
+      <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin">
+        <div class="browser-upload">
+          <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
+        </div>
       </ion-item>
       <ion-item lines="none">
         <p class="name ion-text-center ion-text-md-uppercase">{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></p>

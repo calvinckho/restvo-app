@@ -24,8 +24,9 @@ import {Churches} from "../../../services/church.service";
 })
 export class CommunitiesPage {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
     @Input() modalPage: any;
+
+    subscriptions: any = {};
     communities = [];
     ionSpinner = false;
     community: any;
@@ -46,17 +47,15 @@ export class CommunitiesPage {
                 private churchService: Churches,
                 private resourceService: Resource,
                 private modalCtrl: ModalController,
-                private alertCtrl: AlertController,
-                private popoverCtrl: PopoverController,
-                private actionSheetCtrl: ActionSheetController) { }
+                private alertCtrl: AlertController,) { }
 
     ionViewWillEnter() {
         if(this.userData && this.userData.currentCommunityAdminStatus) {
             this.setupManageCommunities();
         }
 
-        // PWA fast load listener + reload listener
-        this.events.subscribe('refreshUserStatus', this.refreshHandler);
+        // link refresh user status observable with refresh handler
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
     refreshHandler = (data) => {
@@ -153,6 +152,6 @@ export class CommunitiesPage {
     }
 
     ionViewWillLeave() {
-        this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

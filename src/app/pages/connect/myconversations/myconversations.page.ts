@@ -29,6 +29,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     finishedLoading: boolean = false;
     recipient: any = {};
     moreOptions = false;
+    subscriptions: any = [];
 
     constructor(
         private zone: NgZone,
@@ -47,8 +48,8 @@ export class MyconversationsPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         // listen to the event when a new message comes in via socket.io
-        this.events.subscribe('incomingConnectMessage', this.incomingMessageHandler);
-        this.events.subscribe('refreshMyConversations', this.refreshPageHandler);
+        this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
+        this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.refreshPageHandler);
     }
 
     async ionViewWillEnter() {
@@ -58,37 +59,41 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         }
     }
 
-    // event listener when there is an incoming message from socket.io
-    incomingMessageHandler = async (badge, message) => {
-        this.zone.run(async() => {
-            const data = this.chatService.conversations.find((c) => c.conversation._id === message.conversationId);
-            if (data) {
-                if (message.author._id !== this.userData.user._id) { // incrementing the badges if incoming message is received from another user
-                    data.data.badge++;
+    // triggered when there is an incoming message from socket.io
+    incomingMessageHandler = async (message) => {
+        if (message) {
+            this.zone.run(async() => {
+                const data = this.chatService.conversations.find((c) => c.conversation._id === message.conversationId);
+                if (data) {
+                    if (message.author._id !== this.userData.user._id) { // incrementing the badges if incoming message is received from another user
+                        data.data.badge++;
+                    }
+                    data.message = JSON.parse(JSON.stringify(message)); // exact copy to avoid updating the referenced object
+                    data.message.author = data.message.author._id; // depopulate the author from socket.io
+                    data.message.preview = ((data.message.author === this.userData.user._id) ? "You: " : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
+                    data.conversation.updatedAt = new Date().toISOString(); // update the latest updated conversation for caching of the lastUpdatedDate
                 }
-                data.message = JSON.parse(JSON.stringify(message)); // exact copy to avoid updating the referenced object
-                data.message.author = data.message.author._id; // depopulate the author from socket.io
-                data.message.preview = ((data.message.author === this.userData.user._id) ? "You: " : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
-                data.conversation.updatedAt = new Date().toISOString(); // update the latest updated conversation for caching of the lastUpdatedDate
-            }
-            this.renderConversations();
-        });
+                this.renderConversations();
+            });
+        }
     };
 
     // event listener when the page needs to be refreshed or re-rendered
-    refreshPageHandler = async (action, conversationId) => {
-        if (conversationId) { //conversation Id that needs to be zeroed
-            this.datas.forEach((obj: any) => {
-                if (conversationId === obj.conversation._id){
-                    obj.data.badge = 0;
-                }
-            });
-            await this.renderConversations();
-        }
-        if (action === 'reload') { // e.g. a user joins or leaves a group
-            await this.loadMyConversations(true);
-        } else if (action === 'render') { // e.g. socket.io event informing change in online status
-            await this.renderConversations();
+    refreshPageHandler = async (data) => {
+        if (data) {
+            if (data.conversationId) { //conversation Id that needs to be zeroed
+                this.datas.forEach((obj: any) => {
+                    if (data.conversationId === obj.conversation._id){
+                        obj.data.badge = 0;
+                    }
+                });
+                await this.renderConversations();
+            }
+            if (data.action === 'reload') { // e.g. a user joins or leaves a group
+                await this.loadMyConversations(true);
+            } else if (data.action === 'render') { // e.g. socket.io event informing change in online status
+                await this.renderConversations();
+            }
         }
     };
 
@@ -319,8 +324,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        console.log("destroying myconv");
-        this.events.unsubscribe('incomingConnectMessage', this.incomingMessageHandler);
-        this.events.unsubscribe('refreshMyConversations', this.refreshPageHandler);
+        this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);
+        this.subscriptions['refreshMyConversations'].unsubscribe(this.incomingMessageHandler);
     }
 }

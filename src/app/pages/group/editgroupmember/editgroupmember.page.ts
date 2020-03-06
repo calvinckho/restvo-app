@@ -3,6 +3,7 @@ import { AlertController, Events, ModalController, NavParams } from '@ionic/angu
 import { Groups } from '../../../services/group.service';
 import { Chat } from '../../../services/chat.service';
 import { UserData } from '../../../services/user.service';
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-editgroupmember',
@@ -18,11 +19,13 @@ export class EditgroupmemberPage implements OnInit, OnDestroy {
     UIisLeaderTag: boolean = false;
     disableTag: boolean = false;
     anyChangeMade: boolean = false;
+    subscriptions: any = {};
 
     constructor(private navParams: NavParams,
                 private events: Events,
                 private alertCtrl: AlertController,
                 public modalCtrl: ModalController,
+                private authService: Auth,
                 public userData: UserData,
                 private groupService: Groups,
                 private chatService: Chat,
@@ -33,15 +36,17 @@ export class EditgroupmemberPage implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.events.subscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
     }
     
-    refreshHandler = async (conversationId, data) => {
-        if (conversationId === this.group.conversation && data.action === "update leader status") {
-            let leaderIds = data.leaders.map((c) => c._id);
-            if (leaderIds.indexOf(this.userData.user._id) < 0 && this.group.churchId){ // if not a group leader, check church admin status
-                if (!await this.userData.hasAdminAccess(this.group.churchId)){ // if not church admin, the user is not supposed to be in this view, therefore exit
-                    this.modalCtrl.dismiss();
+    refreshHandler = async (res) => {
+        if (res && res.conversationId && res.data) {
+            if (res.conversationId === this.group.conversation && res.data.action === "update leader status") {
+                let leaderIds = res.data.leaders.map((c) => c._id);
+                if (leaderIds.indexOf(this.userData.user._id) < 0 && this.group.churchId){ // if not a group leader, check church admin status
+                    if (!await this.userData.hasAdminAccess(this.group.churchId)){ // if not church admin, the user is not supposed to be in this view, therefore exit
+                        this.modalCtrl.dismiss();
+                    }
                 }
             }
         }
@@ -162,7 +167,6 @@ export class EditgroupmemberPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
-
 }

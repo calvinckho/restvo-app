@@ -10,6 +10,7 @@ import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
 import { NetworkService } from './network-service.service';
 import 'capacitor-share-extension';
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class Auth {
@@ -25,6 +26,15 @@ export class Auth {
     };
     user: any;
 
+    private _openOnboarding: BehaviorSubject<any> = new BehaviorSubject(null);
+    public readonly openOnboarding$: Observable<any> = this._openOnboarding.asObservable();
+
+    private _chatSocketMessage: BehaviorSubject<any> = new BehaviorSubject(null);
+    public readonly chatSocketMessage$: Observable<any> = this._chatSocketMessage.asObservable();
+
+    private _refreshGroupStatus: BehaviorSubject<any> = new BehaviorSubject(null);
+    public readonly refreshGroupStatus$: Observable<any> = this._refreshGroupStatus.asObservable();
+
     constructor(private http: HttpClient,
                 private platform: Platform,
                 private router: Router,
@@ -32,6 +42,18 @@ export class Auth {
                 private storage: Storage,
                 private loadingCtrl: LoadingController,
                 public networkService: NetworkService) {
+    }
+
+    openOnboarding(data) {
+        this._openOnboarding.next(data);
+    }
+
+    chatSocketMessage(data) {
+        this._chatSocketMessage.next(data);
+    }
+
+    refreshGroupStatus(res) {
+        this._refreshGroupStatus.next(res);
     }
 
     // checks user authentication and routes user if they should not be on the page
@@ -181,7 +203,7 @@ export class Auth {
         if (this.incompleteOnboardProcess && openOnboarding) { // if there is any incomplete onboarding process
             const token = (this.cachedRouteParams && this.cachedRouteParams.token) ? this.cachedRouteParams.token : null;
             setTimeout(() => {
-                this.events.publish('openOnboarding', {programId: programId, type: type, token: token, modalPage: true });
+                this.openOnboarding({programId: programId, type: type, token: token, modalPage: true });
             }, 1000);
         }
     }

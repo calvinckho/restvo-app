@@ -13,6 +13,7 @@ import io from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Chat {
@@ -27,6 +28,18 @@ export class Chat {
     liveConversations: any = {};
     liveVideoChats: any = {};
 
+    private _openChat: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _toggleVideoChat: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _toastNotification: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _chatMessage: BehaviorSubject<any> = new BehaviorSubject(null);
+
+
+    public readonly openChat$: Observable<any> = this._openChat.asObservable();
+    public readonly toggleVideoChat$: Observable<any> = this._toggleVideoChat.asObservable();
+    public readonly toastNotification$: Observable<any> = this._toastNotification.asObservable();
+    public readonly chatMessage$: Observable<any> = this._chatMessage.asObservable();
+
+
     constructor(private http: HttpClient,
                 private router: Router,
                 private alertCtrl: AlertController,
@@ -40,6 +53,22 @@ export class Chat {
                 private storage: Storage) {
         console.log('Hello Chat Provider');
         this.connectTabBadge = 0;
+    }
+
+    openChat(data) {
+        this._openChat.next(data);
+    }
+
+    toggleVideoChat(data) {
+        this._toggleVideoChat.next(data);
+    }
+
+    toastNotification(res) {
+        this._toastNotification.next(res);
+    }
+
+    broadcastChatMessage(res) {
+        this._chatMessage.next(res);
     }
 
     async createConversationSocket(){
@@ -145,11 +174,11 @@ export class Chat {
         });
         this.socket.on('refresh messages', async (message) => { //got an incoming message, including one's own send message confirmation
             console.log('incoming message...', message);
-            this.events.publish('incomingConnectMessage', this.connectTabBadge, message); //publish event about an incoming message
+            this.broadcastChatMessage(message); // broadcast an incoming message
             if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
                 this.connectTabBadge++; //increment the Chat Tab badge count
                 if (this.router.url.indexOf('/app/myconversations') < 0 || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
-                    this.events.publish('toastNotification', 'message', message);
+                    this.toastNotification({type: 'message', data: message});
                 }
                 this.conversations.forEach((data) => { // update respective badges
                     if ((data.conversation._id === message.conversationId) && (data.conversation.type === "group")) {
@@ -184,40 +213,46 @@ export class Chat {
         //socket.io broadcasting refresh status update about a group/topic/conversation
         this.socket.on('refresh status', async (conversationId, data) => {
             if (data.action === 'update leader status'){
-                this.events.publish('incomingStatusUpdate', conversationId, data);
+                //this.events.publish('refreshGroupStatus', conversationId, data);
+                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'update group member list'){
                 await this.userData.load(); //for the rare case that a user's other device is viewing the group info
-                this.events.publish('incomingStatusUpdate', conversationId, data);
+                //this.events.publish('refreshGroupStatus', conversationId, data);
+                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'leave group'){
                 await this.userData.load();
                 this.events.publish('closeGroupView', data.groupId);
             } else if (data.action === 'refresh moment'){
                 // sending moment update using moment's conversation socket.io
                 // ex. Goal is due, Poll is due
-                this.events.publish('toastNotification', 'moment', data); //this triggers app.component.ts line
+                this.toastNotification({type: 'moment', data: data}); //this triggers app.component.ts line
             } else {
                 await this.userData.load();
                 let activePage = await this.storage.get("activePage");
                 if (activePage) {
                     if (activePage.page === "myconversations") {
                         await this.storage.remove('conversations'); //when a leader updates the group churchId that requires a full reload of myconversations
-                        this.events.publish('refreshMyConversations', 'reload', "all");
+                        this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                     }
                 }
                 this.events.publish('refreshDashboardPage');
-                this.events.publish('incomingStatusUpdate', conversationId, data);
+                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
+
             }
         });
         //user-data provider requesting to send a chat socket emit
-        this.events.subscribe('chat socket emit', async (conversationId, data) => {
-            this.socket.emit('update status', conversationId, data);
-        });
-        this.events.subscribe('disconnect chat socket', async () => {
-            // reset variables and close socket
-            this.onlineUsersSockets = [];
-            this.onlineUsers = [];
-            this.currentChatProps = []; // empty chat Props
-            this.socket.close();
+        this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
+            if (res) {
+                if (res.topic === 'chat socket emit') {
+                    this.socket.emit('update status', res.conversationId, res.data);
+                } else if (res.topic === 'disconnect chat socket') {
+                    // reset variables and close socket
+                    this.onlineUsersSockets = [];
+                    this.onlineUsers = [];
+                    this.currentChatProps = []; // empty chat Props
+                    this.socket.close();
+                }
+            }
         });
     };
 
@@ -235,29 +270,35 @@ export class Chat {
         }
         const lastUpdatedAt = this.findLatestTimeStamp(this.conversations);
         try {
+            // the app only checks for conversations updated/created after the caches' last updatedAt timestamp
             const latestConversations = await this.fetchLatestConversations(lastUpdatedAt);
-            let conversationIdList = [];
             for (let i = latestConversations.length - 1; i > -1; i--) {
-                conversationIdList = this.conversations.map((c) => c.conversation._id);
-                const index = conversationIdList.indexOf(latestConversations[i].conversation._id);
+                const index = this.conversations.map((c) => c.conversation._id).indexOf(latestConversations[i].conversation._id);
                 if (index > -1) { // if the conversation was loaded and new update is available
                     this.conversations.splice(index, 1);
                     this.conversations.unshift(latestConversations[i]);
                 } else { // if the conversation has not been loaded before
                     this.conversations.unshift(latestConversations[i]);
-                    conversationIdList.push(latestConversations[i].conversation._id);
                     this.socket.emit('enter conversation', latestConversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
                 }
             }
-            conversationIdList = this.conversations.map((c) => c.conversation._id);
             if (this.conversations.length) {
-                const latestConversationIdList = await this.getAllUserConversationIds();
-                for (let i = conversationIdList.length - 1; i > -1; i--) {
-                    if (!latestConversationIdList.includes(conversationIdList[i])) { //if a conversation is disconnected
-                        this.socket.emit('leave conversation', conversationIdList[i], this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'offline' } : null));
-                        console.log("splice", !latestConversationIdList.includes(conversationIdList[i]), conversationIdList[i], this.conversations[i]);
+                // fetching all conversation ids from backend and check for consistency. this is needed since we are cahcing old conversations, and it ensures the integrity of the cached conversation data
+                // eg. when user deletes a conversation on another device, and this device needs to update its cache
+                let conversationIdsFromServer = await this.getAllUserConversationIds();
+                for (let i = this.conversations.map((c) => c.conversation._id).length - 1; i > -1; i--) {
+                    const index = conversationIdsFromServer.indexOf(this.conversations.map((c) => c.conversation._id)[i]);
+                    if (index > -1) { // if a cached conversation is current with the server record
+                        conversationIdsFromServer.splice(index, 1); // remove the conversation Id from the list
+                    } else { // check for disconnected conversations
+                        this.socket.emit('leave conversation', this.conversations.map((c) => c.conversation._id)[i], this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'offline' } : null));
+                        console.log("splice", !conversationIdsFromServer.includes(this.conversations.map((c) => c.conversation._id)[i]), this.conversations.map((c) => c.conversation._id)[i], this.conversations[i]);
                         this.conversations.splice(i, 1);
                     }
+                }
+                console.log("number of conversations missing in cache:", conversationIdsFromServer.length);
+                if (conversationIdsFromServer.length) { // if a conversation is missing in the cached conversation array, get a fresh copy of the conversations array from the server
+                    this.conversations = await this.fetchLatestConversations(null);
                 }
             }
             if (this.conversations.length) {
@@ -265,7 +306,7 @@ export class Chat {
             }
             console.log('current conv length', this.conversations.length, this.conversations.find((c) => c.conversation._id === '5e0e6f8200b2420a07547c2c'));
             return this.conversations;
-        } catch (err){
+        } catch (err) {
             console.log(err);
             return await this.storage.get('conversations');
         }

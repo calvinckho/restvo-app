@@ -16,6 +16,7 @@ import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs
 import {User} from '../interfaces/user';
 import {Capacitor, Plugins} from "@capacitor/core";
 import {Router} from "@angular/router";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class UserData {
@@ -43,6 +44,15 @@ export class UserData {
         'Activity Components': 18, // this is the current activity components version used by this code
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
     };
+    private _refreshUserStatus: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _openUserPrograms: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _enablePushNotification: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private _refreshMyConversations: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+    public readonly refreshUserStatus$: Observable<any> = this._refreshUserStatus.asObservable();
+    public readonly openUserPrograms$: Observable<any> = this._openUserPrograms.asObservable();
+    public readonly enablePushNotification$: Observable<boolean> = this._enablePushNotification.asObservable();
+    public readonly refreshMyConversations$: Observable<boolean> = this._refreshMyConversations.asObservable();
 
     constructor(private http: HttpClient,
                 private router: Router,
@@ -62,6 +72,24 @@ export class UserData {
                 private calendarService: CalendarService) {
     }
 
+    refreshUserStatus(data) {
+        if (data) {
+            this._refreshUserStatus.next(data);
+        }
+    }
+
+    openUserPrograms(data) {
+        this._openUserPrograms.next(data);
+    }
+
+    enablePushNotification(activate) {
+        this._enablePushNotification.next(activate);
+    }
+
+    refreshMyConversations(data) {
+        this._refreshMyConversations.next(data);
+    }
+
     async createUserSocket() {
         if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
             // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
@@ -79,44 +107,47 @@ export class UserData {
                 if (data.type === 'update admin') {
                     this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
                 } else if (data.type === 'connect conversation') {
-                    this.events.publish('refreshMyConversations', 'reload', "all");
+                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'disconnect conversation') {
                     console.log("got disconnect", data);
                     this.events.publish('reloadMessages', 'disconnect', data.conversationId);
-                    this.events.publish('refreshMyConversations', 'reload', data.conversationId);
+                    this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update group participation') {
                     //update user's group participation
                     await this.load();
                     this.events.publish('loadUserChurchBoards'); //in case of a board group
-                    this.events.publish('incomingStatusUpdate', data.conversationId, data.group);
+                    //this.events.publish('refreshGroupStatus', data.conversationId, data.group);
+                    this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
                     this.events.publish('refreshDashboardPage');
-                    this.events.publish('refreshMyConversations', 'reload', "all");
+                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                     this.events.publish('refreshCommunityBoardsPage'); //when a user join a group with board
                 } else if (data.type === 'leave group') {
                     //update user's group participation,
                     await this.load();
                     this.events.publish('loadUserChurchBoards'); //in case of a board group
-                    this.events.publish('incomingStatusUpdate', null, {_id: (data.groupId || data.id || null)});
+                    //this.events.publish('refreshGroupStatus', null, {_id: (data.groupId || data.id || null)});
+                    this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
+
                     this.events.publish('closeGroupView', (data.groupId || data.id || null));
                     this.events.publish('refreshDashboardPage');
-                    this.events.publish('refreshMyConversations', 'reload', "all");
-                    this.events.publish('refreshUserStatus', data); //included in the case of a delete group, which refreshes discover page
+                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
+                    this.refreshUserStatus(data); //included in the case of a delete group, which refreshes discover page
                     this.events.publish('refreshCommunityBoardsPage'); //when a user leave a group with board
                 } else if (data.type === 'update church participation') {
                     await this.load();
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update moment and calendar participation') {
                     await this.calendarService.getUserCalendar();
-                    this.events.publish('refreshUserStatus', data);
+                    this.refreshUserStatus(data);
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update system messages') {
                     this.events.publish('refreshDashboardPage');
                 } else { // data.type === 'update user info' and the rest
                     await this.load();
                     this.refreshAppPages();
-                    this.events.publish('refreshUserStatus', data);
+                    this.refreshUserStatus(data);
                 }
             }
         });
@@ -127,7 +158,7 @@ export class UserData {
             this.events.publish('refreshCommunityBoardsPage');
         }
         if (this.router.url.includes('/app/myconversations')) {
-            this.events.publish('refreshMyConversations', 'render');
+            this.refreshMyConversations({action: 'render', data: null});
         }
         // publish event to finish loading the Board page as it needs to wait for boardService.socket to start
         if (this.router.url.includes('/app/discover')) {
@@ -137,7 +168,7 @@ export class UserData {
             this.events.publish('refreshDashboardPage');
         }
         // publish event to refresh the manage communities page with new userData from server
-        this.events.publish('refreshUserStatus', { type: 'change community' });
+        this.refreshUserStatus({ type: 'change community' });
         this.events.publish('reloadMessages', 'reload');
     }
 
@@ -214,7 +245,6 @@ export class UserData {
             this.stripeService.setKey('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
         }
         this.defaultProgram = await this.storage.get('defaultProgram');
-        console.log("default program", this.defaultProgram)
         this.UIAdminMode = await this.storage.get('UIAdminMode');
         setTimeout(() => {
             this.UIready = true; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
@@ -359,7 +389,9 @@ export class UserData {
         await this.load();
         if(group.conversation) {
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation._id, group: group});
-            this.events.publish('chat socket emit', group.conversation._id, {action: 'update group member list'});
+            //this.events.publish('chat socket emit', group.conversation._id, {action: 'update group member list'});
+            this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation._id, data: {action: 'update group member list'}});
+
         }
         else if(group.board) {
             this.events.publish('loadUserChurchBoards'); //in case of a board group
@@ -374,7 +406,9 @@ export class UserData {
                 .toPromise();
             if (group.conversation) {
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); //conversationId is unpopulated ObjectId
-                this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
+                //this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
+                this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
+
             } else if(group.board) {
                 this.events.publish('loadUserChurchBoards'); //in case of a board group
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
@@ -398,7 +432,7 @@ export class UserData {
                         buttons: [{
                             text: 'Yes',
                             handler: () => {
-                                this.events.publish('enablePushNotification');
+                                this.enablePushNotification(true);
                                 resolve(true);
                             }
                         }, { text: 'Later',
@@ -552,8 +586,11 @@ export class UserData {
         await this.load();
         this.events.publish('closeGroupView', group._id);
         if (group.conversation) {
-            this.events.publish('incomingStatusUpdate', group.conversation, group);
-            this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
+            //this.events.publish('refreshGroupStatus', group.conversation, group);
+            this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
+
+            //this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
+            this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
         }
         this.socket.emit('refresh user status', this.user._id, {type: 'leave group', groupId: group._id});
         return promise;
@@ -745,7 +782,7 @@ export class UserData {
         this.authService.logout();
         // deviceToken is not removed because it needs to be used when another user sign in.
         // that is because the deviceToken is only fetched when the app is loaded for the first time
-        this.events.publish('disconnect chat socket');
+        this.authService.chatSocketMessage({topic: 'disconnect chat socket'});
         this.socket.close();
         if (this.platform.is('ios')) {
             const { ShareExtension } = Plugins;

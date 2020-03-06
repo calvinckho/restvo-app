@@ -1,8 +1,11 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Events, ModalController, Platform} from "@ionic/angular";
+import {ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {PreferencesPage} from "../../discover/preferences/preferences.page";
 import {Router} from "@angular/router";
+import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import {Aws} from "../../../services/aws.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-about',
@@ -13,30 +16,29 @@ import {Router} from "@angular/router";
 export class AboutPage implements OnInit, OnDestroy {
 
   @Input() modalPage: any;
+
+  subscriptions: any = {};
   programs: any;
   role: any;
 
   constructor(
       private platform: Platform,
       private router: Router,
-      private events: Events,
+      private awsService: Aws,
       public modalCtrl: ModalController,
       public userData: UserData,
+      private authService: Auth
   ) { }
 
   ngOnInit() {
-    this.events.subscribe('refreshUserStatus', this.refreshUserStatusHandler);
+    this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
 
   refreshUserStatusHandler = () => {
-    this.loadAnswers();
-  };
-
-  ionViewWillEnter() {
-    if (this.userData.user) {
+    if (this.authService.token && this.userData && this.userData.user) {
       this.loadAnswers();
     }
-  }
+  };
 
   async loadAnswers() {
     const result: any = await this.userData.loadMyOnboardingAnswers();
@@ -69,11 +71,43 @@ export class AboutPage implements OnInit, OnDestroy {
     }
   }
 
+  async selectPhotoFromDeviceAndUpload(event, useCapacitor) {
+    try {
+      let result: any;
+      if (useCapacitor) {
+        const { Camera } = Plugins;
+        const image = await Camera.getPhoto({
+          quality: 60,
+          width: 1280,
+          allowEditing: false,
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Prompt,
+          correctOrientation: false
+        });
+        if (image) {
+          result = await this.awsService.uploadImage('users', this.userData.user._id, image);
+        }
+      } else {
+        result = await this.awsService.compressPhoto(event.target.files[0]);
+        await this.awsService.uploadFile('users', this.userData.user._id, result);
+      }
+      if (result) {
+        if (this.userData.user.avatar) {
+          await this.awsService.removeFile(this.userData.user.avatar); //remove the previous background from Digital Ocean
+        }
+        this.userData.user.avatar = this.awsService.url;
+        await this.userData.update({ _id: this.userData.user._id, avatar: this.awsService.url });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   closeModal() {
     this.modalCtrl.dismiss();
   }
 
   ngOnDestroy() {
-    this.events.unsubscribe('refreshUserStatus', this.refreshUserStatusHandler);
+    this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
   }
 }

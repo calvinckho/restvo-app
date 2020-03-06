@@ -10,6 +10,7 @@ import { Chat } from '../../../services/chat.service';
 import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
 import {Board} from "../../../services/board.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-editgroup',
@@ -58,6 +59,7 @@ export class EditgroupPage implements AfterViewInit {
                 private alertCtrl: AlertController,
                 private cache: CacheService,
                 private awsService: Aws,
+                private authService: Auth,
                 private storage: Storage,
                 private actionSheetCtrl: ActionSheetController) {
 
@@ -198,7 +200,9 @@ export class EditgroupPage implements AfterViewInit {
             await this.groupService.updateGroupProfile(this.group);
             if (this.group.conversation){
                 this.chatService.socket.emit('update status', this.group.conversation, this.group); // group leader will receive update through socket.io
-                this.events.publish('incomingStatusUpdate', this.group.conversation, this.group); // admin issued changes need this to update group
+                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group); // admin issued changes need this to update group
+                this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
+
             } else if (this.group.board){
                 this.boardService.socket.emit('refresh board', this.group.board, {action: 'refresh board'}); // refresh the news feed page
                 this.userData.communitiesboards = await this.boardService.loadUserChurchBoards(); //in case of a board group

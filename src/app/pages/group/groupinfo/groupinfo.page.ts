@@ -1,4 +1,4 @@
-import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Groups} from "../../../services/group.service";
 import {Chat} from "../../../services/chat.service";
 import {UserData} from "../../../services/user.service";
@@ -20,6 +20,7 @@ import {Badge} from "@ionic-native/badge/ngx";
 import {SpeechRecognition} from "@ionic-native/speech-recognition/ngx";
 import {GroupPopoverPage} from "../group-popover/group-popover.page";
 import {Location} from "@angular/common";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-groupinfo',
@@ -27,7 +28,7 @@ import {Location} from "@angular/common";
   styleUrls: ['./groupinfo.page.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class GroupinfoPage {
+export class GroupinfoPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
     // group
@@ -45,6 +46,7 @@ export class GroupinfoPage {
     editMemberTag = false;
     membersPageNum = 0;
     membersReachedEnd = false;
+    subscriptions: any = {};
 
   constructor(
       private zone: NgZone,
@@ -64,19 +66,24 @@ export class GroupinfoPage {
       private alertCtrl: AlertController,
       private modalCtrl: ModalController,
       private popoverCtrl: PopoverController,
+      private authService: Auth,
       private groupService: Groups,
       public userData: UserData,
       public chatService: Chat,
       public momentService: Moment,
   ) { }
 
-  async ionViewWillEnter() {
-      this.setup();
-      this.events.subscribe('incomingStatusUpdate', this.refreshGroupHandler);
+  async ngOnInit() {
+      this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshGroupHandler);
+
       if (this.modalPage) {
           this.events.subscribe('closeGroupView', this.closeGroupInfoHandler);
       }
   }
+
+    refreshGroupHandler = async (res) => {
+        this.setup();
+    };
 
   async setup() {
       this.propIndex = this.chatService.currentChatProps.length - 1;
@@ -125,7 +132,8 @@ export class GroupinfoPage {
                     handler: () => {
                         const navTransition = alert.dismiss();
                         navTransition.then(() => {
-                            this.events.publish('incomingStatusUpdate', this.chatService.currentChatProps[this.propIndex].group.conversation, this.chatService.currentChatProps[this.propIndex].group);
+                            this.authService.refreshGroupStatus({conversationId: this.chatService.currentChatProps[this.propIndex].group.conversation, data: this.chatService.currentChatProps[this.propIndex].group});
+                            //this.events.publish('refreshGroupStatus', this.chatService.currentChatProps[this.propIndex].group.conversation, this.chatService.currentChatProps[this.propIndex].group);
                         });
                     }}],
                 cssClass: 'level-15'
@@ -367,7 +375,7 @@ export class GroupinfoPage {
         if (this.modalPage && !this.platform.is('cordova')) {
             this.expandChatView(true);
         } else {
-            this.events.publish('toggleVideoChat', {
+            this.chatService.toggleVideoChat({
                 videoChatRoomId: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId,
                 videoChatRoomSubject: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].group.name,
                 channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
@@ -385,7 +393,7 @@ export class GroupinfoPage {
         }, 500);
         if (startVideoChat) {
             setTimeout(() => {
-                this.events.publish('toggleVideoChat', {
+                this.chatService.toggleVideoChat({
                     videoChatRoomId: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId,
                     channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
                     startWithAudioMuted: false,
@@ -403,10 +411,6 @@ export class GroupinfoPage {
             cssClass: 'level-15'
         });
         await networkAlert.present();
-    }
-
-    refreshGroupHandler = async (conversationId, data) => {
-        this.setup();
     }
 
     closeGroupInfoHandler = (groupId) => {
@@ -428,7 +432,7 @@ export class GroupinfoPage {
     }
 
     async ngOnDestroy() {
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshGroupHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshGroupHandler);
         if (this.modalPage) {
             this.events.unsubscribe('closeGroupView', this.closeGroupInfoHandler);
         }

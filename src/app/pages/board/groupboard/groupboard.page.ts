@@ -45,6 +45,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
 
     @Input() group: any;
     @Input() page: any;
+    subscriptions: any = {};
 
     // board
     board: {};
@@ -94,7 +95,8 @@ export class GroupboardPage implements OnInit, OnDestroy {
   ngOnInit() {
       this.events.subscribe('refreshBoard', this.refreshBoardHandler);
       this.events.subscribe('refreshMoment', this.refreshMomentHandler);
-      this.events.subscribe('incomingStatusUpdate', this.refreshHandler);
+      this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
+
   }
 
     async ionViewWillEnter() {
@@ -462,7 +464,8 @@ export class GroupboardPage implements OnInit, OnDestroy {
                         handler: () => {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
-                                this.events.publish('incomingStatusUpdate', this.group.conversation, this.group);
+                                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group);
+                                this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group})
                                 this.events.publish('refreshCommunityBoardsPage');
                             });
                         }
@@ -700,24 +703,27 @@ export class GroupboardPage implements OnInit, OnDestroy {
         this.modalCtrl.dismiss(refreshNeeded);
     }
 
-    refreshHandler = (conversationId, data) => {
-        // about
-        if (data._id === this.group._id) {
-            this.group = data;
-            this.setTag();
-        } else if (conversationId === this.group.conversation) {
-            this.setTag();
-        }
-        // members
-        if (conversationId === this.group.conversation) {
-            if (data.action === "update leader status"){
-                this.leaderIds = data.leaders.map((c) => c._id);
-                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+    refreshHandler = (res) => {
+        if (res) {
+            // about
+            if (res.data._id === this.group._id) {
+                this.group = res.data;
+                this.setTag();
+            } else if (res.conversationId === this.group.conversation) {
+                this.setTag();
             }
-            this.reloadDirectory();
-        } else if (data._id === this.group._id){
-            this.reloadDirectory();
+            // members
+            if (res.conversationId === this.group.conversation) {
+                if (res.data.action === 'update leader status') {
+                    this.leaderIds = res.data.leaders.map((c) => c._id);
+                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+                }
+                this.reloadDirectory();
+            } else if (res.data._id === this.group._id){
+                this.reloadDirectory();
+            }
         }
+
     };
 
     ionViewWillLeave() {
@@ -727,6 +733,6 @@ export class GroupboardPage implements OnInit, OnDestroy {
     ngOnDestroy(){
         this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
         this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
 }

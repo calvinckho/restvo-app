@@ -12,6 +12,7 @@ import { NetworkService } from './network-service.service';
 import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -49,6 +50,19 @@ export class Moment {
             color: 'primary'
         },
     ];
+
+    private _openMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _editMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _manageMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _openPreferences: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _editParticipants: BehaviorSubject<any> = new BehaviorSubject(null);
+
+    public readonly openMoment$: Observable<any> = this._openMoment.asObservable();
+    public readonly editMoment$: Observable<any> = this._editMoment.asObservable();
+    public readonly manageMoment$: Observable<any> = this._manageMoment.asObservable();
+    public readonly openPreferences$: Observable<any> = this._openPreferences.asObservable();
+    public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
+
     constructor(private http: HttpClient,
                 private events: Events,
                 private platform: Platform,
@@ -62,6 +76,26 @@ export class Moment {
                 private resourceService: Resource,
                 private calendarService: CalendarService,
                 private networkService: NetworkService) {
+    }
+
+    openMoment(data) {
+        this._openMoment.next(data);
+    }
+
+    editMoment(data) {
+        this._editMoment.next(data);
+    }
+
+    manageMoment(data) {
+        this._manageMoment.next(data);
+    }
+
+    openPreferences(data) {
+        this._openPreferences.next(data);
+    }
+
+    editParticipants(data) {
+        this._editParticipants.next(data);
     }
 
     async createMomentSocket() {
@@ -382,7 +416,7 @@ export class Moment {
             await loading.dismiss();
         }
         if (hasOrganizerAccess) {
-            this.events.publish('editParticipants', { moment: moment, title: this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], modalPage: true });
+            this.editParticipants( { moment: moment, title: this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], modalPage: true });
         } else {
             const peopleComponentId = moment.resource.matrix_number[0].indexOf(10500);
             let participantsLabel = 'Participants';

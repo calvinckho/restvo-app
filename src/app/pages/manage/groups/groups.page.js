@@ -89,7 +89,7 @@ var TopicsPage = /** @class */ (function () {
             this.setupManageGroups();
         }
         // PWA fast load listener + reload listener
-        this.events.subscribe('refreshUserStatus', this.refreshHandler);
+        this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
         this.storage.set('activePage', { page: "manage", conversationId: null }); // store the active page to the local storage
     };
     //-----------------------------------
@@ -234,7 +234,7 @@ var TopicsPage = /** @class */ (function () {
         this.modalCtrl.dismiss(this.refreshNeeded);
     };
     TopicsPage.prototype.ionViewWillLeave = function () {
-        this.events.unsubscribe('refreshUserStatus', this.refreshHandler);
+        this.userData.refreshUserStatus$.unsubscribe(this.refreshHandler);
     };
     __decorate([
         core_2.ViewChild(angular_1.IonInfiniteScroll)

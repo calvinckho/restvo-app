@@ -6,6 +6,7 @@ import { UserData } from '../../../services/user.service';
 import { Groups } from "../../../services/group.service";
 import { ShowrecipientinfoPage } from "../../connect/showrecipientinfo/showrecipientinfo.page";
 import {Chat} from "../../../services/chat.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-showgroup',
@@ -14,6 +15,7 @@ import {Chat} from "../../../services/chat.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ShowgroupPage implements OnInit, OnDestroy {
+    subscriptions: any = {};
 
     user: any;
     loading: any;
@@ -29,13 +31,15 @@ export class ShowgroupPage implements OnInit, OnDestroy {
                   private alertCtrl: AlertController,
                   public modalCtrl: ModalController,
                   private popoverCtrl: PopoverController,
+                  public authService: Auth,
                   public userData: UserData,
                   private chatService: Chat,
                   private groupService: Groups) {
     }
 
   async ngOnInit() {
-      this.events.subscribe('incomingStatusUpdate', this.refreshHandler);
+      this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
+
       let profile: any;
       if (!this.group.public_group) {
           profile = await this.groupService.loadGroupProfile(this.group._id);
@@ -48,12 +52,14 @@ export class ShowgroupPage implements OnInit, OnDestroy {
   }
 
 
-    refreshHandler = (conversationId, group) => {
-        if (group._id === this.group._id) {
-            this.group = group;
-            this.setTag();
-        } else if (conversationId === this.group.conversation) {
-            this.setTag();
+    refreshHandler = (res) => {
+        if (res) {
+            if (res.group._id === this.group._id) {
+                this.group = res.group;
+                this.setTag();
+            } else if (res.conversationId === this.group.conversation) {
+                this.setTag();
+            }
         }
     };
 
@@ -81,7 +87,7 @@ export class ShowgroupPage implements OnInit, OnDestroy {
                         handler: () => {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
-                                this.events.publish('incomingStatusUpdate', this.group.conversation, this.group);
+                                this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
                             });
                         }}],
                     cssClass: 'level-15'
@@ -116,6 +122,6 @@ export class ShowgroupPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('incomingStatusUpdate', this.refreshHandler);
+        this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
 }

@@ -132,7 +132,7 @@ export class PickfeaturePopoverPage implements OnInit {
 
     async openFeature(event, moment) {
         event.stopPropagation();
-        this.events.publish('openMoment', { moment: moment, modalPage: true});
+        this.momentService.openMoment( { moment: moment, modalPage: true});
     }
 
     async removeMoment(i) {
@@ -149,7 +149,7 @@ export class PickfeaturePopoverPage implements OnInit {
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
         } else { // create other Activities
             this.close(); // close the Picker, then open up the create view.
-            this.events.publish('editMoment', {categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, conversationId: this.conversation ? this.conversation._id : null, modalPage: true });
+            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, conversationId: this.conversation ? this.conversation._id : null, modalPage: true });
         }
     }
 
