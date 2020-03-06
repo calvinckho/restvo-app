@@ -200,7 +200,6 @@ export class EditgroupPage implements AfterViewInit {
             await this.groupService.updateGroupProfile(this.group);
             if (this.group.conversation){
                 this.chatService.socket.emit('update status', this.group.conversation, this.group); // group leader will receive update through socket.io
-                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group); // admin issued changes need this to update group
                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
 
             } else if (this.group.board){

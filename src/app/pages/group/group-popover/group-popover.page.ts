@@ -166,7 +166,6 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
                         navTransition.then(() => {
                             //do nothing for now
                             if(this.group.conversation){
-                                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group);
                                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
 
                             }

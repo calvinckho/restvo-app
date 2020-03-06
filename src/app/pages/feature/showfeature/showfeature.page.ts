@@ -855,7 +855,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.events.publish('closeGroupView', this.moment.conversation);
           }
           this.chatService.socket.emit('leave conversation', this.moment.conversation); // inform the socket.io server this user is leaving this room
-          this.events.publish('refreshMyConversations', 'reload', this.moment.conversation);
+            this.userData.refreshMyConversations({action: 'disconnect chat view', conversationId: this.moment.conversation});
+            this.userData.refreshMyConversations({action: 'reload', conversationId: this.moment.conversation});
         }
       } else {
         this.noNetworkConnection();
@@ -1432,7 +1433,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                               cssClass: 'level-10'
                           });
                           this.router.navigate(['/app/myconversations/chat']);
-                          this.events.publish('reloadMessages', 'reload');
+                          this.userData.refreshMyConversations({action: 'reload chat view'});
                       }
                   });
               }
@@ -1548,7 +1549,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                                     cssClass: 'level-10'
                                 });
                                 this.router.navigate(['/app/myconversations/chat']);
-                                this.events.publish('reloadMessages', 'reload');
+                                this.userData.refreshMyConversations({action: 'reload chat view'});
                             }
                         });
                     }
@@ -1620,7 +1621,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                                 cssClass: 'level-10'
                             });
                             this.router.navigate(['/app/myconversations/chat']);
-                            this.events.publish('reloadMessages', 'reload');
+                            this.userData.refreshMyConversations({action: 'reload chat view'});
                         }
                     });
                 }

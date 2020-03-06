@@ -104,8 +104,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
-        this.events.subscribe('reloadMessages', this.reloadHandler);
-
+        this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
 
         this.events.subscribe('refreshMoment', this.refreshMomentHandler);
@@ -117,16 +116,19 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
     }
 
-    reloadHandler = async (action) => {
-        if (action === 'reload') {
-            if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
-                await this.cleanup(this.chatService.currentChatProps.badge);
-                await this.setup();
-                this.reloadMessages();
+    reloadHandler = async (data) => {
+        if (data) {
+            if (data.action === 'reload chat view') {
+                if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
+                    await this.cleanup(this.chatService.currentChatProps.badge);
+                    await this.setup();
+                    this.reloadChatView();
+                }
+            } else if (data.action === 'disconnect chat view' && data.conversationId === this.chatService.currentChatProps[this.propIndex]._id) {
+                this.closeModal(true);
             }
-        } else if (action === 'disconnect') {
-            this.closeModal(true);
         }
+
     };
 
     closeGroupChatHandler = (id) => {
@@ -206,11 +208,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
             this.moreMediaOptions = false;
         }
-        this.reloadMessages();
+        this.reloadChatView();
         await this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
     }
 
-    async reloadMessages() {
+    async reloadChatView() {
         if (!this.chatAPIBusy) {
             this.chatReachedEnd = false;
             this.chatPageNum = 0;
@@ -224,7 +226,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async loadMoreMessages(event) {
-        if (!this.chatReachedEnd && !this.chatAPIBusy) { // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadMessages function
+        if (!this.chatReachedEnd && !this.chatAPIBusy) { // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
             try {
                 this.chatPageNum++;
                 this.chatAPIBusy = true;
@@ -585,7 +587,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 await modal.present();
                 const {data: refreshNeeded} = await modal.onDidDismiss();
                 if (refreshNeeded) {
-                    this.reloadMessages();
+                    this.reloadChatView();
                 }
             }
         }
@@ -994,7 +996,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.closeModal(false);
         setTimeout(() => {
             this.router.navigate(['/app/myconversations/chat']);
-            this.events.publish("reloadMessages", "reload");
+            this.userData.refreshMyConversations({action: 'reload chat view'});
         }, 500);
         if (startVideoChat) {
             setTimeout(() => {
@@ -1045,7 +1047,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     this.messages.push(message);
                     if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
                         // getting a new moment message that requires joining the socket, so refresh the chat
-                        this.reloadMessages();
+                        this.reloadChatView();
                     }
                     setTimeout(() => {
                         this.content.scrollToBottom(50);
@@ -1070,7 +1072,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         this.messages.push(message);
                         if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll'){
                             // getting a new moment message that requires joining the socket, so refresh the chat
-                            this.reloadMessages();
+                            this.reloadChatView();
                         }
                         setTimeout(() => {
                             this.content.scrollToBottom(50);
@@ -1162,7 +1164,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     async ngOnDestroy() {
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
         // execute when group-tab is exited
-        this.events.unsubscribe('reloadMessages', this.reloadHandler);
+        this.subscriptions['refreshMyConversations'].unsubscribe(this.reloadHandler);
         this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
         // when a new message comes in via socket.io
         this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);

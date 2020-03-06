@@ -153,7 +153,7 @@ export class ShowrecipientinfoPage implements OnInit {
                         modalPage: false
                     });
                     this.router.navigate(['/app/myconversations/chat']);
-                    this.events.publish("reloadMessages", "reload");
+                    this.userData.refreshMyConversations({action: 'reload chat view'});
                 }
             } else if (conversation.type === 'request') {
                 if (conversation.blockedBy){

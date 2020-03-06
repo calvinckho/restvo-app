@@ -464,7 +464,6 @@ export class GroupboardPage implements OnInit, OnDestroy {
                         handler: () => {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
-                                //this.events.publish('refreshGroupStatus', this.group.conversation, this.group);
                                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group})
                                 this.events.publish('refreshCommunityBoardsPage');
                             });

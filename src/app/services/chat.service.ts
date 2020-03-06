@@ -213,11 +213,9 @@ export class Chat {
         //socket.io broadcasting refresh status update about a group/topic/conversation
         this.socket.on('refresh status', async (conversationId, data) => {
             if (data.action === 'update leader status'){
-                //this.events.publish('refreshGroupStatus', conversationId, data);
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'update group member list'){
                 await this.userData.load(); //for the rare case that a user's other device is viewing the group info
-                //this.events.publish('refreshGroupStatus', conversationId, data);
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'leave group'){
                 await this.userData.load();

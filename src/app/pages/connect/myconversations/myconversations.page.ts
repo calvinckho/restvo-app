@@ -81,7 +81,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     // event listener when the page needs to be refreshed or re-rendered
     refreshPageHandler = async (data) => {
         if (data) {
-            if (data.conversationId) { //conversation Id that needs to be zeroed
+            if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
                 this.datas.forEach((obj: any) => {
                     if (data.conversationId === obj.conversation._id){
                         obj.data.badge = 0;
@@ -208,7 +208,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
             // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
             this.router.navigate(['/app/myconversations/chat'], { skipLocationChange: true });
             // if it is displaying the chat view, it will reload the chat data
-            this.events.publish('reloadMessages', 'reload');
+            this.userData.refreshMyConversations({action: 'reload chat view'});
         } else {
             this.chatService.currentChatProps.push(chatObj);
             const groupPage = await this.modalCtrl.create({

@@ -77,9 +77,7 @@ export class Groups {
         await this.userData.load();
         this.events.publish('closeGroupView', group._id);
         if (group.conversation) {
-            //this.events.publish('refreshGroupStatus', group.conversation, group);
             this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
-            //this.events.publish('chat socket emit', group.conversation, {action: 'leave group', groupId: group._id});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'leave group', groupId: group._id}});
 
         }

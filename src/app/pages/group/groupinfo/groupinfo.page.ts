@@ -133,7 +133,6 @@ export class GroupinfoPage implements OnInit, OnDestroy {
                         const navTransition = alert.dismiss();
                         navTransition.then(() => {
                             this.authService.refreshGroupStatus({conversationId: this.chatService.currentChatProps[this.propIndex].group.conversation, data: this.chatService.currentChatProps[this.propIndex].group});
-                            //this.events.publish('refreshGroupStatus', this.chatService.currentChatProps[this.propIndex].group.conversation, this.chatService.currentChatProps[this.propIndex].group);
                         });
                     }}],
                 cssClass: 'level-15'
@@ -389,7 +388,7 @@ export class GroupinfoPage implements OnInit, OnDestroy {
         this.chatService.currentChatProps.push(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]);
         this.closeModal(false);
         setTimeout(() => {
-            this.events.publish("reloadMessages", "reload");
+            this.userData.refreshMyConversations({ action: 'reload chat view' });
         }, 500);
         if (startVideoChat) {
             setTimeout(() => {

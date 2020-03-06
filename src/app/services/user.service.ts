@@ -111,14 +111,13 @@ export class UserData {
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'disconnect conversation') {
                     console.log("got disconnect", data);
-                    this.events.publish('reloadMessages', 'disconnect', data.conversationId);
+                    await this.refreshMyConversations({action: 'disconnect chat view', conversationId: data.conversationId});
                     this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
                     this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update group participation') {
                     //update user's group participation
                     await this.load();
                     this.events.publish('loadUserChurchBoards'); //in case of a board group
-                    //this.events.publish('refreshGroupStatus', data.conversationId, data.group);
                     this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
                     this.events.publish('refreshDashboardPage');
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
@@ -127,7 +126,6 @@ export class UserData {
                     //update user's group participation,
                     await this.load();
                     this.events.publish('loadUserChurchBoards'); //in case of a board group
-                    //this.events.publish('refreshGroupStatus', null, {_id: (data.groupId || data.id || null)});
                     this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
 
                     this.events.publish('closeGroupView', (data.groupId || data.id || null));
@@ -169,7 +167,8 @@ export class UserData {
         }
         // publish event to refresh the manage communities page with new userData from server
         this.refreshUserStatus({ type: 'change community' });
-        this.events.publish('reloadMessages', 'reload');
+        this.refreshMyConversations({action: 'reload chat view'});
+        this.refreshMyConversations({action: 'reload chat view'});
     }
 
     //get data from the server if connected
@@ -389,7 +388,6 @@ export class UserData {
         await this.load();
         if(group.conversation) {
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation._id, group: group});
-            //this.events.publish('chat socket emit', group.conversation._id, {action: 'update group member list'});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation._id, data: {action: 'update group member list'}});
 
         }
@@ -406,7 +404,6 @@ export class UserData {
                 .toPromise();
             if (group.conversation) {
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); //conversationId is unpopulated ObjectId
-                //this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
 
             } else if(group.board) {
@@ -586,10 +583,7 @@ export class UserData {
         await this.load();
         this.events.publish('closeGroupView', group._id);
         if (group.conversation) {
-            //this.events.publish('refreshGroupStatus', group.conversation, group);
             this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
-
-            //this.events.publish('chat socket emit', group.conversation, {action: 'update group member list'});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
         }
         this.socket.emit('refresh user status', this.user._id, {type: 'leave group', groupId: group._id});

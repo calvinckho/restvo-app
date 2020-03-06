@@ -190,7 +190,6 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
                         //Remove from database
                         try {
                             await this.userData.leaveCommunity(this.community._id);
-                            //this.events.publish("refreshDashboardPage");
                             this.modalCtrl.dismiss(true);
                         }
                         catch(err){
