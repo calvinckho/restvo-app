@@ -871,6 +871,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 hasOrganizerAccess = moment.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
             } else if (moment.user_list_2 && moment.user_list_2.length && moment.user_list_2[0] && typeof moment.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
                 hasOrganizerAccess = moment.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+            } else {
+                hasOrganizerAccess = ['owner', 'admin', 'staff'].includes(this.useData.user.role);
             }
             // if organizer, enter edit view
             if (hasOrganizerAccess) {

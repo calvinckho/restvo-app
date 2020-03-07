@@ -165,6 +165,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.schedule.operation = operation;
         await this.momentService.touchSchedule(this.schedule);
       }
+      if (operation === 'create schedule' && this.modalPage) {
+        this.closeModal();
+      }
     }
   }
 
@@ -246,7 +249,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           alert.dismiss();
           this.schedule.operation = 'delete schedule';
           await this.momentService.touchSchedule(this.schedule);
-          this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
+          if (this.modalPage) {
+            this.closeModal();
+          } else {
+            this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
+          }
         }}, { text: 'Cancel' }]
     });
     await alert.present();

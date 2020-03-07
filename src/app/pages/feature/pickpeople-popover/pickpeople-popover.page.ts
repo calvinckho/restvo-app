@@ -73,6 +73,8 @@ export class PickpeoplePopoverPage implements OnInit {
               this.hasOrganizerAccess = this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
           } else if (this.moment.user_list_2 && this.moment.user_list_2.length && this.moment.user_list_2[0] && typeof this.moment.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
               this.hasOrganizerAccess = this.moment.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+          } else {
+              this.hasOrganizerAccess = ['owner', 'admin', 'staff'].includes(this.userData.user.role);
           }
           // setup People (10500) labels
           const peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
