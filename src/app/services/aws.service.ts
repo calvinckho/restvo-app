@@ -252,15 +252,7 @@ export class Aws {
         const imageSource: any = JSON.parse(JSON.stringify(origin));
         switch (typeof imageSource) {
             case 'object': // imageSource is an array. Typical use case is to clean up unlinked Media URL from DO
-                // first, remove the assets from Digital Ocean if removed from the current sessionAssets
-                // temporarily disable deleting media from DO because of cloning
-                /*for (const image of imageSource) {
-                    if (image && image.length && !this.sessionAssets.includes(image) && !image.includes('https://pixabay.com')) {
-                        console.log("removing media", image, this.sessionAssets, imageSource);
-                        await this.removeFile(image);
-                    }
-                }*/
-                // second, remove valid media from the tempUploadedMedia array. The temp array will be used in the final clean up process
+                //remove valid media from the tempUploadedMedia array. The temp array will be used in the final clean up process
                 for (let i = this.sessionAssets.length - 1; i >= 0; i--) {
                     if (this.sessionAssets[i] && this.sessionAssets[i].length) {
                         const index = this.tempUploadedMedia.indexOf(this.sessionAssets[i]);
@@ -271,7 +263,7 @@ export class Aws {
                         this.sessionAssets.splice(i, 1);
                     }
                 }
-                // third, sort the list and move any graphics to the front
+                // sort the list and move any graphics to the front
                 this.sessionAssets.sort((a, b) => {
                     const c: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(a.substring(a.lastIndexOf('.') + 1).toLowerCase()) > -1;
                     const d: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(b.substring(b.lastIndexOf('.') + 1).toLowerCase()) > -1;
@@ -290,7 +282,7 @@ export class Aws {
                     }
                 }
                 break;
-            case 'boolean': // erase all uploaded but abandoned files
+            case 'boolean' && origin: // erase all uploaded but abandoned files
                 this.tempUploadedMedia.forEach(async (url) => {
                     await this.removeFile(url);
                 });

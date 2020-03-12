@@ -7,7 +7,7 @@
       </ion-button>
     </ion-menu-toggle>
     <ion-buttons *ngIf="modalPage || platform.width() >= 768" slot="start">
-      <ion-button (click)="closeModal()">
+      <ion-button (click)="closeModal(false)">
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
