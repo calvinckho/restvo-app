@@ -185,8 +185,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
 
-    reloadEditPage = async () => { // refresh the Edit Page
-      if (this.userData.user) {
+    reloadEditPage = async (data) => { // refresh the Edit Page
+      if (data) {
           this.setup();
       }
     };
