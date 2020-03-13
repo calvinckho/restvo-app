@@ -32,8 +32,8 @@ export class PaymentService {
     }
 
 
-    subscribe(churchId, plan, owner, token) {
-        return this.http.post(this.networkService.domain + '/api/payment/subscribe/' + churchId, JSON.stringify({plan: plan, owner: owner, token: token}), this.authService.httpAuthOptions).toPromise();
+    subscribe(churchId, plan, owner, source) {
+        return this.http.post(this.networkService.domain + '/api/payment/subscribe/' + churchId, JSON.stringify({plan: plan, owner: owner, source: source}), this.authService.httpAuthOptions).toPromise();
     }
 
     updateBillingMethod(churchId, source) {

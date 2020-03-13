@@ -47,7 +47,7 @@ export class BillingPage implements OnInit {
       private alertCtrl: AlertController,
       public resourceService: Resource,
       private paymentService: PaymentService,
-      public churchService:Churches,
+      public churchService: Churches,
       public userData: UserData,
   ) { }
 
@@ -168,9 +168,13 @@ export class BillingPage implements OnInit {
             delete owner.state;
             delete owner.postal_code;
             delete owner.country;
-            this.stripeService.createToken(this.card, owner).subscribe(async (result) => {
-                if (result.token) {
-                    const updateResult = await this.paymentService.updateBillingMethod(this.churchService.currentManagedCommunity._id, result.token);
+            this.stripeService.createSource(this.card, {
+                type: 'card',
+                currency: 'usd',
+                owner: owner,
+            }).subscribe(async (result) => {
+                if (result.source) {
+                    const updateResult = await this.paymentService.updateBillingMethod(this.churchService.currentManagedCommunity._id, result.source);
                     this.ionSpinner = false;
                     if (updateResult === 'success') {
                         this.loadBillingInfo();

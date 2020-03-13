@@ -192,9 +192,13 @@ export class PlanPage implements OnInit {
             delete owner.state;
             delete owner.postal_code;
             delete owner.country;
-            this.stripeService.createToken(this.card, owner).subscribe(async (result) => {
-                if (result.token) {
-                    const updateResult = await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], owner, result.token);
+            this.stripeService.createSource(this.card, {
+                type: 'card',
+                currency: 'usd',
+                owner: owner,
+            }).subscribe(async (result) => {
+                if (result.source) {
+                    const updateResult = await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], owner, result.source);
                     this.ionSpinner = false;
                     if (updateResult === 'success') {
                         this.userData.refreshUserStatus({type: 'change community'});
