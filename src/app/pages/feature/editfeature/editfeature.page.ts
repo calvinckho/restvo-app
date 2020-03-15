@@ -186,7 +186,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
     reloadEditPage = async () => { // refresh the Edit Page
-      this.setup();
+      if (this.userData.user) {
+          this.setup();
+      }
     };
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
