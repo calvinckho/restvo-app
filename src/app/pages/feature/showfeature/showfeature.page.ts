@@ -2148,6 +2148,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const result: any = await this.authService.verifyEmail({verification_token: this.verification_token});
                 if (result.success && result.token) {
                     this.authService.cachedRouteParams = null; // remove the route params, including the verification token
+                    this.authService.cachedRouteParams = { type: this.participant_type, token: this.token }; // reinstate the invitation params
                     // this will reload the app by first validating the returned auth token
                     const res: any = await this.authService.checkAuthenticationWithToken(result.token);
                     this.loading.dismiss();
