@@ -185,10 +185,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
 
-    reloadEditPage = async (data) => { // refresh the Edit Page
-      if (data) {
-          this.setup();
-      }
+    reloadEditPage = async () => { // refresh the Edit Page
+      this.setup();
     };
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
