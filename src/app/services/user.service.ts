@@ -203,7 +203,7 @@ export class UserData {
             this.UIrestStatus = restExpired ? 'active' : 'away';
             return restExpired;
         } else {
-            return true
+            return true;
         }
     }
 

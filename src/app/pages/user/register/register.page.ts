@@ -404,6 +404,8 @@ export class RegisterPage implements OnInit {
 
         try {
             this.userData.user = await this.authService.login(this.credentials);
+            this.userData.refreshUserStatus({action: 'user updated', user: this.userData.user});
+
             this.loginStatus = '';
             this.loginForm.reset();
             this.userData.processLoadedUserData();

@@ -130,6 +130,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 console.log('Token authorized');
                 try {
                     this.userData.user = res.user;
+                    this.userData.refreshUserStatus({action: 'user updated', user: this.userData.user});
                     this.userData.processLoadedUserData();
                     await this.userData.loadStoredCommunity();
                     // in the event of deep linking to tab pages, the tab page renders using user data from storage first and then listens to the following events to refresh its view with fresh user data from server

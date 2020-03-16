@@ -84,13 +84,17 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     refreshUserStatusHandler = async (data) => {
         if (data) {
-            await this.reloadUserData();
+            await this.refreshUserData(data);
         }
         this.ionSpinner = false;
     };
 
-    async reloadUserData() {
-        this.user = await this.userData.load();
+    async refreshUserData(data) {
+        if (data && data.action === 'user updated' && data.user) {
+            this.user = data.user;
+        } else {
+            this.user = await this.userData.load();
+        }
         this.populateForm();
     }
 
@@ -215,7 +219,7 @@ export class ProfilePage implements OnInit, OnDestroy {
                                 buttons: [{
                                     text: 'Ok',
                                     handler: () => {
-                                        this.reloadUserData();
+                                        this.refreshUserData(null);
                                     }
                                 }],
                                 cssClass: 'level-15'
@@ -266,7 +270,7 @@ export class ProfilePage implements OnInit, OnDestroy {
                                     buttons: [{
                                         text: 'Ok',
                                         handler: () => {
-                                            this.reloadUserData();
+                                            this.refreshUserData(null);
                                         }
                                     }],
                                     cssClass: 'level-15'
