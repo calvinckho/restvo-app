@@ -6,8 +6,8 @@ android {
         applicationId "com.restvo.app"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1071203
-        versionName "1.7.12"
+        versionCode 1071306
+        versionName "1.7.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
