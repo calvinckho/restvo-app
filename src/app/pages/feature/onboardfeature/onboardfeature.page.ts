@@ -113,7 +113,7 @@ export class OnboardfeaturePage {
         clearTimeout(this.loadActTimeoutHandle);
         this.authService.incompleteOnboardProcess = onboardingProcesses.find((process) => {
             // first, check if the designated onboarding has any section that either has no response yet or is partially completed
-            const isIncomplete = !process.response || (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => (c === 40000 || c === 40020)).length) || (process.response.matrix_string.filter((c) => c.length > 1 && c[1].length > 0).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length);
+            const isIncomplete = !process.response || (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => (c === 40000 || c === 40020)).length) || (process.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length);
             // second, check if the process has a component that is newer than this app version
             let versionUpToDate = true;
             process.resource.matrix_number[0].forEach((componentId) => {
