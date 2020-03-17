@@ -100,11 +100,13 @@ export class CreatechatPage implements OnInit {
     }
 
     setupLoadPeople(){
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.listOfAppUsers = [];
-        this.pageNum = 0;
-        this.loadMorePeople({target: this.infiniteScroll});
+        setTimeout(() => {
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.listOfAppUsers = [];
+            this.pageNum = 0;
+            this.loadMorePeople({target: this.infiniteScroll});
+        }, 100);
     }
 
     async loadMorePeople(event){
