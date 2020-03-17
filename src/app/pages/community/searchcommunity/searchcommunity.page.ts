@@ -41,11 +41,13 @@ export class SearchcommunityPage implements OnInit {
     }
 
     listAllMyCommunities(){
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.communities = [];
-        this.pageNum = 0;
-        this.listcommunities({target: this.infiniteScroll});
+        setTimeout(async () => {
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.communities = [];
+            this.pageNum = 0;
+            this.listcommunities({target: this.infiniteScroll});
+        }, 100);
     }
 
     async listcommunities(event){

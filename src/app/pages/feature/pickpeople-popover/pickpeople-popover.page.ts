@@ -101,13 +101,15 @@ export class PickpeoplePopoverPage implements OnInit {
   }
 
     setupLoadAppUsers() {
-        if (this.hasOrganizerAccess) {
-            this.infiniteScroll.disabled = false;
-            this.reachedEnd = false;
-            this.listOfAppUsers = [];
-            this.pageNum = 0;
-            this.loadMoreAppUsers({target: this.infiniteScroll});
-        }
+        setTimeout(async () => {
+            if (this.hasOrganizerAccess) {
+                this.infiniteScroll.disabled = false;
+                this.reachedEnd = false;
+                this.listOfAppUsers = [];
+                this.pageNum = 0;
+                this.loadMoreAppUsers({target: this.infiniteScroll});
+            }
+        }, 50);
     }
 
     async loadMoreAppUsers(event) {

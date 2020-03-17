@@ -64,12 +64,14 @@ export class MembersPage implements OnInit, OnDestroy {
     //-----------------------------------
 
     async setupManagePeople(){
-        [this.community] = await this.churchService.loadChurchProfile(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.members = [];
-        this.pageNum = 0;
-        this.manageMorePeople({target: this.infiniteScroll});
+        setTimeout(async () => {
+            [this.community] = await this.churchService.loadChurchProfile(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.members = [];
+            this.pageNum = 0;
+            this.manageMorePeople({target: this.infiniteScroll});
+        }, 100);
     }
 
     async manageMorePeople(event){

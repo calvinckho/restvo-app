@@ -112,12 +112,14 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     };
 
     async reloadBoardPosts(){
-        this.destroyPlayers(null);
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.communitiesboards = [];
-        this.communityNum = -1;
-        this.listcommunityboardposts({target: this.infiniteScroll});
+        setTimeout(async () => {
+            this.destroyPlayers(null);
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.communitiesboards = [];
+            this.communityNum = -1;
+            this.listcommunityboardposts({target: this.infiniteScroll});
+        }, 100);
     }
 
     async listcommunityboardposts(event) {
