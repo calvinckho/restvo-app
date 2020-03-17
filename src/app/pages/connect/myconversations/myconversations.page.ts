@@ -175,7 +175,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     async pushToMessagePage(event, object) {
         if (event) event.stopPropagation();
         let chatObj;
-        if (object.conversation.type === "connect") {
+        if (object.conversation.type === 'connect') {
             chatObj = {
                 conversationId: object.conversation._id,
                 name: object.data.name,
