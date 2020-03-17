@@ -775,13 +775,15 @@ export class MainTabPage implements OnInit, OnDestroy {
             // @ts-ignore
             $(`#videoSpace`).empty();
         }
-    }
+    };
 
     ngOnDestroy () {
-        this.subscriptions['enablePushNotification'].unsubscribe('enablePushNotification', () => { // listen to event when a user gives permission
-            this.initPushNotification(); // set up push notification
-            this.requestBadgePermission(); // badge API requires notification permission
-        });
+        if (this.subscriptions.hasOwnProperty('enablePushNotification')) {
+            this.subscriptions['enablePushNotification'].unsubscribe('enablePushNotification', () => { // listen to event when a user gives permission
+                this.initPushNotification(); // set up push notification
+                this.requestBadgePermission(); // badge API requires notification permission
+            });
+        }
         this.subscriptions['openChat'].unsubscribe('openChat', async (data) => {
             this.openGroupChat(data);
         });
