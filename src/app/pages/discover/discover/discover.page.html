@@ -41,7 +41,7 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess">
     <ion-item-sliding side="end">
-      <ion-item (click)="finishOnboarding($event)" lines="none">
+      <ion-item (click)="authService.openOnboarding({ modalPage: true })" lines="none">
         <ion-avatar slot="start">
           <ion-img src="assets/img/finish.png"></ion-img>
         </ion-avatar>
