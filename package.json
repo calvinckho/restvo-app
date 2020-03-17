@@ -14,6 +14,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/build-angular": "^0.13.0",
     "@angular/common": "^7.2.16",
     "@angular/core": "^7.2.16",
     "@angular/forms": "^7.2.16",
@@ -93,7 +94,6 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.900.6",
-    "@angular-devkit/build-angular": "^0.900.6",
     "@angular-devkit/core": "^7.3.8",
     "@angular-devkit/schematics": "^7.3.8",
     "@angular/cli": "^7.3.8",
@@ -119,6 +119,7 @@
     "karma-coverage-istanbul-reporter": "^2.1.1",
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "node-sass": "^4.13.1",
     "protractor": "^5.4.3",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
