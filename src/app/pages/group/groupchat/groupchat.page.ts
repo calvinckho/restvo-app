@@ -572,7 +572,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             let componentProps: any;
             params = { };
             componentProps = { moment: moment, modalPage: true };
-            if (moment.calendar && moment.calendar._id) {
+            if (moment.calendar && moment.calendar._id && moment.categories.includes('5e1bbda67b00ea76b75e5a73')) { // only include calendar ID for Content
                 params.calendarId = moment.calendar._id;
                 componentProps.calendarId = moment.calendar._id;
             }

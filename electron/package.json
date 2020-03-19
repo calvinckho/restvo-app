@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.6.23",
+  "version": "1.6.25",
   "description": "Connect with Mentors",
   "main": "index.js",
   "scripts": {
