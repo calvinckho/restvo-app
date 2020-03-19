@@ -16,7 +16,7 @@ We also do weekly team sync and you are welcome to join us remotely every Saturd
 
 ```
 
-$ cd restvoApp
+$ cd restvo-app
 $ npm install
 
 ```
@@ -25,7 +25,7 @@ $ npm install
 
 ```
 
-$ cd restvoApp
+$ cd restvo-app
 $ ionic serve
 
 ```
