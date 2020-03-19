@@ -12,7 +12,7 @@ Welcome to the Restvo Web App Development Community. Your contribute is so valua
 
 ```
 
-$ cd restvoApp
+$ cd restvo-app
 $ npm install
 
 ```
@@ -21,7 +21,7 @@ $ npm install
 
 ```
 
-$ cd restvoApp
+$ cd restvo-app
 $ ionic serve
 
 ```
