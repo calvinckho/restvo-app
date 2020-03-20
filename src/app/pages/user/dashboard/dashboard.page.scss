@@ -77,7 +77,8 @@ app-dashboard {
   }
 
   .user-name {
-    display: inline-block;
+    display: 
+    inline-block;
     font-size: large;
     font-weight: bold;
     color: var(--ion-color-secondary);
@@ -493,7 +494,6 @@ app-dashboard {
   }
 
   .person-content-left {
-    // margin: 8px 12.5px 21px 0;
     width: 40%;
     height: 100px;
     line-height: 100%;
@@ -508,7 +508,6 @@ app-dashboard {
   .person-name {
     font-size: 20px;
     font-weight: 500;
-    // font-size: 14px;
     margin-bottom: 8px;
   }
 
@@ -525,10 +524,8 @@ app-dashboard {
   .person-content-right {
     padding-left: 10px;
     padding-top: 10px;
-    // margin: 10px 0 21px 0;
     width: 60%;
     height: 100%;
-    //max-height: 72px;
     line-height: 16px; /* Height / no. of lines to display */
     overflow: hidden;
     font-size: 12px;
