@@ -440,10 +440,7 @@ app-dashboard {
   }
 
   .person-card {
-    // max-width: 300px;
-    // width: 80%;
     height: 100%;
-    //max-height: 200px;
     object-fit: contain;
     margin: 0 12px;
 
@@ -480,7 +477,6 @@ app-dashboard {
 
   .person-content {
     height: 100%;
-    // overflow: scroll;
     --background: var(--ion-color-light);
   }
 
