@@ -3,8 +3,7 @@ import {EditcommunityPage} from "../../community/editcommunity/editcommunity.pag
 import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
 import {
     ActionSheetController,
-    AlertController, Events,
-    IonInfiniteScroll,
+    AlertController, IonInfiniteScroll,
     ModalController,
     Platform,
     PopoverController
@@ -38,7 +37,6 @@ export class CommunitiesPage {
     refreshNeeded = false;
 
     constructor(
-                private events: Events,
                 private storage: Storage,
                 private platform: Platform,
                 private authService: Auth,
@@ -87,8 +85,8 @@ export class CommunitiesPage {
                 this.reachedEnd = true;
                 event.target.disabled = true;
             } else {
-                communities.forEach((community)=>{
-                    const adminIds = community.admins.map((c)=>{return c._id;});
+                communities.forEach((community) => {
+                    const adminIds = community.admins.map((c) => c._id);
                     if (adminIds.indexOf(this.userData.user._id) < 0){
                         if (community.verified) {
                             community.system_verified = true;

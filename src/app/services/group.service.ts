@@ -14,7 +14,6 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class Groups {
 
     constructor(private http: HttpClient,
-                private events: Events,
                 private authService: Auth,
                 private networkService: NetworkService,
                 private boardService: Board,
@@ -51,8 +50,8 @@ export class Groups {
     }
 
     flagGroup(profile){
-        let promise = this.http.put(this.networkService.domain + '/api/group/flag', JSON.stringify(profile), this.authService.httpAuthOptions).toPromise();
-        this.events.publish('refreshManagePage');
+        const promise = this.http.put(this.networkService.domain + '/api/group/flag', JSON.stringify(profile), this.authService.httpAuthOptions).toPromise();
+        this.userData.refreshUserStatus({ type: 'refresh manage page' });
         return promise;
     }
 

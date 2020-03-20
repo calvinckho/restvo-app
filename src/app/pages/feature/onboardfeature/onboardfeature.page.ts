@@ -1,6 +1,6 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Plyr } from "plyr";
-import {Events, IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
+import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {CacheService} from "ionic-cache";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -73,7 +73,6 @@ export class OnboardfeaturePage {
         private route: ActivatedRoute,
         private router: Router,
         private geolocation: Geolocation,
-        public events: Events,
         public platform: Platform,
         public resourceService: Resource,
         private authService: Auth,
@@ -404,7 +403,7 @@ export class OnboardfeaturePage {
     async seeUserInfo(event, user) {
         if (event) event.stopPropagation();
         user.name = user.first_name + ' ' + user.last_name;
-        this.events.publish('showRecipient',{recipient: user, modalPage: true});
+        this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
     }
 
     joinVideoConference(event, moment) {

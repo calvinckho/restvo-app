@@ -3,7 +3,6 @@ import { Storage } from '@ionic/storage';
 import { Router} from '@angular/router';
 import {
     ActionSheetController,
-    Events,
     ModalController,
     AlertController,
     PopoverController,
@@ -97,7 +96,6 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
     ];
 
     constructor(private router: Router,
-                private events: Events,
                 private storage: Storage,
                 private platform: Platform,
                 private authService: Auth,
@@ -117,18 +115,16 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
             this.title = this.userData.user.churches[this.userData.currentCommunityIndex].name;
         }
 
-        this.events.subscribe('refreshManagePage', this.refreshHandler);
         // link refresh user observable with refresh user handler
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserHandler);
     }
 
-    refreshHandler = () => {
-        this.loadCommunity();
-    };
-
     refreshUserHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change aux data'){
+        if (data && (data.type === 'update admin' || data.type === 'change aux data')) {
             this.setupManagePage();
+        }
+        if (data && data.type === 'refresh manage page') {
+            this.loadCommunity();
         }
     };
 
@@ -162,7 +158,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
         if (this.router.url.indexOf('billing') > -1 && !this.stripeCustomer) {
             this.clickManageMenu('plan');
         } else {
-            this.events.publish('loadCommunityReady');
+            this.userData.refreshUserStatus({ type: 'load community ready' });
         }
     }
 
@@ -241,7 +237,6 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.userData.splitPaneState = 'md';
         // PWA fast load listener + reload listener
-        this.events.unsubscribe('refreshManagePage', this.refreshHandler);
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserHandler);
     }
 }

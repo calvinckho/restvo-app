@@ -10,7 +10,7 @@ import {get} from "scriptjs";
 import {
     ActionSheetController,
     AlertController,
-    Events, IonContent, IonFab,
+    IonContent, IonFab,
     IonInfiniteScroll,
     IonSlides, LoadingController,
     ModalController, PickerController,
@@ -207,7 +207,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       public router: Router,
       public cache: CacheService,
       public platform: Platform,
-      public events: Events,
       public alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
       public loadingCtrl: LoadingController,
@@ -239,7 +238,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.loadAndProcessMomentHandler);
-      this.events.subscribe('searchMap', () => { this.searchMap(); });
       await this.processVerificationToken();
   }
 
@@ -257,12 +255,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.categoryIds = this.moment.categories ? this.moment.categories.map((c) => c._id) : [];
 
       if (this.moment && this.moment._id) {
-        // ready to check authentication status
-        if (this.authService.token && this.userData.user) {
-            this.setupPermission();
-        } else {
-            this.setupPermissionCompleted = true;
-        }
+          // ready to check authentication status
+          if (this.authService.token && this.userData.user) {
+              this.setupPermission();
+          } else {
+              this.setupPermissionCompleted = true;
+          }
       }
       // load list of plans. it does not require authentication
       await this.loadPrograms();
@@ -273,6 +271,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.showSpecialAccess = true;
       } else {
           this.hasSpecialPrivilege = true;
+      }
+      if (data && data.type === 'search map') {
+          this.searchMap();
       }
   };
 
@@ -947,7 +948,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     } else if (!this.modalPage && this.platform.width() >= 768) {
       this.router.navigate(['/app/person/' + user._id], { replaceUrl: false });
     } else {
-      this.events.publish('showRecipient', {recipient: user, modalPage: true});
+        this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
     }
   }
 

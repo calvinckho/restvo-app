@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {AlertController, Events, Platform} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Chat } from './chat.service';
 import { Auth } from './auth.service';
@@ -19,7 +19,6 @@ export class Board {
     subscriptions: any = {};
 
     constructor(private http: HttpClient,
-                private events: Events,
                 private platform: Platform,
                 private storage: Storage,
                 private alertCtrl: AlertController,
@@ -41,8 +40,7 @@ export class Board {
             console.log("board socket id: ", this.socket.id);
         });
         this.socket.on('refresh board', async (boardId, data) => {
-            this.events.publish('refreshBoard', boardId, data);
-            console.log("refresh board", data);
+            this.userData.refreshUserStatus({ type: 'refresh board', boardId: boardId, data: data });
         });
         if (!this.subscriptions.hasOwnProperty('refreshUserStatus')) {
             this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(() => {
@@ -98,7 +96,7 @@ export class Board {
             .toPromise();
         //post.author = this.userData.user; //populate author
         this.userData.refreshUserStatus({ type: 'refresh community board page' });
-        this.events.publish('refreshManagePage');
+        this.userData.refreshUserStatus({ type: 'refresh manage page' });
         this.socket.emit('refresh board', boardId, {action: 'update post', post: post});
         return promise;
     }

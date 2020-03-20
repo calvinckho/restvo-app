@@ -71,7 +71,7 @@ export class RecoverPage implements OnInit {
                                 alert.dismiss();
                                 await this.userData.load();
                                 await this.userData.loadStoredCommunity();
-                                this.userData.refreshUserStatus({type: 'setupDevice'});
+                                this.userData.refreshUserStatus({type: 'setup device'});
                                 this.menuCtrl.enable(true);
                                 if(this.platform.is('cordova')){
                                     StatusBar.show();

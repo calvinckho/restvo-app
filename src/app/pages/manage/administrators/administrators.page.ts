@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {Events, ModalController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
@@ -14,20 +14,22 @@ export class AdministratorsPage implements OnInit {
     @Input() modalPage: any;
     refreshNeeded = false;
     searchKeyword = '';
+    subscriptions: any = {};
 
     constructor(
-        private events: Events,
         public modalCtrl: ModalController,
         public userData: UserData,
         public churchService: Churches,
     ) { }
 
     ngOnInit() {
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = () => {
-        console.log("admins", this.churchService.currentManagedCommunity.admins);
+    refreshHandler = (data) => {
+        if (data && data.type === 'load community ready'){
+            console.log("admins", this.churchService.currentManagedCommunity.admins);
+        }
     };
 
     async editAdmin(event, admin) {

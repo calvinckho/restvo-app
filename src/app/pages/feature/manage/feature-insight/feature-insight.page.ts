@@ -2,7 +2,6 @@ import {Component, Input, OnInit, ViewEncapsulation, NgZone} from '@angular/core
 import {
   ActionSheetController,
   AlertController,
-  Events,
   LoadingController,
   ModalController, PickerController,
   Platform
@@ -54,7 +53,6 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       public router: Router,
       public cache: CacheService,
       public platform: Platform,
-      public events: Events,
       public alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
       public loadingCtrl: LoadingController,
@@ -71,7 +69,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       public calendarService: CalendarService,
   ) {
     super(zone, location, storage, electronService, badge, swUpdate, route, router,
-        cache, platform, events, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
+        cache, platform, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
         networkService, chatService, userData, authService, mapService,
         momentService, resourceService, responseService, calendarService);
   }

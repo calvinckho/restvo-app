@@ -7,7 +7,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Badge } from '@ionic-native/badge/ngx';
 import { Storage } from '@ionic/storage';
 import { Auth } from '../../../services/auth.service';
-import { AlertController, LoadingController, Events, Platform, MenuController, ModalController } from '@ionic/angular';
+import { AlertController, LoadingController, Platform, MenuController, ModalController } from '@ionic/angular';
 import { UserData } from "../../../services/user.service";
 import { Aws } from "../../../services/aws.service";
 
@@ -33,7 +33,6 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   constructor(private storage: Storage,
               private location: Location,
-              private events: Events,
               private router: Router,
               private electronService: ElectronService,
               private appVersion: AppVersion,

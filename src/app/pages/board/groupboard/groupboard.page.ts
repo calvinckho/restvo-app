@@ -9,7 +9,6 @@ import {
     AlertController,
     ActionSheetController,
     IonContent,
-    Events,
     IonInfiniteScroll,
     ModalController,
     Platform,
@@ -74,7 +73,6 @@ export class GroupboardPage implements OnInit, OnDestroy {
 
     constructor(
                 private cache: CacheService,
-                private events: Events,
                 private router: Router,
                 private callNumber: CallNumber,
                 public platform: Platform,
@@ -93,7 +91,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                 public userData: UserData) { }
 
   ngOnInit() {
-      this.events.subscribe('refreshBoard', this.refreshBoardHandler);
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
   }
@@ -129,8 +127,8 @@ export class GroupboardPage implements OnInit, OnDestroy {
     }
 
     async checkLoadGroup() {
-        if(!this.groupLoaded){
-            if(!this.group.public_group) {
+        if (!this.groupLoaded){
+            if (!this.group.public_group) {
                 [this.group] = await this.groupService.loadGroupProfile(this.group._id);
             } else {
                 [this.group] = await this.groupService.loadPublicGroup(this.group._id);
@@ -139,59 +137,61 @@ export class GroupboardPage implements OnInit, OnDestroy {
         }
     }
 
-    refreshBoardHandler = async (boardId, data) => {
-        let reloadNeeded = false;
-        if(boardId === this.group.board){
-            console.log("incoming", JSON.stringify(data));
-            if(data.action === 'create post') {
-                reloadNeeded = true; //reload board to get the post with bucket ID because bucket ID is not sent via socket.io
-            } else if (data.action === 'delete post') {
-                let index = this.boardposts.map((c)=>{return c._id;}).indexOf(data.postId);
-                if (this.boardposts[index].media && this.boardposts[index].media.length) {
-                    this.destroyPlayers(this.boardposts[index].media[0]._id);
-                }
-                this.boardposts.splice(index, 1);
-            } else if (data.action === 'like' || data.action === 'cancel like') {
-                for(let boardpost of this.boardposts) {
-                    if (boardpost.bucketId === data.bucketId && boardpost._id === data.postId) {
-                        if (data.action === 'like') {
-                            boardpost.likes.push(data.author);
-                        }
-                        else if (data.action === 'cancel like') {
-                            let index = boardpost.likes.indexOf(data.author);
-                            boardpost.likes.splice(index, 1);
+    refreshBoardHandler = async (res) => {
+        if (res && res.type === 'refresh board' && res.boardId && res.data) {
+            const boardId = res.boardId;
+            const data = res.data;
+            let reloadNeeded = false;
+            if (boardId === this.group.board){
+                if(data.action === 'create post') {
+                    reloadNeeded = true; //reload board to get the post with bucket ID because bucket ID is not sent via socket.io
+                } else if (data.action === 'delete post') {
+                    let index = this.boardposts.map((c)=>{return c._id;}).indexOf(data.postId);
+                    if (this.boardposts[index].media && this.boardposts[index].media.length) {
+                        this.destroyPlayers(this.boardposts[index].media[0]._id);
+                    }
+                    this.boardposts.splice(index, 1);
+                } else if (data.action === 'like' || data.action === 'cancel like') {
+                    for (let boardpost of this.boardposts) {
+                        if (boardpost.bucketId === data.bucketId && boardpost._id === data.postId) {
+                            if (data.action === 'like') {
+                                boardpost.likes.push(data.author);
+                            } else if (data.action === 'cancel like') {
+                                let index = boardpost.likes.indexOf(data.author);
+                                boardpost.likes.splice(index, 1);
+                            }
                         }
                     }
-                }
-            } else if (data.action === 'update post') {
-                for(let boardpost of this.boardposts) {
-                    if (boardpost._id === data.post._id) {
-                        boardpost.body = data.post.body;
-                        boardpost.attachments = data.post.attachments;
-                        if (boardpost.media && boardpost.media.length && data.post.media && !data.post.media.length) {
-                            this.destroyPlayers(boardpost.media[0]._id);
+                } else if (data.action === 'update post') {
+                    for (let boardpost of this.boardposts) {
+                        if (boardpost._id === data.post._id) {
+                            boardpost.body = data.post.body;
+                            boardpost.attachments = data.post.attachments;
+                            if (boardpost.media && boardpost.media.length && data.post.media && !data.post.media.length) {
+                                this.destroyPlayers(boardpost.media[0]._id);
+                            }
+                            boardpost.media = data.post.media;
+                            if (data.post.moments && data.post.moments[0] && data.post.moments[0].resource.field == 'Poll') {
+                                reloadNeeded = true; //reload is needed to create a new moment socket.io for the feature
+                            } else {
+                                boardpost.moments = data.post.moments;
+                            }
                         }
-                        boardpost.media = data.post.media;
-                        if (data.post.moments && data.post.moments[0] && data.post.moments[0].resource.field == 'Poll') {
-                            reloadNeeded = true; //reload is needed to create a new moment socket.io for the feature
-                        } else {
-                            boardpost.moments = data.post.moments;
+                        if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]){
+                            reloadNeeded = true;
                         }
                     }
-                    if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]){
-                        reloadNeeded = true;
-                    }
-                }
-            } else if (data.action === 'create comment') {
-                for(let boardpost of this.boardposts) {
-                    if (boardpost._id === data.comment.parentId) { //first level comment
-                        boardpost.comments.unshift(data.comment)
+                } else if (data.action === 'create comment') {
+                    for (let boardpost of this.boardposts) {
+                        if (boardpost._id === data.comment.parentId) { //first level comment
+                            boardpost.comments.unshift(data.comment)
+                        }
                     }
                 }
             }
-        }
-        if (reloadNeeded){
-            this.reloadBoard();
+            if (reloadNeeded) {
+                this.reloadBoard();
+            }
         }
     };
 
@@ -733,8 +733,8 @@ export class GroupboardPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
     }
 }

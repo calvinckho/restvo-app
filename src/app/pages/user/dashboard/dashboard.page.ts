@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnDestroy, ViewChild, ViewEncapsulation} from 
 import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import {
-    IonContent, Events, LoadingController, AlertController, ModalController, NavController, PopoverController,
+    IonContent, LoadingController, AlertController, ModalController, NavController, PopoverController,
     IonSlides, Platform
 } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
@@ -54,8 +54,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     subscriptions: any = {};
 
-  constructor(private events: Events,
-              public router: Router,
+  constructor(public router: Router,
               private route: ActivatedRoute,
               public platform: Platform,
               private cache: CacheService,

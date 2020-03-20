@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, Events, ModalController, NavParams} from "@ionic/angular";
+import {AlertController, ModalController, NavParams} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {CacheService} from "ionic-cache";
 import {Resource} from "../../../services/resource.service";
@@ -33,7 +33,6 @@ export class PicknotePopoverPage implements OnInit {
   selectedNotes = [];
 
   constructor(
-      private events: Events,
       public router: Router,
       private alertCtrl: AlertController,
       private cache: CacheService,

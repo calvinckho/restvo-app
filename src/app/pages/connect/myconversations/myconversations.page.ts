@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import {Storage} from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
-import {ActionSheetController, IonContent, Events, NavController, ModalController, Platform} from '@ionic/angular';
+import {ActionSheetController, IonContent, NavController, ModalController, Platform} from '@ionic/angular';
 import {UserData} from '../../../services/user.service';
 import {Chat} from "../../../services/chat.service";
 import {ShowrecipientinfoPage} from "../showrecipientinfo/showrecipientinfo.page";
@@ -35,7 +35,6 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         private zone: NgZone,
         private router: Router,
         private electronService: ElectronService,
-        private events: Events,
         private storage: Storage,
         private badge: Badge,
         private navCtrl: NavController,
