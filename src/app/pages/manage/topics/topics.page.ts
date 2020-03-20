@@ -55,7 +55,7 @@ export class TopicsPage {
   }
 
     refreshUserHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'update admin' || data.type === 'change aux data'){
             this.setupManageGroups();
         }
     };

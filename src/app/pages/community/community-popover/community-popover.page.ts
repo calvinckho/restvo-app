@@ -129,7 +129,7 @@ export class CommunityPopoverPage implements OnInit {
                         this.events.publish('refreshDashboardPage');
                         this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                         this.events.publish('refreshCommunityBoardsPage');
-                        this.userData.refreshUserStatus({type: 'change community'});
+                        this.userData.refreshUserStatus({type: 'change aux data'});
                     });
                 }},
                 {   text: 'Cancel' }],

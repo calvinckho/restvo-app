@@ -55,7 +55,7 @@ export class MembersPage implements OnInit, OnDestroy {
 
     refreshHandler = (data) => {
         // because on first subscription, data is null. Thiw will refresh only under special data.type
-        if (data && (data.type === 'update admin' || data.type === 'change community' || data.type === 'update member')){
+        if (data && (data.type === 'update admin' || data.type === 'change aux data' || data.type === 'update member')){
             this.setupManagePeople();
         }
     };

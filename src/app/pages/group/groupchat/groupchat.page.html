@@ -447,7 +447,7 @@
           <ion-icon name="ios-arrow-forward" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize [(ngModel)]="composedMessage" autocorrect="on" (ionFocus)="moreMediaOptions = false">
+      <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
         <ion-grid *ngIf="awsService.sessionAssets.length">
           <ion-row>

@@ -152,7 +152,7 @@ export class PlanPage implements OnInit {
                 }
             } else if (plan === this.resource['en-US'].matrix_string[1][0] && this.churchService.currentManagedCommunity.subscriptionId){
                 await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], null, null);
-                this.userData.refreshUserStatus({type: 'change community'});
+                this.userData.refreshUserStatus({type: 'change aux data'});
             } else {
                 const alert = await this.alertCtrl.create({
                     header: 'Cancel ' + this.resource['en-US'].matrix_string[1][0] + ' Plan',
@@ -162,7 +162,7 @@ export class PlanPage implements OnInit {
                             const navTransition = alert.dismiss();
                             navTransition.then(async () => {
                                 await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, 'Free', null,null);
-                                this.userData.refreshUserStatus({type: 'change community'});
+                                this.userData.refreshUserStatus({type: 'change aux data'});
                             });
                         }},
                         { text: 'Cancel' }],
@@ -201,7 +201,7 @@ export class PlanPage implements OnInit {
                     const updateResult = await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], owner, result.source);
                     this.ionSpinner = false;
                     if (updateResult === 'success') {
-                        this.userData.refreshUserStatus({type: 'change community'});
+                        this.userData.refreshUserStatus({type: 'change aux data'});
                         const alert = await this.alertCtrl.create({
                             header: 'Success',
                             subHeader: this.churchService.currentManagedCommunity.name + ' is now upgraded to the ' + this.resource['en-US'].matrix_string[1][0] + ' Plan.',
