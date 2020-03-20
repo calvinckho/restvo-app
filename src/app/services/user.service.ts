@@ -165,9 +165,9 @@ export class UserData {
         if (this.router.url.includes('/app/me')) {
             this.events.publish('refreshDashboardPage');
         }
-        // publish event to refresh the manage communities page with new userData from server
-        this.refreshUserStatus({ type: 'change community' });
-        this.refreshMyConversations({action: 'reload chat view'});
+        // broadcast signal to refresh user affliations and behaviors
+        this.refreshUserStatus({ type: 'change aux data' });
+        // broadcast sign to refresh conversations
         this.refreshMyConversations({action: 'reload chat view'});
     }
 
@@ -185,7 +185,7 @@ export class UserData {
                 this.badge.set(this.user.unreadBadgeCount);
             }
             if (this.electronService.isElectronApp) {
-                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', this.user.unreadBadgeCount);
+                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.user.unreadBadgeCount > -1) ? this.user.unreadBadgeCount : 0);
             }
         }
         this.storage.set('user', this.user); //save in local storage for PWA's fast retrieval when booting up mobile app and reloading the myconversations page
@@ -283,7 +283,7 @@ export class UserData {
                 this.badge.set(this.user.unreadBadgeCount);
             }
             if (this.electronService.isElectronApp) {
-                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', this.user.unreadBadgeCount);
+                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.user.unreadBadgeCount > -1) ? this.user.unreadBadgeCount : 0);
             }
         }
     }

@@ -59,7 +59,7 @@ export class CommunitiesPage {
     }
 
     refreshHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'update admin' || data.type === 'change aux data'){
             this.setupManageCommunities();
         }
     };

@@ -55,13 +55,17 @@ export class PreferencesPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-      // link the refreshUserStatus Observable with the refresh handler. It fires on page load and subsequent user refreshes
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
+    // on page load, setup the page
+    this.setup();
+    // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
+    this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
 
-  refreshUserStatusHandler = () => {
-    this.setup();
-  };
+  refreshUserStatusHandler = (data) => {
+    if (data && data.type === 'change aux data') { // after a user has modified the answer to the onboarding process questionniare
+      this.setup();
+    }
+  }
 
   setup() {
     if (this.userData && this.userData.user) {
@@ -75,15 +79,14 @@ export class PreferencesPage implements OnInit, OnDestroy {
     }
   }
 
-  // load Program onboarding activities
-
+  // load Program onboarding processes
   async loadPreferences() {
     setTimeout(async () => {
       this.ionSpinner = true;
       this.infiniteScroll.disabled = false;
       this.reachedEnd = false;
-      this.moments = [];
       this.pageNum = 0;
+      this.moments = [];
       this.loadMorePreferences({target: this.infiniteScroll});
     }, 50);
   }

@@ -365,7 +365,7 @@ export class Chat {
                 this.badge.set(this.connectTabBadge);
             }
             if (this.electronService.isElectronApp) {
-                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', this.connectTabBadge);
+                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.connectTabBadge > -1) ? this.connectTabBadge : 0);
             }
         }
     };

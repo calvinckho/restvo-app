@@ -127,7 +127,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
     };
 
     refreshUserHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'update admin' || data.type === 'change aux data'){
             this.setupManagePage();
         }
     };
