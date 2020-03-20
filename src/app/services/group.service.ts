@@ -75,7 +75,7 @@ export class Groups {
         let promise = await this.http.put(this.networkService.domain + '/api/group/delete', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.userData.load();
-        this.events.publish('closeGroupView', group._id);
+        this.userData.refreshUserStatus({ type: 'close group view', data: { _id: group._id } });
         if (group.conversation) {
             this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'leave group', groupId: group._id}});
@@ -83,7 +83,7 @@ export class Groups {
         }
         if (group.board) {
             this.userData.communitiesboards = await this.boardService.loadUserChurchBoards();
-            this.events.publish('refreshCommunityBoardsPage');
+            this.userData.refreshUserStatus({ type: 'refresh community board page' });
         }
         this.userData.refreshUserStatus({type: 'leave group', groupId: group._id});
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'leave group', groupId: group._id});

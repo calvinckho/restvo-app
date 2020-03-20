@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { UserData } from "../../../services/user.service";
-import {Events, ModalController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {Location} from "@angular/common";
 
 
@@ -22,14 +22,13 @@ export class NotificationsPage implements OnInit, OnDestroy {
 
     constructor(public userData: UserData,
                 private location: Location,
-                private modalCtrl: ModalController,
-                private events: Events) { }
+                private modalCtrl: ModalController) { }
 
     async ngOnInit() {
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
     }
 
-    refreshUserStatusHandler = async (data) => {
+    refreshUserStatusHandler = async () => {
         if (this.userData && this.userData.user) {
             await this.prepareUserSettings();
         }

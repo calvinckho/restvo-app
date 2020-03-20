@@ -37,6 +37,8 @@ export class PickfeaturePopoverPage implements OnInit {
     selectedMoments = [];
     step = 1;
 
+    subscriptions: any = {};
+
     constructor(
         private events: Events,
         public router: Router,
@@ -64,7 +66,7 @@ export class PickfeaturePopoverPage implements OnInit {
                 this.conversation = this.chatService.conversations[index].conversation;
             }
         }
-        this.events.subscribe('createdMoment', this.refreshAfterCreateMomentHandler);
+        this.subscriptions['refresh'] = this.momentService.refreshMoment$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -168,5 +170,6 @@ export class PickfeaturePopoverPage implements OnInit {
 
     close() {
         this.modalCtrl.dismiss();
+        this.subscriptions['refresh'].unsubscribe(this.refreshAfterCreateMomentHandler);
     }
 }

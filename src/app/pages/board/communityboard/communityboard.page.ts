@@ -58,6 +58,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     newsfeedMoreOptions = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
 
+    subscriptions: any = {};
+
     constructor(public platform: Platform,
                 private cache: CacheService,
                 private events: Events,
@@ -85,13 +87,12 @@ export class CommunityboardPage implements OnInit, OnDestroy {
           }
       }
       // PWA fast load is executed after an event sent from app.component.ts's checkAuthenticationWithToken()
-      this.events.subscribe('refreshCommunityBoardsPage', this.refreshCommunityBoardsPage);
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshCommunityBoardsPage);
       this.events.subscribe('refreshBoard', this.refreshBoardHandler);
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
     async ionViewWillEnter() {
-        console.log("enter")
         // boardService is ready in regular page entry, but not ready in PWA fast load and needs to listen to refresh event from maintab.ts
         if (this.userData.user){
             await this.boardService.loadUserChurchBoards();
@@ -100,15 +101,12 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    refreshCommunityBoardsPage = async () => {
-        console.log("got refreshed");
-        if (this.platform.is('cordova')){
-            StatusBar.show();
-            SplashScreen.hide();
+    refreshCommunityBoardsPage = async (data) => {
+        if (data.type === 'refresh community board page') {
+            this.newsfeedMoreOptions = false;
+            await this.boardService.loadUserChurchBoards();
+            this.reloadBoardPosts();
         }
-        this.newsfeedMoreOptions = false;
-        await this.boardService.loadUserChurchBoards();
-        this.reloadBoardPosts();
     };
 
     async reloadBoardPosts(){
@@ -550,38 +548,41 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     };
 
-    refreshMomentHandler = async (momentId, data) => {
-        for (let community of this.communitiesboards) {
-            for (let board of community.boards) {
-                for (let boardpost of board.posts) {
-                    if (boardpost.moments && boardpost.moments.length && data.moment && (boardpost.moments[0]._id === data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
-                        const index = boardpost.poll.responses.map((c) => c._id).indexOf(data.response._id);
-                        if (index < 0) { //if the response hasn't been added to the response list
-                            boardpost.poll.responses.push(data.response);
-                        } else { //if it has been added, replace with the incoming one
-                            boardpost.poll.responses.splice(index, 1, data.response);
-                        }
-                        //now the latest response have been included, reset the display array
-                        await boardpost.poll.display.forEach((displayitem) => {
-                            displayitem.count = 0;
-                            displayitem.votedByUser = false;
-                        });
-                        //reconstruct the display array
-                        boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
-                        for (const response of boardpost.poll.responses) {
-                            if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
-                                if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
-                                    return; // if this response belongs to an option that has been deleted
+    refreshMomentHandler = async (res) => {
+        if (res && res.momentId && res.data) {
+            const data = res.data;
+            for (let community of this.communitiesboards) {
+                for (let board of community.boards) {
+                    for (let boardpost of board.posts) {
+                        if (boardpost.moments && boardpost.moments.length && data.moment && (boardpost.moments[0]._id === data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
+                            const index = boardpost.poll.responses.map((c) => c._id).indexOf(data.response._id);
+                            if (index < 0) { //if the response hasn't been added to the response list
+                                boardpost.poll.responses.push(data.response);
+                            } else { //if it has been added, replace with the incoming one
+                                boardpost.poll.responses.splice(index, 1, data.response);
+                            }
+                            //now the latest response have been included, reset the display array
+                            await boardpost.poll.display.forEach((displayitem) => {
+                                displayitem.count = 0;
+                                displayitem.votedByUser = false;
+                            });
+                            //reconstruct the display array
+                            boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
+                            for (const response of boardpost.poll.responses) {
+                                if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
+                                    if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
+                                        return; // if this response belongs to an option that has been deleted
+                                    }
+                                    if (this.userData.user && response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
+                                        boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
+                                    }
+                                    boardpost.poll.display[response.matrix_number[0][1]].count++;
                                 }
-                                if (this.userData.user && response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
-                                    boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
-                                }
-                                boardpost.poll.display[response.matrix_number[0][1]].count++;
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     };
@@ -739,7 +740,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
 
     ngOnDestroy(){
         this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
-        this.events.unsubscribe('refreshCommunityBoardsPage', this.refreshCommunityBoardsPage);
-        this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshCommunityBoardsPage);
     }
 }

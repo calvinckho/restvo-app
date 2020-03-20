@@ -46,7 +46,7 @@ export class GroupsPage {
         private alertCtrl: AlertController,) { }
 
     ionViewWillEnter() {
-        if(this.userData && this.userData.currentCommunityAdminStatus) {
+        if (this.userData && this.userData.currentCommunityAdminStatus) {
             this.setupManageGroups();
         }
 

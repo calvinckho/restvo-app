@@ -15,7 +15,6 @@ import {
     AlertController,
     ActionSheetController,
     IonContent,
-    Events,
     IonInfiniteScroll,
     ModalController,
     Platform,
@@ -83,7 +82,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         private cache: CacheService,
         private storage: Storage,
         private badge: Badge,
-        private events: Events,
         public platform: Platform,
         private geolocation: Geolocation,
         private speechRecognition: SpeechRecognition,
@@ -107,9 +105,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
 
-        this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
-        this.events.subscribe('closeGroupView', this.closeGroupChatHandler);
         if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
             this.setup();
         }
@@ -129,13 +126,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
 
-    };
-
-    closeGroupChatHandler = (id) => {
-        console.log("closing", id, this.chatService.currentChatProps[this.propIndex])
-        if (this.chatService.currentChatProps.length > this.propIndex && (id === this.chatService.currentChatProps[this.propIndex].conversationId || id === (this.chatService.currentChatProps[this.propIndex].moment && this.chatService.currentChatProps[this.propIndex].moment._id) || id === (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group._id))) {
-            this.closeModal(true);
-        }
     };
 
     async cleanup(refreshMyConversations) {
@@ -1083,49 +1073,55 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     };
 
-    refreshMomentHandler = async (momentId, data) => {
-        this.messages.forEach( (message: any) => {
-            if (message.moment && data.moment && (message.moment._id === data.moment._id) && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
-                const index = message.poll.responses.map((c) => c._id).indexOf(data.response._id);
-                if (index < 0){ // if the response hasn't been added to the response list
-                    message.poll.responses.push(data.response);
-                } else { // if it has been added, replace with the incoming one
-                    message.poll.responses.splice(index, 1, data.response);
-                }
-                // now the latest response have been included, reset the display array
-                message.poll.display.forEach((displayitem) => {
-                    displayitem.count = 0;
-                    displayitem.votedByUser = false;
-                });
-                // reconstruct the display array
-                message.poll.totalVoteCount = message.poll.responses.length;
-                for (const response of message.poll.responses) {
-                    if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
-                        if (response.matrix_number[0][1] > (message.poll.display.length - 1)) {
-                            return; // if this response belongs to an option that has been deleted
+    refreshMomentHandler = async (res) => {
+        if (res && res.momentId && res.data) {
+            const data = res.data;
+            this.messages.forEach( (message: any) => {
+                if (message.moment && data.moment && (message.moment._id === data.moment._id) && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
+                    const index = message.poll.responses.map((c) => c._id).indexOf(data.response._id);
+                    if (index < 0){ // if the response hasn't been added to the response list
+                        message.poll.responses.push(data.response);
+                    } else { // if it has been added, replace with the incoming one
+                        message.poll.responses.splice(index, 1, data.response);
+                    }
+                    // now the latest response have been included, reset the display array
+                    message.poll.display.forEach((displayitem) => {
+                        displayitem.count = 0;
+                        displayitem.votedByUser = false;
+                    });
+                    // reconstruct the display array
+                    message.poll.totalVoteCount = message.poll.responses.length;
+                    for (const response of message.poll.responses) {
+                        if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
+                            if (response.matrix_number[0][1] > (message.poll.display.length - 1)) {
+                                return; // if this response belongs to an option that has been deleted
+                            }
+                            if (response.user._id === this.userData.user._id) { // response.user is populated. Note: this is different from the responses loaded in loadMoreMessages, where the user is not populated
+                                message.poll.display[response.matrix_number[0][1]].votedByUser = true;
+                            }
+                            message.poll.display[response.matrix_number[0][1]].count++;
                         }
-                        if (response.user._id === this.userData.user._id) { // response.user is populated. Note: this is different from the responses loaded in loadMoreMessages, where the user is not populated
-                            message.poll.display[response.matrix_number[0][1]].votedByUser = true;
-                        }
-                        message.poll.display[response.matrix_number[0][1]].count++;
                     }
                 }
-            }
-            if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
-            }
-        });
+                if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
+                    message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                }
+            });
+        }
     };
 
     // for current user refreshing the app, including when updating a selectedMoment which requires reloading the Moment using calendar data
-    refreshUserStatusHandler = async (data) => {
+    refreshUserStatusHandler = async (res) => {
         for (let selectedMoment of this.selectedMoments) {
             const index = this.calendarService.calendarItems.map((c) => c.moment ? c.moment._id : '').indexOf(selectedMoment._id);
             if (index > -1) {
-                console.log("updating moments 2...", this.calendarService.calendarItems[index].moment.matrix_string[0][0])
                 selectedMoment = this.calendarService.calendarItems[index].moment;
-            } else {
-                console.log("updating moments 3...")
+            }
+        }
+        if (res && res.type === 'close group view') {
+            const id = res.data._id;
+            if (this.chatService.currentChatProps.length > this.propIndex && (id === this.chatService.currentChatProps[this.propIndex].conversationId || id === (this.chatService.currentChatProps[this.propIndex].moment && this.chatService.currentChatProps[this.propIndex].moment._id) || id === (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group._id))) {
+                this.closeModal(true);
             }
         }
     };
@@ -1155,6 +1151,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
+            } else {
+                setTimeout(() => {
+                    this.router.navigate(['/app/myconversations/chat']);
+                    this.userData.refreshMyConversations({action: 'reload chat view'});
+                }, 500);
             }
         } catch (err) {
             console.log(err);
@@ -1165,9 +1166,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
         // execute when group-tab is exited
         this.subscriptions['refreshMyConversations'].unsubscribe(this.reloadHandler);
-        this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         // when a new message comes in via socket.io
         this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);
-        this.events.unsubscribe('closeGroupView', this.closeGroupChatHandler);
     }
 }
