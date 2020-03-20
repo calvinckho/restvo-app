@@ -1,6 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  Events,
   IonInfiniteScroll,
   ModalController,
   Platform,
@@ -43,7 +42,6 @@ export class PreferencesPage implements OnInit, OnDestroy {
   constructor(
       private route: ActivatedRoute,
       private router: Router,
-      private events: Events,
       private location: Location,
       private storage: Storage,
       private platform: Platform,
@@ -62,7 +60,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
   }
 
   refreshUserStatusHandler = (data) => {
-    if (data && data.type === 'change aux data') { // after a user has modified the answer to the onboarding process questionniare
+    if (data) { // after a user has modified the answer to the onboarding process questionniare. data is most likely { type: 'change aux data' }
       this.setup();
     }
   }

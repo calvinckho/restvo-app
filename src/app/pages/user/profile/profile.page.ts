@@ -90,7 +90,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     };
 
     async refreshUserData(data) {
-        if (data && data.action === 'user updated' && data.user) {
+        if (data && data.type === 'user updated' && data.user) {
             this.user = data.user;
         } else {
             this.user = await this.userData.load();

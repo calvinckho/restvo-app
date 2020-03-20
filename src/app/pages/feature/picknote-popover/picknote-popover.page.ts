@@ -55,11 +55,7 @@ export class PicknotePopoverPage implements OnInit {
         this.conversation = this.chatService.conversations[index].conversation;
       }
     }
-    this.events.subscribe('createdMoment', this.refreshAfterCreateMomentHandler);
   }
-
-  refreshAfterCreateMomentHandler = async () => {
-  };
 
   async loadSamples() {
     setTimeout(async () => {

@@ -108,40 +108,31 @@ export class UserData {
                     this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
                 } else if (data.type === 'connect conversation') {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'disconnect conversation') {
-                    console.log("got disconnect", data);
                     await this.refreshMyConversations({action: 'disconnect chat view', conversationId: data.conversationId});
                     this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
-                    this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update group participation') {
                     //update user's group participation
                     await this.load();
-                    this.events.publish('loadUserChurchBoards'); //in case of a board group
                     this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
-                    this.events.publish('refreshDashboardPage');
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.events.publish('refreshCommunityBoardsPage'); //when a user join a group with board
+                    this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshUserStatus({ type: 'refresh community board page' }); //when a user join a group with board
                 } else if (data.type === 'leave group') {
                     //update user's group participation,
                     await this.load();
-                    this.events.publish('loadUserChurchBoards'); //in case of a board group
                     this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
-
-                    this.events.publish('closeGroupView', (data.groupId || data.id || null));
-                    this.events.publish('refreshDashboardPage');
+                    this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.refreshUserStatus(data); //included in the case of a delete group, which refreshes discover page
-                    this.events.publish('refreshCommunityBoardsPage'); //when a user leave a group with board
+                    this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshUserStatus({ type: 'refresh community board page' }); // when a user leave a group with board
                 } else if (data.type === 'update church participation') {
                     await this.load();
-                    this.events.publish('refreshDashboardPage');
                 } else if (data.type === 'update moment and calendar participation') {
                     await this.calendarService.getUserCalendar();
-                    this.refreshUserStatus(data);
-                    this.events.publish('refreshDashboardPage');
+                    this.refreshUserStatus({type: 'change aux data'});
                 } else if (data.type === 'update system messages') {
-                    this.events.publish('refreshDashboardPage');
+                    this.refreshUserStatus({type: 'change aux data'});
                 } else { // data.type === 'update user info' and the rest
                     await this.load();
                     this.refreshAppPages();
@@ -152,22 +143,10 @@ export class UserData {
     }
 
     refreshAppPages() {
-        if (this.router.url.includes('/app/news')) {
-            this.events.publish('refreshCommunityBoardsPage');
-        }
-        if (this.router.url.includes('/app/myconversations')) {
-            this.refreshMyConversations({action: 'render', data: null});
-        }
-        // publish event to finish loading the Board page as it needs to wait for boardService.socket to start
-        if (this.router.url.includes('/app/discover')) {
-            this.events.publish('refreshDiscover');
-        }
-        if (this.router.url.includes('/app/me')) {
-            this.events.publish('refreshDashboardPage');
-        }
-        // broadcast signal to refresh user affliations and behaviors
+        // broadcast signal to refresh main tab pages
+        this.refreshUserStatus({ type: 'refresh community board page' });
+        this.refreshMyConversations({action: 'render', data: null});
         this.refreshUserStatus({ type: 'change aux data' });
-        // broadcast sign to refresh conversations
         this.refreshMyConversations({action: 'reload chat view'});
     }
 
@@ -345,7 +324,6 @@ export class UserData {
         this.currentCommunityIndex = this.user.churches.length - 1;
         this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString()); //store this for the next time the app starts up
         this.socket.emit('refresh user status', this.user._id, {type: 'update church participation'});
-        this.events.publish("refreshDashboardPage");
         return data;
     }
 
@@ -392,7 +370,7 @@ export class UserData {
 
         }
         else if(group.board) {
-            this.events.publish('loadUserChurchBoards'); //in case of a board group
+            this.refreshUserStatus({ type: 'load user community boards' });
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
         }
         return data;
@@ -406,8 +384,8 @@ export class UserData {
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); //conversationId is unpopulated ObjectId
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
 
-            } else if(group.board) {
-                this.events.publish('loadUserChurchBoards'); //in case of a board group
+            } else if (group.board) {
+                this.refreshUserStatus({ type: 'load user community boards' });
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
             }
             return data;
@@ -581,7 +559,7 @@ export class UserData {
         let promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
-        this.events.publish('closeGroupView', group._id);
+        this.refreshUserStatus({ type: 'close group view', data: { _id: group._id }});
         if (group.conversation) {
             this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});

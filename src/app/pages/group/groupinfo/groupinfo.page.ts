@@ -8,7 +8,7 @@ import {EditgroupmemberPage} from "../editgroupmember/editgroupmember.page";
 import {Router} from "@angular/router";
 import {CacheService} from "ionic-cache";
 import {
-    ActionSheetController, AlertController, Events, IonInfiniteScroll, ModalController, Platform, PopoverController,
+    ActionSheetController, AlertController, IonInfiniteScroll, ModalController, Platform, PopoverController,
     ToastController
 } from "@ionic/angular";
 import {ElectronService} from "ngx-electron";
@@ -56,7 +56,6 @@ export class GroupinfoPage implements OnInit, OnDestroy {
       private cache: CacheService,
       private storage: Storage,
       private badge: Badge,
-      private events: Events,
       public platform: Platform,
       private geolocation: Geolocation,
       private callNumber: CallNumber,
@@ -75,10 +74,7 @@ export class GroupinfoPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
       this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshGroupHandler);
-
-      if (this.modalPage) {
-          this.events.subscribe('closeGroupView', this.closeGroupInfoHandler);
-      }
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.closeGroupInfoHandler);
   }
 
     refreshGroupHandler = async (res) => {
@@ -412,11 +408,13 @@ export class GroupinfoPage implements OnInit, OnDestroy {
         await networkAlert.present();
     }
 
-    closeGroupInfoHandler = (groupId) => {
-        if (groupId === this.group._id) {
-            this.closeModal(true);
+    closeGroupInfoHandler = (res) => {
+        if (res && res.type === 'close group view' && res.data) {
+            if (res.data._id === this.group._id) {
+                this.closeModal(true);
+            }
         }
-    }
+    };
 
     async closeModal(refreshNeeded) {
         try {
@@ -432,8 +430,6 @@ export class GroupinfoPage implements OnInit, OnDestroy {
 
     async ngOnDestroy() {
         this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshGroupHandler);
-        if (this.modalPage) {
-            this.events.unsubscribe('closeGroupView', this.closeGroupInfoHandler);
-        }
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.closeGroupInfoHandler);
     }
 }

@@ -94,18 +94,18 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
         await popover.present();
     }
 
-    async addBoard(){
+    async addBoard() {
         await this.churchService.editCommunityBoard({action: "create", board: {name: this.newBoardName, church: this.community._id}});
         await this.userData.load();
         this.newBoardName = '';
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
         this.loadChurch();
     }
 
     async editBoard(event, board) {
         event.stopPropagation();
         await this.churchService.editCommunityBoard({action: "edit", board: board});
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
     }
 
     async deleteBoard(event, board){
@@ -118,7 +118,7 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
                     const navTransition = alert.dismiss();
                     navTransition.then(async () => {
                         await this.churchService.editCommunityBoard({action: "delete", board: board});
-                        this.events.publish('refreshCommunityBoardsPage');
+                        this.userData.refreshUserStatus({ type: 'refresh community board page' });
                         this.loadChurch();
                     });
                 }},

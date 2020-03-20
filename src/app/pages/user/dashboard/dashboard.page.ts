@@ -52,6 +52,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     selectedProgram: any;
     resource: any;
 
+    subscriptions: any = {};
+
   constructor(private events: Events,
               public router: Router,
               private route: ActivatedRoute,
@@ -74,12 +76,17 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
     async ngOnInit() {
-        this.events.subscribe('refreshDashboardPage', this.refreshDashboardPageHandler);
+        // on page load, setup the page
+        this.setup();
+        // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshDashboardPageHandler);
         this.view = this.view || this.route.snapshot.paramMap.get('view') || 'profile';
     }
 
-    refreshDashboardPageHandler = () => {
-        this.setup();
+    refreshDashboardPageHandler = (data) => {
+      if (data) {
+          this.setup();
+      }
     };
 
     ionViewWillEnter() {
@@ -160,8 +167,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         try {
             // check push notification settings
             this.userData.checkPushNotification();
-            // turn off refresh listener first
-            await this.events.unsubscribe('refreshDashboardPage', this.refreshDashboardPageHandler);
             if (action === 'accept') {
                 for (const pendingNotification of this.pendingNotifications) {
                     await this.processPendingMessage(pendingNotification);
@@ -172,8 +177,6 @@ export class DashboardPage implements OnInit, OnDestroy {
             this.numberOfNotifications = 0;
             this.noSystemMessage = true;
             await this.userData.load();
-            //turn on refresh listener
-            this.events.subscribe('refreshDashboardPage', this.refreshDashboardPageHandler);
         } catch (err) {
             console.log(err);
         }
@@ -516,6 +519,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.events.unsubscribe('refreshDashboardPage', this.refreshDashboardPageHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshDashboardPageHandler);
     }
 }

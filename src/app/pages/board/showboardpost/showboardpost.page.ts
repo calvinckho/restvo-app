@@ -52,6 +52,8 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
     parent: any;
     player: Plyr;
 
+    subscriptions: any = {};
+
     constructor(
         private storage: Storage,
         private cache: CacheService,
@@ -87,7 +89,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
           await networkAlert.present();
       });
       this.events.subscribe('refreshBoard', this.refreshBoardHandler);
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
     async ionViewWillEnter() {
@@ -147,33 +149,37 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
         }
     };
 
-    refreshMomentHandler = async (momentId, data) => {
-        if (this.post.moments && (this.post.moments[0]._id === data.moment._id) && this.post.moments[0].resource.hasOwnProperty('en-US') && this.post.moments[0].resource['en-US'].value[0] === 'Poll') {
-            const index = this.post.poll.responses.map((c) => c._id).indexOf(data.response._id);
-            if (index < 0){ //if the response hasn't been added to the response list
-                this.post.poll.responses.push(data.response);
-            } else { //if it has been added, replace with the incoming one
-                this.post.poll.responses.splice(index, 1, data.response);
-            }
-            //now the latest response have been included, reset the display array
-            await this.post.poll.display.forEach((displayitem) => {
-                displayitem.count = 0;
-                displayitem.votedByUser = false;
-            });
-            //reconstruct the display array
-            this.post.poll.totalVoteCount = this.post.poll.responses.length;
-            for (let response of this.post.poll.responses) {
-                if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
-                    if (response.matrix_number[0][1] > (this.post.poll.display.length - 1)) {
-                        return; // if this response belongs to an option that has been deleted
+    refreshMomentHandler = async (res) => {
+        if (res && res.momentId && res.data) {
+            const data = res.data;
+            if (this.post.moments && (this.post.moments[0]._id === data.moment._id) && this.post.moments[0].resource.hasOwnProperty('en-US') && this.post.moments[0].resource['en-US'].value[0] === 'Poll') {
+                const index = this.post.poll.responses.map((c) => c._id).indexOf(data.response._id);
+                if (index < 0){ //if the response hasn't been added to the response list
+                    this.post.poll.responses.push(data.response);
+                } else { //if it has been added, replace with the incoming one
+                    this.post.poll.responses.splice(index, 1, data.response);
+                }
+                //now the latest response have been included, reset the display array
+                await this.post.poll.display.forEach((displayitem) => {
+                    displayitem.count = 0;
+                    displayitem.votedByUser = false;
+                });
+                //reconstruct the display array
+                this.post.poll.totalVoteCount = this.post.poll.responses.length;
+                for (let response of this.post.poll.responses) {
+                    if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
+                        if (response.matrix_number[0][1] > (this.post.poll.display.length - 1)) {
+                            return; // if this response belongs to an option that has been deleted
+                        }
+                        if (response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
+                            this.post.poll.display[response.matrix_number[0][1]].votedByUser = true;
+                        }
+                        this.post.poll.display[response.matrix_number[0][1]].count++;
                     }
-                    if (response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
-                        this.post.poll.display[response.matrix_number[0][1]].votedByUser = true;
-                    }
-                    this.post.poll.display[response.matrix_number[0][1]].count++;
                 }
             }
         }
+
     };
 
     async loadPost(){
@@ -698,6 +704,6 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     ngOnDestroy(){
         this.events.unsubscribe('refreshBoardHandler', this.refreshBoardHandler);
-        this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }
 }

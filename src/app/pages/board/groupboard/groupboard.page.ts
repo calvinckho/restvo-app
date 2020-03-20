@@ -94,9 +94,8 @@ export class GroupboardPage implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.events.subscribe('refreshBoard', this.refreshBoardHandler);
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
-
   }
 
     async ionViewWillEnter() {
@@ -196,37 +195,41 @@ export class GroupboardPage implements OnInit, OnDestroy {
         }
     };
 
-    refreshMomentHandler = async (momentId, data) => {
-        for (let boardpost of this.boardposts) {
-            if (boardpost.moments && boardpost.moments.length && (boardpost.moments[0]._id == data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
-                let listOfResponseIds = boardpost.poll.responses.map((c)=>{return c._id;});
-                let index = listOfResponseIds.indexOf(data.response._id);
-                if(index < 0){ //if the response hasn't been added to the response list
-                    boardpost.poll.responses.push(data.response);
-                }
-                else{ //if it has been added, replace with the incoming one
-                    boardpost.poll.responses.splice(index, 1, data.response);
-                }
-                //now the latest response have been included, reset the display array
-                await boardpost.poll.display.forEach((displayitem) => {
-                    displayitem.count = 0;
-                    displayitem.votedByUser = false;
-                });
-                //reconstruct the display array
-                boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
-                for (const response of boardpost.poll.responses) {
-                    if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
-                        if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
-                            return; // if this response belongs to an option that has been deleted
+    refreshMomentHandler = async (res) => {
+        if (res && res.momentId && res.data) {
+            const data = res.data;
+            for (let boardpost of this.boardposts) {
+                if (boardpost.moments && boardpost.moments.length && (boardpost.moments[0]._id == data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
+                    let listOfResponseIds = boardpost.poll.responses.map((c) => c._id);
+                    let index = listOfResponseIds.indexOf(data.response._id);
+                    if(index < 0){ //if the response hasn't been added to the response list
+                        boardpost.poll.responses.push(data.response);
+                    }
+                    else{ //if it has been added, replace with the incoming one
+                        boardpost.poll.responses.splice(index, 1, data.response);
+                    }
+                    //now the latest response have been included, reset the display array
+                    await boardpost.poll.display.forEach((displayitem) => {
+                        displayitem.count = 0;
+                        displayitem.votedByUser = false;
+                    });
+                    //reconstruct the display array
+                    boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
+                    for (const response of boardpost.poll.responses) {
+                        if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
+                            if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
+                                return; // if this response belongs to an option that has been deleted
+                            }
+                            if (this.userData.user && response.user === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
+                                boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
+                            }
+                            boardpost.poll.display[response.matrix_number[0][1]].count++;
                         }
-                        if (this.userData.user && response.user === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
-                            boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
-                        }
-                        boardpost.poll.display[response.matrix_number[0][1]].count++;
                     }
                 }
             }
         }
+
     };
 
     reloadBoard(){
@@ -465,7 +468,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
                                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group})
-                                this.events.publish('refreshCommunityBoardsPage');
+                                this.userData.refreshUserStatus({ type: 'refresh community board page' });
                             });
                         }
                     }],
@@ -731,7 +734,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
 
     ngOnDestroy(){
         this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
-        this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
     }
 }

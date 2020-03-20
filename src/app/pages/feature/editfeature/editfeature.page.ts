@@ -181,7 +181,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // Onboarding Questions uses mainly the multiple choice and text input components. It needs to have an associated program ID and a type number (2 for participants onboarding, 3 for organizers, 4 for leaders)
 
   async ngOnInit() {
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
 
@@ -192,8 +192,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     };
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
-    refreshMomentHandler = async (momentId, data) => {
-        if (data.type === 'refresh participation') {
+    refreshMomentHandler = async (res) => {
+        if (res && res.data && res.data.type === 'refresh participation') {
             await this.reloadMomentUserLists();
             if (!['owner', 'staff', 'admin'].includes(this.userData.user.role) && !this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
                 // if user is no longer an organizer, and if not a system admin, exit edit view
@@ -1202,7 +1202,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               message: this.moment.matrix_string[0][0] + this.resource['en-US'].value[11] + (this.moment.array_boolean[0] ? this.resource['en-US'].value[12] : ''),
               buttons: [{ text: 'Ok',
                   handler: () => {
-                    this.events.publish('createdMoment', this.moment);
+                    this.momentService.refreshMoment({}); // this will refresh the pickfeature-popover.page.ts
                     this.closeModal(this.moment);
                   }}],
               cssClass: 'level-15'
@@ -1335,10 +1335,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.userData.refreshUserStatus({});
       }
       this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
-      this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+      //this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
   }
 
   ngOnDestroy(): void {
-      this.subscriptions['refreshUserStatus'].unsubscribe();
+      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }
