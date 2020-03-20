@@ -9,7 +9,6 @@ import {
     IonContent,
     ActionSheetController,
     AlertController,
-    Events,
     Platform,
     ModalController, IonSlides,
 } from '@ionic/angular';
@@ -57,7 +56,6 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
     constructor(
         private storage: Storage,
         private cache: CacheService,
-        private events: Events,
         private geolocation: Geolocation,
         public platform: Platform,
         private actionSheetCtrl: ActionSheetController,
@@ -88,7 +86,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
           });
           await networkAlert.present();
       });
-      this.events.subscribe('refreshBoard', this.refreshBoardHandler);
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
@@ -96,8 +94,9 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
         this.loadPost();
     }
 
-    refreshBoardHandler = async (boardId, data) => {
-        if(boardId === this.boardId){
+    refreshBoardHandler = async (res) => {
+        if (res && res.type === 'refresh board' && res.boardId === this.boardId){
+            const data = res.data;
             if (data.action === 'like' || data.action === 'cancel like') {
                 if (this.post.bucketId === data.bucketId && this.post._id === data.postId) {
                     if (data.action === 'like') {
@@ -703,7 +702,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('refreshBoardHandler', this.refreshBoardHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }
 }

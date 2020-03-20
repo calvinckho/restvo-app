@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
-import { ActionSheetController, AlertController, Events, ModalController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { Groups } from '../../../services/group.service';
 import { Chat } from '../../../services/chat.service';
@@ -49,7 +49,6 @@ export class EditgroupPage implements AfterViewInit {
     constructor(private zone: NgZone,
                 public modalCtrl: ModalController,
                 public platform: Platform,
-                private events: Events,
                 private groupService: Groups,
                 private churchService: Churches,
                 public userData: UserData,

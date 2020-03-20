@@ -1,7 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
 import {
-    Events,
     IonInfiniteScroll,
     ModalController,
     Platform,
@@ -35,7 +34,6 @@ export class MembersPage implements OnInit, OnDestroy {
     refreshNeeded = false;
 
   constructor(
-              private events: Events,
               private storage: Storage,
               private platform: Platform,
               private authService: Auth,
@@ -54,8 +52,8 @@ export class MembersPage implements OnInit, OnDestroy {
     }
 
     refreshHandler = (data) => {
-        // because on first subscription, data is null. Thiw will refresh only under special data.type
-        if (data && (data.type === 'update admin' || data.type === 'change aux data' || data.type === 'update member')){
+        // because on first subscription, data is null. this will refresh only under special data.type
+        if (data && (data.type === 'load community ready' || data.type === 'update admin' || data.type === 'change aux data' || data.type === 'update member')) {
             this.setupManagePeople();
         }
     };

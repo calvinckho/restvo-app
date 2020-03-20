@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import {CameraResultType, CameraSource, Plugins} from '@capacitor/core';
-import { AlertController, IonContent, Events, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
+import { AlertController, IonContent, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
@@ -52,7 +52,6 @@ export class CreatechatPage implements OnInit {
     frequency_list: Array<string> = ['', "Weekly", "Every Other Week", "One-Time", "Monthly", "1st and 3rd Week", "2nd and 4th Week", "N/A"];
 
     constructor(
-        private events: Events,
         private formBuilder: FormBuilder,
         private alertCtrl: AlertController,
         public modalCtrl: ModalController,

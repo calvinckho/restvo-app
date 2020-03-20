@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertController, Events, Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 import {Badge} from "@ionic-native/badge/ngx";
 import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
@@ -46,7 +46,6 @@ export class Chat {
                 private authService: Auth,
                 private electronService: ElectronService,
                 private badge: Badge,
-                private events: Events,
                 private networkService: NetworkService,
                 private platform: Platform,
                 private userData: UserData,

@@ -12,7 +12,6 @@ import { UserData } from './user.service';
 export class PaymentService {
 
     constructor(private http: HttpClient,
-                public events: Events,
                 public authService: Auth,
                 public networkService: NetworkService,
                 public userData: UserData) {

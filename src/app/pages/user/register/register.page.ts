@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
 const { StatusBar, SplashScreen } = Plugins;
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { AlertController, Events, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
+import { AlertController, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
 import { Auth } from '../../../services/auth.service';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
@@ -277,7 +277,6 @@ export class RegisterPage implements OnInit {
                 public platform: Platform,
                 private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
-                private events: Events,
                 private alertCtrl: AlertController,
                 private loadingCtrl: LoadingController,
                 private menuCtrl: MenuController,

@@ -40,7 +40,6 @@ export class PickfeaturePopoverPage implements OnInit {
     subscriptions: any = {};
 
     constructor(
-        private events: Events,
         public router: Router,
         private alertCtrl: AlertController,
         private cache: CacheService,

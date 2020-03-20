@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {Capacitor, Plugins} from '@capacitor/core';
-import {Events, LoadingController, Platform} from '@ionic/angular';
+import {LoadingController, Platform} from '@ionic/angular';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
@@ -38,7 +38,6 @@ export class Auth {
     constructor(private http: HttpClient,
                 private platform: Platform,
                 private router: Router,
-                private events: Events,
                 private storage: Storage,
                 private loadingCtrl: LoadingController,
                 public networkService: NetworkService) {

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, Events, ModalController, Platform} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {Moment} from "../../../../services/moment.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
@@ -68,7 +68,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   constructor(
       public route: ActivatedRoute,
       public router: Router,
-      public events: Events,
       public platform: Platform,
       public alertCtrl: AlertController,
       public authService: Auth,
@@ -79,7 +78,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public resourceService: Resource,
       public modalCtrl: ModalController
   ) {
-    super(route, router, events, platform, authService, chatService,
+    super(route, router, platform, authService, chatService,
         userData, momentService, resourceService, modalCtrl);
   }
 

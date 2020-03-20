@@ -1,7 +1,7 @@
 import { Injectable, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ElectronService } from 'ngx-electron';
-import {AlertController, Events, LoadingController, MenuController, Platform} from '@ionic/angular';
+import {AlertController, LoadingController, MenuController, Platform} from '@ionic/angular';
 import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import {StripeService} from "ngx-stripe";
@@ -61,7 +61,6 @@ export class UserData {
                 private badge: Badge,
                 private cache: CacheService,
                 private storage: Storage,
-                private events: Events,
                 private platform: Platform,
                 private contacts: Contacts,
                 private loadingCtrl: LoadingController,

@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, ViewEncapsulation} from '@angular/core';
 import {Storage} from '@ionic/storage';
-import {ActionSheetController, AlertController, Events, ModalController} from '@ionic/angular';
+import {ActionSheetController, AlertController, ModalController} from '@ionic/angular';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import { Chat } from "../../../services/chat.service";
 import { Churches } from '../../../services/church.service';
@@ -48,7 +48,6 @@ export class ShowrecipientinfoPage implements OnInit {
                 private route: ActivatedRoute,
                 private actionSheetCtrl: ActionSheetController,
                 public alertCtrl: AlertController,
-                private events: Events,
                 private callNumber: CallNumber,
                 public userData: UserData,
                 public networkService: NetworkService,
@@ -222,7 +221,7 @@ export class ShowrecipientinfoPage implements OnInit {
     async shareContactInfo(){
         try {
             const state = await this.chatService.shareContactInfo(this.result.conversation._id); //return 0 if off, 1 if on
-            this.resourceService.load('en-US', "Contact").subscribe(async (result)=>{
+            this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
                 const moment = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversation: this.result.conversation._id, resource: {} };
                 moment.resource = result[0];
                 moment.matrix_number = [[state]];
@@ -236,7 +235,7 @@ export class ShowrecipientinfoPage implements OnInit {
 
     async createContactMessage(state){
         try {
-            this.resourceService.load('en-US', "Contact").subscribe(async (result)=>{
+            this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
                 this.result = await this.chatService.getConversationByRecipientId(this.recipient._id, true, this.programId);
                 this.conversation = this.result.conversation;
                 const serverData = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversations: this.conversation._id, resource: {} };
@@ -296,7 +295,7 @@ export class ShowrecipientinfoPage implements OnInit {
                     status: "pending",
                     confirmId: Math.random()
                 });
-            } catch (err){
+            } catch (err) {
                 console.log(err);
             }
         } catch (err) {

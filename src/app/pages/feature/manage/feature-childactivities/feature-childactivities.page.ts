@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Events, ModalController, Platform} from "@ionic/angular";
+import {ModalController, Platform} from "@ionic/angular";
 import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
@@ -31,7 +31,6 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   constructor(
       public route: ActivatedRoute,
       public router: Router,
-      public events: Events,
       public platform: Platform,
       public authService: Auth,
       public chatService: Chat,

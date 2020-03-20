@@ -3,7 +3,7 @@ import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
 import { Badge } from '@ionic-native/badge/ngx';
 import {Storage} from '@ionic/storage';
-import { ActionSheetController, AlertController, Events, NavParams, PopoverController, Platform, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, NavParams, PopoverController, Platform, ModalController } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import { Groups } from "../../../services/group.service";
 import { Chat } from "../../../services/chat.service";
@@ -34,8 +34,7 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
     hasAdminAccess = false;
     loadCompleted = false;
 
-    constructor(private events: Events,
-                private electronService: ElectronService,
+    constructor(private electronService: ElectronService,
                 private storage: Storage,
                 private cache: CacheService,
                 private platform: Platform,

@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
 import { StripeService, Elements, Element as StripeElement, ElementsOptions } from "ngx-stripe";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import {AlertController, Events, IonContent, IonSlides, ModalController, Platform} from "@ionic/angular";
+import {AlertController, IonContent, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 import {PaymentService} from "../../../services/payment.service";
@@ -15,7 +15,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./plan.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlanPage implements OnInit {
+export class PlanPage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonSlides) slides: IonSlides;
 
@@ -34,11 +34,12 @@ export class PlanPage implements OnInit {
     ionSpinner = false;
     resource: any;
 
+    subscriptions: any = {};
+
     constructor(
         private cache: CacheService,
         private platform: Platform,
         private router: Router,
-        private events: Events,
         private formBuilder: FormBuilder,
         private stripeService: StripeService,
         public modalCtrl: ModalController,
@@ -74,16 +75,19 @@ export class PlanPage implements OnInit {
             });
             await networkAlert.present();
         });
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = async () => {
-        this.prevSlide();
-        this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
+    refreshHandler = async (data) => {
+        if (data && data.type === 'load community ready') {
+            this.prevSlide();
+            this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
+
+        }
     };
 
     ionViewDidEnter() {
         this.stripeElementName = 'card-element-plan' + (this.modalPage ? '-modal' : '');
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
     }
 
     prevSlide() {
@@ -259,8 +263,8 @@ export class PlanPage implements OnInit {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         //this.card.unmount();
-        this.events.unsubscribe('loadCommunityReady', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

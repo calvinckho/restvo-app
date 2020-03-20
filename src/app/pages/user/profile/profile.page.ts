@@ -5,7 +5,7 @@ import { Auth } from '../../../services/auth.service';
 import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, Events, LoadingController, ModalController, Platform } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, Platform } from '@ionic/angular';
 import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
 import {ActivatedRoute} from "@angular/router";
 
@@ -33,8 +33,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     showContactInfo = false;
     ionSpinner = true;
 
-    constructor(private events: Events,
-                private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private location: Location,
                 private storage: Storage,
                 public platform: Platform,

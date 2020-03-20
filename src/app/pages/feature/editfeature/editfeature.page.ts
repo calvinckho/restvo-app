@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {
     ActionSheetController,
     AlertController,
-    Events, IonContent, LoadingController,
+    IonContent, LoadingController,
     ModalController,
     Platform,
     PopoverController,
@@ -152,7 +152,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       public electronService: ElectronService,
       public swUpdate: SwUpdate,
       public change: ChangeDetectorRef,
-      public events: Events,
       public platform: Platform,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
@@ -668,7 +667,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   async seeUserInfo(event, user) {
     event.stopPropagation();
     user.name = user.first_name + ' ' + user.last_name;
-    this.events.publish('showRecipient', {recipient: user, modalPage: true});
+      this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
   }
 
   // select people to be included as participants in the Moment creation process
