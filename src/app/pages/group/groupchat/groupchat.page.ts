@@ -775,7 +775,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     this.badge.decrease(count);
                 }
                 if (this.electronService.isElectronApp) {
-                    this.electronService.ipcRenderer.send('SYSTEM_TRAY:::CHANGE_BADGE', -1 * count);
+                    this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', this.chatService.connectTabBadge);
                 }
             }
         }
