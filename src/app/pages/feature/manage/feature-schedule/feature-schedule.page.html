@@ -1,7 +1,7 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
@@ -35,9 +35,9 @@
 
       <ion-card class="monthview" *ngIf="dateType">
         <div class="month-title-container">
-          <ion-icon name="arrow-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+          <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
           <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-          <ion-icon name="arrow-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+          <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
         </div>
         <div class="monthview-day-headers">S</div>
         <div class="monthview-day-headers">M</div>
