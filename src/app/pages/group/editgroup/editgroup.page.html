@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="modalCtrl.dismiss()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{groupForm.value.name}}</ion-title>
   </ion-toolbar>
@@ -19,7 +19,7 @@
           <ion-icon name="cog" color="primary"></ion-icon>
         </div>
         <div *ngIf="!platform.is('cordova')" class="edit-icon-container">
-          <label for="image"><ion-icon ios="ios-cog-outline" md="md-cog" color="primary"></ion-icon></label>
+          <label for="image"><ion-icon name="cog" color="primary"></ion-icon></label>
           <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
         </div>
       </div>

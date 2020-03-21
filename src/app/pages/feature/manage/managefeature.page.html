@@ -8,7 +8,7 @@
     </ion-menu-toggle>
     <ion-buttons *ngIf="modalPage || platform.width() >= 768" slot="start">
       <ion-button (click)="closeModal(false)">
-        <ion-icon name="arrow-back"></ion-icon>
+        <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" class="ion-text-wrap">{{moment.matrix_string[0][0]}}</ion-title>

@@ -16,6 +16,10 @@ app-showfeature {
     --progress-background: var(--ion-color-success);
   }
 
+  ion-textarea {
+    --background: transparent !important;
+  }
+
   #permissionBar {
     position: absolute;
     top: 0;
@@ -708,7 +712,7 @@ app-showfeature {
     top: 0;
     left: -25px;
     padding-left: 41px;
-    z-index: 3;
+    z-index: 5;
   }
 
   .goal-type {

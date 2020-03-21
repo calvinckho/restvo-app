@@ -45,11 +45,11 @@
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'privacy')}">Privacy & Security</ion-label>
           </ion-item>
           <ion-item (click)="clickManageMenu('notifications')">
-            <ion-icon slot="start" name="notifications-outline" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-icon slot="start" name="notifications" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'notifications')}">Notifications</ion-label>
           </ion-item>
           <ion-item (click)="selectProgram()">
-            <ion-icon slot="start" name="ios-share" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-icon slot="start" ios="share" md="share" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Invite</ion-label>
           </ion-item>
           <ion-item (click)="logout($event)">

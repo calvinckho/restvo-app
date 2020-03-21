@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{resource['en-US'].matrix_string[0][2]}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="openActionSheet($event);">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
       <div class="post-author-container">
         <div class="post-author ion-text-wrap" >
           {{post.author.first_name}} {{post.author.last_name}}
-          <ion-icon name="alert" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
         </div>
       </div>
       <ion-col slot="end" class="note-col">
@@ -169,7 +169,7 @@
           <div class="photo-frame" *ngIf="lv1_comment.media?.length" (click)="resourceService.clickVideo($event, lv1_comment.media[0].sources)">
             <div plyr [plyrSources]="lv1_comment.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (plyrError)="videoError($event)"></div>
           </div>
-          <!--<ion-icon class="reply-icon" name="undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
+          <!--<ion-icon class="reply-icon" name="arrow-undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
         </div>
       </div>
     </ion-item>

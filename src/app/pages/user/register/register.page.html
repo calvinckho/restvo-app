@@ -11,7 +11,7 @@
           <form [formGroup]="loginForm" class="login-form">
             <ion-list lines="none" class="ion-no-padding">
               <ion-buttons *ngIf="!authService.token" slot="start">
-                <ion-button (click)="close()"><ion-icon name="ios-arrow-back" color="primary"></ion-icon></ion-button>
+                <ion-button (click)="close()"><ion-icon name="arrow-back-outline" color="primary"></ion-icon></ion-button>
               </ion-buttons>
               <ion-row>
                 <ion-col>
@@ -131,7 +131,7 @@
             <ion-list lines="none">
               <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'">
                 <ion-button fill="clear">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <ion-item lines="full">
@@ -176,7 +176,7 @@
             <ion-list lines="none">
               <ion-buttons class="custom-back-button" slot="start" (click)="prevSlide()">
                 <ion-button fill="clear">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <ion-item lines="full">
@@ -261,7 +261,7 @@
           </ion-list>
         </ion-row>
       </ion-grid>
-      <!--<ion-button class="custom-back-button" (click)="slides.slidePrev()"><ion-icon name="ios-arrow-back" color="primary"></ion-icon>&nbsp;&nbsp;Back</ion-button>-->
+      <!--<ion-button class="custom-back-button" (click)="slides.slidePrev()"><ion-icon name="arrow-back-outline" color="primary"></ion-icon>&nbsp;&nbsp;Back</ion-button>-->
     </ion-slide>
     <!--Slide Index 3-->
     <!--Mobile Phone-->
@@ -272,10 +272,10 @@
             <ion-list lines="none">
               <ion-buttons class="custom-back-button" slot="start">
                 <ion-button fill="clear" *ngIf="exitType === 'slide'" (click)="goToSlide(1)">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
                 <ion-button fill="clear" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <ion-item lines="full">
@@ -312,12 +312,12 @@
             <ion-list lines="none">
               <ion-buttons class="custom-back-button" slot="start" (click)="prevSlide()" *ngIf="!recovery_mode">
                 <ion-button fill="clear">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'" *ngIf="recovery_mode">
                 <ion-button fill="clear">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <ion-item lines="full">
@@ -376,7 +376,7 @@
             <ion-list lines="none">
               <ion-buttons class="custom-back-button" slot="start" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
                 <ion-button fill="clear">
-                  <ion-icon name="ios-arrow-back" color="primary"></ion-icon>
+                  <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
                 </ion-button>
               </ion-buttons>
               <div class="title" style="margin-bottom: 20%">My Password</div>

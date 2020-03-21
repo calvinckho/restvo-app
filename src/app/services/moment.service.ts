@@ -568,7 +568,7 @@ export class Moment {
 
     loadIcon(field) {
         const color = this.icons.find((c) => c.field === field);
-        return color || 'primary';
+        return color || this.icons.find((c) => c.field === 'User Defined Activity');
     }
 }
 
