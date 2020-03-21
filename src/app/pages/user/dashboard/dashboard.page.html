@@ -9,7 +9,7 @@
           <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
           <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
         </div>
-        <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
       </ion-item>
       <ion-item-options>
@@ -27,7 +27,7 @@
       </ion-button>
     </ion-menu-toggle>
     <ion-buttons slot="start" *ngIf="modalPage">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
@@ -60,7 +60,7 @@
           <ion-label class="ion-margin-top">Complete Your Profile</ion-label>
           <p class="message-detail">Answer a few questions to complete your profile.</p>
         </div>
-        <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
@@ -211,9 +211,9 @@
     <!--CALENDAR SECTION-->
     <ion-card class="calendar-container" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
       <div class="month-title-container">
-        <ion-icon name="arrow-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+        <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
         <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-        <ion-icon name="arrow-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+        <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
       </div>
 
       <div class="monthview-day-headers">S</div>

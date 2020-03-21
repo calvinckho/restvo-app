@@ -1,8 +1,8 @@
 <ion-header *ngIf="chatService.currentChatProps[propIndex]">
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button *ngIf="!modalPage" color="secondary" disabled="true"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
-      <ion-button (click)="closeModal(false)" *ngIf="modalPage"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-button *ngIf="!modalPage" color="secondary" disabled="true"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)" *ngIf="modalPage"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
       <div style="width: 36px" *ngIf="modalPage && platform.width() >= 768"></div>
       <div style="width: 36px"></div>
     </ion-buttons>
@@ -444,7 +444,7 @@
           </ion-button>
         </div>
         <ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions" [hidden]="moreMediaOptions">
-          <ion-icon name="arrow-forward-outline" size="large" color="grey"></ion-icon>
+          <ion-icon name="chevron-forward-outline" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">

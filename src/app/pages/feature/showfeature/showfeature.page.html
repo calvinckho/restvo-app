@@ -8,10 +8,10 @@
     </ion-menu-toggle>
     <ion-buttons *ngIf="authService.token && (modalPage || platform.width() >= 768)" slot="start">
       <ion-button (click)="closeModal()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
+        <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'arrow-up-outline' : 'arrow-down-outline')"></ion-icon></ion-note></ion-title>
+    <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
     <ion-buttons slot="end">
       <div *ngIf="userData.user && ['owner','admin','staff'].indexOf(userData.user.role) > -1">
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
@@ -46,7 +46,7 @@
           <ion-label class="ion-margin-top">Accept Invitation</ion-label>
           <p class="short-paragraph">Click to accept invitation to participate as a {{leaderLabel.toLowerCase()}}.</p>
         </div>
-        <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="acceptInvitation($event)">
@@ -61,7 +61,7 @@
           <ion-label class="ion-margin-top">Accept Invitation</ion-label>
           <p class="short-paragraph">Click to accept invitation to participate as a {{organizerLabel.toLowerCase()}}.</p>
         </div>
-        <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="acceptInvitation($event)">
@@ -76,8 +76,8 @@
         <ion-label class="ion-margin-top">You have Special Privileges</ion-label>
         <p class="message-detail">Click to access your privileges.</p>
       </div>
-      <ion-icon *ngIf="expandedPrivilegesView" name="arrow-up-outline" color="primary" slot="end"></ion-icon>
-      <ion-icon *ngIf="!expandedPrivilegesView" name="arrow-down-outline" color="primary" slot="end"></ion-icon>
+      <ion-icon *ngIf="expandedPrivilegesView" name="chevron-up-outline" color="primary" slot="end"></ion-icon>
+      <ion-icon *ngIf="!expandedPrivilegesView" name="chevron-down-outline" color="primary" slot="end"></ion-icon>
     </ion-item>
     <div *ngIf="!joinDisabled">
       <!--Already Joined-->
@@ -87,13 +87,13 @@
           <ion-label class="ion-margin-top">You are a {{participantLabel}}</ion-label>
           <p class="message-detail">Click to see more options.</p>
         </div>
-        <ion-icon name="arrow-down-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <!--Not yet Joined - permission check-->
       <ion-item *ngIf="authService.token && !token && !hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
-        <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
     </div>
     <!--Privileges View-->
@@ -104,7 +104,7 @@
       <ion-item-group class="ion-margin-start">
         <ion-item (click)="moreOrganizerActions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
-          <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+          <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         </ion-item>
       </ion-item-group>
     </div>
@@ -115,7 +115,7 @@
       <ion-item-group class="ion-margin-start">
         <ion-item (click)="moreLeaderOptions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
-          <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+          <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         </ion-item>
       </ion-item-group>
     </div>
@@ -126,7 +126,7 @@
       <ion-item-group class="ion-margin-start">
         <ion-item (click)="moreParticipantOptions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
-          <ion-icon name="arrow-forward-outline" color="primary" slot="end"></ion-icon>
+          <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         </ion-item>
       </ion-item-group>
     </div>
@@ -155,9 +155,9 @@
 
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
-            <ion-icon name="arrow-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+            <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
             <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-            <ion-icon name="arrow-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+            <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
           </div>
           <div class="monthview-day-headers">S</div>
           <div class="monthview-day-headers">M</div>
@@ -279,7 +279,7 @@
                   {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                 </div>
                 <ion-button slot="end" fill="clear">
-                  <ion-icon [name]="progressView === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                  <ion-icon [name]="progressView === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                 </ion-button>
               </ion-item>
               <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
@@ -335,7 +335,7 @@
                     </div>
                     <!--<ion-badge color="grey" [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }}</ion-badge>-->
                     <ion-button slot="end" fill="clear">
-                      <ion-icon [name]="goal[2] === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                      <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                     </ion-button>
                   </ion-item>
                   <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
@@ -375,7 +375,7 @@
                     <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                   </div>
                   <ion-button slot="end" fill="clear">
-                    <ion-icon [name]="goal[2] === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                    <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                   </ion-button>
                 </ion-item>
                 <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
@@ -1076,7 +1076,7 @@
                         {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                       </div>
                       <ion-button slot="end" fill="clear">
-                        <ion-icon [name]="progressView === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                        <ion-icon [name]="progressView === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                       </ion-button>
                     </ion-item>
                     <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
@@ -1130,7 +1130,7 @@
                             <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                           </div>
                           <ion-button slot="end" fill="clear">
-                            <ion-icon [name]="goal[2] === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                            <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                           </ion-button>
                         </ion-item>
                         <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
@@ -1170,7 +1170,7 @@
                           <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                         </div>
                         <ion-button slot="end" fill="clear">
-                          <ion-icon [name]="goal[2] === section ? 'arrow-up-outline' : 'arrow-down-outline'" color="darkgrey"></ion-icon>
+                          <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                         </ion-button>
                       </ion-item>
                       <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
