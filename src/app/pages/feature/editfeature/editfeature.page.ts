@@ -192,7 +192,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
     refreshMomentHandler = async (res) => {
-        if (res && res.data && res.data.type === 'refresh participation') {
+        if (res && res.data && res.data.type === 'refresh participation' && this.moment._id) {
             await this.reloadMomentUserLists();
             if (!['owner', 'staff', 'admin'].includes(this.userData.user.role) && !this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
                 // if user is no longer an organizer, and if not a system admin, exit edit view
@@ -1201,13 +1201,13 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               message: this.moment.matrix_string[0][0] + this.resource['en-US'].value[11] + (this.moment.array_boolean[0] ? this.resource['en-US'].value[12] : ''),
               buttons: [{ text: 'Ok',
                   handler: () => {
-                    this.momentService.refreshMoment({}); // this will refresh the pickfeature-popover.page.ts
                     this.closeModal(this.moment);
                   }}],
               cssClass: 'level-15'
           });
           await alert.present();
       }
+      this.userData.refreshUserStatus({ type: 'change aux data' }); // this will refresh the pickfeature-popover.page.ts and managefeature.page.ts
   }
 
     private async presentToast(text) {
@@ -1327,6 +1327,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.momentService.delete(moment);
       });
       await Promise.all(promises);*/
+      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       if (this.modalPage) {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {
