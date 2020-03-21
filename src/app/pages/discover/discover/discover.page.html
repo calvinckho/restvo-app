@@ -22,9 +22,9 @@
   <ion-toolbar class="bulletin-nav">
     <ion-menu-toggle slot="start" menu="main" id="dashboard-menu-toggle">
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title *ngIf="!userData.defaultProgram">Discover</ion-title>
     <!--<ion-title *ngIf="userData.defaultProgram && platform.width() >= 768">Dashboard</ion-title>-->

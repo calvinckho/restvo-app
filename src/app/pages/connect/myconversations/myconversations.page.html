@@ -22,9 +22,9 @@
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>Chat</ion-title>
     <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">
@@ -146,7 +146,7 @@
                     <p class="short-paragraph" [innerHTML]="obj.message.preview | nl2br"></p>
                   </div>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
-                  <ion-badge *ngIf="obj.data.badge > 0" slot="end">{{obj.data.badge}}</ion-badge>
+                  <ion-badge *ngIf="obj.data.badge > 0" slot="end" mode="md">{{obj.data.badge}}</ion-badge>
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'all'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'connect', obj)">
@@ -171,7 +171,7 @@
                   </div>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
-                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0">{{obj.data.badge}}</ion-badge>
+                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0" mode="md">{{obj.data.badge}}</ion-badge>
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'group', obj)">
@@ -200,7 +200,7 @@
                   </div>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
-                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0">{{obj.data.badge}}</ion-badge>
+                  <ion-badge slot="end" *ngIf="obj.data.badge !== 0" mode="md">{{obj.data.badge}}</ion-badge>
                 </ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'moment', obj)">

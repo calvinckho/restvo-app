@@ -22,9 +22,9 @@
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>News</ion-title>
     <!--add new featured topic-->

@@ -1,7 +1,7 @@
 <ion-header [hidden]="router.url.includes('/app/user') && !modalPage">
   <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
-      <ion-item lines="none"  color="lightgrey">
+      <ion-item lines="none" color="lightgrey">
         <ion-avatar slot="start">
           <ion-img src="assets/img/icon.png"></ion-img>
         </ion-avatar>
@@ -22,9 +22,9 @@
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-buttons slot="start" *ngIf="modalPage">
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>

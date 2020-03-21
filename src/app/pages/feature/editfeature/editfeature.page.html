@@ -9,7 +9,7 @@
       <span *ngIf="!moment._id && !moment.resource['en-US'].value[0]?.length" style="font-style: italic">Template Type</span>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="saveActivity(true)" id="save-event">{{resource['en-US'].value[4]}}</ion-button> <!--Save-->
+      <ion-button (click)="saveActivity(false)" id="save-event">{{resource['en-US'].value[4]}}</ion-button> <!--Save-->
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="editTemplate && resource && resource._id && moment.resource && moment.resource.field">

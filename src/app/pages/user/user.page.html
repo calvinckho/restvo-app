@@ -2,9 +2,9 @@
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start" fill="clear" id="user-menu-toggle">
     <ion-button fill="clear" color="grey">
-      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
-      <ion-icon name="menu"></ion-icon>
-    </ion-button>
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>Settings</ion-title>
     <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">

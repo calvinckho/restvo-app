@@ -29,7 +29,7 @@
           <ion-item (click)="changeTab('myconversations')">
             <ion-icon slot="start"  name="chatbox"></ion-icon>
             <ion-label>Chat</ion-label>
-            <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="grey" slot="end">{{chatService.connectTabBadge}}</ion-badge>
+            <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="primary" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
           </ion-item>
           <ion-item (click)="changeTab('me')">
             <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>

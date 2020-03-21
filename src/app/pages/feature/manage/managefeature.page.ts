@@ -77,17 +77,17 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
       this.selectedMenuOption = 'profile';
     }
-    if (this.userData.user) {
+    /*if (this.userData.user) {
       this.loadSchedules();
-    }
+    }*/
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
-    if (!this.initialSetupCompleted && this.userData.user) {
+    if (this.userData.user) {
       this.setup();
+      this.loadSchedules();
     }
-    this.loadSchedules();
-  };
+  }
 
   async loadSchedules() {
     const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');

@@ -14,7 +14,7 @@
       <ion-icon name="newspaper"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="myconversations">
-      <ion-badge *ngIf="chatService && chatService.connectTabBadge">{{chatService.connectTabBadge}}</ion-badge>
+      <ion-badge *ngIf="chatService && chatService.connectTabBadge" mode="md">{{chatService.connectTabBadge}}</ion-badge>
       <ion-icon name="chatbox"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="me">

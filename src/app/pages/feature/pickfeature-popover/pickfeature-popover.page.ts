@@ -6,6 +6,7 @@ import {CacheService} from 'ionic-cache';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
 import {Router} from "@angular/router";
+import {UserData} from "../../../services/user.service";
 
 @Component({
   selector: 'app-pickfeature-popover',
@@ -47,6 +48,7 @@ export class PickfeaturePopoverPage implements OnInit {
         private navParams: NavParams,
         public modalCtrl: ModalController,
         private momentService: Moment,
+        private userData: UserData,
         private chatService: Chat,
         public calendarService: CalendarService
     ) {}
@@ -65,7 +67,7 @@ export class PickfeaturePopoverPage implements OnInit {
                 this.conversation = this.chatService.conversations[index].conversation;
             }
         }
-        this.subscriptions['refresh'] = this.momentService.refreshMoment$.subscribe(this.refreshAfterCreateMomentHandler);
+        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     refreshAfterCreateMomentHandler = async () => {

@@ -3,6 +3,7 @@ import {ModalController} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
+import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
 
 @Component({
   selector: 'app-administrators',
@@ -38,8 +39,16 @@ export class AdministratorsPage implements OnInit {
         await recipientModal.present();
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
         if (needsToRefresh) {
-            console.log("refreshing...");
-            this.userData.refreshUserStatus({type: 'change aux data'});
+            this.userData.refreshUserStatus({type: 'refresh manage pag'});
+        }
+    }
+
+    async addAdmin() {
+        const recipientModal = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {church: this.churchService.currentManagedCommunity, type: 'Restvo Users', modalPage: true}});
+        await recipientModal.present();
+        const {data: needsToRefresh} = await recipientModal.onDidDismiss();
+        if (needsToRefresh) {
+            this.userData.refreshUserStatus({type: 'refresh manage pag'});
         }
     }
 
