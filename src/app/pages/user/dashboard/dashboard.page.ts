@@ -75,15 +75,13 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
     async ngOnInit() {
-        // on page load, setup the page
-        this.setup();
         // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshDashboardPageHandler);
         this.view = this.view || this.route.snapshot.paramMap.get('view') || 'profile';
     }
 
-    refreshDashboardPageHandler = (data) => {
-      if (data) {
+    refreshDashboardPageHandler = () => {
+      if (this.userData && this.userData.user) {
           this.setup();
       }
     };

@@ -222,7 +222,7 @@ export class ShowrecipientinfoPage implements OnInit {
         try {
             const state = await this.chatService.shareContactInfo(this.result.conversation._id); //return 0 if off, 1 if on
             this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
-                const moment = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversation: this.result.conversation._id, resource: {} };
+                const moment = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['Contact Request']], matrix_number: [[]], conversation: this.result.conversation._id, resource: {} };
                 moment.resource = result[0];
                 moment.matrix_number = [[state]];
                 this.createFeature(moment);
