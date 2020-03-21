@@ -35,7 +35,7 @@ import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover
   encapsulation: ViewEncapsulation.None
 })
 export class EditfeaturePage implements OnInit, OnDestroy {
-  @ViewChild(IonContent) content: IonContent;
+  @ViewChild(IonContent, {static: false}) content: IonContent;
 
   @Input() modalPage: any; // whether the page is opened with hte modalController
   @Input() moment: any; // the object to store the activity

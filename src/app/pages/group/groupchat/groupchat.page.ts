@@ -48,8 +48,8 @@ import {CalendarService} from "../../../services/calendar.service";
     encapsulation: ViewEncapsulation.None,
 })
 export class GroupchatPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any; //optionally sent if it is a modal page
 

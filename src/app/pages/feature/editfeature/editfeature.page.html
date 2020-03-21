@@ -154,7 +154,7 @@
           <ion-item *ngIf="moment.array_boolean[0]" class="padding-start" lines="none"> <!--Community-->
             <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}</ion-label>
             <ion-select multiple="true" [interfaceOptions]="{cssClass: 'level-15'}" [(ngModel)]="moment.array_community">
-              <ion-select-option *ngFor="let church of churches" [value]="church._id" [selected]="church.selected" [disabled]="church._id === '5ab62be8f83e2c1a8d41f894'">{{church.name}}</ion-select-option>
+              <ion-select-option *ngFor="let church of churches" [value]="church._id" [class.selected]="church.selected" [disabled]="church._id === '5ab62be8f83e2c1a8d41f894'">{{church.name}}</ion-select-option>
             </ion-select>
           </ion-item>
           <!--Display Community in List View-->
@@ -868,15 +868,15 @@
                       <p class="ion-margin-start">{{preference.resource['en-US'].matrix_string[j][1]}}</p>
                       <ion-card-content>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 1, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]" slot="start">
-                          <ion-select-option [selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
                         </ion-select>
                         <ion-select *ngIf="preference.config[j][1] > -1" [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 2, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]" slot="end">
-                          <ion-select-option [selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
                         </ion-select>
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >
@@ -965,15 +965,15 @@
                       <p class="ion-margin-start">{{preference.resource['en-US'].matrix_string[j][1]}}</p>
                       <ion-card-content>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 1, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]" slot="start">
-                          <ion-select-option [selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
                         </ion-select>
                         <ion-select *ngIf="preference.config[j][1] > -1" [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 2, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]" slot="end">
-                          <ion-select-option [selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
                         </ion-select>
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >
@@ -1062,15 +1062,15 @@
                       <p class="ion-margin-start">{{preference.resource['en-US'].matrix_string[j][1]}}</p>
                       <ion-card-content>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 1, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]" slot="start">
-                          <ion-select-option [selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][1] === -1" value=-1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]}}</ion-select-option>
                         </ion-select>
                         <ion-select *ngIf="preference.config[j][1] > -1" [interfaceOptions]="{cssClass: 'level-15'}" interface="action-sheet" (ionChange)="changedMatchingConfig(preference._id, j, 2, $event)" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]" slot="end">
-                          <ion-select-option [selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
-                          <ion-select-option [selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 1" value=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 2" value=2>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 3" value=3>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option>
+                          <ion-select-option [class.selected]="preference.config[j][2] === 4" value=4>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-select-option>
                         </ion-select>
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >

@@ -10,7 +10,7 @@ declare var Webflow: any;
   encapsulation: ViewEncapsulation.None,
 })
 export class HomePage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
 
     constructor(
     ) {}

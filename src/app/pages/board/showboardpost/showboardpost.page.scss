@@ -41,6 +41,7 @@ app-showboardpost {
   }
 
   .short-paragraph {
+    color: var(--ion-color-dark);
     max-height: 100%;
     line-height: 20px; /* Height / no. of lines to display */
     overflow: scroll;
@@ -246,40 +247,38 @@ app-showboardpost {
   .message-form {
 
     display: flex;
-    border-color: #CCCCCC;
+    border-color: var(--ion-color-lightgrey);
     border-style: solid;
     border-width: 0.5px;
-    padding: 0;
-
-    .moreButton {
-      margin: 16px 3%;
-      width: 31px;
-      height: 30px;
-      float: left;
-    }
-
-    .actionButton {
-      margin: 16px 3%;
-      width: 31px;
-      height: 30px;
-      float: right;
-    }
+    padding: 0 8px;
 
     ion-button {
-      margin: auto 0;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    ion-icon {
+      margin: 0;
+      padding-left: 0px;
+      padding-right: 0;
     }
 
     ion-textarea {
-      margin: 8px 0;
+      margin: 8px;
       width: auto;
       border-style: solid;
       border-radius: 8px;
-      border-color: #CCCCCC;
+      border-color: var(--ion-color-lightgrey);
       border-width: 1px;
+      --padding-start: 4px;
     }
 
     .sendImage {
-      margin: 16px 3%;
+      margin: 16px 0 16px 3%;
       height: 30px;
       width: 30px;
       float: right;
@@ -287,7 +286,7 @@ app-showboardpost {
 
     .recordAudioImg {
       background-color: transparent;
-      margin: 16px 2%;
+      margin: 16px 0 16px 2%;
       height: 30px;
       width: 30px;
       float: right;

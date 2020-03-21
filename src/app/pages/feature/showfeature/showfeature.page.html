@@ -202,7 +202,7 @@
         <div class="moment-input">Assigned To</div>
         <ion-label hidden="true">Goals</ion-label>
         <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end">
-          <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
+          <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [class.selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item *ngIf="(moment._id === '5e4b39cd76ffc96ae6aba323') || (moment._id === '5e4c28d694fd1963ac0a5b1e')"> <!--Public Note or Private Note-->
@@ -831,7 +831,7 @@
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
-        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4) || (item !== 40000)}">
           <ion-col [ngClass]="{'slide-col': (item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
             <ion-item color="lightgrey" *ngIf="item === 10050" lines="none"> <!--section header-->
               <ion-label color="darkgrey" class="ion-text-uppercase">{{moment.resource['en-US'].matrix_string[i][1]}}</ion-label>
@@ -1037,8 +1037,8 @@
                 <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
               <ion-item lines="none">
-                <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])"
-                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" placeholder="Your Answer" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" [format]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].format"></quill-editor>
+                <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
+                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" [format]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].format"></quill-editor>
               </ion-item>
               <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].collaborative">
                 <ion-item *ngIf="resource._id">
@@ -1375,7 +1375,7 @@
   </ion-slides>
   <div *ngIf="categoryIds.indexOf('5c915324e172e4e64590e346') > -1 || categoryIds.indexOf('5c915475e172e4e64590e348') > -1">
     <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Communities/Programs Section Header-->
-      <ion-label color="darkgrey" class="section-label">Featured Communities</ion-label>
+      <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured Communities</ion-label>
     </ion-item>
     <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
       <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">

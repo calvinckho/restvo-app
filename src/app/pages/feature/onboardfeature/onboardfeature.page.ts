@@ -21,9 +21,9 @@ import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
     encapsulation: ViewEncapsulation.None
 })
 export class OnboardfeaturePage {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any;
     @Input() programId: any;
@@ -120,10 +120,8 @@ export class OnboardfeaturePage {
                     versionUpToDate = false;
                 }
             });
-            console.log("check", isIncomplete, versionUpToDate)
             return (isIncomplete && versionUpToDate) ? process : null; // if it has incomplete question and the version is up to date, return the process for display
         });
-        console.log("incom", this.authService.incompleteOnboardProcess)
         if (this.authService.incompleteOnboardProcess) {
             this.reachedEnd = false;
             await this.prepareMoment(this.authService.incompleteOnboardProcess);

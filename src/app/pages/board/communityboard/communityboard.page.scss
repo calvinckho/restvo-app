@@ -139,6 +139,7 @@ app-communityboard {
   }
 
   .short-paragraph {
+    color: var(--ion-color-dark);
     max-height: 80px;
     line-height: 20px; /* Height / no. of lines to display */
     overflow: hidden;

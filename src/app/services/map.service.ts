@@ -21,7 +21,7 @@ export class MapService {
   totalVoteCount: any = {};
 
   // map
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   userLocation = {
     lat: 37.7988255,

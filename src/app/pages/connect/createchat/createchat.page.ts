@@ -17,8 +17,8 @@ import {GroupchatPage} from "../../group/groupchat/groupchat.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatechatPage implements OnInit {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     chatForm: FormGroup;
     title: string = "Create Chat";

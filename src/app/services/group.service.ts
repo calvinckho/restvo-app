@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
 import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { Chat } from './chat.service';
-import { Events } from '@ionic/angular';
-import { Group } from '../interfaces/group'
+import { Group } from '../interfaces/group';
 import {Board} from "./board.service";
-import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Groups {

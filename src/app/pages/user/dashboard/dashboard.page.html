@@ -282,7 +282,7 @@
     </ion-item>
     <div *ngFor="let pendingNotification of pendingNotifications; trackBy: customTrackBy">
       <ion-item class="ion-text-wrap" (click)="viewMessage($event, pendingNotification)" *ngIf="pendingNotification.message.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" lines="none">
-        <p style="color: black;">{{pendingNotification.message}}</p>
+        <p style="color: var(--ion-color-dark);">{{pendingNotification.message}}</p>
         <ion-icon color="primary" name="more" slot="end"></ion-icon>
       </ion-item>
     </div>

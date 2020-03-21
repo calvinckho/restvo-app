@@ -34,7 +34,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
     encapsulation: ViewEncapsulation.None
 })
 export class CreatefeaturePage extends EditfeaturePage implements OnInit {
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     createReachedEnd = false;
     tutorialReachedEnd = false;

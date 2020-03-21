@@ -40,14 +40,14 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
   encapsulation: ViewEncapsulation.None
 })
 export class ShowfeaturePage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-  @ViewChild('peopleSlides') peopleSlides: IonSlides;
-  @ViewChild('plansSlides') plansSlides: IonSlides;
-  @ViewChild('programsSlides') programsSlides: IonSlides;
-  @ViewChild('goalsSlides') goalsSlides: IonSlides;
-    @ViewChild(IonFab) fabButtons: IonFab;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+  @ViewChild('peopleSlides', {static: false}) peopleSlides: IonSlides;
+  @ViewChild('plansSlides', {static: false}) plansSlides: IonSlides;
+  @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
+  @ViewChild('goalsSlides', {static: false}) goalsSlides: IonSlides;
+    @ViewChild(IonFab, {static: false}) fabButtons: IonFab;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   @Input() moment: any = { _id: '' };
   @Input() modalPage: any; // optional: when initialing a modal page

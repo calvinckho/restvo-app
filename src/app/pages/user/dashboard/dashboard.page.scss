@@ -597,7 +597,7 @@ app-dashboard {
     }
 
     .relationship-photo.border {
-      border: 1px solid #FFFFFF;
+      border: 1px solid var(--ion-color-lightgrey);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     }
    }
@@ -613,7 +613,7 @@ app-dashboard {
     font-size: 14px;
     line-height: 16px;
     text-align: center;
-    color: black;
+    color: var(--ion-color-dark);
   }
 
   .relationship-description {
@@ -622,7 +622,6 @@ app-dashboard {
     font-size: 12px;
     line-height: 14px;
     text-align: center;
-
-    color: #000000;
+    color: var(--ion-color-dark);
   }
 }
