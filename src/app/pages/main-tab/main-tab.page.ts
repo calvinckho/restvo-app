@@ -469,10 +469,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         buttons: [
                             {
                                 text: 'Open',
-                                role: 'cancel',
-                                handler: () => {
-                                    this.openGroupChat(data);
-                                }
+                                role: 'cancel'
                             }
                         ],
                         duration: 5000,
@@ -486,6 +483,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         return;
                     }
                     clearTimeout(timeoutHandle);
+                    this.openGroupChat(data);
                 }
             } else if (type === 'moment') { // local notification with the source of the type a moment (e.g. event reminder, etc)
                 if (this.platform.is('cordova') && Capacitor.isPluginAvailable('LocalNotifications')) { // on native devices
@@ -509,10 +507,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         buttons: [
                             {
                                 text: 'Open',
-                                role: 'cancel',
-                                handler: () => {
-                                    this.router.navigate(['/app/activity/' + data.momentId]);
-                                }
+                                role: 'cancel'
                             }
                         ],
                         duration: 5000,
@@ -528,6 +523,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         return;
                     }
                     clearTimeout(timeoutHandle);
+                    this.router.navigate(['/app/activity/' + data.momentId]);
                 }
             }
         });
