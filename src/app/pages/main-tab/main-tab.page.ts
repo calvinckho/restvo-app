@@ -466,8 +466,15 @@ export class MainTabPage implements OnInit, OnDestroy {
                 } else { // on PWA
                     const toast = await this.toastCtrl.create({
                         message: (data.author ? data.author.first_name + ' ' + data.author.last_name : data.author_pending_member.name) +  ': ' + (data.body || '') + ((data.moment && data.moment.resource) ? data.moment.resource['en-US'].value[0] : '') + (!(data.body || data.moment || data.response) ? 'sent you an attachment.' : ''),
-                        showCloseButton: true,
-                        closeButtonText: 'Open',
+                        buttons: [
+                            {
+                                text: 'Open',
+                                role: 'cancel',
+                                handler: () => {
+                                    this.openGroupChat(data);
+                                }
+                            }
+                        ],
                         duration: 5000,
                         position: 'top'
                     });
@@ -479,7 +486,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                         return;
                     }
                     clearTimeout(timeoutHandle);
-                    this.openGroupChat(data);
                 }
             } else if (type === 'moment') { // local notification with the source of the type a moment (e.g. event reminder, etc)
                 if (this.platform.is('cordova') && Capacitor.isPluginAvailable('LocalNotifications')) { // on native devices
@@ -500,8 +506,15 @@ export class MainTabPage implements OnInit, OnDestroy {
                 } else { // on PWA
                     const toast = await this.toastCtrl.create({
                         message: data.title + ': ' + data.body,
-                        showCloseButton: true,
-                        closeButtonText: 'Open',
+                        buttons: [
+                            {
+                                text: 'Open',
+                                role: 'cancel',
+                                handler: () => {
+                                    this.router.navigate(['/app/activity/' + data.momentId]);
+                                }
+                            }
+                        ],
                         duration: 5000,
                         position: 'top'
                     });
@@ -515,7 +528,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                         return;
                     }
                     clearTimeout(timeoutHandle);
-                    this.router.navigate(['/app/activity/' + data.momentId]);
                 }
             }
         });
