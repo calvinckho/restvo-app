@@ -1,7 +1,7 @@
 <ion-header no-border id="createfeature-header">
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title class="ion-text-wrap">{{moment.matrix_string[0][0] || 'Create Community'}}</ion-title>
   </ion-toolbar>
@@ -35,7 +35,7 @@
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col class="ion-align-self-center" *ngFor="let referenceActivity of referenceActivities; index as j; trackBy: customTrackBy" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2">
-                  <ion-card class="program-card" (click)="openreferenceActivity(j)">
+                  <ion-card class="program-card" (click)="openPlanModule(j)">
                     <ion-card-header class="ion-no-padding">
                       <div class="program-photo-container">
                         <ion-img class="program-photo" [src]="(referenceActivity.assets && referenceActivity.assets[0]) | background: referenceActivity._id"></ion-img>
@@ -114,7 +114,7 @@
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col class="ion-align-self-center" *ngFor="let referenceActivity of referenceActivities; index as j; trackBy: customTrackBy" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2">
-                  <ion-card class="program-card" (click)="openreferenceActivity(j)">
+                  <ion-card class="program-card" (click)="openPlanModule(j)">
                     <ion-card-header class="ion-no-padding">
                       <div class="program-photo-container">
                         <ion-img class="program-photo" [src]="(referenceActivity.assets && referenceActivity.assets[0]) | background: referenceActivity._id"></ion-img>

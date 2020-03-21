@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-    <ion-button (click)="backButton()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    <ion-button (click)="backButton()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{title}}</ion-title>
   </ion-toolbar>
@@ -55,7 +55,7 @@
         </ion-avatar>
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
-        <ion-icon color="button1" *ngIf="person.select" name="ios-checkmark-circle" slot="end"></ion-icon>
+        <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-list-header>{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
@@ -67,7 +67,7 @@
         </ion-avatar>
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
-        <ion-icon color="button1" *ngIf="person.select" name="ios-checkmark-circle" slot="end"></ion-icon>
+        <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">

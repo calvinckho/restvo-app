@@ -1,7 +1,7 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
@@ -25,19 +25,19 @@
         </ion-buttons>
       </ion-item>
       <ion-item lines="none">
-        <ion-label (click)="focusCalendarDateField('start')"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+        <ion-label (click)="focusCalendarDateField('start')"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
         <ion-datetime *ngIf="recurrenceStartTime" (ionCancel)="dateType='end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
       </ion-item>
       <ion-item lines="none" *ngIf="dateType != 'start'">
-        <ion-label (click)="focusCalendarDateField('end')"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
+        <ion-label (click)="focusCalendarDateField('end')"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
         <ion-datetime *ngIf="recurrenceEndTime" placeholder="12:00 pm" (ionCancel)="dateType=''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
       </ion-item>
 
       <ion-card class="monthview" *ngIf="dateType">
         <div class="month-title-container">
-          <ion-icon name="ios-arrow-back" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+          <ion-icon name="arrow-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
           <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-          <ion-icon name="ios-arrow-forward" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+          <ion-icon name="arrow-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
         </div>
         <div class="monthview-day-headers">S</div>
         <div class="monthview-day-headers">M</div>

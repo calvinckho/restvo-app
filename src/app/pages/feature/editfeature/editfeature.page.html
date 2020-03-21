@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(this.anyChangeMade)"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(this.anyChangeMade)"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title slot="start">
       <span *ngIf="moment._id">{{moment.resource['en-US'].value[0]}}</span> <!--Create-->
@@ -186,7 +186,7 @@
             </ion-buttons>
           </ion-item>
           <ion-item class="ion-padding-left" lines="none">
-            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="alert"></ion-icon></div>
+            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="alert-circle"></ion-icon></div>
             <ion-label class="moment-input" class="ion-text-wrap">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
           </ion-item>
         </ion-item-group>
@@ -255,19 +255,19 @@
             <ion-label>{{calendarService.calendar.selectedDate | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
           </ion-item>
           <ion-item lines="none" *ngIf="!allDay">
-            <ion-label (click)="dateType = 'start'"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}: {{startDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--Start, Choose a date below-->
+            <ion-label (click)="dateType = 'start'"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}: {{startDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--Start, Choose a date below-->
             <ion-datetime *ngIf="startTime" (ionChange)="changeStartTime()" (ionCancel)="dateType = 'end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="startTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
           </ion-item>
           <ion-item lines="none" *ngIf="!allDay && dateType != 'start'">
-            <ion-label (click)="dateType = 'end'"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}: {{endDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--End, Choose a date below-->
+            <ion-label (click)="dateType = 'end'"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}: {{endDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--End, Choose a date below-->
             <ion-datetime *ngIf="endTime" placeholder="12:00 pm" (ionCancel)="dateType = ''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="endTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
           </ion-item>
 
           <ion-card class="monthview" *ngIf="dateType || allDay">
             <div class="month-title-container">
-              <ion-icon name="ios-arrow-back" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+              <ion-icon name="arrow-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
               <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-              <ion-icon name="ios-arrow-forward" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+              <ion-icon name="arrow-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
             </div>
             <div class="monthview-day-headers">S</div>
             <div class="monthview-day-headers">M</div>
@@ -550,7 +550,7 @@
               <span class="moment-input" *ngIf="referenceActivity._id">{{referenceActivity.matrix_string[0][0]}}</span>
               <ion-note style="max-width: 20%" class="ion-no-margin" class="ion-text-wrap" slot="end" *ngIf="referenceActivity.calendar && referenceActivity.calendar.startDate">{{referenceActivity.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
               <ion-buttons slot="end" class="ion-no-margin">
-                <ion-button fill="clear" color="grey" (click)="openreferenceActivity(j)"><ion-icon name="cog"></ion-icon></ion-button>
+                <ion-button fill="clear" color="grey" (click)="openPlanModule(j)"><ion-icon name="cog"></ion-icon></ion-button>
                 <ion-button fill="clear" (click)="removePlanItem($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-buttons>
             </ion-item>
@@ -881,7 +881,7 @@
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >
                         <div color="grey" style="font-size: 12px;" slot="start" class="ion-no-margin">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]}}</div>
-                        <ion-icon name="alert" (click)="explainWeight()"></ion-icon>
+                        <ion-icon name="alert-circle" (click)="explainWeight()"></ion-icon>
                       </ion-item>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" class="ion-no-padding">
                         <ion-range style="width: 60%; min-width: 300px" min="-3" max="3" [value]="preference.config[j][3]" (ionChange)="changedMatchingConfig(preference._id, j, 3, $event)" debounce="50" lines="none">
@@ -978,7 +978,7 @@
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >
                         <div color="grey" style="font-size: 12px;" slot="start" class="ion-no-margin">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]}}</div>
-                        <ion-icon name="alert" (click)="explainWeight()"></ion-icon>
+                        <ion-icon name="alert-circle" (click)="explainWeight()"></ion-icon>
                       </ion-item>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" class="ion-no-padding">
                         <ion-range style="width: 60%; min-width: 300px" min="-3" max="3" [value]="preference.config[j][3]" (ionChange)="changedMatchingConfig(preference._id, j, 3, $event)" debounce="50" lines="none">
@@ -1075,7 +1075,7 @@
                       </ion-card-content>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" >
                         <div color="grey" style="font-size: 12px;" slot="start" class="ion-no-margin">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]}}</div>
-                        <ion-icon name="alert" (click)="explainWeight()"></ion-icon>
+                        <ion-icon name="alert-circle" (click)="explainWeight()"></ion-icon>
                       </ion-item>
                       <ion-item *ngIf="preference.config[j][1] === 1" lines="none" class="ion-no-padding">
                         <ion-range style="width: 60%; min-width: 300px" min="-3" max="3" [value]="preference.config[j][3]" (ionChange)="changedMatchingConfig(preference._id, j, 3, $event)" debounce="50" lines="none">
@@ -1091,7 +1091,7 @@
 
           </div>
           <ion-item lines="none" *ngIf="!moment._id">
-            <ion-icon name="alert" slot="start" color="danger"></ion-icon>
+            <ion-icon name="alert-circle" slot="start" color="danger"></ion-icon>
             <ion-label class="ion-text-wrap" color="danger">The matching configurations will be available after you save your activity.</ion-label>
           </ion-item>
         </div>

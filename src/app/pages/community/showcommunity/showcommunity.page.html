@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button *ngIf="modalPage" (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button *ngIf="modalPage" (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
       <ion-back-button *ngIf="!modalPage" (click)="destroyPlayers(null)" defaultHref="/map"></ion-back-button>
     </ion-buttons>
     <ion-title>{{community.name}}</ion-title>
     <ion-buttons slot="end">
       <ion-button *ngIf="userData && userData.user" (click)="presentPopover($event)">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
