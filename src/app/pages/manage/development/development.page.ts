@@ -20,7 +20,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./development.page.scss'],
 })
 export class DevelopmentPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   moments = [];

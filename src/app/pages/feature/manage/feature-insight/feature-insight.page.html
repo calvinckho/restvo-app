@@ -13,7 +13,7 @@
       <ion-label [hidden]="true">Filter by Program</ion-label>
       <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
         <ion-select-option value='all'>Show All</ion-select-option>
-        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
+        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-toolbar>

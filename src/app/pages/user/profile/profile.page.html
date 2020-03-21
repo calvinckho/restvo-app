@@ -135,7 +135,7 @@
                     <ion-item>
                         <ion-label position="stacked">Country</ion-label>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="country">
-                            <ion-select-option *ngFor="let country of countries" [value]="country.name" [selected]="country.selected">{{country.name}}</ion-select-option>
+                            <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </div>

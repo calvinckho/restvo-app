@@ -489,7 +489,7 @@ app-groupchat {
   .message-form {
 
     display: flex;
-    border-color: #CCCCCC;
+    border-color: var(--ion-color-lightgrey);
     border-style: solid;
     border-width: 0.5px;
     padding: 0 8px;
@@ -514,7 +514,7 @@ app-groupchat {
       width: auto;
       border-style: solid;
       border-radius: 8px;
-      border-color: #CCCCCC;
+      border-color: var(--ion-color-lightgrey);
       border-width: 1px;
       --padding-start: 4px;
     }

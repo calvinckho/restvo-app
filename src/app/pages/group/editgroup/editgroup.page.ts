@@ -19,7 +19,7 @@ import {Auth} from "../../../services/auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class EditgroupPage implements AfterViewInit {
-    @ViewChild('textArea') textArea: ElementRef;
+    @ViewChild('textArea', {static: false}) textArea: ElementRef;
 
     // two big categories: personal groups vs community groups. Within community groups, you can have public and private groups.
 

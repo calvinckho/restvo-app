@@ -29,7 +29,7 @@ import {Auth} from "../../../services/auth.service";
     encapsulation: ViewEncapsulation.None,
 })
 export class GroupinfoPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
     // group
     propIndex: any;

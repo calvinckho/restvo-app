@@ -29,9 +29,9 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
   encapsulation: ViewEncapsulation.None
 })
 export class EditboardpostPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('textArea') textArea: ElementRef;
-    @ViewChild('pixaBay') pixaBay: ElementRef;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('textArea', {static: false}) textArea: ElementRef;
+    @ViewChild('pixaBay', {static: false}) pixaBay: ElementRef;
 
     @Input() boardId: any;
     @Input() post: any;

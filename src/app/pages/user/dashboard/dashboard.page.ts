@@ -25,9 +25,9 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-    @ViewChild('programsSlides') programsSlides: IonSlides;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
 
     //private subscription: Subscription;
     @Input() view: any;

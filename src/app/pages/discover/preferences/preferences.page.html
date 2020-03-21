@@ -112,10 +112,10 @@
                 <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
             </ion-thumbnail>
             <div>
-                <ion-note *ngIf="!organizer" style="font-style: italic" class="ion-margin-bottom">{{moment.program.matrix_string[0][0]}}</ion-note>
-                <ion-label>
-                    <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
+                <ion-label *ngIf="!organizer" >
+                    <h2 class="ion-text-wrap">{{moment.program.matrix_string[0][0]}}</h2>
                 </ion-label>
+                <ion-note style="font-style: italic" class="ion-margin-top">{{moment.matrix_string[0][0]}}</ion-note>
             </div>
 
             <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>

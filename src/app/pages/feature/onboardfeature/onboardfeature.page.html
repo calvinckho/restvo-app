@@ -21,7 +21,7 @@
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
-        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4) || (item !== 40000)}">
           <ion-col [ngClass]="{'slide-col': (item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
             <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
               <div class="textarea center ion-text-wrap ion-justify-content-center" [innerHTML]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br"></div>
@@ -229,7 +229,7 @@
                 <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
               <ion-item>
-                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)"></ion-textarea>
+                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" autofocus></ion-textarea>
               </ion-item>
             </div>
             <div class="component" style="margin-top: 30%" *ngIf="!userData.user && item === 50000">

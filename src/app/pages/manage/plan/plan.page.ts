@@ -16,8 +16,8 @@ import {Router} from "@angular/router";
   encapsulation: ViewEncapsulation.None
 })
 export class PlanPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     @Input() modalPage: any;
     elements: Elements;
@@ -61,7 +61,6 @@ export class PlanPage implements OnInit, OnDestroy {
             postal_code: ['', [Validators.required]],
             country: ['', [Validators.required]],
         });
-        this.slides.lockSwipes(true);
         let loadResource = this.resourceService.load('en-US', "Restvo Plans");
         let resource = this.cache.loadFromDelayedObservable('loadResource: Restvo Plans', loadResource, 'resource', 3600, 'none');
         resource.subscribe(result => {
@@ -76,6 +75,10 @@ export class PlanPage implements OnInit, OnDestroy {
             await networkAlert.present();
         });
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
+    }
+
+    onSlidesLoaded () {
+        this.slides.lockSwipes(true);
     }
 
     refreshHandler = async (data) => {

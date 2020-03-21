@@ -22,7 +22,7 @@ import {Churches} from "../../../services/church.service";
 })
 
 export class GroupsPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any;
     subscriptions: any = {};

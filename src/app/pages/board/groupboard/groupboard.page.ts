@@ -38,9 +38,9 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
   encapsulation: ViewEncapsulation.None
 })
 export class GroupboardPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild('titles') title_slides: IonSlides;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild('titles', {static: false}) title_slides: IonSlides;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() group: any;
     @Input() page: any;

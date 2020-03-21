@@ -209,19 +209,19 @@
             <ion-row>
               <ion-col>
                 <ion-button fill="clear" size="small" (click)="likePost($event, board, post)">
-                  <ion-icon name="thumbs-up"></ion-icon>
+                  <ion-icon name="thumbs-up" class="ion-margin-end"></ion-icon>
                   {{post.likes?.length}} Likes
                 </ion-button>
               </ion-col>
               <ion-col>
                 <ion-button fill="clear" size="small" (click)="openPost($event, board, post)">
-                  <ion-icon name="text"></ion-icon>
+                  <ion-icon name="chatbox-ellipses" class="ion-margin-end"></ion-icon>
                   {{post.comments?.length}} Comments
                 </ion-button>
               </ion-col>
               <ion-col>
                 <ion-button  fill="clear" size="small" (click)="presentPickPeoplePopover($event)">
-                  <ion-icon name="share-alt"></ion-icon>Share</ion-button>
+                  <ion-icon name="share" class="ion-margin-end"></ion-icon>Share</ion-button>
               </ion-col>
             </ion-row>
           </ion-card>

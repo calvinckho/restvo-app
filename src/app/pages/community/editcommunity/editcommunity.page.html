@@ -40,7 +40,7 @@
       <ion-item>
         <ion-label position="stacked">Category *</ion-label>
         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="industry" interface="alert">
-          <ion-select-option *ngFor="let industry of industries" [value]="industry._id" [selected]="industry.selected">{{industry.name}}</ion-select-option>
+          <ion-select-option *ngFor="let industry of industries" [value]="industry._id" [class.selected]="industry.selected">{{industry.name}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item-divider class="ion-text-wrap">
@@ -91,7 +91,7 @@
       <ion-item>
         <ion-label position="stacked">Country *</ion-label>
         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="meeting_country">
-          <ion-select-option *ngFor="let country of countries" [value]="country.name" [selected]="country.selected">{{country.name}}</ion-select-option>
+          <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item class="form-error-list" *ngIf="!communityForm.controls.meeting_country.pristine && !communityForm.controls.meeting_country.valid">

@@ -19,8 +19,8 @@ import {Location} from "@angular/common";
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterPage implements OnInit {
-    @ViewChild('welcomeSlides') welcome_slides: IonSlides;
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild('welcomeSlides', {static: false}) welcome_slides: IonSlides;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     @Input() modalPage: any;
     @Input() slide: any;
@@ -336,7 +336,7 @@ export class RegisterPage implements OnInit {
 
     async ionViewWillEnter() {
         if (this.slide > 0) {
-            this.loadRegisterSlides()
+            this.loadRegisterSlides();
         }
         this.loginForm.patchValue({
             calling_code: '+1',

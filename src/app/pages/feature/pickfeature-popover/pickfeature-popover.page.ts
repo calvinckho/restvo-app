@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, NavParams, ModalController, Events} from '@ionic/angular';
+import {AlertController, NavParams, ModalController} from '@ionic/angular';
 import {Chat} from "../../../services/chat.service";
 import { CalendarService } from '../../../services/calendar.service';
 import {CacheService} from 'ionic-cache';

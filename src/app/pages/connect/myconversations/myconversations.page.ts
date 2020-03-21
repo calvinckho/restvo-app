@@ -18,8 +18,8 @@ import {EditgroupPage} from "../../group/editgroup/editgroup.page";
   encapsulation: ViewEncapsulation.None
 })
 export class MyconversationsPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild('searchBar') searchBar ;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild('searchBar', {static: false}) searchBar ;
 
     datas: any = [];
     loading: any;

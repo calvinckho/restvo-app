@@ -21,7 +21,7 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
   styleUrls: ['./preferences.page.scss'],
 })
 export class PreferencesPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   @Input() showHeader: any;

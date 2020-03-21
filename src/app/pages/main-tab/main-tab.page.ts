@@ -48,7 +48,7 @@ declare var JitsiMeetExternalAPI: any;
   encapsulation: ViewEncapsulation.None
 })
 export class MainTabPage implements OnInit, OnDestroy {
-    @ViewChild('videoSpace') videoSpace: any;
+    @ViewChild('videoSpace', {static: false}) videoSpace: any;
 
     networkHandler: any;
     pushHandler: any;

@@ -14,7 +14,7 @@ import {Resource} from "../../../services/resource.service";
   encapsulation: ViewEncapsulation.None
 })
 export class SearchcommunityPage implements OnInit {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     reachedEnd: boolean = false;
     pageNum: number = 0;

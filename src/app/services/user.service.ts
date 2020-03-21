@@ -21,7 +21,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 @Injectable({ providedIn: 'root' })
 export class UserData {
 
-    @ViewChild('Contact') contact: Contact;
+    @ViewChild('Contact', {static: false}) contact: Contact;
     user: any;
     communitiesboards: any; // [CommunitiesBoards];
     socket: io;

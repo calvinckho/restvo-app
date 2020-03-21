@@ -19,7 +19,7 @@ import {Churches} from "../../../services/church.service";
     encapsulation: ViewEncapsulation.None
 })
 export class MembersPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
 
     subscriptions: any = {};
