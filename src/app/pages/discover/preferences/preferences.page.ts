@@ -53,14 +53,12 @@ export class PreferencesPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    // on page load, setup the page
-    this.setup();
     // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
     this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
 
   refreshUserStatusHandler = (data) => {
-    if (data) { // after a user has modified the answer to the onboarding process questionniare. data is most likely { type: 'change aux data' }
+    if (data && data.type === 'change aux data') { // after a user has modified the answer to the onboarding process questionniare. data is most likely { type: 'change aux data' }
       this.setup();
     }
   }
@@ -90,6 +88,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
   }
 
   async loadMorePreferences(event) {
+    console.log("eve", event);
     this.pageNum++;
     if (!this.reachedEnd) {
       let processes: any;
