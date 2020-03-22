@@ -262,7 +262,7 @@ export class Chat {
             let conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
         } catch (err) {
-            console.log("no conversation in storage");
+            console.log('no conversation in storage');
         }
         const lastUpdatedAt = this.findLatestTimeStamp(this.conversations);
         try {
