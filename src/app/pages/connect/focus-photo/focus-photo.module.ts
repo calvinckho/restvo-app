@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { FocusPhotoPage } from './focus-photo.page';
-import {PinchZoomModule} from "ngx-pinch-zoom";
+import { PinchZoomModule } from 'ngx-pinch-zoom';
 
 const routes: Routes = [
   {
