@@ -179,6 +179,6 @@ export class SettingsPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions['refreshUserStatus'].subscribe(this.refreshUserStatusHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserStatusHandler);
     }
 }
