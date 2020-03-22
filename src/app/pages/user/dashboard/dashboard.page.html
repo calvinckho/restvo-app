@@ -72,35 +72,58 @@
 </ion-header>
 
 <ion-content *ngIf="userData.user">
+<!-- where the profile is -->
+
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
   <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
-    <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-      <ion-card-header>
+    <ion-card id="person-profile-card" class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+    <ion-row>
+    <ion-col>
+
+      <!-- <ion-card-header> -->
         <div class="person-photo-container">
           <ion-img class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
           <ion-img class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
         </div>
-      </ion-card-header>
-      <div class="top-pattern"></div>
+      <!-- </ion-card-header> -->
+    </ion-col>
+    <ion-col>
+      <!-- <div class="top-pattern"></div>
       <div class="middle-pattern"></div>
-      <div class="bottom-pattern"></div>
-      <ion-card-content class="person-content ion-no-padding">
-        <ion-item lines="none" class="person-content-item ion-no-margin">
+      <div class="bottom-pattern"></div> -->
+      <!-- <ion-card-content class="person-content ion-no-padding"> -->
+        <!-- <ion-item lines="none" class="person-content-item ion-no-margin"> -->
+        <div class="wrapper ion-justify-content-center ion-no-padding">
           <div class="person-content-left">
             <div class="person-name ion-text-md-uppercase">
               {{userData.user.first_name}} {{userData.user.last_name}}
             </div>
             <div class="person-title" [innerHTML]="userData.user.title"></div>
+
           </div>
-          <div class="person-content-right" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div> <!--Short Biography-->
-        </ion-item>
-      </ion-card-content>
+          <div class="person-content-right" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div>
+          <ion-button class="profile-button" color="danger" (click)="openMyProfile()" fill="outline" shape="round">Edit Profile</ion-button>
+        </div>
+
+
+      <!-- </ion-card-content> -->
+    </ion-col>
+    </ion-row>
     </ion-card>
+
+    <!-- <div class="wrapper">
+      <div class="person-photo-container ion-float-left">
+        <ion-img class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
+        <ion-img class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+      </div>
+    </div> -->
+
   </ion-row>
+
   <!--List My Mentors-->
   <div *ngIf="myMentors && myMentors.length && view === 'profile'">
     <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
@@ -288,4 +311,3 @@
     </div>
   </ion-list>
 </ion-content>
-

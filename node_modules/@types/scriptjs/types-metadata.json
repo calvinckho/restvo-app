@@ -1,0 +1,23 @@
+{
+    "authors": "Steve Lam <https://github.com/ssttevee>",
+    "definitionFilename": "index.d.ts",
+    "libraryDependencies": [],
+    "moduleDependencies": [],
+    "libraryMajorVersion": "0",
+    "libraryMinorVersion": "0",
+    "libraryName": "scriptjs",
+    "typingsPackageName": "scriptjs",
+    "projectName": "https://github.com/ded/script.js",
+    "sourceRepoURL": "https://www.github.com/DefinitelyTyped/DefinitelyTyped",
+    "sourceBranch": "types-2.0",
+    "kind": "OldUMD",
+    "globals": [],
+    "declaredModules": [
+        "scriptjs"
+    ],
+    "files": [
+        "index.d.ts"
+    ],
+    "hasPackageJson": false,
+    "contentHash": "a61ab00bebc3fff289761bbce61ae675503b6633749c8aa5acbdb9d1cbe05c24"
+}
