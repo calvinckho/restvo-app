@@ -301,7 +301,7 @@
           <ion-card mode="md" class="ion-no-padding">
             <ion-card-content class="goal-content favorite ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
               <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
-              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                 <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 3 && moment.matrix_number[i][3]) ? 'bold' : 'none'),'font-size': ((moment.matrix_number[i].length > 2) ? moment.matrix_number[i][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
               </ion-item>
               <div class="progress">
@@ -317,7 +317,7 @@
             <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
               <ion-card-content class="ion-no-padding goal-content" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
                 <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
-                <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                   <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
                   <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                 </ion-item>
@@ -358,7 +358,7 @@
           <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
             <ion-card-content class="goal-content ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
               <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
-              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+              <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                 <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
                 <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
               </ion-item>
@@ -1038,7 +1038,7 @@
               </ion-item>
               <ion-item lines="none">
                 <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
-                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" [format]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].format"></quill-editor>
+                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" format="object"></quill-editor>
               </ion-item>
               <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].collaborative">
                 <ion-item *ngIf="resource._id">
@@ -1101,7 +1101,7 @@
                 <ion-card mode="md" class="ion-no-padding">
                   <ion-card-content class="goal-content favorite ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
                     <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) ? moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
-                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                       <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none'), 'font-size': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2) ? moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) ? moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
                     </ion-item>
                     <div class="progress">
@@ -1117,7 +1117,7 @@
                   <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
                     <ion-card-content class="ion-no-padding goal-content" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
                       <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
-                      <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                      <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                         <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                       </ion-item>
                       <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
@@ -1157,7 +1157,7 @@
                 <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
                   <ion-card-content class="goal-content ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
                     <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
-                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end ">
+                    <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                       <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                     </ion-item>
                     <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">

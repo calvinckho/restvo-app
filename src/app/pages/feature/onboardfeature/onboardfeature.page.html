@@ -228,9 +228,13 @@
               <ion-item>
                 <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
-              <ion-item>
-                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" autofocus></ion-textarea>
+              <ion-item lines="none">
+                <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
+                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" format="object"></quill-editor>
               </ion-item>
+             <!-- <ion-item>
+                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" autofocus></ion-textarea>
+              </ion-item>-->
             </div>
             <div class="component" style="margin-top: 30%" *ngIf="!userData.user && item === 50000">
               <ion-item lines="none">
