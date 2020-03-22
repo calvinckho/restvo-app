@@ -111,7 +111,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         const listOfChurchIds = this.userData.user.churches.map((c) => c._id );
         this.chatService.conversations.forEach((obj: any) => {
             // Friends
-            if (obj.conversation.type === "connect") {
+            if (obj.conversation.type === 'connect') {
                 this.noConversationLoaded = false;
                 if(obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1){
                     this.datas.push(obj); //push the conversation object into an array

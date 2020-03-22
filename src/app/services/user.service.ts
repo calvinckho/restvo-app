@@ -145,8 +145,8 @@ export class UserData {
         // broadcast signal to refresh main tab pages
         this.refreshUserStatus({ type: 'refresh community board page' });
         this.refreshMyConversations({action: 'render', data: null});
-        this.refreshUserStatus({ type: 'change aux data' });
         this.refreshMyConversations({action: 'reload chat view'});
+        this.refreshUserStatus({ type: 'change aux data' });
     }
 
     //get data from the server if connected
