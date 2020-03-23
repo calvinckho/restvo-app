@@ -442,10 +442,10 @@ app-dashboard {
     max-width: 300px;
     width: 80%;
     height: 100%;
+    vertical-align: middle;
     //max-height: 200px;
     object-fit: contain;
     margin: 0 12px;
-
     // Added the slant pattern!
     .top-pattern {
       position: absolute;
@@ -477,6 +477,14 @@ app-dashboard {
     }
   }
 
+  .person-profile-button {
+    border-radius: 50%;
+  }
+
+  .person-profile-card {
+    vertical-align: middle;
+  }
+
   .person-content {
     height: 75px;
     overflow: scroll;
@@ -496,6 +504,18 @@ app-dashboard {
 
   .person-name {
     font-size: 14px;
+    color: black;
+    width: 100%;
+  }
+
+  .person-information-container {
+    align-items: stretch;
+    padding-left: 3vw;
+  }
+
+  .person-biography {
+    color: dimgrey;
+    font-size: 12px;
   }
 
   .person-title {
@@ -518,6 +538,20 @@ app-dashboard {
     overflow: hidden;
     font-size: 12px;
     color: var(--ion-color-darkgrey);
+  }
+
+  .person-photo {
+    width: 100%;
+    margin: auto;
+    display: block;
+  }
+
+  .person-photo-container {
+    width: 125px;
+    height: 125px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 5% auto 0;
   }
 
   .section {

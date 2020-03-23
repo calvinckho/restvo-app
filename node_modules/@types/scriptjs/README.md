@@ -1,0 +1,18 @@
+# Installation
+> `npm install --save @types/scriptjs`
+
+# Summary
+This package contains type definitions for scriptjs (https://github.com/ded/script.js).
+
+# Details
+Files were exported from https://www.github.com/DefinitelyTyped/DefinitelyTyped/tree/types-2.0/scriptjs
+
+Additional Details
+ * Last updated: Wed, 05 Oct 2016 20:53:39 GMT
+ * File structure: OldUMD
+ * Library Dependencies: none
+ * Module Dependencies: none
+ * Global values: none
+
+# Credits
+These definitions were written by Steve Lam <https://github.com/ssttevee>.
