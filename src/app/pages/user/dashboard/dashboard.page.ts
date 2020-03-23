@@ -26,10 +26,9 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
 })
 export class DashboardPage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
-    @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
+    //@ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    //@ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
 
-    //private subscription: Subscription;
     @Input() view: any;
     @Input() modalPage: any;
     pendingNotifications: any = [];
@@ -45,7 +44,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     bio: any;
 
     searchKeyword: string = '';
-    addRestvoFeaturesMenu: boolean = false;
     slide = 0;
     ionSpinner = true;
     moreOptions = false;
@@ -349,11 +347,11 @@ export class DashboardPage implements OnInit, OnDestroy {
         const listMyCommunityModal = await this.modalCtrl.create({component: ListmycommunitiesPage});
         return await listMyCommunityModal.present();
     }
-
+/*
     async slideChange(event){
         event.stopPropagation();
         this.slide = await this.slides.getActiveIndex();
-    }
+    }*/
 
     changeSelectedDate( inputDate ) {
         if (inputDate === ' ') return;
