@@ -1,10 +1,10 @@
 <ion-header *ngIf="modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
   <ion-toolbar>
-    <ion-menu-toggle menu="main" *ngIf="!modalPage && authService.token && platform.width() < 768" slot="start" fill="clear">
+    <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="grey">{{chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-buttons *ngIf="authService.token && (modalPage || platform.width() >= 768)" slot="start">
       <ion-button (click)="closeModal()">
@@ -27,7 +27,7 @@
         </ion-button>
       </div>
       <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
-        <ion-icon name="share"></ion-icon>
+        <ion-icon name="person-add"></ion-icon>
       </ion-button>
       <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
         <ion-text>Sign In</ion-text>

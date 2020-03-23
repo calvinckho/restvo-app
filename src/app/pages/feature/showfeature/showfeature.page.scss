@@ -1,5 +1,18 @@
 app-showfeature {
 
+  ion-menu-toggle {
+    ion-badge {
+      position: relative;
+      top: 0.1rem;
+      right: 22px;
+
+      /*& ~ ion-icon {
+        outline-color: whitesmoke;
+      }*/
+      z-index: 5;
+    }
+  }
+
   ion-item ion-datetime{
     position:relative !important;
   }
