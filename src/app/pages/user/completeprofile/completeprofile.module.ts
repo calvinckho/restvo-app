@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { CompleteprofilePage } from './completeprofile.page';
+import {ProgressBarModule} from "angular-progress-bar"
 
 const routes: Routes = [
   {
@@ -19,7 +20,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ProgressBarModule
   ],
   declarations: [CompleteprofilePage]
 })
