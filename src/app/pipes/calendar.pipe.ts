@@ -18,7 +18,7 @@ export class CalendarPipe implements PipeTransform {
           }
         }
       }
-      return completed_count / total_count;
+      return Math.floor((completed_count / total_count) * 100);
     } else if (type === 'overalldue') { // data = { scheduleIds: []}
       let total_count = 0;
       let due_count = 0;
