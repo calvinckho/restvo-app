@@ -77,10 +77,10 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  
-  <!-- I changed the framework below to match a mobile view// It should render 
+
+  <!-- I changed the framework below to match a mobile view// It should render
   how the Figma model was shown with same pixel sizes and everything.-->
-  
+
   <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
     <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
       <div class="person-photo-container">
@@ -274,8 +274,8 @@
   <ion-list class="system-message-container ion-padding" *ngIf="!noSystemMessage">
     <ion-item>
       <ion-buttons slot="end">
-        <ion-button fill="solid" shape="round" color="primary" size="small" (click)="handleSystemMessages('accept')">Accept All</ion-button>
-        <ion-button fill="clear" shape="round" color="primary" size="small" (click)="handleSystemMessages('clear')">Clear All</ion-button>
+        <ion-button fill="solid" color="primary" size="small" (click)="handleSystemMessages('accept')">Accept All</ion-button>
+        <ion-button fill="clear" color="primary" size="small" (click)="handleSystemMessages('clear')">Clear All</ion-button>
       </ion-buttons>
     </ion-item>
     <div *ngFor="let pendingNotification of pendingNotifications; trackBy: customTrackBy">
@@ -286,4 +286,3 @@
     </div>
   </ion-list>
 </ion-content>
-
