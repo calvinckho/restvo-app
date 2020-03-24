@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, ViewEncapsulation} from '@angular/core';
 import {Storage} from '@ionic/storage';
-import {ActionSheetController, AlertController, Events, ModalController} from '@ionic/angular';
+import {ActionSheetController, AlertController, LoadingController, ModalController} from '@ionic/angular';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import { Chat } from "../../../services/chat.service";
 import { Churches } from '../../../services/church.service';
@@ -12,6 +12,7 @@ import {InvitetoconnectPage} from "../invitetoconnect/invitetoconnect.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
+import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
 
 @Component({
   selector: 'app-showrecipientinfo',
@@ -48,7 +49,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 private route: ActivatedRoute,
                 private actionSheetCtrl: ActionSheetController,
                 public alertCtrl: AlertController,
-                private events: Events,
+                private loadingCtrl: LoadingController,
                 private callNumber: CallNumber,
                 public userData: UserData,
                 public networkService: NetworkService,
@@ -222,8 +223,8 @@ export class ShowrecipientinfoPage implements OnInit {
     async shareContactInfo(){
         try {
             const state = await this.chatService.shareContactInfo(this.result.conversation._id); //return 0 if off, 1 if on
-            this.resourceService.load('en-US', "Contact").subscribe(async (result)=>{
-                const moment = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversation: this.result.conversation._id, resource: {} };
+            this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
+                const moment = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['Contact Request']], matrix_number: [[]], conversation: this.result.conversation._id, resource: {} };
                 moment.resource = result[0];
                 moment.matrix_number = [[state]];
                 this.createFeature(moment);
@@ -236,7 +237,7 @@ export class ShowrecipientinfoPage implements OnInit {
 
     async createContactMessage(state){
         try {
-            this.resourceService.load('en-US', "Contact").subscribe(async (result)=>{
+            this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
                 this.result = await this.chatService.getConversationByRecipientId(this.recipient._id, true, this.programId);
                 this.conversation = this.result.conversation;
                 const serverData = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversations: this.conversation._id, resource: {} };
@@ -296,7 +297,7 @@ export class ShowrecipientinfoPage implements OnInit {
                     status: "pending",
                     confirmId: Math.random()
                 });
-            } catch (err){
+            } catch (err) {
                 console.log(err);
             }
         } catch (err) {
@@ -312,7 +313,7 @@ export class ShowrecipientinfoPage implements OnInit {
             this.router.navigate(['/app/activity/' + programId]);
         }
     }
-
+/*
     async inviteToGroup(){
         const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Group", selectedAppUser: this.recipient}});
         invitePage.present();
@@ -321,6 +322,42 @@ export class ShowrecipientinfoPage implements OnInit {
     async inviteToCommunity(){
         const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Community", selectedAppUser: this.recipient}});
         invitePage.present();
+    }*/
+
+    async createRelationship() {
+        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Relationship', maxMomentCount: 1, categoryId: '5dfdbb547b00ea76b75e5a70', allowCreate: false, allowSwitchCategory: false, modalPage: true}});
+        await pickProgramModal.present();
+        const {data: moments} = await pickProgramModal.onDidDismiss();
+        if (moments && moments.length) {
+            this.loading = await this.loadingCtrl.create({
+                message: 'Processing...',
+                duration: 5000
+            });
+            await this.loading.present();
+            if (moments[0] && moments[0].type === 'new') { // cloning a sample. copy everything except calendar
+                moments[0].calendar = { // reset the calendar
+                    title: moments[0].matrix_string[0][0],
+                    location: '',
+                    notes: '',
+                    startDate: new Date().toISOString(),
+                    endDate: new Date().toISOString(),
+                    options: {
+                        firstReminderMinutes: 0,
+                        secondReminderMinutes: 0,
+                        reminders: []
+                    }
+                };
+                const clonedMoments: any = await this.momentService.clone(moments, null);
+                if (clonedMoments && clonedMoments.length) {
+                    clonedMoments[0].type = 'new';
+                    clonedMoments[0].resource = moments[0].resource; // clone the populated resource
+                    this.selectedProgram = clonedMoments[0];
+                }
+            } else {
+                this.selectedProgram = moments[0];
+            }
+            this.momentService.initiateParticipantsView(this.selectedProgram, this.loading);
+        }
     }
 
     initializeCall(number){

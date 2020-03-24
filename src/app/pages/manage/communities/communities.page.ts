@@ -3,8 +3,7 @@ import {EditcommunityPage} from "../../community/editcommunity/editcommunity.pag
 import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
 import {
     ActionSheetController,
-    AlertController, Events,
-    IonInfiniteScroll,
+    AlertController, IonInfiniteScroll,
     ModalController,
     Platform,
     PopoverController
@@ -23,7 +22,7 @@ import {Churches} from "../../../services/church.service";
     encapsulation: ViewEncapsulation.None
 })
 export class CommunitiesPage {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
 
     subscriptions: any = {};
@@ -38,7 +37,6 @@ export class CommunitiesPage {
     refreshNeeded = false;
 
     constructor(
-                private events: Events,
                 private storage: Storage,
                 private platform: Platform,
                 private authService: Auth,
@@ -50,7 +48,7 @@ export class CommunitiesPage {
                 private alertCtrl: AlertController,) { }
 
     ionViewWillEnter() {
-        if(this.userData && this.userData.currentCommunityAdminStatus) {
+        if (this.userData && this.userData.currentCommunityAdminStatus) {
             this.setupManageCommunities();
         }
 
@@ -59,7 +57,7 @@ export class CommunitiesPage {
     }
 
     refreshHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'update admin' || data.type === 'change aux data'){
             this.setupManageCommunities();
         }
     };
@@ -87,8 +85,8 @@ export class CommunitiesPage {
                 this.reachedEnd = true;
                 event.target.disabled = true;
             } else {
-                communities.forEach((community)=>{
-                    const adminIds = community.admins.map((c)=>{return c._id;});
+                communities.forEach((community) => {
+                    const adminIds = community.admins.map((c) => c._id);
                     if (adminIds.indexOf(this.userData.user._id) < 0){
                         if (community.verified) {
                             community.system_verified = true;

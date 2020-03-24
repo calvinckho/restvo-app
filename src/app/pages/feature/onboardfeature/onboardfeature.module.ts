@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { OnboardfeaturePage } from './onboardfeature.page';
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import {PlyrModule} from "ngx-plyr";
+import {QuillModule} from "ngx-quill";
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
       ApplicationPipesModule,
       PlyrModule,
     IonicModule,
+    QuillModule.forRoot(),
     RouterModule.forChild(routes)
   ],
   declarations: [OnboardfeaturePage]

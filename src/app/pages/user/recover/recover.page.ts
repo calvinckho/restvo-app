@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { AlertController, Events, MenuController, Platform } from '@ionic/angular';
+import { AlertController, MenuController, Platform } from '@ionic/angular';
 import { Auth } from '../../../services/auth.service';
 import { UserData } from '../../../services/user.service';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
@@ -25,7 +25,6 @@ export class RecoverPage implements OnInit {
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
-                private events: Events,
                 private platform: Platform,
                 private alertCtrl: AlertController,
                 private menuCtrl: MenuController,
@@ -72,7 +71,7 @@ export class RecoverPage implements OnInit {
                                 alert.dismiss();
                                 await this.userData.load();
                                 await this.userData.loadStoredCommunity();
-                                this.events.publish('setupDevice');
+                                this.userData.refreshUserStatus({type: 'setup device'});
                                 this.menuCtrl.enable(true);
                                 if(this.platform.is('cordova')){
                                     StatusBar.show();

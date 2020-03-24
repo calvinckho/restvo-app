@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {UserData} from "../../../services/user.service";
-import {Events, ModalController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 import {Router} from "@angular/router";
 import {Storage} from "@ionic/storage";
@@ -22,7 +22,6 @@ export class ProgramsPage implements OnInit, OnDestroy {
   constructor(
       private router: Router,
       private storage: Storage,
-      private events: Events,
       public userData: UserData,
       private modalCtrl: ModalController
   ) { }

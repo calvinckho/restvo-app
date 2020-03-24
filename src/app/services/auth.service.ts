@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {Capacitor, Plugins} from '@capacitor/core';
-import {Events, LoadingController, Platform} from '@ionic/angular';
+import {LoadingController, Platform} from '@ionic/angular';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
@@ -38,7 +38,6 @@ export class Auth {
     constructor(private http: HttpClient,
                 private platform: Platform,
                 private router: Router,
-                private events: Events,
                 private storage: Storage,
                 private loadingCtrl: LoadingController,
                 public networkService: NetworkService) {
@@ -85,6 +84,7 @@ export class Auth {
                         this.storage.set('token', this.token);
                         return res;
                     } catch (err) {
+                        this.storage.clear(); // to remove residual user data in storage if app crashed and didn't clear it
                         this.routeUnauthenticatedUser('1', 'Your session is expired. Please log in again.');
                         return {content: 'Unauthenticated', message: err.error.message || 'Your session is expired. Please log in again.'};
                     }
@@ -95,8 +95,8 @@ export class Auth {
                     return {content: 'Offline mode'};
                 }
             } else {
-                this.routeUnauthenticatedUser('1', '');
                 this.storage.clear(); // to remove residual user data in storage if app crashed and didn't clear it
+                this.routeUnauthenticatedUser('1', '');
                 return {content: 'No token found'};
             }
         } catch (err) {
@@ -140,14 +140,15 @@ export class Auth {
         // when no cached url
         if (!this.cachedRouteUrl || typeof this.cachedRouteUrl === 'undefined') {
             await this.router.navigateByUrl('/app/discover');
+            this.checkIncompleteOnboarding(true);
         } else {  // redirect the user back to the cached url
             if (this.cachedRouteUrl.includes('activity')) {
                 this.routeAuthenticatedUser();
             } else {
                 await this.router.navigate([this.cachedRouteUrl, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
+                this.checkIncompleteOnboarding(true);
             }
         }
-        this.checkIncompleteOnboarding(true);
     }
 
     // routes authorized user to correct URL
@@ -189,17 +190,17 @@ export class Auth {
         }
         // first, check programId's onboarding for incomplete processes with its accompanying token (required for joining as leader or organizer). If there is at least 1 incomplete process, it will trigger open the onboarding modal and the onboarding component will also check for other incomplete onboarding processes for participants
         const type = (this.cachedRouteParams && this.cachedRouteParams.type) ? parseInt(this.cachedRouteParams.type, 10) : null; // if no type is provided via the URL, it should be set to null so it doesn't trigger the sign up process (requires programId and type)
-        console.log("type", this.cachedRouteParams, type);
 
-        if (programId) {
+        if (programId) { // check designated program's onboarding
             onboardProcesses = await this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1&programId=' + programId + '&type=' + type, this.httpAuthOptions).toPromise();
-            this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => c.length > 1 && c[1].length > 0).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
+            this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
         }
         // in the case if the designated onboarding is completed, check if other processes need to be completed
-        if (!programId && !this.incompleteOnboardProcess) {
+        if (!programId || !this.incompleteOnboardProcess) {
             onboardProcesses = await this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1', this.httpAuthOptions).toPromise();
-            this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => c.length > 1 && c[1].length > 0).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
+            this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
         }
+
         if (this.incompleteOnboardProcess && openOnboarding) { // if there is any incomplete onboarding process
             const token = (this.cachedRouteParams && this.cachedRouteParams.token) ? this.cachedRouteParams.token : null;
             setTimeout(() => {

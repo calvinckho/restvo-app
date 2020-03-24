@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertController, Events, Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 import {Badge} from "@ionic-native/badge/ngx";
 import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
@@ -46,7 +46,6 @@ export class Chat {
                 private authService: Auth,
                 private electronService: ElectronService,
                 private badge: Badge,
-                private events: Events,
                 private networkService: NetworkService,
                 private platform: Platform,
                 private userData: UserData,
@@ -219,7 +218,7 @@ export class Chat {
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'leave group'){
                 await this.userData.load();
-                this.events.publish('closeGroupView', data.groupId);
+                this.userData.refreshUserStatus({ type: 'close group view', data: { _id: data.groupId }});
             } else if (data.action === 'refresh moment'){
                 // sending moment update using moment's conversation socket.io
                 // ex. Goal is due, Poll is due
@@ -233,7 +232,6 @@ export class Chat {
                         this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                     }
                 }
-                this.events.publish('refreshDashboardPage');
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
 
             }
@@ -264,7 +262,7 @@ export class Chat {
             let conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
         } catch (err) {
-            console.log("no conversation in storage");
+            console.log('no conversation in storage');
         }
         const lastUpdatedAt = this.findLatestTimeStamp(this.conversations);
         try {
@@ -365,7 +363,7 @@ export class Chat {
                 this.badge.set(this.connectTabBadge);
             }
             if (this.electronService.isElectronApp) {
-                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', this.connectTabBadge);
+                this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.connectTabBadge > -1) ? this.connectTabBadge : 0);
             }
         }
     };

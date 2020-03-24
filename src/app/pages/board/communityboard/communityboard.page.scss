@@ -4,15 +4,16 @@ app-communityboard {
     --background: var(--ion-color-secondary);
   }
 
-  ion-button {
+  ion-menu-toggle {
     ion-badge {
-      position: absolute;
+      position: relative;
       top: 0.1rem;
-      right: 0.1rem;
+      right: 22px;
 
-      & ~ ion-icon {
+      /*& ~ ion-icon {
         outline-color: whitesmoke;
-      }
+      }*/
+      z-index: 5;
     }
   }
 
@@ -139,6 +140,7 @@ app-communityboard {
   }
 
   .short-paragraph {
+    color: var(--ion-color-dark);
     max-height: 80px;
     line-height: 20px; /* Height / no. of lines to display */
     overflow: hidden;

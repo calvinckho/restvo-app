@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommunityboardPage } from './communityboard.page';
 import {ApplicationPipesModuleMock} from "../../../pipes/mocks/application-pipes.mock";
-import {ActionSheetController, IonContent, Events, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides} from '@ionic/angular';
+import {ActionSheetController, IonContent, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides} from '@ionic/angular';
 import {CacheService} from 'ionic-cache';
 import {Storage} from '@ionic/storage';
 import {NavigationEnd, Router} from '@angular/router';
@@ -33,7 +33,7 @@ describe('CommunityboardPage', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-          ActionSheetController, IonContent, Events, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides,
+          ActionSheetController, IonContent, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides,
           { provide: Storage, useValue: storage },
           { provide: CacheService, useValue: cacheService },
           { provide: Router, useValue: router }

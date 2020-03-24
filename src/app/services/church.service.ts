@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
-import {AlertController, Events} from '@ionic/angular';
+import {AlertController} from '@ionic/angular';
 import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
@@ -15,7 +15,6 @@ export class Churches {
     public numberOfActiveUsers: any;
 
     constructor(private http: HttpClient,
-                private events: Events,
                 private alertCtrl: AlertController,
                 private authService: Auth,
                 private boardService: Board,
@@ -81,7 +80,7 @@ export class Churches {
     async clearAbuseReport(churchId, recipient) {
         const promise = await this.http.put(this.networkService.domain + '/api/church/clearabusereport/' + churchId, JSON.stringify({reportedUser: recipient}), this.authService.httpAuthOptions)
             .toPromise();
-        this.events.publish('refreshManagePage'); //send to self to update managecommunities page
+        this.userData.refreshUserStatus({ type: 'refresh manage page' }); //send to self to update managecommunities page
         this.userData.refreshUserStatus({ type: 'update member' });  //send to self to update manage-members page
         this.userData.socket.emit('refresh user status', this.userData.user._id, { type: 'update member' }); //send to other devices to update manage-members page
         return promise;

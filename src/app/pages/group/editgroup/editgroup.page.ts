@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
-import { ActionSheetController, AlertController, Events, ModalController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { Groups } from '../../../services/group.service';
 import { Chat } from '../../../services/chat.service';
@@ -19,7 +19,7 @@ import {Auth} from "../../../services/auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class EditgroupPage implements AfterViewInit {
-    @ViewChild('textArea') textArea: ElementRef;
+    @ViewChild('textArea', {static: false}) textArea: ElementRef;
 
     // two big categories: personal groups vs community groups. Within community groups, you can have public and private groups.
 
@@ -49,7 +49,6 @@ export class EditgroupPage implements AfterViewInit {
     constructor(private zone: NgZone,
                 public modalCtrl: ModalController,
                 public platform: Platform,
-                private events: Events,
                 private groupService: Groups,
                 private churchService: Churches,
                 public userData: UserData,
@@ -205,7 +204,7 @@ export class EditgroupPage implements AfterViewInit {
             } else if (this.group.board){
                 this.boardService.socket.emit('refresh board', this.group.board, {action: 'refresh board'}); // refresh the news feed page
                 this.userData.communitiesboards = await this.boardService.loadUserChurchBoards(); //in case of a board group
-                this.events.publish('refreshCommunityBoardsPage'); // refresh News Feed page
+                this.userData.refreshUserStatus({ type: 'refresh community board page' }); // refresh News Feed page
             }
             const alert = await this.alertCtrl.create({
                 header: 'Success',

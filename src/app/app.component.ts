@@ -8,7 +8,6 @@ import {StripeService} from "ngx-stripe";
 
 import {
     ActionSheetController,
-    Events,
     MenuController,
     ModalController,
     Platform,
@@ -33,7 +32,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         private storage: Storage,
         private zone: NgZone,
         private stripeService: StripeService,
-        private events: Events,
         private actionSheetCtrl: ActionSheetController,
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
@@ -45,12 +43,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     async ngOnInit() {
         this.menuCtrl.enable(false);
-        this.events.subscribe('showRecipient', async (data) => {
-            const modalPage = await this.modalCtrl.create({
-                component: ShowrecipientinfoPage,
-                componentProps: data
-            });
-            await modalPage.present();
+        this.userData.refreshUserStatus$.subscribe(async (res) => {
+            if (res && res.type === 'show recipient') {
+                const modalPage = await this.modalCtrl.create({
+                    component: ShowrecipientinfoPage,
+                    componentProps: res.data
+                });
+                await modalPage.present();
+            }
         });
     }
 

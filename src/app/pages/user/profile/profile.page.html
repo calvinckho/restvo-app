@@ -1,7 +1,7 @@
 <ion-header *ngIf="modalPage">
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+            <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
         </ion-buttons>
         <ion-title>Profile</ion-title>
     </ion-toolbar>
@@ -15,7 +15,7 @@
     </ion-grid>
     <form [formGroup]="userForm">
         <ion-list *ngIf="user && user._id">
-            <ion-item lines="none" color="grey">
+            <ion-item lines="none"  color="lightgrey">
                 Profile Picture
             </ion-item>
             <ion-item class="ion-text-wrap" lines="none">
@@ -51,7 +51,7 @@
                     This is a required field.
                 </p>
             </ion-item>
-            <ion-item lines="none" color="grey">
+            <ion-item lines="none"  color="lightgrey">
                 Account Information
             </ion-item>
             <ion-item-divider class="ion-text-wrap">
@@ -92,7 +92,7 @@
                     Invalid mobile number.
                 </p>
             </ion-item>
-            <ion-item lines="none" color="grey">
+            <ion-item lines="none"  color="lightgrey">
                 Contact Info
             </ion-item>
             <ion-item-divider class="ion-text-wrap">
@@ -135,7 +135,7 @@
                     <ion-item>
                         <ion-label position="stacked">Country</ion-label>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="country">
-                            <ion-select-option *ngFor="let country of countries" [value]="country.name" [selected]="country.selected">{{country.name}}</ion-select-option>
+                            <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </div>

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-    <ion-button (click)="backButton()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    <ion-button (click)="backButton()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{title}}</ion-title>
   </ion-toolbar>
@@ -55,7 +55,7 @@
         </ion-avatar>
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
-        <ion-icon color="button1" *ngIf="person.select" name="ios-checkmark-circle" slot="end"></ion-icon>
+        <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-list-header>{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
@@ -67,7 +67,7 @@
         </ion-avatar>
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
-        <ion-icon color="button1" *ngIf="person.select" name="ios-checkmark-circle" slot="end"></ion-icon>
+        <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">
@@ -154,13 +154,13 @@
               <ion-item>
                 <ion-label position="stacked">Day of the Week</ion-label>
                 <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="meeting_day">
-                  <ion-select-option *ngFor="let day of days" [value]="day.name" [selected]="day.selected">{{day.name}}</ion-select-option>
+                  <ion-select-option *ngFor="let day of days" [value]="day.name" [class.selected]="day.selected">{{day.name}}</ion-select-option>
                 </ion-select>
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Meeting Frequency</ion-label>
                 <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="meeting_frequency">
-                  <ion-select-option *ngFor="let frequency of frequencies" [value]="frequency.name" [selected]="frequency.selected">{{frequency.name}}</ion-select-option>
+                  <ion-select-option *ngFor="let frequency of frequencies" [value]="frequency.name" [class.selected]="frequency.selected">{{frequency.name}}</ion-select-option>
                 </ion-select>
               </ion-item>
               <ion-item-divider></ion-item-divider>
@@ -193,7 +193,7 @@
               <ion-item>
                 <ion-label position="stacked">Country</ion-label>
                 <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="country">
-                  <ion-select-option *ngFor="let country of countries" [value]="country.name" [selected]="country.selected">{{country.name}}</ion-select-option>
+                  <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
                 </ion-select>
               </ion-item>
               <ion-item class="form-error-list" *ngIf="!groupForm.controls.country.pristine && !groupForm.controls.country.valid">

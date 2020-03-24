@@ -1,7 +1,7 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Plan</ion-title>
   </ion-toolbar>
@@ -13,7 +13,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-slides>
+  <ion-slides (ionSlidesDidLoad)="onSlidesLoaded()">
     <ion-slide>
       <ion-grid *ngIf="resource">
         <ion-row>
@@ -137,7 +137,7 @@
                   <ion-item>
                     <ion-label position="stacked">Country</ion-label>
                     <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="country">
-                      <ion-select-option value="US" [selected]='true'>United States</ion-select-option>
+                      <ion-select-option value="US" [class.selected]='true'>United States</ion-select-option>
                       <ion-select-option value="AU">Australia</ion-select-option>
                       <ion-select-option value="AT">Austria</ion-select-option>
                       <ion-select-option value="BE">Belgium</ion-select-option>

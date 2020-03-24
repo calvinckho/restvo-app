@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
-import { ActionSheetController, AlertController, Events, ModalController, Platform, PopoverController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import {EditcommunityPage} from "../editcommunity/editcommunity.page";
 import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
@@ -22,7 +22,6 @@ export class CommunityPopoverPage implements OnInit {
     leaveChurchTag: boolean = false;
 
     constructor(private platform: Platform,
-                private events: Events,
                 private cache: CacheService,
                 private actionSheetCtrl: ActionSheetController,
                 private alertCtrl: AlertController,
@@ -126,10 +125,9 @@ export class CommunityPopoverPage implements OnInit {
                     navTransition.then( async () => {
                         //Remove from database
                         await this.userData.leaveCommunity(this.community._id);
-                        this.events.publish('refreshDashboardPage');
                         this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                        this.events.publish('refreshCommunityBoardsPage');
-                        this.userData.refreshUserStatus({type: 'change community'});
+                        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+                        this.userData.refreshUserStatus({type: 'change aux data'});
                     });
                 }},
                 {   text: 'Cancel' }],

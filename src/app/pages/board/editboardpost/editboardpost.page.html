@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-button (click)="closeModal(false)">
-                <ion-icon name="ios-arrow-back"></ion-icon>
+                <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-title *ngIf="!post._id">{{resource['en-US'].matrix_string[0][2]}}</ion-title>
@@ -22,7 +22,7 @@
     </ion-grid>
     <ion-list>
         <ion-item lines="none">
-            <ion-label class="post-label"><ion-icon name="chatboxes" color="grey"></ion-icon></ion-label>
+            <ion-label class="post-label"><ion-icon name="chatbox" color="grey"></ion-icon></ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="8" autosize autocorrect="on" [placeholder]="resource['en-US'].matrix_string[0][4]" [(ngModel)]="post.body"></ion-textarea>
         </ion-item>
         <ion-item *ngIf="awsService.sessionAssets?.length" lines="none">

@@ -1,6 +1,5 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  Events,
   IonInfiniteScroll,
   ModalController,
   Platform,
@@ -20,8 +19,8 @@ import {Router} from "@angular/router";
   templateUrl: './development.page.html',
   styleUrls: ['./development.page.scss'],
 })
-export class DevelopmentPage {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+export class DevelopmentPage implements OnInit, OnDestroy {
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   moments = [];
@@ -32,10 +31,10 @@ export class DevelopmentPage {
   members: any = [];
   searchKeyword = '';
   refreshNeeded = false;
+  subscriptions: any = {};
 
   constructor(
       public router: Router,
-      private events: Events,
       private storage: Storage,
       private platform: Platform,
       private authService: Auth,
@@ -45,17 +44,19 @@ export class DevelopmentPage {
       private resourceService: Resource,
       private modalCtrl: ModalController) {}
 
-  ionViewWillEnter() {
+  ngOnInit() {
     if (this.userData && this.userData.currentCommunityAdminStatus) {
       this.setupManageActivities();
     }
 
     // PWA fast load listener + reload listener
-    this.events.subscribe('loadCommunityReady', this.refreshHandler);
+    this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
   }
 
-  refreshHandler = () => {
-    this.setupManageActivities();
+  refreshHandler = (data) => {
+    if (data && data.type === 'load community ready') {
+      this.setupManageActivities();
+    }
   };
 
   //-----------------------------------
@@ -128,5 +129,9 @@ export class DevelopmentPage {
 
   closeModal() {
     this.modalCtrl.dismiss(this.refreshNeeded);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
   }
 }

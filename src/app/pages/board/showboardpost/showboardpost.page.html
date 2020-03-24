@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{resource['en-US'].matrix_string[0][2]}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="openActionSheet($event);">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
       <div class="post-author-container">
         <div class="post-author ion-text-wrap" >
           {{post.author.first_name}} {{post.author.last_name}}
-          <ion-icon name="alert" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
         </div>
       </div>
       <ion-col slot="end" class="note-col">
@@ -119,13 +119,13 @@
       </ion-col>
       <ion-col>
         <ion-button fill="clear" size="small">
-          <ion-icon name="text"></ion-icon>
+          <ion-icon name="chatbox-ellipses"></ion-icon>
           {{post.comments?.length}} Comments
         </ion-button>
       </ion-col>
       <ion-col>
         <ion-button fill="clear" size="small" (click)="presentPickPeoplePopover($event)">
-          <ion-icon name="share-alt"></ion-icon>Share</ion-button>
+          <ion-icon name="share"></ion-icon>Share</ion-button>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="hasAdminAccess || isGroupLeader || post.author._id === userData.user._id">
@@ -169,7 +169,7 @@
           <div class="photo-frame" *ngIf="lv1_comment.media?.length" (click)="resourceService.clickVideo($event, lv1_comment.media[0].sources)">
             <div plyr [plyrSources]="lv1_comment.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (plyrError)="videoError($event)"></div>
           </div>
-          <!--<ion-icon class="reply-icon" name="undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
+          <!--<ion-icon class="reply-icon" name="arrow-undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
         </div>
       </div>
     </ion-item>
@@ -202,13 +202,17 @@
   <!-- Code end for quotation-->
   <ion-toolbar class="ion-no-padding">
     <div class="message-form">
-      <ion-button fill="clear" (click)="messageMoreOptions()">
-        <img class="moreButton" src="assets/img/Plus_Button_Grey.png"/>
-      </ion-button>
-      <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="composedComment" autocorrect="on"></ion-textarea>
-      <ion-button (click)="sendComment()" fill="clear" [disabled]="!composedComment?.length">
-        <img id="sendImage" src="assets/img/Send_Gray.png"/>
-      </ion-button>
+      <ion-buttons>
+        <ion-button class="moreButton" fill="clear" (click)="messageMoreOptions()">
+          <ion-icon name="add-circle" size="large" color="grey"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="composedComment" autocapitalize></ion-textarea>
+      <ion-buttons>
+        <ion-button class="actionButton" (click)="sendComment()" fill="clear" [disabled]="!composedComment?.length">
+          <img class="sendImage" src="assets/img/Send_Gray.png"/>
+        </ion-button>
+      </ion-buttons>
       <!--<ion-button (click)="recordAudio()" fill="clear" *ngIf="platform.is('cordova') && !composedComment.length && listening === false" >
         <img class="recordAudioImg" src="assets/img/microphone.png"/>
       </ion-button>
@@ -237,10 +241,6 @@
             <input type="file" class="file-picker" name="file" id="file" (change)="selectFileFromDeviceAndUpload($event, 'file')" />
           </ion-col>
           <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'User Defined Activity')" src="assets/img/Calendar_Gray.png" /><div class="moreLabel">Library</div></ion-col>
-          <!--<ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="shareLocation()" src="assets/img/Location_Grey.png"><p class="moreLabel">Location</p></ion-col>
-          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Meetup')" src="assets/img/transparent-avatar.png" /><div class="moreLabel">Meetup</div></ion-col>
-          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Goal')" src="assets/img/Peak_Gray.png" /><div class="moreLabel">Goal</div></ion-col>
-          <ion-col class="optionscol ion-align-self-center" size-xs="3" size-sm="3" size-md="3" size-lg="2" size-xl="2"> <img class="colelement" (click)="pickFeatureModalPage($event, 'Poll')" src="assets/img/Poll_Gray.png" /><div class="moreLabel">Poll</div></ion-col>-->
         </ion-row>
       </ion-grid>
     </div>

@@ -1,8 +1,9 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {Events, ModalController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
+import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
 
 @Component({
   selector: 'app-administrators',
@@ -14,20 +15,22 @@ export class AdministratorsPage implements OnInit {
     @Input() modalPage: any;
     refreshNeeded = false;
     searchKeyword = '';
+    subscriptions: any = {};
 
     constructor(
-        private events: Events,
         public modalCtrl: ModalController,
         public userData: UserData,
         public churchService: Churches,
     ) { }
 
     ngOnInit() {
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = () => {
-        console.log("admins", this.churchService.currentManagedCommunity.admins);
+    refreshHandler = (data) => {
+        if (data && data.type === 'load community ready'){
+            console.log("admins", this.churchService.currentManagedCommunity.admins);
+        }
     };
 
     async editAdmin(event, admin) {
@@ -36,8 +39,16 @@ export class AdministratorsPage implements OnInit {
         await recipientModal.present();
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
         if (needsToRefresh) {
-            console.log("refreshing...");
-            this.userData.refreshUserStatus({type: 'change community'});
+            this.userData.refreshUserStatus({type: 'refresh manage pag'});
+        }
+    }
+
+    async addAdmin() {
+        const recipientModal = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {church: this.churchService.currentManagedCommunity, type: 'Restvo Users', modalPage: true}});
+        await recipientModal.present();
+        const {data: needsToRefresh} = await recipientModal.onDidDismiss();
+        if (needsToRefresh) {
+            this.userData.refreshUserStatus({type: 'refresh manage pag'});
         }
     }
 

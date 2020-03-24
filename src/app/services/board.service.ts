@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {AlertController, Events, Platform} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Chat } from './chat.service';
 import { Auth } from './auth.service';
@@ -16,9 +16,9 @@ import { NetworkService } from './network-service.service';
 export class Board {
 
     socket: io;
+    subscriptions: any = {};
 
     constructor(private http: HttpClient,
-                private events: Events,
                 private platform: Platform,
                 private storage: Storage,
                 private alertCtrl: AlertController,
@@ -40,12 +40,13 @@ export class Board {
             console.log("board socket id: ", this.socket.id);
         });
         this.socket.on('refresh board', async (boardId, data) => {
-            this.events.publish('refreshBoard', boardId, data);
-            console.log("refresh board", data);
+            this.userData.refreshUserStatus({ type: 'refresh board', boardId: boardId, data: data });
         });
-        this.events.subscribe('loadUserChurchBoards', () => {
-            this.loadUserChurchBoards();
-        })
+        if (!this.subscriptions.hasOwnProperty('refreshUserStatus')) {
+            this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(() => {
+                this.loadUserChurchBoards();
+            });
+        }
     }
 
     async loadUserChurchBoards() {
@@ -80,7 +81,7 @@ export class Board {
         data.post.author = this.userData.user._id; //depopulate author
         let post = await this.http.post(this.networkService.domain + '/api/board/createpost', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
         this.socket.emit('refresh board', boardId, {action: 'create post', post: post});
         return post;
     };
@@ -94,8 +95,8 @@ export class Board {
         let promise = await this.http.put(this.networkService.domain + '/api/board/updatepost', JSON.stringify(serverData),this.authService.httpAuthOptions)
             .toPromise();
         //post.author = this.userData.user; //populate author
-        this.events.publish('refreshCommunityBoardsPage');
-        this.events.publish('refreshManagePage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshUserStatus({ type: 'refresh manage page' });
         this.socket.emit('refresh board', boardId, {action: 'update post', post: post});
         return promise;
     }
@@ -110,7 +111,7 @@ export class Board {
     async deletePost(boardId, bucketId, postId){
         let promise = await this.http.delete(this.networkService.domain + '/api/board/deletepost/' + bucketId + '?postId=' + postId,this.authService.httpAuthOptions)
             .toPromise();
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
         this.socket.emit('refresh board', boardId, {action: 'delete post', bucketId: bucketId, postId: postId});
         return promise;
     }

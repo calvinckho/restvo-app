@@ -1,13 +1,14 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Administrators</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+  <div>To add administrator, go to Members, then click on the Member profile to change the admin status.</div>
   <ion-list *ngIf="churchService && churchService.currentManagedCommunity">
     <ion-item *ngFor="let admin of churchService.currentManagedCommunity.admins" (click)="editAdmin($event, admin)">
       <ion-avatar slot="start">

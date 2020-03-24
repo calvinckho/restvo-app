@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, OnDestroy, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
 import { Router } from '@angular/router';
-import { AlertController, Events, ModalController, PopoverController} from '@ionic/angular';
+import { AlertController, ModalController, PopoverController} from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import { Groups } from "../../../services/group.service";
 import { ShowrecipientinfoPage } from "../../connect/showrecipientinfo/showrecipientinfo.page";
@@ -26,7 +26,6 @@ export class ShowgroupPage implements OnInit, OnDestroy {
     @Input() group: any;
 
     constructor(  private cache: CacheService,
-                  private events: Events,
                   private router: Router,
                   private alertCtrl: AlertController,
                   public modalCtrl: ModalController,

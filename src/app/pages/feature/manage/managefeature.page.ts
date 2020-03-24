@@ -7,7 +7,6 @@ import {CacheService} from "ionic-cache";
 import {
   ActionSheetController,
   AlertController,
-  Events,
   LoadingController,
   ModalController,
   Platform, PopoverController, ToastController
@@ -49,7 +48,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public electronService: ElectronService,
       public swUpdate: SwUpdate,
       public change: ChangeDetectorRef,
-      public events: Events,
       public platform: Platform,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
@@ -69,7 +67,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public calendarService: CalendarService
   ) {
     super(route, router, location, electronService, swUpdate, change,
-        events, platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
+        platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
         chatService, churchService, groupService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }
@@ -79,17 +77,17 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
       this.selectedMenuOption = 'profile';
     }
-    if (this.userData.user) {
+    /*if (this.userData.user) {
       this.loadSchedules();
-    }
+    }*/
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
-    if (!this.initialSetupCompleted && this.userData.user) {
+    if (this.userData.user) {
       this.setup();
+      this.loadSchedules();
     }
-    this.loadSchedules();
-  };
+  }
 
   async loadSchedules() {
     const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
