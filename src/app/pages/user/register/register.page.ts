@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
 const { StatusBar, SplashScreen } = Plugins;
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { AlertController, Events, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
+import { AlertController, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
 import { Auth } from '../../../services/auth.service';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
@@ -19,8 +19,8 @@ import {Location} from "@angular/common";
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterPage implements OnInit {
-    @ViewChild('welcomeSlides') welcome_slides: IonSlides;
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild('welcomeSlides', {static: false}) welcome_slides: IonSlides;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     @Input() modalPage: any;
     @Input() slide: any;
@@ -277,7 +277,6 @@ export class RegisterPage implements OnInit {
                 public platform: Platform,
                 private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
-                private events: Events,
                 private alertCtrl: AlertController,
                 private loadingCtrl: LoadingController,
                 private menuCtrl: MenuController,
@@ -337,7 +336,7 @@ export class RegisterPage implements OnInit {
 
     async ionViewWillEnter() {
         if (this.slide > 0) {
-            this.loadRegisterSlides()
+            this.loadRegisterSlides();
         }
         this.loginForm.patchValue({
             calling_code: '+1',
@@ -404,7 +403,8 @@ export class RegisterPage implements OnInit {
 
         try {
             this.userData.user = await this.authService.login(this.credentials);
-            this.userData.refreshUserStatus({action: 'user updated', user: this.userData.user});
+            // this is for updating the user document
+            this.userData.refreshUserStatus({type: 'user updated', user: this.userData.user});
 
             this.loginStatus = '';
             this.loginForm.reset();

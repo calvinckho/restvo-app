@@ -1,10 +1,11 @@
 import {Injectable, ViewChild} from '@angular/core';
-import {Events, IonInfiniteScroll, ModalController, Platform} from "@ionic/angular";
+import {IonInfiniteScroll, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {Geolocation} from "@ionic-native/geolocation/ngx";
 import {Moment} from "./moment.service";
 import {Router} from "@angular/router";
 import {ShowrecipientinfoPage} from "../pages/connect/showrecipientinfo/showrecipientinfo.page";
+import {UserData} from "./user.service";
 
 declare var mapboxgl: any;
 declare var unwired: any;
@@ -20,7 +21,7 @@ export class MapService {
   totalVoteCount: any = {};
 
   // map
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   userLocation = {
     lat: 37.7988255,
@@ -45,13 +46,11 @@ export class MapService {
   loadAPIBusy = false;
 
   constructor(
-      private events: Events,
       private router: Router,
       public platform: Platform,
       private storage: Storage,
       private geolocation: Geolocation,
-      private momentService: Moment,
-      private modalCtrl: ModalController,
+      private userData: UserData
   ) {}
 
   // Map
@@ -115,7 +114,7 @@ export class MapService {
   initializeMapCenter() {
     if (this.mapReady && this.geolocationReady) {
       this.map.setCenter(this.userLocation);
-      this.events.publish('searchMap');
+      this.userData.refreshUserStatus({ type: 'search map' });
     }
   }
 
@@ -167,7 +166,7 @@ export class MapService {
   renderMarkers() {
     if (this.mapData && this.mapData.length) {
       for (let i = this.mapData.length - 1; i > -1; i--) {
-        // only plot Groups, Events, Communities that have 'Point' type geoJSON data, ignore People that have 'MultiPoint' geoJSON type
+        // only plot Groups, Communities that have 'Point' type geoJSON data, ignore People that have 'MultiPoint' geoJSON type
         if (this.mapData[i].location.geo && !Array.isArray(this.mapData[i].location.geo.coordinates[0]) && !Array.isArray(this.mapData[i].location.geo.coordinates[1])) {
           this.userLocation.lng = this.mapData[i].location.geo.coordinates[0]; // mark the first search result's coordinate as the new center
           this.userLocation.lat = this.mapData[i].location.geo.coordinates[1]; // mark the first search result's coordinate as the new center
@@ -226,7 +225,7 @@ export class MapService {
       if (data.images && data.images.length) {
         data.avatar = data.images[0];
       }
-      this.events.publish('showRecipient', data);
+      this.userData.refreshUserStatus({ type: 'show recipient', data: data });
     } else if (data.moment) {
       this.router.navigateByUrl('/app/discover/activity/' + data.moment._id);
     } else if (data.church) {

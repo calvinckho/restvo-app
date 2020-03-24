@@ -1,6 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  Events,
   IonInfiniteScroll,
   ModalController,
   Platform,
@@ -22,7 +21,7 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
   styleUrls: ['./preferences.page.scss'],
 })
 export class PreferencesPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   @Input() showHeader: any;
@@ -43,7 +42,6 @@ export class PreferencesPage implements OnInit, OnDestroy {
   constructor(
       private route: ActivatedRoute,
       private router: Router,
-      private events: Events,
       private location: Location,
       private storage: Storage,
       private platform: Platform,
@@ -55,13 +53,15 @@ export class PreferencesPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-      // link the refreshUserStatus Observable with the refresh handler. It fires on page load and subsequent user refreshes
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
+    // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
+    this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
 
   refreshUserStatusHandler = () => {
-    this.setup();
-  };
+    if (!this.ionSpinner && this.userData && this.userData.user) { // after a user has modified the answer to the onboarding process questionniare. data is most likely { type: 'change aux data' }
+      this.setup();
+    }
+  }
 
   setup() {
     if (this.userData && this.userData.user) {
@@ -75,51 +75,54 @@ export class PreferencesPage implements OnInit, OnDestroy {
     }
   }
 
-  // load Program onboarding activities
-
+  // load Program onboarding processes
   async loadPreferences() {
+    this.ionSpinner = true;
     setTimeout(async () => {
-      this.ionSpinner = true;
       this.infiniteScroll.disabled = false;
       this.reachedEnd = false;
-      this.moments = [];
       this.pageNum = 0;
+      this.moments = [];
       this.loadMorePreferences({target: this.infiniteScroll});
     }, 50);
   }
 
   async loadMorePreferences(event) {
-    this.pageNum++;
-    if (!this.reachedEnd) {
-      let processes: any;
-      if (this.organizer) {
-        processes = await this.momentService.loadProgramOnboardActivities(this.programId, null, false);
-        this.reachedEnd = true;
-      } else {
-        processes = await this.momentService.loadUserPreferences(this.pageNum, this.programId, null);
-      }
-      this.ionSpinner = false;
-      if (!processes.length) {
-        this.reachedEnd = true;
-        event.target.disabled = true;
-      } else {
-        for (const process of processes) {
-          process.status = !process.response ? 'New' : (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length || process.response.matrix_string.filter((c) => c.length > 1 && c[1] && c[1].length > 0).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length) ? 'Incomplete' : 'Completed';
-          this.moments.push(process);
+    try {
+      this.pageNum++;
+      if (!this.reachedEnd) {
+        let processes: any;
+        if (this.organizer) {
+          processes = await this.momentService.loadProgramOnboardActivities(this.programId, null, false);
+          this.reachedEnd = true;
+        } else {
+          processes = await this.momentService.loadUserPreferences(this.pageNum, this.programId, null);
         }
-        if (!this.organizer) {
-          // sort the list by program Name if it is showing all user's preferences
-          this.moments.sort((a, b) => {
-            if (a.program.matrix_string[0][0] < b.program.matrix_string[0][0]) { return -1; }
-            if (a.program.matrix_string[0][0] > b.program.matrix_string[0][0]) { return 1; }
-            return 0;
-          });
+        this.ionSpinner = false;
+        if (!processes.length) {
+          this.reachedEnd = true;
+          event.target.disabled = true;
+        } else {
+          for (const process of processes) {
+            process.status = !process.response ? 'New' : (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length || process.response.matrix_string.filter((c) => c.length > 1 && c[1] && c[1].length > 0).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length) ? 'Incomplete' : 'Completed';
+            this.moments.push(process);
+          }
+          if (!this.organizer) {
+            // sort the list by program Name if it is showing all user's preferences
+            this.moments.sort((a, b) => {
+              if (a.program.matrix_string[0][0] < b.program.matrix_string[0][0]) { return -1; }
+              if (a.program.matrix_string[0][0] > b.program.matrix_string[0][0]) { return 1; }
+              return 0;
+            });
+          }
         }
+        event.target.complete();
+      } else {
+        this.ionSpinner = false;
+        event.target.complete();
       }
-      event.target.complete();
-    } else {
+    } catch (err) {
       this.ionSpinner = false;
-      event.target.complete();
     }
   }
 

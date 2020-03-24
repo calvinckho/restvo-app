@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import {CameraResultType, CameraSource, Plugins} from '@capacitor/core';
-import { AlertController, IonContent, Events, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
+import { AlertController, IonContent, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
@@ -17,8 +17,8 @@ import {GroupchatPage} from "../../group/groupchat/groupchat.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatechatPage implements OnInit {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     chatForm: FormGroup;
     title: string = "Create Chat";
@@ -52,7 +52,6 @@ export class CreatechatPage implements OnInit {
     frequency_list: Array<string> = ['', "Weekly", "Every Other Week", "One-Time", "Monthly", "1st and 3rd Week", "2nd and 4th Week", "N/A"];
 
     constructor(
-        private events: Events,
         private formBuilder: FormBuilder,
         private alertCtrl: AlertController,
         public modalCtrl: ModalController,
@@ -100,11 +99,13 @@ export class CreatechatPage implements OnInit {
     }
 
     setupLoadPeople(){
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.listOfAppUsers = [];
-        this.pageNum = 0;
-        this.loadMorePeople({target: this.infiniteScroll});
+        setTimeout(() => {
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.listOfAppUsers = [];
+            this.pageNum = 0;
+            this.loadMorePeople({target: this.infiniteScroll});
+        }, 100);
     }
 
     async loadMorePeople(event){

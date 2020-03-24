@@ -1,7 +1,7 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Insight</ion-title>
   </ion-toolbar>
@@ -13,7 +13,7 @@
       <ion-label [hidden]="true">Filter by Program</ion-label>
       <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
         <ion-select-option value='all'>Show All</ion-select-option>
-        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
+        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-toolbar>

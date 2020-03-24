@@ -14,8 +14,8 @@ import {Churches} from "../../../services/church.service";
   encapsulation: ViewEncapsulation.None
 })
 export class PickpeoplePopoverPage implements OnInit {
-    @ViewChild('searchbar') searchbar: IonSearchbar;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('searchbar', {static: false}) searchbar: IonSearchbar;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() filter: any;
     @Input() includeSelf: any;
@@ -101,13 +101,15 @@ export class PickpeoplePopoverPage implements OnInit {
   }
 
     setupLoadAppUsers() {
-        if (this.hasOrganizerAccess) {
-            this.infiniteScroll.disabled = false;
-            this.reachedEnd = false;
-            this.listOfAppUsers = [];
-            this.pageNum = 0;
-            this.loadMoreAppUsers({target: this.infiniteScroll});
-        }
+        setTimeout(async () => {
+            if (this.hasOrganizerAccess) {
+                this.infiniteScroll.disabled = false;
+                this.reachedEnd = false;
+                this.listOfAppUsers = [];
+                this.pageNum = 0;
+                this.loadMoreAppUsers({target: this.infiniteScroll});
+            }
+        }, 50);
     }
 
     async loadMoreAppUsers(event) {

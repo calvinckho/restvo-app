@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {
     ActionSheetController,
     AlertController,
-    Events, IonContent, LoadingController,
+    IonContent, LoadingController,
     ModalController,
     Platform,
     PopoverController,
@@ -35,7 +35,7 @@ import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover
   encapsulation: ViewEncapsulation.None
 })
 export class EditfeaturePage implements OnInit, OnDestroy {
-  @ViewChild(IonContent) content: IonContent;
+  @ViewChild(IonContent, {static: false}) content: IonContent;
 
   @Input() modalPage: any; // whether the page is opened with hte modalController
   @Input() moment: any; // the object to store the activity
@@ -152,7 +152,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       public electronService: ElectronService,
       public swUpdate: SwUpdate,
       public change: ChangeDetectorRef,
-      public events: Events,
       public platform: Platform,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
@@ -181,7 +180,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // Onboarding Questions uses mainly the multiple choice and text input components. It needs to have an associated program ID and a type number (2 for participants onboarding, 3 for organizers, 4 for leaders)
 
   async ngOnInit() {
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
 
@@ -192,8 +191,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     };
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
-    refreshMomentHandler = async (momentId, data) => {
-        if (data.type === 'refresh participation') {
+    refreshMomentHandler = async (res) => {
+        if (res && res.data && res.data.type === 'refresh participation' && this.moment._id) {
             await this.reloadMomentUserLists();
             if (!['owner', 'staff', 'admin'].includes(this.userData.user.role) && !this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
                 // if user is no longer an organizer, and if not a system admin, exit edit view
@@ -668,7 +667,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   async seeUserInfo(event, user) {
     event.stopPropagation();
     user.name = user.first_name + ' ' + user.last_name;
-    this.events.publish('showRecipient', {recipient: user, modalPage: true});
+      this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
   }
 
   // select people to be included as participants in the Moment creation process
@@ -1202,13 +1201,13 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               message: this.moment.matrix_string[0][0] + this.resource['en-US'].value[11] + (this.moment.array_boolean[0] ? this.resource['en-US'].value[12] : ''),
               buttons: [{ text: 'Ok',
                   handler: () => {
-                    this.events.publish('createdMoment', this.moment);
                     this.closeModal(this.moment);
                   }}],
               cssClass: 'level-15'
           });
           await alert.present();
       }
+      this.userData.refreshUserStatus({ type: 'change aux data' }); // this will refresh the pickfeature-popover.page.ts and managefeature.page.ts
   }
 
     private async presentToast(text) {
@@ -1328,6 +1327,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.momentService.delete(moment);
       });
       await Promise.all(promises);*/
+      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       if (this.modalPage) {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {
@@ -1335,10 +1336,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.userData.refreshUserStatus({});
       }
       this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
-      this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+      //this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
   }
 
   ngOnDestroy(): void {
-      this.subscriptions['refreshUserStatus'].unsubscribe();
+      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }

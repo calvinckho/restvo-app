@@ -2,14 +2,11 @@ import {Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation} from '@angul
 import {CacheService} from 'ionic-cache';
 import {Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import { Plugins } from '@capacitor/core';
-const { StatusBar, SplashScreen } = Plugins;
 import { Plyr } from "plyr";
 
 import {
     ActionSheetController,
     IonContent,
-    Events,
     IonInfiniteScroll,
     NavController,
     ModalController,
@@ -45,9 +42,9 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CommunityboardPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     communitiesboards: any;
     searchKeyword: string = '';
@@ -58,9 +55,10 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     newsfeedMoreOptions = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
 
+    subscriptions: any = {};
+
     constructor(public platform: Platform,
                 private cache: CacheService,
-                private events: Events,
                 private router: Router,
                 private storage: Storage,
                 private actionSheetCtrl: ActionSheetController,
@@ -78,20 +76,12 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 private alertCtrl: AlertController) { }
 
   async ngOnInit() {
-      if (this.platform.is('cordova')) {
-          if (this.userData.user) {
-              StatusBar.show();
-              SplashScreen.hide();
-          }
-      }
       // PWA fast load is executed after an event sent from app.component.ts's checkAuthenticationWithToken()
-      this.events.subscribe('refreshCommunityBoardsPage', this.refreshCommunityBoardsPage);
-      this.events.subscribe('refreshBoard', this.refreshBoardHandler);
-      this.events.subscribe('refreshMoment', this.refreshMomentHandler);
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshPage);
+      this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
     async ionViewWillEnter() {
-        console.log("enter")
         // boardService is ready in regular page entry, but not ready in PWA fast load and needs to listen to refresh event from maintab.ts
         if (this.userData.user){
             await this.boardService.loadUserChurchBoards();
@@ -100,24 +90,86 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    refreshCommunityBoardsPage = async () => {
-        console.log("got refreshed");
-        if (this.platform.is('cordova')){
-            StatusBar.show();
-            SplashScreen.hide();
+    refreshPage = async (res) => {
+        if (res && res.type === 'refresh community board page') {
+            this.newsfeedMoreOptions = false;
+            await this.boardService.loadUserChurchBoards();
+            this.reloadBoardPosts();
         }
-        this.newsfeedMoreOptions = false;
-        await this.boardService.loadUserChurchBoards();
-        this.reloadBoardPosts();
+        if (res && res.type === 'refresh board') {
+            const boardId = res.boardId;
+            const data = res.data;
+            for (let community of this.communitiesboards) {
+                for (let board of community.boards) {
+                    if (board._id === boardId) { // the incoming board is displayed
+                        board.updatedAt = new Date().toISOString();
+                        if (data.action === 'create post') {
+                            this.reloadBoardPosts();
+                        } else if(data.action === 'delete post') {
+                            let index = board.posts.map((c) => {return c._id;}).indexOf(data.postId);
+                            if (board.posts[index].media && board.posts[index].media.length) {
+                                this.destroyPlayers(board.posts[index].media._id);
+                            }
+                            board.posts.splice(index, 1);
+                            this.reorderCommunitiesBoards();
+                        } else if (data.action === 'like' || data.action === 'cancel like') {
+                            for (let boardpost of board.posts) {
+                                if (boardpost.bucketId === data.bucketId && boardpost._id === data.postId) {
+                                    if (data.action === 'like') {
+                                        boardpost.likes.push(data.author);
+                                    } else if (data.action === 'cancel like') {
+                                        let index = boardpost.likes.indexOf(data.author);
+                                        boardpost.likes.splice(index, 1);
+                                    }
+                                }
+                            }
+                        } else if (data.action === 'update post') {
+                            for (let boardpost of board.posts) {
+                                if (boardpost._id === data.post._id) {
+                                    boardpost.body = data.post.body;
+                                    boardpost.attachments = data.post.attachments;
+                                    if (boardpost.media && boardpost.media.length && data.post.media && !data.post.media.length) {
+                                        this.destroyPlayers(boardpost.media[0]._id);
+                                    }
+                                    boardpost.media = data.post.media;
+                                    this.reorderCommunitiesBoards();
+                                    if (data.post.moments && data.post.moments.length && data.post.moments[0] && data.post.moments[0].resource.hasOwnProperty('en-US') && data.post.moments[0].resource['en-US'].value[0] === 'Poll') {
+                                        this.reloadBoardPosts(); //reload is needed to create a new moment socket.io for the feature
+                                    } else {
+                                        boardpost.moments = data.post.moments;
+                                    }
+                                }
+                                if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]){
+                                    this.reloadBoardPosts();
+                                }
+                            }
+                        } else if (data.action === 'create comment') {
+                            console.log("create comment", data);
+                            for (let boardpost of board.posts) {
+                                if (boardpost._id === data.comment.parentId) { //first level comment
+                                    boardpost.comments.unshift(data.comment)
+                                }
+                            }
+                            //this.reorderCommunitiesBoards();
+                        } else { // data.action === 'refresh board'. Need to refresh all users' feeds
+                            await this.boardService.loadUserChurchBoards();
+                            this.reloadBoardPosts();
+                        }
+                    }
+                }
+            }
+        }
     };
 
     async reloadBoardPosts(){
-        this.destroyPlayers(null);
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.communitiesboards = [];
-        this.communityNum = -1;
-        this.listcommunityboardposts({target: this.infiniteScroll});
+        setTimeout(async () => {
+            this.destroyPlayers(null);
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.communitiesboards = [];
+            this.communityNum = -1;
+            this.listcommunityboardposts({target: this.infiniteScroll});
+        }, 100);
     }
 
     async listcommunityboardposts(event) {
@@ -486,100 +538,41 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    refreshBoardHandler = async (boardId, data) => {
-        for (let community of this.communitiesboards) {
-            for (let board of community.boards) {
-                if (board._id === boardId) { // the incoming board is displayed
-                    board.updatedAt = new Date().toISOString();
-                    if (data.action === 'create post') {
-                        this.reloadBoardPosts();
-                    } else if(data.action === 'delete post') {
-                        let index = board.posts.map((c) => {return c._id;}).indexOf(data.postId);
-                        if (board.posts[index].media && board.posts[index].media.length) {
-                            this.destroyPlayers(board.posts[index].media._id);
-                        }
-                        board.posts.splice(index, 1);
-                        this.reorderCommunitiesBoards();
-                    } else if (data.action === 'like' || data.action === 'cancel like') {
-                        for (let boardpost of board.posts) {
-                            if (boardpost.bucketId === data.bucketId && boardpost._id === data.postId) {
-                                if (data.action === 'like') {
-                                    boardpost.likes.push(data.author);
-                                } else if (data.action === 'cancel like') {
-                                    let index = boardpost.likes.indexOf(data.author);
-                                    boardpost.likes.splice(index, 1);
-                                }
+    refreshMomentHandler = async (res) => {
+        if (res && res.momentId && res.data) {
+            const data = res.data;
+            for (let community of this.communitiesboards) {
+                for (let board of community.boards) {
+                    for (let boardpost of board.posts) {
+                        if (boardpost.moments && boardpost.moments.length && data.moment && (boardpost.moments[0]._id === data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
+                            const index = boardpost.poll.responses.map((c) => c._id).indexOf(data.response._id);
+                            if (index < 0) { //if the response hasn't been added to the response list
+                                boardpost.poll.responses.push(data.response);
+                            } else { //if it has been added, replace with the incoming one
+                                boardpost.poll.responses.splice(index, 1, data.response);
                             }
-                        }
-                    } else if (data.action === 'update post') {
-                        for (let boardpost of board.posts) {
-                            if (boardpost._id === data.post._id) {
-                                boardpost.body = data.post.body;
-                                boardpost.attachments = data.post.attachments;
-                                if (boardpost.media && boardpost.media.length && data.post.media && !data.post.media.length) {
-                                    this.destroyPlayers(boardpost.media[0]._id);
+                            //now the latest response have been included, reset the display array
+                            await boardpost.poll.display.forEach((displayitem) => {
+                                displayitem.count = 0;
+                                displayitem.votedByUser = false;
+                            });
+                            //reconstruct the display array
+                            boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
+                            for (const response of boardpost.poll.responses) {
+                                if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
+                                    if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
+                                        return; // if this response belongs to an option that has been deleted
+                                    }
+                                    if (this.userData.user && response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
+                                        boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
+                                    }
+                                    boardpost.poll.display[response.matrix_number[0][1]].count++;
                                 }
-                                boardpost.media = data.post.media;
-                                this.reorderCommunitiesBoards();
-                                if (data.post.moments && data.post.moments.length && data.post.moments[0] && data.post.moments[0].resource.hasOwnProperty('en-US') && data.post.moments[0].resource['en-US'].value[0] === 'Poll') {
-                                    this.reloadBoardPosts(); //reload is needed to create a new moment socket.io for the feature
-                                } else {
-                                    boardpost.moments = data.post.moments;
-                                }
-                            }
-                            if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]){
-                                this.reloadBoardPosts();
-                            }
-                        }
-                    } else if (data.action === 'create comment') {
-                        console.log("create comment", data);
-                        for (let boardpost of board.posts) {
-                            if (boardpost._id === data.comment.parentId) { //first level comment
-                                boardpost.comments.unshift(data.comment)
-                            }
-                        }
-                        //this.reorderCommunitiesBoards();
-                    } else { // data.action === 'refresh board'. Need to refresh all users' feeds
-                        await this.boardService.loadUserChurchBoards();
-                        this.reloadBoardPosts();
-                    }
-                }
-            }
-        }
-    };
-
-    refreshMomentHandler = async (momentId, data) => {
-        for (let community of this.communitiesboards) {
-            for (let board of community.boards) {
-                for (let boardpost of board.posts) {
-                    if (boardpost.moments && boardpost.moments.length && data.moment && (boardpost.moments[0]._id === data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
-                        const index = boardpost.poll.responses.map((c) => c._id).indexOf(data.response._id);
-                        if (index < 0) { //if the response hasn't been added to the response list
-                            boardpost.poll.responses.push(data.response);
-                        } else { //if it has been added, replace with the incoming one
-                            boardpost.poll.responses.splice(index, 1, data.response);
-                        }
-                        //now the latest response have been included, reset the display array
-                        await boardpost.poll.display.forEach((displayitem) => {
-                            displayitem.count = 0;
-                            displayitem.votedByUser = false;
-                        });
-                        //reconstruct the display array
-                        boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
-                        for (const response of boardpost.poll.responses) {
-                            if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
-                                if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
-                                    return; // if this response belongs to an option that has been deleted
-                                }
-                                if (this.userData.user && response.user._id === this.userData.user._id) { // response.user is not populated. Note: this is different from the response in refreshMoment handler, where the user is populated
-                                    boardpost.poll.display[response.matrix_number[0][1]].votedByUser = true;
-                                }
-                                boardpost.poll.display[response.matrix_number[0][1]].count++;
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     };
@@ -736,8 +729,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
-        this.events.unsubscribe('refreshCommunityBoardsPage', this.refreshCommunityBoardsPage);
-        this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshPage);
     }
 }

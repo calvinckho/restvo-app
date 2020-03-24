@@ -1,9 +1,9 @@
-import {Component, Input, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {GroupchatPage} from "../../group/groupchat/groupchat.page";
 import {EditgroupPage} from "../../group/editgroup/editgroup.page";
 import {GroupboardPage} from "../../board/groupboard/groupboard.page";
 import {
-    AlertController, Events,
+    AlertController,
     IonInfiniteScroll,
     ModalController,
     Platform,
@@ -21,8 +21,8 @@ import {Churches} from "../../../services/church.service";
   styleUrls: ['./topics.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TopicsPage {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+export class TopicsPage implements OnInit, OnDestroy {
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
 
     subscriptions: any = {};
@@ -33,7 +33,6 @@ export class TopicsPage {
     refreshNeeded = false;
 
   constructor(
-              private events: Events,
               private storage: Storage,
               private platform: Platform,
               private authService: Auth,
@@ -44,25 +43,24 @@ export class TopicsPage {
               private modalCtrl: ModalController,
               private alertCtrl: AlertController,) { }
 
-  ionViewWillEnter() {
-      if(this.userData && this.userData.currentCommunityAdminStatus) {
+  ngOnInit() {
+      if (this.userData && this.userData.currentCommunityAdminStatus) {
           this.setupManageGroups();
       }
 
       // link the refresh user status observable with the refresh handler
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserHandler);
-      this.events.subscribe('refreshBoard', this.refreshBoardHandler);
   }
 
     refreshUserHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'update admin' || data.type === 'change aux data'){
+            this.setupManageGroups();
+        }
+        if (data.type === 'refresh board') {
             this.setupManageGroups();
         }
     };
 
-    refreshBoardHandler = (boardId, data) => {
-        this.setupManageGroups();
-    };
     //-----------------------------------
     // methods to search for topics
     //-----------------------------------
@@ -149,8 +147,7 @@ export class TopicsPage {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshUserHandler);
-        this.events.unsubscribe('refreshBoard', this.refreshBoardHandler);
     }
 }

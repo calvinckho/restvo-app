@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import {
-    Events,
     Platform,
 } from '@ionic/angular';
 import { UserData } from "../../../services/user.service";
@@ -18,7 +17,6 @@ import {Auth} from "../../../services/auth.service";
 export class DiscoverPage  {
 
     constructor(
-                private events: Events,
                 public router: Router,
                 private storage: Storage,
                 private platform: Platform,

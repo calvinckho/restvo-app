@@ -5,7 +5,6 @@ import {
     ModalController,
     Platform,
     ToastController,
-    Events,
     IonInfiniteScroll,
 } from '@ionic/angular';
 import { CacheService } from 'ionic-cache';
@@ -30,9 +29,9 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
   encapsulation: ViewEncapsulation.None
 })
 export class EditboardpostPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('textArea') textArea: ElementRef;
-    @ViewChild('pixaBay') pixaBay: ElementRef;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('textArea', {static: false}) textArea: ElementRef;
+    @ViewChild('pixaBay', {static: false}) pixaBay: ElementRef;
 
     @Input() boardId: any;
     @Input() post: any;
@@ -44,8 +43,9 @@ export class EditboardpostPage implements OnInit, OnDestroy {
     loadCompleted = false;
     player: Plyr;
 
+    subscriptions: any = {};
+
     constructor(
-        private events: Events,
         private elRef: ElementRef,
         private renderer: Renderer2,
         private geolocation: Geolocation,
@@ -94,14 +94,13 @@ export class EditboardpostPage implements OnInit, OnDestroy {
           await networkAlert.present();
       });
       this.loadCompleted = true;
+      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
   }
 
-    ionViewWillEnter() {
-        this.events.subscribe('refreshBoard', this.refreshBoardHandler);
-    }
 
-    refreshBoardHandler = async (boardId, data) => {
-        if (boardId === this.boardId){
+    refreshBoardHandler = async (res) => {
+        if (res && res.type === 'refresh board' && res.boardId === this.boardId) {
+            const data = res.data;
             if (data.action === 'update post' && data.post.author._id !== this.userData.user._id) {
                 if (this.post.bucketId === data.post.bucketId && this.post._id === data.post._id) {
                     //just update the body and attachments
@@ -420,7 +419,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
         this.modalCtrl.dismiss(refreshNeeded);
     }
 
-    ngOnDestroy (){
-        this.events.unsubscribe("refreshBoard", this.refreshBoardHandler);
+    ngOnDestroy() {
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
     }
 }

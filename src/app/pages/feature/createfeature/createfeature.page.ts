@@ -4,7 +4,6 @@ import {Churches} from "../../../services/church.service";
 import {
     ActionSheetController,
     AlertController,
-    Events,
     IonSlides,
     LoadingController,
     ModalController,
@@ -35,7 +34,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
     encapsulation: ViewEncapsulation.None
 })
 export class CreatefeaturePage extends EditfeaturePage implements OnInit {
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     createReachedEnd = false;
     tutorialReachedEnd = false;
@@ -50,7 +49,6 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
       public electronService: ElectronService,
       public swUpdate: SwUpdate,
       public change: ChangeDetectorRef,
-      public events: Events,
       public platform: Platform,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
@@ -70,7 +68,7 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
       public calendarService: CalendarService
   ) {
     super(route, router, location, electronService, swUpdate, change,
-        events, platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
+        platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
         chatService, churchService, groupService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }

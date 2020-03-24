@@ -137,9 +137,9 @@ app-register {
 
   ion-segment {
     margin: 2vh auto;
-    --background: rgba(255, 255, 255, .3);
+    --background: var(--ion-color-lightgrey);// rgba(255, 255, 255, .3);
     //--color: var(--ion-color-secondary);
-    --color-checked: rgb(255, 255, 255);
+    --color-checked: var(--ion-color-secondary);
     --color-disabled: var(--ion-color-primary);
   }
 

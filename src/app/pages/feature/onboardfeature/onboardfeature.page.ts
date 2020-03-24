@@ -1,6 +1,6 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Plyr } from "plyr";
-import {Events, IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
+import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {CacheService} from "ionic-cache";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -21,9 +21,9 @@ import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
     encapsulation: ViewEncapsulation.None
 })
 export class OnboardfeaturePage {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any;
     @Input() programId: any;
@@ -73,7 +73,6 @@ export class OnboardfeaturePage {
         private route: ActivatedRoute,
         private router: Router,
         private geolocation: Geolocation,
-        public events: Events,
         public platform: Platform,
         public resourceService: Resource,
         private authService: Auth,
@@ -84,9 +83,6 @@ export class OnboardfeaturePage {
         public chatService: Chat) {}
 
     async ionViewWillEnter() {
-        this.resourceService.load("en-US", "Activity Category").subscribe((result) => {
-            this.resources = result;
-        });
         this.setup();
     }
 
@@ -113,7 +109,7 @@ export class OnboardfeaturePage {
         clearTimeout(this.loadActTimeoutHandle);
         this.authService.incompleteOnboardProcess = onboardingProcesses.find((process) => {
             // first, check if the designated onboarding has any section that either has no response yet or is partially completed
-            const isIncomplete = !process.response || (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => (c === 40000 || c === 40020)).length) || (process.response.matrix_string.filter((c) => c.length > 1 && c[1].length > 0).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length);
+            const isIncomplete = !process.response || (process.response.matrix_number.filter((c) => c.length > 5).length < process.resource.matrix_number[0].filter((c) => (c === 40000 || c === 40020)).length) || (process.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < process.resource.matrix_number[0].filter((c) => (c === 40010)).length);
             // second, check if the process has a component that is newer than this app version
             let versionUpToDate = true;
             process.resource.matrix_number[0].forEach((componentId) => {
@@ -121,10 +117,8 @@ export class OnboardfeaturePage {
                     versionUpToDate = false;
                 }
             });
-            console.log("check", isIncomplete, versionUpToDate)
             return (isIncomplete && versionUpToDate) ? process : null; // if it has incomplete question and the version is up to date, return the process for display
         });
-        console.log("incom", this.authService.incompleteOnboardProcess)
         if (this.authService.incompleteOnboardProcess) {
             this.reachedEnd = false;
             await this.prepareMoment(this.authService.incompleteOnboardProcess);
@@ -218,8 +212,26 @@ export class OnboardfeaturePage {
                 } else if (componentId === 40010) { // text answer
                     this.interactableDisplay[interactableId] = [];
                     for (const interactable of this.responseObj.matrix_string) { // process the text answer responses
-                        if (interactableId.toString() === interactable[0]) {
-                            this.interactableDisplay[interactableId][0] = interactable[1]; // insert the response data into the display matrix
+                        if (interactableId.toString() === interactable[0]) { // interactableId is a Number
+                            let content: any;
+                            if (interactable.length > 2 && interactable[2]) {
+                                content = JSON.parse(interactable[2]);
+                            } else { // for backward compatibility before quill, need to build the content object from scratch
+                                content = { ops: [{ insert: interactable[1] + '\n' }] };
+                            }
+                            this.interactableDisplay[interactableId].content = content; // insert the response data into the display matrix
+                            // prep the user's own response Obj, in case response needs to be sent out without the user changing the text answer and it will still grab the latest response text answer
+                            let updatedExistingResponse;
+                            for (let responseInteractable of this.responseObj.matrix_string) {
+                                if (responseInteractable[0] === interactableId.toString()) { // InteractableId is in Number
+                                    responseInteractable = interactable;
+                                    updatedExistingResponse = true;
+                                }
+                            }
+                            if (!updatedExistingResponse) { // add a new entry to array
+                                this.responseObj.matrix_number.push([interactableId]);
+                                this.responseObj.matrix_string.push(interactable);
+                            }
                         }
                     }
                 } else if (componentId === 40020) { // tile choice
@@ -347,36 +359,38 @@ export class OnboardfeaturePage {
         this.setupInteractableDisplay(this.moment, interactableId, componentIndex);
     }
 
-    async responseToTextArea(event, componentIndex) {
-        this.nextButtonReady = false;
-        event.stopPropagation();
+    async respondToTextArea(event, componentIndex) {
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
+        // interactableId is Number
         const interactableId = this.moment.resource.matrix_number[2][componentIndex];
-        for (let interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString()) {
-                interactable[1] = event.detail.value;
+
+        for (const interactable of this.responseObj.matrix_string) {
+            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+                interactable[1] = event.text;
+                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
         }
+
         if (!updatedExistingResponse) { // add a new entry to array
             this.responseObj.matrix_number.push([interactableId]);
-            this.responseObj.matrix_string.push([interactableId.toString(), event.detail.value]);
+            this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
-        this.responseObj.moment = this.moment._id;
-        this.responseObj.array_number = this.moment.resource.matrix_number[0];
-        this.responseObj.createdAt = new Date();
-        const cached_responseObj = JSON.parse(JSON.stringify(this.responseObj));
         this.timeoutHandle = setTimeout(async () => {
-            let response = await this.momentService.submitResponse(this.moment, cached_responseObj, false);
+            // server update only happens every 3 secs
+            const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
             const index = this.responses.map((c) => c._id).indexOf(response._id);
             if (index < 0) { // if the response hasn't been added to the response list
                 this.responses.push(response);
             } else { // if it has been added, replace with the incoming one
                 this.responses.splice(index, 1, response);
             }
-            this.nextButtonReady = true;
-        }, 2000);
+            if (this.moment.program) {
+                this.userData.refreshUserStatus({});
+            }
+        }, 3000);
     }
 
     async slideChanges() {
@@ -404,7 +418,13 @@ export class OnboardfeaturePage {
     async seeUserInfo(event, user) {
         if (event) event.stopPropagation();
         user.name = user.first_name + ' ' + user.last_name;
-        this.events.publish('showRecipient',{recipient: user, modalPage: true});
+        this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
+    }
+
+    async createQuillEditor(event, interactableDisplay) {
+        interactableDisplay.editor = event;
+        interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
+        console.log("display", interactableDisplay);
     }
 
     joinVideoConference(event, moment) {

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
-import { Events } from '@ionic/angular';
 import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
@@ -12,7 +11,6 @@ import { UserData } from './user.service';
 export class PaymentService {
 
     constructor(private http: HttpClient,
-                public events: Events,
                 public authService: Auth,
                 public networkService: NetworkService,
                 public userData: UserData) {

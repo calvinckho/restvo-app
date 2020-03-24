@@ -13,7 +13,6 @@ import {GroupchatPage} from '../group/groupchat/groupchat.page';
 import {
     ActionSheetController,
     AlertController,
-    Events,
     MenuController,
     ModalController,
     NavController,
@@ -49,7 +48,7 @@ declare var JitsiMeetExternalAPI: any;
   encapsulation: ViewEncapsulation.None
 })
 export class MainTabPage implements OnInit, OnDestroy {
-    @ViewChild('videoSpace') videoSpace: any;
+    @ViewChild('videoSpace', {static: false}) videoSpace: any;
 
     networkHandler: any;
     pushHandler: any;
@@ -58,7 +57,7 @@ export class MainTabPage implements OnInit, OnDestroy {
     jitsi: any;
     pendingVideoChatRoomId = '';
     readyToControlVideoChat = true;
-    subscriptions = {};
+    subscriptions: any = {};
 
     constructor(      public router: Router,
                       private swPush: SwPush,
@@ -66,7 +65,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                       private electronService: ElectronService,
                       private screenOrientation: ScreenOrientation,
                       private storage: Storage,
-                      private events: Events,
                       private badge: Badge,
                       private actionSheetCtrl: ActionSheetController,
                       private alertCtrl: AlertController,
@@ -88,8 +86,10 @@ export class MainTabPage implements OnInit, OnDestroy {
     async ngOnInit() {
         console.log('platform info:', this.platform.platforms());
         this.processAuth();
-        this.events.subscribe('setupDevice', () => {
-            this.setupDevice();
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
+            if (data && data.type === 'setup device') {
+                this.setupDevice();
+            }
         });
         if (this.platform.is('cordova')) {
             const status = await Network.getStatus();
@@ -130,7 +130,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                 console.log('Token authorized');
                 try {
                     this.userData.user = res.user;
-                    this.userData.refreshUserStatus({action: 'user updated', user: this.userData.user});
                     this.userData.processLoadedUserData();
                     await this.userData.loadStoredCommunity();
                     // in the event of deep linking to tab pages, the tab page renders using user data from storage first and then listens to the following events to refresh its view with fresh user data from server
@@ -467,8 +466,12 @@ export class MainTabPage implements OnInit, OnDestroy {
                 } else { // on PWA
                     const toast = await this.toastCtrl.create({
                         message: (data.author ? data.author.first_name + ' ' + data.author.last_name : data.author_pending_member.name) +  ': ' + (data.body || '') + ((data.moment && data.moment.resource) ? data.moment.resource['en-US'].value[0] : '') + (!(data.body || data.moment || data.response) ? 'sent you an attachment.' : ''),
-                        showCloseButton: true,
-                        closeButtonText: 'Open',
+                        buttons: [
+                            {
+                                text: 'Open',
+                                role: 'cancel'
+                            }
+                        ],
                         duration: 5000,
                         position: 'top'
                     });
@@ -501,8 +504,12 @@ export class MainTabPage implements OnInit, OnDestroy {
                 } else { // on PWA
                     const toast = await this.toastCtrl.create({
                         message: data.title + ': ' + data.body,
-                        showCloseButton: true,
-                        closeButtonText: 'Open',
+                        buttons: [
+                            {
+                                text: 'Open',
+                                role: 'cancel'
+                            }
+                        ],
                         duration: 5000,
                         position: 'top'
                     });
@@ -775,71 +782,73 @@ export class MainTabPage implements OnInit, OnDestroy {
             // @ts-ignore
             $(`#videoSpace`).empty();
         }
-    }
+    };
 
     ngOnDestroy () {
-        this.subscriptions['enablePushNotification'].unsubscribe('enablePushNotification', () => { // listen to event when a user gives permission
-            this.initPushNotification(); // set up push notification
-            this.requestBadgePermission(); // badge API requires notification permission
-        });
-        this.subscriptions['openChat'].unsubscribe('openChat', async (data) => {
-            this.openGroupChat(data);
-        });
-        this.subscriptions['openMoment'].unsubscribe('openMoment', async (data) => {
-            if (data.modalPage) {
-                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
-                await modal.present();
-            } else {
-                this.router.navigate(['/app/activity/' + data.momentId]);
-            }
-        });
-        this.subscriptions['openUserPrograms'].unsubscribe('openUserPrograms', async (data) => {
-            if (data.modalPage) {
-                const manageModal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
-                await manageModal.present();
-            } else {
-                this.router.navigate(['/app/user/programs']);
-            }
-        });
+        if (this.subscriptions && this.hasSetupEventListeners) {
+            this.subscriptions['enablePushNotification'].unsubscribe('enablePushNotification', () => { // listen to event when a user gives permission
+                this.initPushNotification(); // set up push notification
+                this.requestBadgePermission(); // badge API requires notification permission
+            });
+            this.subscriptions['openChat'].unsubscribe('openChat', async (data) => {
+                this.openGroupChat(data);
+            });
+            this.subscriptions['openMoment'].unsubscribe('openMoment', async (data) => {
+                if (data.modalPage) {
+                    const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
+                    await modal.present();
+                } else {
+                    this.router.navigate(['/app/activity/' + data.momentId]);
+                }
+            });
+            this.subscriptions['openUserPrograms'].unsubscribe('openUserPrograms', async (data) => {
+                if (data.modalPage) {
+                    const manageModal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
+                    await manageModal.present();
+                } else {
+                    this.router.navigate(['/app/user/programs']);
+                }
+            });
 
-        this.subscriptions['editMoment'].unsubscribe('editMoment', async (data) => {
-            if (data.modalPage) {
-                const modal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: data});
+            this.subscriptions['editMoment'].unsubscribe('editMoment', async (data) => {
+                if (data.modalPage) {
+                    const modal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: data});
+                    await modal.present();
+                } else {
+                    this.router.navigate(['/app/edit/' + data.momentId]);
+                }
+            });
+            this.subscriptions['manageMoment'].unsubscribe('manageMoment', async (data) => {
+                if (data.modalPage) {
+                    const managePage = await this.modalCtrl.create({
+                        component: ManagefeaturePage,
+                        componentProps: data
+                    });
+                    await managePage.present();
+                } else {
+                    this.router.navigate(['/app/manage/activity/' + data.moment._id + '/profile/' + data.moment._id]);
+                }
+            });
+
+            this.subscriptions['openOnboarding'].unsubscribe('openOnboarding', async (data) => {
+                const modal = await this.modalCtrl.create({component: OnboardfeaturePage, componentProps: data});
                 await modal.present();
-            } else {
-                this.router.navigate(['/app/edit/' + data.momentId]);
-            }
-        });
-        this.subscriptions['manageMoment'].unsubscribe('manageMoment', async (data) => {
-            if (data.modalPage) {
-                const managePage = await this.modalCtrl.create({
-                    component: ManagefeaturePage,
+            });
+            this.subscriptions['openPreferences'].unsubscribe('openPreferences', async (data) => {
+                const messagePage = await this.modalCtrl.create({
+                    component: PreferencesPage,
                     componentProps: data
                 });
-                await managePage.present();
-            } else {
-                this.router.navigate(['/app/manage/activity/' + data.moment._id + '/profile/' + data.moment._id]);
-            }
-        });
-
-        this.subscriptions['openOnboarding'].unsubscribe('openOnboarding', async (data) => {
-            const modal = await this.modalCtrl.create({component: OnboardfeaturePage, componentProps: data});
-            await modal.present();
-        });
-        this.subscriptions['openPreferences'].unsubscribe('openPreferences', async (data) => {
-            const messagePage = await this.modalCtrl.create({
-                component: PreferencesPage,
-                componentProps: data
+                await messagePage.present();
             });
-            await messagePage.present();
-        });
-        this.subscriptions['editParticipants'].unsubscribe('editParticipants', async (data) => {
-            const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: data});
-            await modal.present();
-        });
-        this.subscriptions['toggleVideoChat'].unsubscribe('toggleVideoChat', (params) => {
-            this.toggleVideoChat(params);
-            this.pendingVideoChatRoomId = params.videoChatRoomId;
-        });
+            this.subscriptions['editParticipants'].unsubscribe('editParticipants', async (data) => {
+                const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: data});
+                await modal.present();
+            });
+            this.subscriptions['toggleVideoChat'].unsubscribe('toggleVideoChat', (params) => {
+                this.toggleVideoChat(params);
+                this.pendingVideoChatRoomId = params.videoChatRoomId;
+            });
+        }
     }
 }

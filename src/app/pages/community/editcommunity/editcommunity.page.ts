@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
 import {Validators, FormBuilder, FormGroup} from '@angular/forms';
-import { ActionSheetController, AlertController, Events, ModalController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
@@ -26,7 +26,6 @@ export class EditcommunityPage implements OnInit {
 
     constructor(
                 private cache: CacheService,
-                private events: Events,
                 private formBuilder: FormBuilder,
                 private alertCtrl: AlertController,
                 private actionSheetCtrl: ActionSheetController,
@@ -120,7 +119,7 @@ export class EditcommunityPage implements OnInit {
         delete community.members;
         try {
             let result = await this.churchService.updateChurchProfile(community);
-            this.events.publish('refreshCommunity');
+            this.userData.refreshUserStatus({ type: 'refresh community' });
             let alert = await this.alertCtrl.create({
                 header: 'Success',
                 message: 'Community profile updated.',

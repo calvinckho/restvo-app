@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import {Storage} from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
-import {ActionSheetController, IonContent, Events, NavController, ModalController, Platform} from '@ionic/angular';
+import {ActionSheetController, IonContent, NavController, ModalController, Platform} from '@ionic/angular';
 import {UserData} from '../../../services/user.service';
 import {Chat} from "../../../services/chat.service";
 import {ShowrecipientinfoPage} from "../showrecipientinfo/showrecipientinfo.page";
@@ -18,8 +18,8 @@ import {EditgroupPage} from "../../group/editgroup/editgroup.page";
   encapsulation: ViewEncapsulation.None
 })
 export class MyconversationsPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild('searchBar') searchBar ;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild('searchBar', {static: false}) searchBar ;
 
     datas: any = [];
     loading: any;
@@ -35,7 +35,6 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         private zone: NgZone,
         private router: Router,
         private electronService: ElectronService,
-        private events: Events,
         private storage: Storage,
         private badge: Badge,
         private navCtrl: NavController,
@@ -112,7 +111,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         const listOfChurchIds = this.userData.user.churches.map((c) => c._id );
         this.chatService.conversations.forEach((obj: any) => {
             // Friends
-            if (obj.conversation.type === "connect") {
+            if (obj.conversation.type === 'connect') {
                 this.noConversationLoaded = false;
                 if(obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1){
                     this.datas.push(obj); //push the conversation object into an array
@@ -175,7 +174,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     async pushToMessagePage(event, object) {
         if (event) event.stopPropagation();
         let chatObj;
-        if (object.conversation.type === "connect") {
+        if (object.conversation.type === 'connect') {
             chatObj = {
                 conversationId: object.conversation._id,
                 name: object.data.name,

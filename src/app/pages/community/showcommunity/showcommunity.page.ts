@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
 import { Plyr } from "plyr";
-import { AlertController, Events, ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { UserData } from '../../../services/user.service';
 import {EditcommunityPage} from "../editcommunity/editcommunity.page";
@@ -29,10 +29,10 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
     newBoardName: string = '';
     currentPageAdminStatus: boolean = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
+    subscriptions: any = {};
 
     constructor(
         private route: ActivatedRoute,
-        private events: Events,
         private cache: CacheService,
         private router: Router,
         private storage: Storage,
@@ -44,7 +44,7 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
         private alertCtrl: AlertController) {}
 
     ngOnInit() {
-        this.events.subscribe('refreshCommunity', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
     ionViewWillEnter() {
@@ -56,8 +56,10 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
         }
     }
 
-    refreshHandler = () => {
-        this.loadChurch();
+    refreshHandler = (data) => {
+        if (data && data.type === 'refresh community') {
+            this.loadChurch();
+        }
     };
     
     async loadChurch() {
@@ -94,18 +96,18 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
         await popover.present();
     }
 
-    async addBoard(){
+    async addBoard() {
         await this.churchService.editCommunityBoard({action: "create", board: {name: this.newBoardName, church: this.community._id}});
         await this.userData.load();
         this.newBoardName = '';
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
         this.loadChurch();
     }
 
     async editBoard(event, board) {
         event.stopPropagation();
         await this.churchService.editCommunityBoard({action: "edit", board: board});
-        this.events.publish('refreshCommunityBoardsPage');
+        this.userData.refreshUserStatus({ type: 'refresh community board page' });
     }
 
     async deleteBoard(event, board){
@@ -118,7 +120,7 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
                     const navTransition = alert.dismiss();
                     navTransition.then(async () => {
                         await this.churchService.editCommunityBoard({action: "delete", board: board});
-                        this.events.publish('refreshCommunityBoardsPage');
+                        this.userData.refreshUserStatus({ type: 'refresh community board page' });
                         this.loadChurch();
                     });
                 }},
@@ -306,6 +308,6 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.events.unsubscribe('refreshCommunity', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

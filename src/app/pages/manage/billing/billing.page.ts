@@ -1,7 +1,7 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import { StripeService, Elements, Element as StripeElement, ElementsOptions } from "ngx-stripe";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import {AlertController, Events, ModalController, Platform} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {PaymentService} from "../../../services/payment.service";
 import {Churches} from "../../../services/church.service";
@@ -15,7 +15,7 @@ import {CacheService} from 'ionic-cache';
   styleUrls: ['./billing.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class BillingPage implements OnInit {
+export class BillingPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any;
     elements: Elements;
@@ -35,10 +35,10 @@ export class BillingPage implements OnInit {
     ionSpinner = false;
     stripeCustomer: any;
     resource: any;
+    subscriptions: any = {};
 
   constructor(
       private cache: CacheService,
-      public events: Events,
       private router: Router,
       public platform: Platform,
       private stripeService: StripeService,
@@ -75,22 +75,21 @@ export class BillingPage implements OnInit {
             });
             await networkAlert.present();
         });
-    }
-
-    async ionViewWillEnter() {
         this.invoices = [];
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
         this.preparePage();
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
     ionViewDidEnter() {
         this.stripeElementName = 'card-element-billing' + (this.modalPage ? '-modal' : '');
     }
 
-    refreshHandler = async () => {
-        this.updatePayment = false;
-        this.invoices = [];
-        this.preparePage();
+    refreshHandler = async (data) => {
+        if (data && data.type === 'load community ready') {
+          this.updatePayment = false;
+          this.invoices = [];
+          this.preparePage();
+        }
     };
 
     async preparePage() {
@@ -236,14 +235,14 @@ export class BillingPage implements OnInit {
         });
     }
 
-    closeModal(){
+    closeModal() {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         /*if (this.card) {
             this.card.unmount();
         }*/
-        this.events.unsubscribe('loadCommunityReady', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

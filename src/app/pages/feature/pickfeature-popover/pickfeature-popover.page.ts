@@ -1,11 +1,12 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, NavParams, ModalController, Events} from '@ionic/angular';
+import {AlertController, NavParams, ModalController} from '@ionic/angular';
 import {Chat} from "../../../services/chat.service";
 import { CalendarService } from '../../../services/calendar.service';
 import {CacheService} from 'ionic-cache';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
 import {Router} from "@angular/router";
+import {UserData} from "../../../services/user.service";
 
 @Component({
   selector: 'app-pickfeature-popover',
@@ -37,8 +38,9 @@ export class PickfeaturePopoverPage implements OnInit {
     selectedMoments = [];
     step = 1;
 
+    subscriptions: any = {};
+
     constructor(
-        private events: Events,
         public router: Router,
         private alertCtrl: AlertController,
         private cache: CacheService,
@@ -46,6 +48,7 @@ export class PickfeaturePopoverPage implements OnInit {
         private navParams: NavParams,
         public modalCtrl: ModalController,
         private momentService: Moment,
+        private userData: UserData,
         private chatService: Chat,
         public calendarService: CalendarService
     ) {}
@@ -64,7 +67,7 @@ export class PickfeaturePopoverPage implements OnInit {
                 this.conversation = this.chatService.conversations[index].conversation;
             }
         }
-        this.events.subscribe('createdMoment', this.refreshAfterCreateMomentHandler);
+        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -168,5 +171,6 @@ export class PickfeaturePopoverPage implements OnInit {
 
     close() {
         this.modalCtrl.dismiss();
+        this.subscriptions['refresh'].unsubscribe(this.refreshAfterCreateMomentHandler);
     }
 }

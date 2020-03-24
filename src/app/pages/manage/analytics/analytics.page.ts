@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {Events, ModalController} from "@ionic/angular";
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {ModalController} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 
@@ -9,28 +9,27 @@ import {Churches} from "../../../services/church.service";
   styleUrls: ['./analytics.page.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class AnalyticsPage implements OnInit {
+export class AnalyticsPage implements OnInit, OnDestroy {
     @Input() modalPage: any;
     refreshNeeded = false;
+    subscriptions: any = {};
 
     constructor(
-        private events: Events,
         public modalCtrl: ModalController,
         public userData: UserData,
         public churchService: Churches,
     ) { }
 
     ngOnInit() {
+        this.load();
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = async () => {
-        this.load();
+    refreshHandler = async (data) => {
+        if (data && data.type === 'load community ready') {
+            this.load();
+        }
     };
-
-    ionViewWillEnter() {
-        this.load();
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
-    }
 
     async load() {
         if (this.churchService.currentManagedCommunity) {
@@ -42,7 +41,7 @@ export class AnalyticsPage implements OnInit {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
-        this.events.unsubscribe('loadCommunityReady', this.refreshHandler);
+    ngOnDestroy() {
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

@@ -1,10 +1,9 @@
-import {Component, Input, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {GroupchatPage} from "../../group/groupchat/groupchat.page";
 import {EditgroupPage} from "../../group/editgroup/editgroup.page";
 import {GroupboardPage} from "../../board/groupboard/groupboard.page";
 import {
-    AlertController, Events,
-    IonInfiniteScroll,
+    AlertController, IonInfiniteScroll,
     ModalController,
     Platform,
 } from "@ionic/angular";
@@ -22,8 +21,8 @@ import {Churches} from "../../../services/church.service";
     encapsulation: ViewEncapsulation.None
 })
 
-export class GroupsPage {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+export class GroupsPage implements OnInit, OnDestroy {
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any;
     subscriptions: any = {};
@@ -34,7 +33,6 @@ export class GroupsPage {
     refreshNeeded = false;
 
     constructor(
-        private events: Events,
         private storage: Storage,
         private platform: Platform,
         private authService: Auth,
@@ -45,8 +43,8 @@ export class GroupsPage {
         private modalCtrl: ModalController,
         private alertCtrl: AlertController,) { }
 
-    ionViewWillEnter() {
-        if(this.userData && this.userData.currentCommunityAdminStatus) {
+    ngOnInit() {
+        if (this.userData && this.userData.currentCommunityAdminStatus) {
             this.setupManageGroups();
         }
 
@@ -55,7 +53,7 @@ export class GroupsPage {
     }
 
     refreshHandler = (data) => {
-        if (data.type === 'update admin' || data.type === 'change community'){
+        if (data.type === 'load community ready' || data.type === 'update admin' || data.type === 'change aux data'){
             this.setupManageGroups();
         }
     };
@@ -145,7 +143,7 @@ export class GroupsPage {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

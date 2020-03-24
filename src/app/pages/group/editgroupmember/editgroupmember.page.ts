@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, ViewEncapsulation} from '@angular/core';
-import { AlertController, Events, ModalController, NavParams } from '@ionic/angular';
+import { AlertController, ModalController, NavParams } from '@ionic/angular';
 import { Groups } from '../../../services/group.service';
 import { Chat } from '../../../services/chat.service';
 import { UserData } from '../../../services/user.service';
@@ -22,7 +22,6 @@ export class EditgroupmemberPage implements OnInit, OnDestroy {
     subscriptions: any = {};
 
     constructor(private navParams: NavParams,
-                private events: Events,
                 private alertCtrl: AlertController,
                 public modalCtrl: ModalController,
                 private authService: Auth,

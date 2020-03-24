@@ -1,7 +1,7 @@
 <ion-header no-border>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="back()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="back()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-grid>
       <ion-row>
@@ -21,8 +21,8 @@
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
-        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
-          <ion-col [ngClass]="{'slide-col': (item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+        <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item === 40010) || (item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
+          <ion-col [ngClass]="{'slide-col': ((item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)) || (item === 40010)}">
             <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
               <div class="textarea center ion-text-wrap ion-justify-content-center" [innerHTML]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br"></div>
             </ion-item>
@@ -228,9 +228,13 @@
               <ion-item>
                 <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
-              <ion-item>
-                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)"></ion-textarea>
+              <ion-item lines="none">
+                <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
+                              (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" format="object"></quill-editor>
               </ion-item>
+             <!-- <ion-item>
+                <ion-textarea [rows]="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]" [(ngModel)]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]][0]" (ionChange)="responseToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" autofocus></ion-textarea>
+              </ion-item>-->
             </div>
             <div class="component" style="margin-top: 30%" *ngIf="!userData.user && item === 50000">
               <ion-item lines="none">
@@ -311,7 +315,7 @@
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, interactableOptionIndex)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.option}}</ion-label>
                 <ion-icon color="button1" *ngIf="!display.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
-                <ion-icon color="button1" *ngIf="display.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+                <ion-icon color="button1" *ngIf="display.selectedByUser" name="checkmark-circle" slot="end"></ion-icon>
               </ion-item>
             </div>
             <div class="component" *ngIf="item === 40020 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] === 1"> <!--Multiple Choice-->
@@ -321,7 +325,7 @@
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>
                 <ion-icon color="button1" *ngIf="!display.value.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
-                <ion-icon color="button1" *ngIf="display.value.selectedByUser" name="ios-checkmark-circle" slot="end"></ion-icon>
+                <ion-icon color="button1" *ngIf="display.value.selectedByUser" name="checkmark-circle" slot="end"></ion-icon>
               </ion-item>
             </div>
             <div class="component" *ngIf="item === 40020  && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && !moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]"> <!--Tile Choice with Photos-->
@@ -369,7 +373,7 @@
         <div *ngIf="!nextButtonReady">Saving ...</div>
       </ion-button>
       <ion-button *ngIf="loadCompleted && reachedEnd" expand="full" shape="round" class="centered" (click)="addUserToProgramUserList(programId, type, token)">
-        Let's Get Started <ion-icon name="ios-arrow-forward"></ion-icon>
+        Let's Get Started <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-row>
   </ion-toolbar>

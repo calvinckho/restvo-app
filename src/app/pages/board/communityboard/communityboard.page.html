@@ -9,7 +9,7 @@
           <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
           <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
         </div>
-        <ion-icon name="ios-arrow-forward" color="primary" slot="end"></ion-icon>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
       </ion-item>
       <ion-item-options>
@@ -22,9 +22,9 @@
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
       <ion-button fill="clear" color="grey">
-        <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="grey">{{this.chatService.connectTabBadge}}</ion-badge>
         <ion-icon name="menu"></ion-icon>
       </ion-button>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" color="primary" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>News</ion-title>
     <!--add new featured topic-->
@@ -121,7 +121,7 @@
               <div class="author-container">
                 <div class="author ion-text-wrap" >
                   {{post.author.first_name}} {{post.author.last_name}}
-                  <ion-icon name="alert" *ngIf="post.status === 'review'" color="grey"></ion-icon>
+                  <ion-icon name="alert-circle" *ngIf="post.status === 'review'" color="grey"></ion-icon>
                 </div>
                 <ion-badge *ngIf="board.group" (click)="openBoard($event, board, community)" color="primary">{{board.name}}</ion-badge>
                 <ion-badge color="primary" *ngIf="!board.group">{{board.name}}</ion-badge>
@@ -209,19 +209,19 @@
             <ion-row>
               <ion-col>
                 <ion-button fill="clear" size="small" (click)="likePost($event, board, post)">
-                  <ion-icon name="thumbs-up"></ion-icon>
+                  <ion-icon name="thumbs-up" class="ion-margin-end"></ion-icon>
                   {{post.likes?.length}} Likes
                 </ion-button>
               </ion-col>
               <ion-col>
                 <ion-button fill="clear" size="small" (click)="openPost($event, board, post)">
-                  <ion-icon name="text"></ion-icon>
+                  <ion-icon name="chatbox-ellipses" class="ion-margin-end"></ion-icon>
                   {{post.comments?.length}} Comments
                 </ion-button>
               </ion-col>
               <ion-col>
                 <ion-button  fill="clear" size="small" (click)="presentPickPeoplePopover($event)">
-                  <ion-icon name="share-alt"></ion-icon>Share</ion-button>
+                  <ion-icon name="share" class="ion-margin-end"></ion-icon>Share</ion-button>
               </ion-col>
             </ion-row>
           </ion-card>

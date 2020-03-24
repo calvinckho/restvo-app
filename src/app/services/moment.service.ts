@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {AlertController, Events, ModalController, Platform} from '@ionic/angular';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
 import { Aws } from './aws.service';
 import { Chat } from './chat.service';
 import { Auth } from './auth.service';
@@ -53,18 +53,19 @@ export class Moment {
 
     private _openMoment: BehaviorSubject<any> = new BehaviorSubject(null);
     private _editMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _refreshMoment: BehaviorSubject<any> = new BehaviorSubject(null);
     private _manageMoment: BehaviorSubject<any> = new BehaviorSubject(null);
     private _openPreferences: BehaviorSubject<any> = new BehaviorSubject(null);
     private _editParticipants: BehaviorSubject<any> = new BehaviorSubject(null);
 
     public readonly openMoment$: Observable<any> = this._openMoment.asObservable();
-    public readonly editMoment$: Observable<any> = this._editMoment.asObservable();
+    public readonly editMoment$: Observable<any> = this._editMoment.asObservable()
+    public readonly refreshMoment$: Observable<any> = this._refreshMoment.asObservable();
     public readonly manageMoment$: Observable<any> = this._manageMoment.asObservable();
     public readonly openPreferences$: Observable<any> = this._openPreferences.asObservable();
     public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
 
     constructor(private http: HttpClient,
-                private events: Events,
                 private platform: Platform,
                 private alertCtrl: AlertController,
                 private modalCtrl: ModalController,
@@ -84,6 +85,10 @@ export class Moment {
 
     editMoment(data) {
         this._editMoment.next(data);
+    }
+
+    refreshMoment(data) {
+        this._refreshMoment.next(data);
     }
 
     manageMoment(data) {
@@ -108,7 +113,7 @@ export class Moment {
         this.socket.on('connect', () => {
         });
         this.socket.on('refresh moment', async (momentId, data) => {
-            this.events.publish('refreshMoment', momentId, data);
+            this.refreshMoment({ momentId: momentId, data: data});
             console.log('refresh moment');
         });
     }
@@ -563,7 +568,7 @@ export class Moment {
 
     loadIcon(field) {
         const color = this.icons.find((c) => c.field === field);
-        return color || 'primary';
+        return color || this.icons.find((c) => c.field === 'User Defined Activity');
     }
 }
 

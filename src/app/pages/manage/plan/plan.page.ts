@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
 import { StripeService, Elements, Element as StripeElement, ElementsOptions } from "ngx-stripe";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import {AlertController, Events, IonContent, IonSlides, ModalController, Platform} from "@ionic/angular";
+import {AlertController, IonContent, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {Churches} from "../../../services/church.service";
 import {PaymentService} from "../../../services/payment.service";
@@ -15,9 +15,9 @@ import {Router} from "@angular/router";
   styleUrls: ['./plan.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PlanPage implements OnInit {
-    @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
+export class PlanPage implements OnInit, OnDestroy {
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     @Input() modalPage: any;
     elements: Elements;
@@ -34,11 +34,12 @@ export class PlanPage implements OnInit {
     ionSpinner = false;
     resource: any;
 
+    subscriptions: any = {};
+
     constructor(
         private cache: CacheService,
         private platform: Platform,
         private router: Router,
-        private events: Events,
         private formBuilder: FormBuilder,
         private stripeService: StripeService,
         public modalCtrl: ModalController,
@@ -60,7 +61,6 @@ export class PlanPage implements OnInit {
             postal_code: ['', [Validators.required]],
             country: ['', [Validators.required]],
         });
-        this.slides.lockSwipes(true);
         let loadResource = this.resourceService.load('en-US', "Restvo Plans");
         let resource = this.cache.loadFromDelayedObservable('loadResource: Restvo Plans', loadResource, 'resource', 3600, 'none');
         resource.subscribe(result => {
@@ -74,16 +74,23 @@ export class PlanPage implements OnInit {
             });
             await networkAlert.present();
         });
+        this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
     }
 
-    refreshHandler = async () => {
-        this.prevSlide();
-        this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
+    onSlidesLoaded () {
+        this.slides.lockSwipes(true);
+    }
+
+    refreshHandler = async (data) => {
+        if (data && data.type === 'load community ready') {
+            this.prevSlide();
+            this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
+
+        }
     };
 
     ionViewDidEnter() {
         this.stripeElementName = 'card-element-plan' + (this.modalPage ? '-modal' : '');
-        this.events.subscribe('loadCommunityReady', this.refreshHandler);
     }
 
     prevSlide() {
@@ -152,7 +159,7 @@ export class PlanPage implements OnInit {
                 }
             } else if (plan === this.resource['en-US'].matrix_string[1][0] && this.churchService.currentManagedCommunity.subscriptionId){
                 await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], null, null);
-                this.userData.refreshUserStatus({type: 'change community'});
+                this.userData.refreshUserStatus({type: 'change aux data'});
             } else {
                 const alert = await this.alertCtrl.create({
                     header: 'Cancel ' + this.resource['en-US'].matrix_string[1][0] + ' Plan',
@@ -162,7 +169,7 @@ export class PlanPage implements OnInit {
                             const navTransition = alert.dismiss();
                             navTransition.then(async () => {
                                 await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, 'Free', null,null);
-                                this.userData.refreshUserStatus({type: 'change community'});
+                                this.userData.refreshUserStatus({type: 'change aux data'});
                             });
                         }},
                         { text: 'Cancel' }],
@@ -201,7 +208,7 @@ export class PlanPage implements OnInit {
                     const updateResult = await this.paymentService.subscribe(this.churchService.currentManagedCommunity._id, this.resource['en-US'].matrix_string[1][0], owner, result.source);
                     this.ionSpinner = false;
                     if (updateResult === 'success') {
-                        this.userData.refreshUserStatus({type: 'change community'});
+                        this.userData.refreshUserStatus({type: 'change aux data'});
                         const alert = await this.alertCtrl.create({
                             header: 'Success',
                             subHeader: this.churchService.currentManagedCommunity.name + ' is now upgraded to the ' + this.resource['en-US'].matrix_string[1][0] + ' Plan.',
@@ -259,8 +266,8 @@ export class PlanPage implements OnInit {
         this.modalCtrl.dismiss(this.refreshNeeded);
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy() {
         //this.card.unmount();
-        this.events.unsubscribe('loadCommunityReady', this.refreshHandler);
+        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshHandler);
     }
 }

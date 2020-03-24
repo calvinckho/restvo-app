@@ -3,21 +3,17 @@ app-myconversations {
     height: 100%;
   }
 
-  ion-button {
+  ion-menu-toggle {
     ion-badge {
-      position: absolute;
+      position: relative;
       top: 0.1rem;
-      right: 0.1rem;
+      right: 22px;
 
-      & ~ ion-icon {
+      /*& ~ ion-icon {
         outline-color: whitesmoke;
-      }
+      }*/
+      z-index: 5;
     }
-  }
-
-  ion-badge {
-    background-color: var(--ion-color-grey);
-    //margin-right: 5px;
   }
 
   ion-spinner {

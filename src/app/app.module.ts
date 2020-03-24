@@ -36,6 +36,7 @@ import {RegisterPageModule} from "./pages/user/register/register.module";
 import {ShowrecipientinfoModule} from "./pages/connect/showrecipientinfo/showrecipientinfo.module";
 import {ShowfeaturePageModule} from "./pages/feature/showfeature/showfeature.module";
 import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pickpeople-popover.module";
+import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/pickfeature-popover.module";
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pi
       RegisterPageModule,
       ShowfeaturePageModule,
       ShowrecipientinfoModule,
+      PickfeaturePopoverPageModule,
       PickpeoplePopoverPageModule,
       NgxStripeModule.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

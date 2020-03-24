@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar *ngIf="modalPage">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Development</ion-title>
   </ion-toolbar>
@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-buttons class="ion-justify-content-center" margin-top>
+  <ion-buttons class="ion-justify-content-center ion-margin-top">
     <ion-button shape="round" fill="solid" color="primary" size="small" (click)="createActivity($event)">Create Sample Activity</ion-button>
   </ion-buttons>
   <ion-list>

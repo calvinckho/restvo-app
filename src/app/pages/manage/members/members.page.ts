@@ -1,7 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
 import {
-    Events,
     IonInfiniteScroll,
     ModalController,
     Platform,
@@ -20,7 +19,7 @@ import {Churches} from "../../../services/church.service";
     encapsulation: ViewEncapsulation.None
 })
 export class MembersPage implements OnInit, OnDestroy {
-    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
 
     subscriptions: any = {};
@@ -35,7 +34,6 @@ export class MembersPage implements OnInit, OnDestroy {
     refreshNeeded = false;
 
   constructor(
-              private events: Events,
               private storage: Storage,
               private platform: Platform,
               private authService: Auth,
@@ -54,8 +52,8 @@ export class MembersPage implements OnInit, OnDestroy {
     }
 
     refreshHandler = (data) => {
-        // because on first subscription, data is null. Thiw will refresh only under special data.type
-        if (data && (data.type === 'update admin' || data.type === 'change community' || data.type === 'update member')){
+        // because on first subscription, data is null. this will refresh only under special data.type
+        if (data && (data.type === 'load community ready' || data.type === 'update admin' || data.type === 'change aux data' || data.type === 'update member')) {
             this.setupManagePeople();
         }
     };
@@ -64,12 +62,14 @@ export class MembersPage implements OnInit, OnDestroy {
     //-----------------------------------
 
     async setupManagePeople(){
-        [this.community] = await this.churchService.loadChurchProfile(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
-        this.infiniteScroll.disabled = false;
-        this.reachedEnd = false;
-        this.members = [];
-        this.pageNum = 0;
-        this.manageMorePeople({target: this.infiniteScroll});
+        setTimeout(async () => {
+            [this.community] = await this.churchService.loadChurchProfile(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+            this.infiniteScroll.disabled = false;
+            this.reachedEnd = false;
+            this.members = [];
+            this.pageNum = 0;
+            this.manageMorePeople({target: this.infiniteScroll});
+        }, 100);
     }
 
     async manageMorePeople(event){
