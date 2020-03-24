@@ -282,6 +282,11 @@ app-dashboard {
     right: 0;
   }
 
+  .profile-picture {
+    width: 150px !important;
+    height: 150px !important;
+  }
+
   .searchbar-cover {
     background-color: var(--ion-color-primary);
     border-top: 2px var(--ion-color-light) solid;

@@ -95,6 +95,7 @@ const routes: Routes = [
             }
         ]
     },
+  { path: 'completeprofile', loadChildren: './completeprofile/completeprofile.module#CompleteprofilePageModule' },
 ];
 
 @NgModule({
