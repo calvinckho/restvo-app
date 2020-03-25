@@ -1,7 +1,9 @@
 <ion-header>
-  <ion-toolbar class="title-container">
-    <ion-icon class="back-icon" name="chevron-back-outline"></ion-icon>
-    <ion-title class="title">Complete Your Profile</ion-title>
+  <ion-toolbar>
+    <div class="title-container">
+      <ion-icon class="back-icon" name="chevron-back-outline"></ion-icon>
+      <ion-title class="title">Complete Your Profile</ion-title>
+    </div>
     <progress-bar [progress]="25" [color]="'#488aff'"></progress-bar>
   </ion-toolbar>
 </ion-header>
@@ -9,23 +11,47 @@
 <ion-content>
   <!-- Mandatory profile action buttons -->
   <div class="mandatory-actions">
-    <ion-title>Tip: Completed profiles have the most success on Restvo</ion-title>
-    <ion-card>
-      <ion-title>Upload a Profile Photo</ion-title>
+    <ion-card class="title-reminder">
+      <small>Tip: Completed profiles have the most success on Restvo </small>
     </ion-card>
-    <ion-card>
-      <ion-title>Add a Bio</ion-title>
+    <ion-card class="action-card">
+      <span class="dot-icon"></span>
+      <div class="action-card-info">
+        <ion-card-title>Upload a Profile Photo</ion-card-title>
+        <ion-card-subtitle>Let other users see who they’re connecting with</ion-card-subtitle>
+      </div>
+      <span class="dot-plus"></span>
+    </ion-card>
+    <ion-card class="action-card">
+      <span class="dot-icon"></span>
+      <div class="action-card-info">
+        <ion-card-title>Add a Bio</ion-card-title>
+        <ion-card-subtitle>Tell people a little bit about yourself</ion-card-subtitle>
+      </div>
+      <span class="dot-plus"></span>
     </ion-card>
   </div>
 
   <!-- Optional profile action buttons -->
   <div class="optional-actions">
-    <ion-title>Optional:</ion-title>
-    <ion-card>
-      <ion-title>Enable Push Notifications</ion-title>
+    <ion-card class="title-reminder">
+      <small>Optional:</small>
     </ion-card>
-    <ion-card>
-      <ion-title>Import Your Contacts</ion-title>
+    <ion-card class="action-card">
+      <span class="dot-icon"></span>
+      <div class="action-card-info">
+        <ion-card-title>Enable Push Notifications</ion-card-title>
+        <ion-card-subtitle>Get notified when you recieve a new message or request</ion-card-subtitle>
+      </div>
+      <span class="dot-plus"></span>
+    </ion-card>
+    <ion-card class="action-card">
+      <span class="dot-icon"></span>
+      <div class="action-card-info">
+        <ion-card-title>Import Your Contacts</ion-card-title>
+        <ion-card-subtitle>Find out who you know has already joined Restvo</ion-card-subtitle>
+      </div>
+      <span class="dot-plus"></span>
     </ion-card>
   </div>
 </ion-content>
