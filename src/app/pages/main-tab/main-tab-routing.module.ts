@@ -191,6 +191,10 @@ const routes: Routes = [
                 ]
             },
             {
+                path: 'completeprofile',
+                loadChildren: '../user/completeprofile/completeprofile.module#CompleteprofilePageModule'
+            },
+            {
                 path: '',
                 redirectTo: '/app/discover',
                 pathMatch: 'full'
