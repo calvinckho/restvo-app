@@ -10,6 +10,9 @@ app-completeprofile {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: 25px;
+    width: 90%;
+    padding: 0 !important;
   }
 
   .back-icon {
@@ -23,7 +26,8 @@ app-completeprofile {
   .title-reminder {
     background-color: transparent !important;
     box-shadow: none !important;
-    margin-top: 15px !important;
+    padding-top: 20px !important;
+    margin-top: 0 !important;
 
     & small {
       font-size: 15px;
@@ -33,23 +37,19 @@ app-completeprofile {
   .action-card {
     padding: 10px 20px;
     display: grid;
-    grid-template-columns: 50px 1fr 20px;
+    grid-template-columns: 40px 1fr 25px;
     grid-gap: 20px;
     align-items: center;
   }
 
-  .dot-icon {
-    border-radius: 50%;
+  .icon {
     display: inline-block;
-    background-color: #05668D;
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
   }
 
-  .dot-plus {
-    border-radius: 50%;
+  .plus {
     display: inline-block;
-    background-color: #DB4035;
     height: 25px;
     width: 25px;
   }
