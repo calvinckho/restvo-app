@@ -94,8 +94,7 @@ const routes: Routes = [
                 pathMatch: 'full'
             }
         ]
-    },
-  { path: 'completeprofile', loadChildren: './completeprofile/completeprofile.module#CompleteprofilePageModule' },
+    }
 ];
 
 @NgModule({
