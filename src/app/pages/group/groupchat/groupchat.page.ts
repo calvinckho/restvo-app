@@ -1145,12 +1145,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // close modal should only be execute by a Modal Page, since Chat is always embedded in the Myconversations page in Desktop view
     async closeModal(refreshNeeded) {
         try {
-            await this.cleanup(false);
+            const currentChatId = await this.cleanup(false);
             //  clean up the chat props
             this.chatService.currentChatProps.pop(); // pop the current chat props. Once that is done, currentChatProps can't be referenced again in the code below. Use currentChatId
 
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
+                this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});
             } else {
                 setTimeout(() => {
                     this.router.navigate(['/app/myconversations/chat']);
