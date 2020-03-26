@@ -19,11 +19,11 @@
                   <div class="welcome-name-2">Restvo</div>
                 </ion-col>
               </ion-row>
-              <ion-segment [value]="loginMode">
-                <ion-segment-button value="email" (ionSelect)="loginMode = 'email';">
+              <ion-segment [value]="loginMode" (ionChange)="changeLoginMode($event)">
+                <ion-segment-button value="email">
                   <ion-label>Email</ion-label>
                 </ion-segment-button>
-                <ion-segment-button value="mobile" (ionSelect)="loginMode = 'mobile';">
+                <ion-segment-button value="mobile">
                   <ion-label>Mobile</ion-label>
                 </ion-segment-button>
               </ion-segment>
