@@ -281,8 +281,8 @@ app-dashboard {
   }
 
   .profile-picture {
-    width: 150px !important;
-    height: 150px !important;
+    width: 100% !important;
+    height: auto !important;
   }
 
   .searchbar-cover {
@@ -565,12 +565,13 @@ app-dashboard {
     --min-height: 26px;
 
     .section-label {
-      font-size: 12px;
+      font-size: 15px;
     }
   }
 
   .program-slides {
-    padding: 12px;
+    padding: 0 5px;
+    background-color: #eee;
   }
 
   .program-slide {
@@ -613,7 +614,8 @@ app-dashboard {
   }
 
   .relationship-slides {
-    padding: 12px;
+    // padding: 12px;
+    background-color: #eee;
   }
 
   .relationship-slide {
@@ -624,6 +626,8 @@ app-dashboard {
     height: 146px;
     width: 120px;
     margin: 0 3%;
+    box-shadow: none;
+    border-radius: 0;
   }
 
   .relationship-photo-container {

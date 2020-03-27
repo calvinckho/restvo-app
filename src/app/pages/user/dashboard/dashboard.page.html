@@ -41,6 +41,9 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
+    <ion-button *ngIf="!modalPage && userData.user" slot="end" fill="clear">
+      <ion-icon name="settings-outline"></ion-icon>
+    </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
       <ion-button routerLink="/createCommunityregister" color="grey">
         Sign In
