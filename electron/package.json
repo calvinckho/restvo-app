@@ -1,5 +1,5 @@
 {
-  "name": "restvo-desktop",
+  "name": "Restvo",
   "version": "1.7.3",
   "description": "Connect with Mentors",
   "main": "index.js",
@@ -16,7 +16,8 @@
     "buildVersion": "1",
     "copyright": "Copyright © 2019 Restvo Inc.",
     "mac": {
-      "category": "Social Networking"
+      "category": "Social Networking",
+      "darkModeSupport": true
     },
     "win": {
       "target": "NSIS"
