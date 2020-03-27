@@ -39,12 +39,14 @@ app-dashboard {
   }
 
   .message-detail {
-    width: 85%;
     color: grey;
-    margin: 8px 0 16px 0;
-    max-height: 36px;
-    line-height: 18px; /* Height / no. of lines to display */
     overflow: hidden;
+    font-size: 13px;
+    margin: 4px 0 0 0;
+  }
+
+  .profile-banner {
+    padding: 10px 0;
   }
 
   .dashboard-banner {
@@ -536,12 +538,12 @@ app-dashboard {
   }
 
   .program-slides {
-    padding: 0 5px;
+    padding: 0 5px 10px 0;
     background-color: #eee;
   }
 
   .program-slide {
-    max-width: 150px;
+    width: 150px !important;
   }
 
   .program-card {

@@ -45,7 +45,7 @@
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
-      <ion-button routerLink="/createCommunityregister" color="grey">
+      <ion-button routerLink="/createCommunityregister" color="black">
         Sign In
       </ion-button>
     </ion-buttons>
@@ -97,16 +97,19 @@
     </ion-row>
   </ion-grid>
 
+  <!-- Gray Spacer -->
+  <div style="background-color: #eee; padding: 4px 0;"></div>
+
   <!-- Complete your Profile Banner -->
-  <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess">
+  <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess" class="profile-banner">
     <ion-item-sliding side="end">
       <ion-item (click)="finishOnboarding($event)" lines="none">
         <ion-avatar slot="start">
           <ion-img src="assets/img/finish.png"></ion-img>
         </ion-avatar>
         <div class="ion-text-wrap message-container">
-          <ion-label class="ion-margin-top">Complete Your Profile</ion-label>
-          <p class="message-detail">Answer a few questions to complete your profile.</p>
+          <ion-label>Complete Your Profile</ion-label>
+          <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
