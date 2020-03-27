@@ -39,6 +39,21 @@
 <ion-content class="ion-padding-bottom">
   <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && !(router.url.includes('discover/home') || router.url.includes('manage/activity'))">
     <!--Invitation Section-->
+    <ion-item-sliding side="end" *ngIf="!authService.token && (participant_type === 2) && token">
+      <ion-item (click)="acceptInvitation($event)" lines="none">
+        <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
+        <div class="ion-text-wrap">
+          <ion-label class="ion-margin-top">Accept Invitation</ion-label>
+          <p class="short-paragraph">Click to accept invitation to join.</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="acceptInvitation($event)">
+          Accept
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
     <ion-item-sliding side="end" *ngIf="!hasLeaderAccess && (participant_type === 4) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
         <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
@@ -54,7 +69,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-    <ion-item-sliding side="end" *ngIf="!hasOrganizerAccess && (this.participant_type === 3) && this.token">
+    <ion-item-sliding side="end" *ngIf="!hasOrganizerAccess && (this.participant_type === 3) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
         <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap">
