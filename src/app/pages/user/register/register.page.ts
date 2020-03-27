@@ -717,6 +717,10 @@ export class RegisterPage implements OnInit {
         }
     }
 
+    changeLoginMode(event) { // this is necessary because form control wouldn't allow 2-way binding so we can't use [(ngModel)] to update this.loginMode
+        this.loginMode = event.detail.value;
+    }
+
     async savePassword() {
         try {
             await this.userData.update({ _id: this.userData.user._id, password: this.passForm.get('passwordConfirmation').value });

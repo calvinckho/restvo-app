@@ -166,40 +166,43 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async setup() {
         this.propIndex = this.chatService.currentChatProps.length - 1;
-        const messages = await this.storage.get('conversation-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId); // load from storage
-        if (messages) {
-            this.messages = messages;
-        } else {
-            this.messages = [];
-        }
-        // restore composed message
-        const composedMessage = await this.storage.get('composedMessage' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
-        if (composedMessage && composedMessage.length) {
-            this.composedMessage = composedMessage;
-            this.moreMediaOptions = false;
-        }
-        // restore uploaded but unsent media
-        const uploadedMedia = await this.storage.get('media-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
-        if (uploadedMedia && uploadedMedia.length) {
-            this.awsService.sessionAssets = uploadedMedia;
-            this.moreMediaOptions = false;
-        } else {
-            this.awsService.sessionAssets = [];
-        }
-        // restore unsent moment
-        const uploadedMoments = await this.storage.get('moment-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
-        if (uploadedMoments && uploadedMoments.length) {
-            this.selectedMoments = [];
-            for (const moment of uploadedMoments) {
-                const index = this.calendarService.calendarItems.map((c) => c.moment && c.moment._id).indexOf(moment._id);
-                if (index > -1) {
-                    this.selectedMoments.push(this.calendarService.calendarItems[index].moment);
-                }
+        // if current chat props exists, which is needed to retrieve the conversationId
+        if (this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]) {
+            const messages = await this.storage.get('conversation-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId); // load from storage
+            if (messages) {
+                this.messages = messages;
+            } else {
+                this.messages = [];
             }
-            this.moreMediaOptions = false;
+            // restore composed message
+            const composedMessage = await this.storage.get('composedMessage' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
+            if (composedMessage && composedMessage.length) {
+                this.composedMessage = composedMessage;
+                this.moreMediaOptions = false;
+            }
+            // restore uploaded but unsent media
+            const uploadedMedia = await this.storage.get('media-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
+            if (uploadedMedia && uploadedMedia.length) {
+                this.awsService.sessionAssets = uploadedMedia;
+                this.moreMediaOptions = false;
+            } else {
+                this.awsService.sessionAssets = [];
+            }
+            // restore unsent moment
+            const uploadedMoments = await this.storage.get('moment-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
+            if (uploadedMoments && uploadedMoments.length) {
+                this.selectedMoments = [];
+                for (const moment of uploadedMoments) {
+                    const index = this.calendarService.calendarItems.map((c) => c.moment && c.moment._id).indexOf(moment._id);
+                    if (index > -1) {
+                        this.selectedMoments.push(this.calendarService.calendarItems[index].moment);
+                    }
+                }
+                this.moreMediaOptions = false;
+            }
+            this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
         }
         this.reloadChatView();
-        await this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
     }
 
     async reloadChatView() {
@@ -216,7 +219,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async loadMoreMessages(event) {
-        if (!this.chatReachedEnd && !this.chatAPIBusy) { // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
+        // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
+        // if current chat props exists, which is needed to retrieve the conversationId
+        if (!this.chatReachedEnd && !this.chatAPIBusy && this.chatService.currentChatProps[this.propIndex]) {
             try {
                 this.chatPageNum++;
                 this.chatAPIBusy = true;
@@ -261,7 +266,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
                             message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
                         }
-                        message.status = "confirmed";
+                        message.status = 'confirmed';
                         this.messages.unshift(message);
                     });
                     if (momentIds.length){
@@ -688,7 +693,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
     }
 
-    async openPickFeature(event, typeOfMoment) {
+    async openPickFeature() {
         try {
             const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId}});
             await modal.present();
@@ -1145,12 +1150,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // close modal should only be execute by a Modal Page, since Chat is always embedded in the Myconversations page in Desktop view
     async closeModal(refreshNeeded) {
         try {
-            await this.cleanup(false);
+            const currentChatId = await this.cleanup(false);
             //  clean up the chat props
             this.chatService.currentChatProps.pop(); // pop the current chat props. Once that is done, currentChatProps can't be referenced again in the code below. Use currentChatId
 
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
+                this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});
             } else {
                 setTimeout(() => {
                     this.router.navigate(['/app/myconversations/chat']);

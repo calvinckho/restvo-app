@@ -885,7 +885,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 this.momentService.addParticipants(this.moment, this.resource, 'both', ['user_list_1'], this.resource['en-US'].value[32] + ' to ' + this.moment.matrix_string[0][0], this.resource['en-US'].value[32], this.participantsLabel);
             }
       } else {
-          this.openRegister(1, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
+          this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
       }
   }
 
@@ -1321,7 +1321,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     if (this.authService.token) {
       this.openOnboarding(2);
     } else {
-      this.openRegister(1, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
+      this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
     }
   }
 
@@ -1330,7 +1330,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     if (this.authService.token && this.participant_type && this.token) {
         this.openOnboarding(this.participant_type);
     } else {
-        this.openRegister(1, 'You need to sign in or create an account first before you can accept the invitation.');
+        this.openRegister(0, 'You need to sign in or create an account first before you can accept the invitation.');
     }
   }
 

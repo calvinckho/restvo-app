@@ -84,6 +84,7 @@ export class Auth {
                         this.storage.set('token', this.token);
                         return res;
                     } catch (err) {
+                        this.storage.clear(); // to remove residual user data in storage if app crashed and didn't clear it
                         this.routeUnauthenticatedUser('1', 'Your session is expired. Please log in again.');
                         return {content: 'Unauthenticated', message: err.error.message || 'Your session is expired. Please log in again.'};
                     }
@@ -94,8 +95,8 @@ export class Auth {
                     return {content: 'Offline mode'};
                 }
             } else {
-                this.routeUnauthenticatedUser('1', '');
                 this.storage.clear(); // to remove residual user data in storage if app crashed and didn't clear it
+                this.routeUnauthenticatedUser('1', '');
                 return {content: 'No token found'};
             }
         } catch (err) {
