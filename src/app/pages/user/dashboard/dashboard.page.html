@@ -58,50 +58,54 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <div class="content-container">
-    <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
-      <ion-card id="person-profile-card" class="person-card">
-        <div class="person-photo-container">
-          <ion-avatar class="person-avatar">
-            <img class="person-avatar" [src]="userData.user.avatar">
-          </ion-avatar>
-        </div>
-        <div class="person-content-left">
-          <ion-card-title class="person-name">
-            {{userData.user.first_name}} {{userData.user.last_name}}
-          </ion-card-title>
-          <div class="person-title" [innerHTML]="userData.user.bio" ></div>
-          <ion-button shape="round" class="person-edit-profile" fill="outline" size="full" (click)="openMyProfile()" *ngIf="platform.width() < 768">Edit Profile</ion-button>
-        </div>
+  <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
+    <ion-row class="profile-row">
+      <ion-card class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="view === 'profile'">
+        <ion-item lines="none">
+          <div class="person-photo-container">
+            <ion-avatar class="person-avatar">
+              <img class="person-avatar" [src]="userData.user.avatar">
+            </ion-avatar>
+          </div>
+          <div class="person-content-left">
+            <ion-card-title class="person-name">
+              {{userData.user.first_name}} {{userData.user.last_name}}
+            </ion-card-title>
+            <div class="person-title" [innerHTML]="userData.user.bio" ></div>
+            <ion-button shape="round" class="person-edit-profile" fill="outline" size="full" (click)="openMyProfile()" *ngIf="platform.width() < 768">Edit Profile</ion-button>
+          </div>
+        </ion-item>
       </ion-card>
     </ion-row>
 
     <!-- Complete your Profile Banner -->
-    <ion-card class="complete-profile-banner ion-no-margin" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))">
-      <ion-item-sliding>
-        <ion-item [routerLink]="['/app/completeprofile']" lines="none" mode="md">
-          <ion-avatar slot="start">
-            <ion-img src="assets/img/finish.png"></ion-img>
-          </ion-avatar>
-          <div class="ion-text-wrap message-container">
-            <ion-label style="font-size: 14px">Complete the Setup</ion-label>
-            <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
-          </div>
-          <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-        </ion-item>
-        <ion-item-options>
-          <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
-            Dismiss
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-card>
+    <ion-row class="profile-row">
+      <ion-card class="profile-card" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
+        <ion-item-sliding>
+          <ion-item [routerLink]="['/app/completeprofile']" lines="none" mode="md">
+            <div class="completed_percentage">
+              {{(userData.user.avatar ? 50 : 0) + (authService.incompleteOnboardProcess ? 0 : 50)}}%
+            </div>
+            <div class="ion-text-wrap message-container">
+              <ion-label style="font-size: 14px">Complete the Setup</ion-label>
+              <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
+            </div>
+            <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
+          </ion-item>
+          <ion-item-options>
+            <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
+              Dismiss
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-card>
+    </ion-row>
 
     <ion-grid class="content-grid" *ngIf="view === 'profile'">
       <ion-row>
         <!--List My Mentors-->
-        <ion-col *ngIf="myMentors && myMentors.length" size-xs="12" size-sm="12" size-md="6">
-          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+        <ion-col *ngIf="myMentors && myMentors.length" size-xs="12" size-sm="12" size-md="6" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
             </ion-item>
@@ -166,8 +170,8 @@
           </ion-card>
         </ion-col>
         <!--List My Mentees-->
-        <ion-col *ngIf="myMentees && myMentees.length" size-xs="12" size-sm="12" size-md="6">
-          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+        <ion-col *ngIf="myMentees && myMentees.length" size-xs="12" size-sm="12" size-md="6" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
             </ion-item>
@@ -232,8 +236,8 @@
           </ion-card>
         </ion-col>
         <!--List My Community-->
-        <ion-col *ngIf="programs && programs.length" size-xs="12" size-sm="12" size-md="6">
-          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+        <ion-col *ngIf="programs && programs.length" size-xs="12" size-sm="12" size-md="6" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Community</ion-label>
             </ion-item>
@@ -266,8 +270,8 @@
           </ion-card>
         </ion-col>
 
-        <ion-col *ngIf="!noSystemMessage" size-xs="12" size-sm="12" size-md="6">
-          <ion-card class="ion-no-margin ion-no-padding">
+        <ion-col *ngIf="!noSystemMessage" size-xs="12" size-sm="12" size-md="6" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none" *ngIf="platform.width() >= 768"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">System Notifications</ion-label>
             </ion-item>
