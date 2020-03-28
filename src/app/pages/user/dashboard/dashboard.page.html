@@ -80,9 +80,9 @@
 
     <!-- Complete your Profile Banner -->
     <ion-row class="profile-row">
-      <ion-card class="profile-card" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
+      <ion-card [routerLink]="['/app/completeprofile']" class="profile-card" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
         <ion-item-sliding>
-          <ion-item [routerLink]="['/app/completeprofile']" lines="none" mode="md">
+          <ion-item lines="none">
             <div class="completed_percentage">
               {{(userData.user.avatar ? 50 : 0) + (authService.incompleteOnboardProcess ? 0 : 50)}}%
             </div>
