@@ -1409,10 +1409,10 @@
     </ion-slides>
   </div>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || moment.resource.matrix_number[0].includes(12000))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || moment.resource.matrix_number[0].includes(12000))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

@@ -324,7 +324,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (this.moment && this.moment._id) {
           this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
           // setup People (10500) labels
-          const peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+          let peopleComponentId = -1;
+          if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
+              peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+          }
           if (peopleComponentId > -1) {
               this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] > 4) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] : this.participantLabel;
               this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6].length > 6) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6] : this.organizerLabel;
