@@ -15,8 +15,8 @@
     </ion-grid>
     <form [formGroup]="userForm">
         <ion-list *ngIf="user && user._id">
-            <ion-item lines="none"  color="lightgrey">
-                Profile Picture
+            <ion-item lines="none" color="lightgrey">
+                <ion-label color="darkgrey">Profile Picture</ion-label>
             </ion-item>
             <ion-item class="ion-text-wrap" lines="none">
                 <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
@@ -52,7 +52,9 @@
                 </p>
             </ion-item>
             <ion-item lines="none"  color="lightgrey">
-                Account Information
+                <ion-label color="darkgrey">
+                    Account Information
+                </ion-label>
             </ion-item>
             <ion-item-divider class="ion-text-wrap">
                 <p class="ion-padding-vertical">Verify your email and phone number to ensure that you can recover your account in the future if you forget your password.</p>
@@ -93,7 +95,9 @@
                 </p>
             </ion-item>
             <ion-item lines="none"  color="lightgrey">
-                Contact Info
+                <ion-label color="darkgrey">
+                    Contact Info
+                </ion-label>
             </ion-item>
             <ion-item-divider class="ion-text-wrap">
                 <p class="ion-padding-vertical">Your contact information is private and can only be viewed by people with whom you choose to share.</p>

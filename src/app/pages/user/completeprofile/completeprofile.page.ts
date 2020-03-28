@@ -4,6 +4,8 @@ import {Location} from "@angular/common";
 import {UserData} from "../../../services/user.service";
 import {Auth} from "../../../services/auth.service";
 import {Storage} from "@ionic/storage";
+import {ProfilePage} from "../profile/profile.page";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-completeprofile',
@@ -16,6 +18,7 @@ export class CompleteprofilePage implements OnInit {
   @Input() modalPage: any;
 
   constructor(
+      private router: Router,
       private storage: Storage,
       public location: Location,
       public platform: Platform,
@@ -27,20 +30,34 @@ export class CompleteprofilePage implements OnInit {
   ngOnInit() {
   }
 
+  async openUserProfile() {
+    /*if (this.platform.width() >= 768) {
+      this.router.navigate(['/app/user/profile']);
+    } else {
+      const modal = await this.modalCtrl.create({component: ProfilePage, componentProps: { modalPage: true }} );
+      await modal.present();
+    }*/
+    const modal = await this.modalCtrl.create({component: ProfilePage, componentProps: { modalPage: true }} );
+    await modal.present();
+  }
 
   async requestPushNotificationPermission(event) {
     event.stopPropagation();
-    const result = await this.userData.checkPushNotification(); // if success, will send an event to refresh the userData.user
-    if (result) {
-      this.dismissEnablePushNotification();
+    if (this.platform.is('cordova')) {
+      const result = await this.userData.checkPushNotification(); // if success, will send an event to refresh the userData.user
+      if (result) {
+        this.dismissEnablePushNotification();
+      }
     }
   }
 
   async pressImportContactList(event) {
     event.stopPropagation();
-    const result: any = await this.userData.toggleImportContactList(true);
-    if (result) {
-      this.dismissImportContactList();
+    if (this.platform.is('cordova')) {
+      const result: any = await this.userData.toggleImportContactList(true);
+      if (result) {
+        this.dismissImportContactList();
+      }
     }
   }
 
