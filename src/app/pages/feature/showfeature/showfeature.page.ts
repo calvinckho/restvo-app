@@ -710,7 +710,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     const calendarItemIds = this.calendarService.calendarItems.map((c) => c._id );
     this.hasAddedToCalendar = this.moment.calendar && (calendarItemIds.indexOf(this.moment.calendar._id) > -1);
     if (this.moment.user_list_1) {
-        const peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+        let peopleComponentId = -1;
+        if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
+            peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+        }
         if (peopleComponentId > -1) {
             this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 2 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : this.moment.resource['en-US'].matrix_string[peopleComponentId][4];
             this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 4 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : this.moment.resource['en-US'].matrix_string[peopleComponentId][6];
