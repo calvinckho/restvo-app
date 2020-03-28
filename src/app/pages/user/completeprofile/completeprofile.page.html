@@ -44,7 +44,7 @@
       <small>Optional:</small>
     </ion-card>
     <ion-card [hidden]="(userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder">
-      <ion-item lines="none" class="card-item">
+      <ion-item lines="none" class="card-item" (click)="requestPushNotificationPermission($event)">
         <ion-img class="icon" src="assets/icon/notification.svg" alt="" slot="start"></ion-img>
         <div>
           <ion-label class="action-card-label" color="dark">Enable Push Notifications</ion-label>
@@ -54,7 +54,7 @@
       </ion-item>
     </ion-card>
     <ion-card [hidden]="!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder">
-      <ion-item lines="none" class="card-item">
+      <ion-item lines="none" class="card-item" (click)="pressImportContactList($event)">
         <ion-img class="icon" src="assets/icon/contact.svg" alt="" slot="start"></ion-img>
         <div>
           <ion-label class="action-card-label" color="dark">Import Your Contacts</ion-label>
@@ -62,7 +62,6 @@
         </div>
         <ion-img class="plus" src="assets/icon/plus.svg" alt="" slot="end"></ion-img>
       </ion-item>
-
     </ion-card>
   </div>
 </ion-content>
