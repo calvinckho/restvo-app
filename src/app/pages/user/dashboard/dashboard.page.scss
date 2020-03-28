@@ -112,7 +112,7 @@ app-dashboard {
   }
 
   .calendar-buttons {
-    color: var(--ion-color-secondary);
+    color: var(--ion-color-dark);
     width: 100%;
   }
 
@@ -282,11 +282,6 @@ app-dashboard {
     right: 0;
   }
 
-  .profile-picture {
-    width: 100% !important;
-    height: auto !important;
-  }
-
   .searchbar-cover {
     background-color: var(--ion-color-primary);
     border-top: 2px var(--ion-color-light) solid;
@@ -444,54 +439,20 @@ app-dashboard {
 
   //I hard coded this for mobile
   .person-card {
-    max-width: 375px;
-    max-height: 174px;
+    //max-width: 375px;
+    //max-height: 174px;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    margin: 0;
+    margin: 0 5px;
     display: flex;
     flex-direction: row;
     padding: 12px;
-
-    // Added the slant pattern!
-    .top-pattern {
-      position: absolute;
-      top: 0;
-      height: 15%;
-      width: 100%;
-      background-color: #62bebf;
-      z-index: -1;
-    }
-
-    .middle-pattern {
-      position: absolute;
-      top: 15%;
-      height: 50%;
-      width: 100%;
-      border-style: solid;
-      border-width: 0 1300px 500px 0;
-      border-color: transparent #62bebf transparent transparent;
-      z-index: -1;
-    }
-
-    .bottom-pattern {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 100%;
-      background-color: var(--ion-color-light);
-      z-index: -2;
-    }
-    .person-card-header {
-      padding: 12px !important;
-      display: flex;
-      flex-direction: row;
-    }
   }
+
   .person-avatar {
-    width: 150px !important;
-    height: 150px !important;
+    width: 100px !important;
+    height: 100px !important;
   }
 
   .person-content {
@@ -505,8 +466,14 @@ app-dashboard {
   }
 
   .person-edit-profile {
-    width: 183px;
+    //width: 183px;
     height: 26px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    /* identical to box height */
+    display: flex;
   }
 
   .person-content-left {
@@ -515,14 +482,13 @@ app-dashboard {
     // height: 44px;
     // line-height: 100%;
     width: 100%;
-    padding-left: 12px;
+    padding-left: 25px;
     display: flex;
     flex-direction: column;
     // justify-content: space-between;
   }
 
   .person-name {
-    font-size: 14px;
     width: 183px;
     height: 23px;
     font-family: 'Roboto', sans-serif;
@@ -530,15 +496,13 @@ app-dashboard {
     font-weight: 500;
     font-size: 20px;
     line-height: 23px;
-
-    color: #000000;
   }
   .person-content-container {
     margin-left: 18px;
   }
 
   .person-title {
-    width: 183px;
+    //width: 183px;
     height: 28px;
     font-size: 12px;
     line-height: 14px;
@@ -565,6 +529,7 @@ app-dashboard {
 
   .section {
     --min-height: 26px;
+    --background: transparent;
 
     .section-label {
       font-size: 15px;
@@ -573,7 +538,7 @@ app-dashboard {
 
   .program-slides {
     padding: 0 5px 10px 0;
-    background-color: #eee;
+    background-color: var(--ion-color-secondary);
   }
 
   .program-slide {
@@ -583,6 +548,12 @@ app-dashboard {
   .program-card {
     height: 100%;
     width: 100%;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .grid-program-card {
+    width: auto;
     object-fit: contain;
     margin: 0 3%;
   }
@@ -615,21 +586,21 @@ app-dashboard {
     z-index: 15;
   }
 
-  .relationship-slides {
-    // padding: 12px;
-    background-color: #eee;
+  .content-card {
+    background-color: var(--ion-color-secondary);
   }
 
   .relationship-slide {
     max-width: 130px;
+    padding-bottom: 10px;
   }
 
   .relationship-card {
     height: 146px;
     width: 120px;
     margin: 0 3%;
-    box-shadow: none;
-    border-radius: 0;
+    //box-shadow: none;
+    //border-radius: 0;
   }
 
   .relationship-photo-container {
@@ -650,8 +621,12 @@ app-dashboard {
   }
 
   .relationship-name-container {
-    height: 32px;
+    height: 20px;
     overflow: hidden;
+  }
+
+  .relationship-name-container.top {
+    margin-top: 5px;
   }
 
   .relationship-name {
@@ -670,5 +645,15 @@ app-dashboard {
     line-height: 14px;
     text-align: center;
     color: var(--ion-color-dark);
+  }
+
+  .content-container {
+    margin: 0 auto;
+    max-width: 936px;
+  }
+
+  .content-grid {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
