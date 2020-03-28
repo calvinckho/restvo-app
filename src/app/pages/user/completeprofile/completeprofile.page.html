@@ -8,8 +8,8 @@
 </ion-header>
 
 <ion-content color="light">
-  <ion-toolbar>
-    <progress-bar [progress]="25" [color]="'#488aff'"></progress-bar>
+  <ion-toolbar *ngIf="userData && userData.user">
+    <progress-bar [progress]="(userData.user.avatar ? 50 : 0) + (authService.incompleteOnboardProcess ? 0 : 50)" [color]="'#488aff'"></progress-bar>
   </ion-toolbar>
   <!-- Mandatory profile action buttons -->
   <div class="mandatory-actions">
@@ -27,7 +27,7 @@
       </ion-item>
     </ion-card>
     <ion-card *ngIf="userData.user && authService.incompleteOnboardProcess">
-      <ion-item lines="none" class="card-item">
+      <ion-item lines="none" class="card-item" (click)="authService.openOnboarding({ modalPage: true })">
         <ion-img class="icon" src="assets/icon/quotation.svg" alt="" slot="start"></ion-img>
         <div>
           <ion-label class="action-card-label" color="dark">Complete Your Profile</ion-label>
