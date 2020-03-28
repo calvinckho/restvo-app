@@ -30,7 +30,7 @@
       <ion-col size-xs="12" size-sm="12" size-md="3" size-lg="3">
         <ion-list>
           <ion-item (click)="clickManageMenu('insight')">
-            <ion-icon slot="start" name="stats" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-icon slot="start" name="stats-chart" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'insight')}">Insight</ion-label>
           </ion-item>
           <ion-item (click)="clickManageMenu('activities')" *ngIf="restvoStaff">
