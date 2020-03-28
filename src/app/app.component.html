@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane contentId="main-app" [when]="userData.splitPaneState">
-    <ion-menu menuId="main" side="start" contentId="main-app" mode="md">
+    <ion-menu menuId="main" side="start" contentId="main-app" mode="md" type="overlay">
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
           <ion-item>
@@ -10,44 +10,60 @@
           </ion-item>
         </ion-toolbar>
         <ion-list>
-          <ion-item (click)="changeTab('dashboard/insight/' + userData.defaultProgram._id)" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
-            <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-            <ion-label>Dashboard</ion-label>
-          </ion-item>
-          <ion-item (click)="changeTab('discover/home/' + userData.defaultProgram._id)" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
-            <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-            <ion-label>Dashboard</ion-label>
-          </ion-item>
-          <ion-item (click)="changeTab('discover')" *ngIf="!userData.defaultProgram">
-            <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-            <ion-label>Discover</ion-label>
-          </ion-item>
-          <ion-item slot="start" (click)="changeTab('news')" *ngIf="!userData.UIAdminMode">
-            <ion-icon slot="start" name="newspaper"></ion-icon>
-            <ion-label>News</ion-label>
-          </ion-item>
-          <ion-item (click)="changeTab('myconversations')">
-            <ion-icon slot="start"  name="chatbox"></ion-icon>
-            <ion-label>Chat</ion-label>
-            <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="primary" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
-          </ion-item>
-          <ion-item (click)="changeTab('me')">
-            <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>
-            <ion-label>Me</ion-label>
-            <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="chatService.toggleRestStatus($event)" *ngIf="chatService && userData.user">
-              {{userData.UIrestStatus}}
-            </ion-badge>
-          </ion-item>
-          <ion-item *ngIf="userData.currentCommunityAdminStatus" (click)="changeTab('manage')">
-            <ion-icon slot="start" name="bulb"></ion-icon>
-            <ion-label>Manage</ion-label>
-          </ion-item>
-          <ion-item (click)="settings()">
-            <ion-icon slot="start" name="cog"></ion-icon>
-            <ion-label>
-              Settings
-            </ion-label>
-          </ion-item>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
+              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
+              <ion-label>Dashboard</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
+              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
+              <ion-label>Dashboard</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/discover']" *ngIf="!userData.defaultProgram">
+              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
+              <ion-label>Discover</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item slot="start" [routerLink]="['/app/news']" *ngIf="!userData.UIAdminMode">
+              <ion-icon slot="start" name="newspaper"></ion-icon>
+              <ion-label>News</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/myconversations']">
+              <ion-icon slot="start"  name="chatbox"></ion-icon>
+              <ion-label>Chat</ion-label>
+              <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="primary" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/me']">
+              <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>
+              <ion-label>Me</ion-label>
+              <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="chatService.toggleRestStatus($event)" *ngIf="chatService && userData.user">
+                {{userData.UIrestStatus}}
+              </ion-badge>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/manage']">
+              <ion-icon slot="start" name="bulb"></ion-icon>
+              <ion-label>Manage</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/user/profile']">
+              <ion-icon slot="start" name="cog"></ion-icon>
+              <ion-label>
+                Settings
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
           <ion-item>
             <ion-label class="ion-text-wrap">Mentoring Mode</ion-label>
             <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode()"></ion-toggle>

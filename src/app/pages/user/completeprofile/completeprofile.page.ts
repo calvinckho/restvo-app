@@ -1,4 +1,8 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {ModalController, Platform} from "@ionic/angular";
+import {Location} from "@angular/common";
+import {UserData} from "../../../services/user.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-completeprofile',
@@ -8,9 +12,16 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class CompleteprofilePage implements OnInit {
 
-  constructor() { }
+  @Input() modalPage: any;
+
+  constructor(
+      public location: Location,
+      public platform: Platform,
+      public modalCtrl: ModalController,
+      public userData: UserData,
+      public authService: Auth
+  ) { }
 
   ngOnInit() {
   }
-
 }

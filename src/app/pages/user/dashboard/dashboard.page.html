@@ -50,28 +50,6 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-   <ion-toolbar *ngIf="platform.width() < 768 || platform.is('ios')">
-    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess">
-    <ion-item-sliding side="end">
-      <ion-item (click)="finishOnboarding($event)" lines="none">
-        <ion-avatar slot="start">
-          <ion-img src="assets/img/finish.png"></ion-img>
-        </ion-avatar>
-        <div class="ion-text-wrap message-container">
-          <ion-label class="ion-margin-top">Complete Your Profile</ion-label>
-          <p class="message-detail">Answer a few questions to complete your profile.</p>
-        </div>
-        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-      </ion-item>
-      <ion-item-options>
-        <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
-          Dismiss
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="userData.user">
@@ -97,6 +75,27 @@
         </div>
       </ion-card>
     </ion-row>
+
+    <!-- Complete your Profile Banner -->
+    <ion-card class="complete-profile-banner ion-no-margin" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))">
+      <ion-item-sliding>
+        <ion-item [routerLink]="['/app/completeprofile']" lines="none" mode="md">
+          <ion-avatar slot="start">
+            <ion-img src="assets/img/finish.png"></ion-img>
+          </ion-avatar>
+          <div class="ion-text-wrap message-container">
+            <ion-label style="font-size: 14px">Complete the Setup</ion-label>
+            <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
+          </div>
+          <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
+            Dismiss
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-card>
 
     <ion-grid class="content-grid" *ngIf="view === 'profile'">
       <ion-row>

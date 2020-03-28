@@ -5,16 +5,6 @@ app-completeprofile {
     margin-top: 20px;
   }
 
-  .title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 25px;
-    width: 90%;
-    padding: 0 !important;
-  }
-
   .back-icon {
     position: absolute;
     top: 50%;
@@ -30,27 +20,35 @@ app-completeprofile {
     margin-top: 0 !important;
 
     & small {
-      font-size: 15px;
+      font-size: 12px;
     }
   }
 
-  .action-card {
-    padding: 10px 20px;
-    display: grid;
-    grid-template-columns: 40px 1fr 25px;
-    grid-gap: 20px;
-    align-items: center;
+  .card-item {
+    margin: 10px 0;
   }
 
   .icon {
-    display: inline-block;
-    height: 40px;
-    width: 40px;
+    //display: inline-block;
+    height: 31px;
+    width: 31px;
   }
 
   .plus {
-    display: inline-block;
+    //display: inline-block;
     height: 25px;
     width: 25px;
+  }
+
+  .action-card-label {
+    font-size: 14px !important;
+    line-height: 16px;
+    margin-bottom: 3px;
+  }
+
+  .action-card-message {
+    font-size: 10px;
+    line-height: 12px;
+    color: var(--ion-color-darkgrey);
   }
 }

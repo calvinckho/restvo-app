@@ -1,57 +1,68 @@
-<ion-header>
+<ion-header id="complete-profile-header">
   <ion-toolbar>
-    <div class="title-container">
-      <ion-icon class="back-icon" name="chevron-back-outline"></ion-icon>
-      <ion-title class="title" mode="md">Complete Your Profile</ion-title>
-    </div>
-    <progress-bar [progress]="25" [color]="'#488aff'"></progress-bar>
+    <ion-buttons slot="start">
+      <ion-button (click)="location.back()" id='clickback'><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Complete The Setup</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="light">
+  <ion-toolbar>
+    <progress-bar [progress]="25" [color]="'#488aff'"></progress-bar>
+  </ion-toolbar>
   <!-- Mandatory profile action buttons -->
   <div class="mandatory-actions">
     <ion-card class="title-reminder">
-      <small>Tip: Completed profiles have the most success on Restvo </small>
+      <small>Tip: Completing your setup helps you get the most out of Restvo</small>
     </ion-card>
-    <ion-card class="action-card">
-      <img class="icon" src="assets/icon/user.svg" alt="">
-      <div class="action-card-info">
-        <ion-card-title mode="md">Upload a Profile Photo</ion-card-title>
-        <ion-card-subtitle mode="md">Let other users see who they’re connecting with</ion-card-subtitle>
-      </div>
-      <img class="plus" src="assets/icon/plus.svg" alt="">
+    <ion-card *ngIf="userData.user && !userData.user.avatar">
+      <ion-item lines="none" class="card-item">
+        <ion-img class="icon" src="assets/icon/user.svg" alt="" slot="start"></ion-img>
+        <div>
+          <ion-label class="action-card-label" color="dark">Upload a Profile Photo</ion-label>
+          <div class="action-card-message">Let other users see who they’re connecting with</div>
+        </div>
+        <ion-img class="plus" src="assets/icon/plus.svg" alt="" slot="end"></ion-img>
+      </ion-item>
     </ion-card>
-    <ion-card class="action-card">
-      <img class="icon" src="assets/icon/quotation.svg" alt="">
-      <div class="action-card-info">
-        <ion-card-title mode="md">Add a Bio</ion-card-title>
-        <ion-card-subtitle mode="md">Tell people a little bit about yourself</ion-card-subtitle>
-      </div>
-      <img class="plus" src="assets/icon/plus.svg" alt="">
+    <ion-card *ngIf="userData.user && authService.incompleteOnboardProcess">
+      <ion-item lines="none" class="card-item">
+        <ion-img class="icon" src="assets/icon/quotation.svg" alt="" slot="start"></ion-img>
+        <div>
+          <ion-label class="action-card-label" color="dark">Complete Your Profile</ion-label>
+          <div class="action-card-message">Answer a few questions to complete your profile</div>
+        </div>
+        <ion-img class="plus" src="assets/icon/plus.svg" alt="" slot="end"></ion-img>
+      </ion-item>
     </ion-card>
   </div>
 
   <!-- Optional profile action buttons -->
-  <div class="optional-actions">
+  <div class="optional-actions" [hidden]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) && (!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder)">
     <ion-card class="title-reminder">
       <small>Optional:</small>
     </ion-card>
-    <ion-card class="action-card">
-      <img class="icon" src="assets/icon/notification.svg" alt="">
-      <div class="action-card-info">
-        <ion-card-title mode="md">Enable Push Notifications</ion-card-title>
-        <ion-card-subtitle mode="md">Get notified when you recieve a new message or request</ion-card-subtitle>
-      </div>
-      <img class="plus" src="assets/icon/plus.svg" alt="">
+    <ion-card [hidden]="(userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder">
+      <ion-item lines="none" class="card-item">
+        <ion-img class="icon" src="assets/icon/notification.svg" alt="" slot="start"></ion-img>
+        <div>
+          <ion-label class="action-card-label" color="dark">Enable Push Notifications</ion-label>
+          <div class="action-card-message">Get notified when you recieve a new message or request</div>
+        </div>
+        <ion-img class="plus" src="assets/icon/plus.svg" alt="" slot="end"></ion-img>
+      </ion-item>
     </ion-card>
-    <ion-card class="action-card">
-      <img class="icon" src="assets/icon/contact.svg" alt="">
-      <div class="action-card-info">
-        <ion-card-title mode="md">Import Your Contacts</ion-card-title>
-        <ion-card-subtitle mode="md">Find out who you know has already joined Restvo</ion-card-subtitle>
-      </div>
-      <img class="plus" src="assets/icon/plus.svg" alt="">
+    <ion-card [hidden]="!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder">
+      <ion-item lines="none" class="card-item">
+        <ion-img class="icon" src="assets/icon/contact.svg" alt="" slot="start"></ion-img>
+        <div>
+          <ion-label class="action-card-label" color="dark">Import Your Contacts</ion-label>
+          <div class="action-card-message">Find out who you know has already joined Restvo</div>
+        </div>
+        <ion-img class="plus" src="assets/icon/plus.svg" alt="" slot="end"></ion-img>
+      </ion-item>
+
     </ion-card>
   </div>
 </ion-content>

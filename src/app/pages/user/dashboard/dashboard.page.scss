@@ -41,7 +41,8 @@ app-dashboard {
   .message-detail {
     color: grey;
     overflow: hidden;
-    font-size: 13px;
+    font-size: 10px;
+    line-height: 12px;
     margin: 4px 0 0 0;
   }
 
@@ -509,6 +510,11 @@ app-dashboard {
     overflow: hidden;
     margin: 8px 0px 16px 0px;
     color: var(--ion-color-darkgrey);
+  }
+
+  .complete-profile-banner {
+    margin: 0 5px;
+    padding: 10px 0;
   }
 
   .content-border {

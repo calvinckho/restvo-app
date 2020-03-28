@@ -50,37 +50,6 @@
   <ion-toolbar *ngIf="platform.width() < 768">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
   </ion-toolbar>
-  <!--<ion-toolbar *ngIf="moreOptions">
-    <div class="moreoptions-container">
-      <ion-grid class="moreoptions-grid">
-        <ion-row class="moreoptions-community-name ion-text-center" >Create</ion-row>
-        <ion-row class="moreoptions-row">
-          <ion-col class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
-            <ion-item lines="none" (click)="createNewChat()">
-              <div class="moreoptions-centered">
-                <ion-avatar class="moreoptions-avatar">
-                  <img src="assets/img/avatar-default.jpg"/>
-                </ion-avatar>
-                <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
-                <ion-label class="moreoptions-label ion-text-center" >Chat</ion-label>
-              </div>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
-            <ion-item lines="none" (click)="createNewGroup()">
-              <div class="moreoptions-centered">
-                <ion-avatar class="moreoptions-avatar">
-                  <img src="assets/img/avatar-group.png"/>
-                </ion-avatar>
-                <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
-                <ion-label class="moreoptions-label ion-text-center" >Group</ion-label>
-              </div>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-  </ion-toolbar>-->
   <ion-toolbar [hidden]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) && (!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder)">
     <ion-item-sliding side="end" [hidden]="(userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder">
       <ion-item (click)="requestPushNotificationPermission($event)" lines="none">
