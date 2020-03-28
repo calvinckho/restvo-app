@@ -33,7 +33,7 @@
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
       <ion-searchbar class="header-searchbar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" *ngIf="platform.width() >= 768 && !platform.is('ios')" slot="start"></ion-searchbar>
     <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">
-      <ion-avatar class="profile-picture" slot="start">
+      <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
       </ion-avatar>
@@ -41,16 +41,16 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
-    <ion-button *ngIf="!modalPage && userData.user" slot="end" fill="clear">
+    <ion-button *ngIf="!modalPage && userData.user" slot="end" fill="clear" (click)="openMyProfile()">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
-      <ion-button routerLink="/createCommunityregister" color="grey">
+      <ion-button routerLink="/register" color="grey">
         Sign In
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <!-- <ion-toolbar *ngIf="platform.width() < 768 || platform.is('ios')">
+   <ion-toolbar *ngIf="platform.width() < 768 || platform.is('ios')">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
   </ion-toolbar>
   <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess">
@@ -71,7 +71,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-toolbar> -->
+  </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="userData.user">
@@ -80,120 +80,219 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-
-  <!-- I changed the framework below to match a mobile view// It should render
-  how the Figma model was shown with same pixel sizes and everything.-->
-
-  <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
-    <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-      <div class="person-photo-container">
-        <ion-avatar class="person-avatar">
-          <img class="person-avatar" [src]="userData.user.avatar">
-        </ion-avatar>
-      </div>
-        <ion-card-header class="person-content-left">
+  <div class="content-container">
+    <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
+      <ion-card id="person-profile-card" class="person-card">
+        <div class="person-photo-container">
+          <ion-avatar class="person-avatar">
+            <img class="person-avatar" [src]="userData.user.avatar">
+          </ion-avatar>
+        </div>
+        <div class="person-content-left">
           <ion-card-title class="person-name">
             {{userData.user.first_name}} {{userData.user.last_name}}
           </ion-card-title>
-          <ion-card-subtitle class="person-title" [innerHTML]="userData.user.title" ></ion-card-subtitle>
-          <ion-button shape="round" class="person-edit-profile" fill="outline" >Edit Profile</ion-button>
-        </ion-card-header>
-    </ion-card>
-  </ion-row>
+          <div class="person-title" [innerHTML]="userData.user.bio" ></div>
+          <ion-button shape="round" class="person-edit-profile" fill="outline" size="full" (click)="openMyProfile()" *ngIf="platform.width() < 768">Edit Profile</ion-button>
+        </div>
+      </ion-card>
+    </ion-row>
 
+    <ion-grid class="content-grid" *ngIf="view === 'profile'">
+      <ion-row>
+        <!--List My Mentors-->
+        <ion-col *ngIf="myMentors && myMentors.length" size-xs="12" size-sm="12" size-md="6">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
+            </ion-item>
+            <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+                <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
+                  <ion-card-header class="ion-no-padding ion-justify-content-center">
+                    <div class="relationship-photo-container">
+                      <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentors; index as i" [hidden]="!relationship.mentors.length">
+                        <img class="relationship-photo" *ngIf="(relationship.mentors.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '72px', 'width': '72px'}" />
+                        <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMentorsDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '54px', 'width': '54px'}" />
+                        <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMentorsDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '45px', 'width': '45px'}" />
+                      </ion-avatar>
+                      <ion-avatar class="relationship-avatar" [hidden]="relationship.mentors.length">
+                        <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
+                      </ion-avatar>
+                    </div>
+                  </ion-card-header>
+                  <ion-card-content class="ion-no-padding">
+                    <ion-row class="relationship-name-container top ion-align-items-center">
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 1">{{relationship.mentors[0].first_name}}</ion-col>
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 2">{{relationship.mentors[1].first_name}}, {{relationship.mentors[0].first_name}}</ion-col>
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentors.length || (relationship.mentors.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
+                    </ion-row>
+                    <ion-row class="relationship-name-container ion-align-items-center">
+                      <ion-col class="relationship-description">{{relationship.program}}</ion-col>
+                    </ion-row>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+                  <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
+                    <ion-card-header class="ion-no-padding ion-justify-content-center">
+                      <div class="relationship-photo-container">
+                        <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentors; index as i" [hidden]="!relationship.mentors.length">
+                          <img class="relationship-photo" *ngIf="(relationship.mentors.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '72px', 'width': '72px'}" />
+                          <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMentorsDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '54px', 'width': '54px'}" />
+                          <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMentorsDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '45px', 'width': '45px'}" />
+                        </ion-avatar>
+                        <ion-avatar class="relationship-avatar" [hidden]="relationship.mentors.length">
+                          <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
+                        </ion-avatar>
+                      </div>
+                    </ion-card-header>
+                    <ion-card-content class="ion-no-padding">
+                      <ion-row class="relationship-name-container top ion-align-items-center">
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 1">{{relationship.mentors[0].first_name}}</ion-col>
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 2">{{relationship.mentors[1].first_name}}, {{relationship.mentors[0].first_name}}</ion-col>
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentors.length || (relationship.mentors.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
+                      </ion-row>
+                      <ion-row class="relationship-name-container ion-align-items-center">
+                        <ion-col class="relationship-description">{{relationship.program}}</ion-col>
+                      </ion-row>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <!--List My Mentees-->
+        <ion-col *ngIf="myMentees && myMentees.length" size-xs="12" size-sm="12" size-md="6">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
+            </ion-item>
+            <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+                <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="relationship-photo-container ion-justify-content-center">
+                      <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentees; index as i" [hidden]="!relationship.mentees.length">
+                        <img class="relationship-photo" *ngIf="(relationship.mentees.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '72px', 'width': '72px'}" />
+                        <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMenteesDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '54px', 'width': '54px'}" />
+                        <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMenteesDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '45px', 'width': '45px'}" />
+                      </ion-avatar>
+                      <ion-avatar class="relationship-avatar" [hidden]="relationship.mentees.length">
+                        <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
+                      </ion-avatar>
+                    </div>
+                  </ion-card-header>
+                  <ion-card-content class="ion-no-padding">
+                    <ion-row class="relationship-name-container top ion-align-items-center">
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 1">{{relationship.mentees[0].first_name}}</ion-col>
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 2">{{relationship.mentees[1].first_name}}, {{relationship.mentees[0].first_name}}</ion-col>
+                      <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentees.length || (relationship.mentees.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
+                    </ion-row>
+                    <ion-row class="relationship-name-container ion-align-items-center">
+                      <ion-col class="relationship-description">{{relationship.program}}</ion-col>
+                    </ion-row>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+                  <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="relationship-photo-container ion-justify-content-center">
+                        <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentees; index as i" [hidden]="!relationship.mentees.length">
+                          <img class="relationship-photo" *ngIf="(relationship.mentees.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '72px', 'width': '72px'}" />
+                          <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMenteesDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '54px', 'width': '54px'}" />
+                          <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMenteesDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '45px', 'width': '45px'}" />
+                        </ion-avatar>
+                        <ion-avatar class="relationship-avatar" [hidden]="relationship.mentees.length">
+                          <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
+                        </ion-avatar>
+                      </div>
+                    </ion-card-header>
+                    <ion-card-content class="ion-no-padding">
+                      <ion-row class="relationship-name-container top ion-align-items-center">
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 1">{{relationship.mentees[0].first_name}}</ion-col>
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 2">{{relationship.mentees[1].first_name}}, {{relationship.mentees[0].first_name}}</ion-col>
+                        <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentees.length || (relationship.mentees.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
+                      </ion-row>
+                      <ion-row class="relationship-name-container ion-align-items-center">
+                        <ion-col class="relationship-description">{{relationship.program}}</ion-col>
+                      </ion-row>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <!--List My Community-->
+        <ion-col *ngIf="programs && programs.length" size-xs="12" size-sm="12" size-md="6">
+          <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'content-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">My Community</ion-label>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+                <ion-card class="program-card" (click)="openProgram($event, program)">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">{{program.matrix_string[0][0]}}</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+                  <ion-card class="grid-program-card" (click)="openProgram($event, program)">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">{{program.matrix_string[0][0]}}</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
 
-  <!--List My Mentors-->
-  <div *ngIf="myMentors && myMentors.length && view === 'profile'">
-    <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
-      <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
-    </ion-item>
-    <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}">
-      <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
-        <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
-          <ion-card-header class="ion-no-padding ion-justify-content-center">
-            <div class="relationship-photo-container">
-              <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentors; index as i" [hidden]="!relationship.mentors.length">
-                <img class="relationship-photo" *ngIf="(relationship.mentors.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '72px', 'width': '72px'}" />
-                <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMentorsDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '54px', 'width': '54px'}" />
-                <img class="relationship-photo border" *ngIf="(relationship.mentors.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMentorsDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMentorsDisplayed), 'height': '45px', 'width': '45px'}" />
-              </ion-avatar>
-              <ion-avatar class="relationship-avatar" [hidden]="relationship.mentors.length">
-                <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
-              </ion-avatar>
-            </div>
-          </ion-card-header>
-          <ion-card-content class="ion-no-padding">
-            <ion-row class="relationship-name-container ion-align-items-center">
-              <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 1">{{relationship.mentors[0].first_name}}</ion-col>
-              <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentors.length === 2">{{relationship.mentors[1].first_name}}, {{relationship.mentors[0].first_name}}</ion-col>
-              <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentors.length || (relationship.mentors.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
-            </ion-row>
-            <ion-note class="relationship-description">{{relationship.program}}</ion-note>
-          </ion-card-content>
-        </ion-card>
-      </ion-slide>
-    </ion-slides>
-  </div>
-  <!--List My Mentees-->
-  <div *ngIf="myMentees && myMentees.length && view === 'profile'">
-    <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
-      <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
-    </ion-item>
-    <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}">
-      <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
-        <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
-          <ion-card-header class="ion-no-padding">
-            <div class="relationship-photo-container ion-justify-content-center">
-              <ion-avatar class="relationship-avatar" *ngFor="let user of relationship.mentees; index as i" [hidden]="!relationship.mentees.length">
-                <img class="relationship-photo" *ngIf="(relationship.mentees.length % 3) === 1" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '12px', 'left': 24 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '72px', 'width': '72px'}" />
-                <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 2" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '18px', 'left': 55 - (i % relationship.numberOfMenteesDisplayed) * 44 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '54px', 'width': '54px'}" />
-                <img class="relationship-photo border" *ngIf="(relationship.mentees.length % 3) === 0" [src]="user.avatar || 'assets/img/avatar-default.jpg'" [ngStyle]="{'top': '17px', 'left': 69 - (i % relationship.numberOfMenteesDisplayed) * 31 + 'px', 'z-index': (i % relationship.numberOfMenteesDisplayed), 'height': '45px', 'width': '45px'}" />
-              </ion-avatar>
-              <ion-avatar class="relationship-avatar" [hidden]="relationship.mentees.length">
-                <img class="relationship-photo" src="assets/img/avatar-default.jpg" [ngStyle]="{'top': '12px', 'left': '24px', 'height': '72px', 'width': '72px'}" />
-              </ion-avatar>
-            </div>
-          </ion-card-header>
-          <ion-card-content class="ion-no-padding">
-            <ion-row class="relationship-name-container ion-align-items-center">
-              <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 1">{{relationship.mentees[0].first_name}}</ion-col>
-              <ion-col class="relationship-name ion-no-padding" *ngIf="relationship.mentees.length === 2">{{relationship.mentees[1].first_name}}, {{relationship.mentees[0].first_name}}</ion-col>
-              <ion-col class="relationship-name ion-no-padding" *ngIf="!relationship.mentees.length || (relationship.mentees.length > 2)">{{relationship.matrix_string[0][0]}}</ion-col>
-            </ion-row>
-            <ion-note class="relationship-description">{{relationship.program}}</ion-note>
-          </ion-card-content>
-        </ion-card>
-      </ion-slide>
-    </ion-slides>
-  </div>
-  <!--List My Community-->
-  <div *ngIf="programs && programs.length && view === 'profile'">
-    <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
-      <ion-label class="section-label" color="darkgrey">My Community</ion-label>
-    </ion-item>
-    <ion-slides class="program-slides" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
-      <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
-        <ion-card class="program-card" (click)="openProgram($event, program)">
-          <ion-card-header class="ion-no-padding">
-            <div class="program-photo-container">
-              <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
-            </div>
-          </ion-card-header>
-          <div class="program-name">{{program.matrix_string[0][0]}}</div>
-        </ion-card>
-      </ion-slide>
-    </ion-slides>
-  </div>
-  <div *ngIf="view === 'calendar'">
-    <ion-list>
-      <div class="dashboard-banner">
-        <ion-item class="transparent" lines="none" (click)="router.navigateByUrl('/app/user/profile')">
-          <div class="image-cropper">
-            <img class="custom-avatar" *ngIf="!userData || !userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"/>
-            <img class="custom-avatar" *ngIf="userData && userData.user && userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
-          </div>
-        </ion-item>
-        <ion-item class="transparent ion-margin-top" lines="none">
+        <ion-col *ngIf="!noSystemMessage" size-xs="12" size-sm="12" size-md="6">
+          <ion-card class="ion-no-margin ion-no-padding">
+            <ion-item class="section" lines="none" *ngIf="platform.width() >= 768"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">System Notifications</ion-label>
+            </ion-item>
+            <ion-list class="system-message-container ion-padding">
+              <ion-item>
+                <ion-buttons slot="end">
+                  <ion-button fill="solid" color="primary" size="small" (click)="handleSystemMessages('accept')">Accept All</ion-button>
+                  <ion-button fill="clear" color="primary" size="small" (click)="handleSystemMessages('clear')">Clear All</ion-button>
+                </ion-buttons>
+              </ion-item>
+              <div *ngFor="let pendingNotification of pendingNotifications; trackBy: customTrackBy">
+                <ion-item class="ion-text-wrap" (click)="viewMessage($event, pendingNotification)" *ngIf="pendingNotification.message.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" lines="none">
+                  <p style="color: var(--ion-color-dark);">{{pendingNotification.message}}</p>
+                  <ion-icon color="primary" ios="ellipsis-horizontal" md="ellipsis-vertical" slot="end"></ion-icon>
+                </ion-item>
+              </div>
+            </ion-list>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div *ngIf="view === 'calendar'" size-xs="12" size-sm="12" size-md="6">
+      <ion-toolbar>
+        <ion-item class="transparent ion-margin-top" lines="none" *ngIf="view === 'calendar'">
           <ion-row class="calendar-buttons">
             <ion-col class="calendar-button" (click)="calendarService.changeMode('month')">
               <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'month'}">Month</div>
@@ -206,86 +305,70 @@
             </ion-col>
           </ion-row>
         </ion-item>
-      </div>
-    </ion-list>
+      </ion-toolbar>
+      <!--CALENDAR SECTION-->
+      <ion-card class="calendar-container" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
+        <div class="month-title-container">
+          <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+          <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
+          <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+        </div>
 
-    <!--CALENDAR SECTION-->
-    <ion-card class="calendar-container" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
-      <div class="month-title-container">
-        <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
-        <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-        <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
-      </div>
+        <div class="monthview-day-headers">S</div>
+        <div class="monthview-day-headers">M</div>
+        <div class="monthview-day-headers">T</div>
+        <div class="monthview-day-headers">W</div>
+        <div class="monthview-day-headers">T</div>
+        <div class="monthview-day-headers">F</div>
+        <div class="monthview-day-headers">S</div>
 
-      <div class="monthview-day-headers">S</div>
-      <div class="monthview-day-headers">M</div>
-      <div class="monthview-day-headers">T</div>
-      <div class="monthview-day-headers">W</div>
-      <div class="monthview-day-headers">T</div>
-      <div class="monthview-day-headers">F</div>
-      <div class="monthview-day-headers">S</div>
-
-      <!--month view-->
-      <div *ngIf="calendarService.calendar.mode == 'month'">
-        <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-          <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
-            <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
-            <div *ngIf="dayOfMonth.date != ' ' ">
-              {{dayOfMonth.date.getDate()}}
-            </div>
-            <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index">
-              <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+        <!--month view-->
+        <div *ngIf="calendarService.calendar.mode == 'month'">
+          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
+            <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
+              <div *ngIf="dayOfMonth.date != ' ' ">
+                {{dayOfMonth.date.getDate()}}
+              </div>
+              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index">
+                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!--week view-->
-      <div *ngIf="calendarService.calendar.mode == 'week'">
-        <div class="monthview-element" *ngFor="let dayOfWeek of calendarService.calendar.daysInViewWeek; trackBy: customTrackBy">
-          <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate( dayOfWeek.date )">
-            <div *ngIf="dayOfWeek.date == ' ' ">&nbsp;&nbsp;</div>
-            <div *ngIf="dayOfWeek.date != ' ' ">
-              {{dayOfWeek.date.getDate()}}
-            </div>
-            <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfWeek.dayEvents; trackBy: customTrackBy; let i = index">
-              <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+        <!--week view-->
+        <div *ngIf="calendarService.calendar.mode == 'week'">
+          <div class="monthview-element" *ngFor="let dayOfWeek of calendarService.calendar.daysInViewWeek; trackBy: customTrackBy">
+            <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate( dayOfWeek.date )">
+              <div *ngIf="dayOfWeek.date == ' ' ">&nbsp;&nbsp;</div>
+              <div *ngIf="dayOfWeek.date != ' ' ">
+                {{dayOfWeek.date.getDate()}}
+              </div>
+              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfWeek.dayEvents; trackBy: customTrackBy; let i = index">
+                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </ion-card>
+      </ion-card>
 
-    <!-- list features after being filtered -->
-    <ion-list lines="none" class="list-container ion-padding">
-      <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
-        <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="((((calendarService.calendar.mode == 'month' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) || (calendarService.calendar.mode == 'week' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth())) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )) || (calendarService.calendar.mode == 'upcoming' && calendarItem.validUpcomingItem)) && calendarItem.title.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" id="feature" lines="none">
-          <ion-label class="moment-icon" slot="start">
-            <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
-          </ion-label>
-          <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
-          <div class="item-container" slot="end">
-            <ion-label>{{calendarItem.title}}</ion-label>
-            <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-            <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-          </div>
-        </ion-item>
-      </div>
-    </ion-list>
-  </div>
-
-  <ion-list class="system-message-container ion-padding" *ngIf="!noSystemMessage">
-    <ion-item>
-      <ion-buttons slot="end">
-        <ion-button fill="solid" color="primary" size="small" (click)="handleSystemMessages('accept')">Accept All</ion-button>
-        <ion-button fill="clear" color="primary" size="small" (click)="handleSystemMessages('clear')">Clear All</ion-button>
-      </ion-buttons>
-    </ion-item>
-    <div *ngFor="let pendingNotification of pendingNotifications; trackBy: customTrackBy">
-      <ion-item class="ion-text-wrap" (click)="viewMessage($event, pendingNotification)" *ngIf="pendingNotification.message.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" lines="none">
-        <p style="color: var(--ion-color-dark);">{{pendingNotification.message}}</p>
-        <ion-icon color="primary" ios="ellipsis-horizontal" md="ellipsis-vertical" slot="end"></ion-icon>
-      </ion-item>
+      <!-- list features after being filtered -->
+      <ion-list lines="none" class="list-container ion-padding">
+        <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
+          <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="((((calendarService.calendar.mode == 'month' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) || (calendarService.calendar.mode == 'week' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth())) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )) || (calendarService.calendar.mode == 'upcoming' && calendarItem.validUpcomingItem)) && calendarItem.title.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" id="feature" lines="none">
+            <ion-label class="moment-icon" slot="start">
+              <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
+            </ion-label>
+            <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
+            <div class="item-container" slot="end">
+              <ion-label>{{calendarItem.title}}</ion-label>
+              <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+              <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
+            </div>
+          </ion-item>
+        </div>
+      </ion-list>
     </div>
-  </ion-list>
+  </div>
 </ion-content>
