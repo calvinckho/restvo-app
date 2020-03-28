@@ -50,7 +50,7 @@
   <ion-toolbar *ngIf="platform.width() < 768">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
   </ion-toolbar>
-  <ion-toolbar [hidden]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) && (!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder)">
+  <!--<ion-toolbar [hidden]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) && (!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder)">
     <ion-item-sliding side="end" [hidden]="(userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder">
       <ion-item (click)="requestPushNotificationPermission($event)" lines="none">
         <ion-avatar slot="start">
@@ -85,7 +85,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-toolbar>
+  </ion-toolbar>-->
 </ion-header>
 
 <ion-content>
