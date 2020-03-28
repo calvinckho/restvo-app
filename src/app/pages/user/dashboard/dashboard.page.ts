@@ -128,28 +128,15 @@ export class DashboardPage implements OnInit, OnDestroy {
         }
     }
 
-    async openMyProfile() {
+    async openAboutMe() {
         if (this.platform.width() >= 768) {
-            if (!this.userData.user.avatar) {
-                this.router.navigate(['/app/user/profile']);
-            } else {
-                this.router.navigate(['/app/user/about']);
-            }
+            this.router.navigate(['/app/user/about']);
         } else {
-            if (!this.userData.user.avatar) {
-                const modal = await this.modalCtrl.create({ component: ProfilePage, componentProps: { modalPage: true } });
-                await modal.present();
-                const {data: refreshNeeded} = await modal.onDidDismiss();
-                if (refreshNeeded) {
-                    //this.loadAnswers();
-                }
-            } else {
-                const modal = await this.modalCtrl.create({ component: AboutPage, componentProps: { modalPage: true } });
-                await modal.present();
-                const {data: refreshNeeded} = await modal.onDidDismiss();
-                if (refreshNeeded) {
-                    this.loadAnswers();
-                }
+            const modal = await this.modalCtrl.create({ component: AboutPage, componentProps: { modalPage: true } });
+            await modal.present();
+            const {data: refreshNeeded} = await modal.onDidDismiss();
+            if (refreshNeeded) {
+                this.loadAnswers();
             }
         }
     }

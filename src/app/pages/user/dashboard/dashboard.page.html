@@ -41,7 +41,7 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
-    <ion-button *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear" (click)="openMyProfile()">
+    <ion-button [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
@@ -72,7 +72,7 @@
               {{userData.user.first_name}} {{userData.user.last_name}}
             </ion-card-title>
             <div class="person-title" [innerHTML]="userData.user.bio"></div>
-            <ion-button shape="round" class="person-edit-profile" fill="outline" (click)="openMyProfile()" >Edit Profile</ion-button>
+            <ion-button shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
         </ion-item>
       </ion-card>
