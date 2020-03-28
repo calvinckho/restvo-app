@@ -270,7 +270,7 @@ export class Aws {
                     return (d - c);
                 });
                 break;
-            case 'string': // imageSource is a string
+            case 'string': // imageSource is a string. e.g. user avatar, group chat - media deletion
                 if (imageSource.length && this.sessionAssets.indexOf(imageSource) < 0 && (imageSource.indexOf('https://pixabay.com') < 0)) {
                     await this.removeFile(imageSource); // remove the previous background from Digital Ocean
                 }
@@ -282,7 +282,7 @@ export class Aws {
                     }
                 }
                 break;
-            case 'boolean' && origin: // erase all uploaded but abandoned files
+            case 'boolean': // erase all uploaded but abandoned files
                 this.tempUploadedMedia.forEach(async (url) => {
                     await this.removeFile(url);
                 });
