@@ -1,15 +1,14 @@
 app-dashboard {
 
-  ion-menu-toggle {
+  ion-button {
     ion-badge {
-      position: relative;
+      position: absolute;
       top: 0.1rem;
-      right: 22px;
+      right: 0.1rem;
 
-      /*& ~ ion-icon {
+      & ~ ion-icon {
         outline-color: whitesmoke;
-      }*/
-      z-index: 5;
+      }
     }
   }
 
@@ -32,6 +31,13 @@ app-dashboard {
 
   ion-item-divider {
     margin-top: 3px !important;
+  }
+
+// THIS STYLE IS MINE
+  .person-photo {
+    width: 160px;
+    height: 160px;
+    margin-top: 10px;
   }
 
   .message-container {
@@ -441,6 +447,7 @@ app-dashboard {
   }
 
   .person-card {
+    border-radius: 1px;
     max-width: 300px;
     width: 80%;
     height: 100%;
@@ -480,7 +487,8 @@ app-dashboard {
   }
 
   .person-content {
-    height: 75px;
+    background-color: whitesmoke;
+    height: 200px;
     overflow: scroll;
     --background: var(--ion-color-light);
   }
@@ -492,7 +500,7 @@ app-dashboard {
   .person-content-left {
     margin: 8px 12.5px 21px 0;
     width: 40%;
-    height: 44px;
+    height: 200px;
     line-height: 100%;
   }
 
