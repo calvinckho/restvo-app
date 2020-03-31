@@ -35,7 +35,7 @@ export class OnboardfeaturePage {
         autoHeight: true
     };
     nextButtonReady = true;
-    resources: any;
+    resource: any;
     moment: any;
     categories: any;
     activityStartTime = 0;
@@ -83,6 +83,8 @@ export class OnboardfeaturePage {
         public chatService: Chat) {}
 
     async ionViewWillEnter() {
+        const result: any = await this.resourceService.loadSystemResources();
+        this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
         this.setup();
     }
 
