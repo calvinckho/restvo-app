@@ -78,25 +78,35 @@
     </ion-row>
   </ion-grid>
 
-<!-- START CODING HERE -->
+<!-- MY CODE STARTS HERE -->
 
-  <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
+  <ion-row class="ion-justify-content-center ion-margin-vertical profile-row" *ngIf="view === 'profile'">
     <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
     
       <ion-card-content class="person-content ion-no-padding">
         <ion-item lines="none" class="person-content-item ion-no-margin">
+      
           <div class="person-content-left">
-       
             <ion-avatar slot="start">
               <ion-img class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
               <ion-img class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
             </ion-avatar>
-          
           </div>
+
+          <div class="person-content-right">
+            <div class="person-name">
+              {{userData.user.first_name}} {{userData.user.last_name}}
+              <p class="person-description">Follower of Christ and software engineer</p>
+            </div>
+            <button class="edit-profile">Edit Profile</button>
+          </div>
+
         </ion-item>
       </ion-card-content>
     </ion-card>
   </ion-row>
+
+  <!-- END MY CODE -->
 
   <!--List My Mentors-->
   <div *ngIf="myMentors && myMentors.length && view === 'profile'">
