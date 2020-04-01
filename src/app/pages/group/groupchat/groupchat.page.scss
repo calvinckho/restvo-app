@@ -24,7 +24,6 @@ app-groupchat {
     display: inline-block;
     height: 5px;
     width:  5px;
-    background-color: #9b9b9b;
     border-radius: 100%;
   }
 
@@ -45,9 +44,6 @@ app-groupchat {
     width: 100%;
   }
 
-  .active {
-    background-color: #4a4a4a;
-  }
 
   .chat-list {
     padding-top: 5%;
@@ -58,7 +54,7 @@ app-groupchat {
     width: 100%;
     margin: 0 auto;
     font-style: italic;
-    color: grey;
+    color: var(--ion-color-dark);
   }
 
   // Chat
@@ -177,9 +173,9 @@ app-groupchat {
   .chat-bubble.left {
     margin-right: 20px; //needs to be a fixed px value, not %, or the .message will not know the exact width and wraps the text incorrectly
     padding-right: 25px;
-    background-color: #EEEEEE;
+    background-color: var(--ion-color-light);
     p {
-      color: black;
+      color: var(--ion-color-dark);
     }
     a:link {
       color:var(--ion-color-tertiary);
@@ -190,7 +186,7 @@ app-groupchat {
   }
 
   .chat-bubble.left:before {
-    background-color: #EEEEEE;
+    background-color:var(--ion-color-light);
     left: 10px;
     -webkit-transform: rotate(70deg) skew(5deg);
   }
@@ -199,7 +195,7 @@ app-groupchat {
     margin-left: 2%;
     background-color: var(--ion-color-primary);
     p {
-      color: #fff;
+      color:var(--ion-color-light);
     }
     a:link {
       color:var(--ion-color-tertiary);
@@ -210,7 +206,7 @@ app-groupchat {
   }
 
   .chat-bubble.right:before {
-    background-color: var( --ion-color-primary);
+    background-color: var(--ion-color-primary);
     right: 10px;
     -webkit-transform: rotate(118deg) skew(-5deg);
   }
@@ -241,8 +237,6 @@ app-groupchat {
   .quote-bubble.left {
     border-radius: 5px;
     padding: 5px 6px 5px 6px;
-    background-color: #979797;
-    color: #fff;
     a:link {
       color: lightskyblue;
     }
@@ -254,9 +248,9 @@ app-groupchat {
   .quote-bubble.right {
     border-radius: 5px;
     padding: 5px 6px 5px 6px;
-    background-color: #e6e5eb;
+    background-color:var(--ion-color-light);
     p {
-      color: #000;
+      color:var(--ion-color-dark);
     }
   }
 
@@ -268,17 +262,17 @@ app-groupchat {
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
-    background-color: #9b9b9b;
+    background-color: var(--ion-color-lightgrey);
     h2, p {
-      color: #fff;
+      color:var(--ion-color-light);
     }
   }
 
   .moment.left {
-    background-color: #f0f0f0;
+    background-color: var(--ion-color-lightgrey);
     margin-right: 20px;
     p {
-      color: black;
+      color: var(--ion-color-dark);
     }
   }
 
@@ -533,6 +527,11 @@ app-groupchat {
       --padding-start: 4px;
     }
 
+    .textarea-wrapper {
+      background-color:var(--ion-color-grey);
+      border-radius: 10px;
+     
+    }
     .sendImage {
       margin: 16px 0 16px 3%;
       height: 30px;
