@@ -1319,7 +1319,7 @@
                 <div class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
               <ion-item>
-                <ion-label class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+                <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
               </ion-item>
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>

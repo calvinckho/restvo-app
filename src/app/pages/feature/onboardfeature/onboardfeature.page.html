@@ -310,7 +310,7 @@
             </div>
             <div class="component" *ngIf="item === 40000"> <!--Multiple Choice-->
               <ion-item>
-                <ion-label class="moment-label ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+                <div class="ion-padding-vertical ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
               </ion-item>
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, interactableOptionIndex)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.option}}</ion-label>
@@ -320,7 +320,7 @@
             </div>
             <div class="component" *ngIf="item === 40020 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] === 1"> <!--Multiple Choice-->
               <ion-item>
-                <ion-label class="ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+                <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
               </ion-item>
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>
@@ -330,7 +330,7 @@
             </div>
             <div class="component" *ngIf="item === 40020  && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && !moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]"> <!--Tile Choice with Photos-->
               <ion-item>
-                <ion-label class="ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+                <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
               </ion-item>
               <ion-grid class="tile-grid">
                 <ion-row class="tile-row">
