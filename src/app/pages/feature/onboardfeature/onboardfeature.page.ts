@@ -363,6 +363,7 @@ export class OnboardfeaturePage {
     }
 
     async respondToTextArea(event, componentIndex) {
+        this.nextButtonReady = false;
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // interactableId is Number
@@ -393,6 +394,7 @@ export class OnboardfeaturePage {
             if (this.moment.program) {
                 this.userData.refreshUserStatus({});
             }
+            this.nextButtonReady = true;
         }, 3000);
     }
 
