@@ -330,7 +330,10 @@ export class Chat {
     }
 
     async refreshTabBadges() {
-        let churches = this.userData.user.churches.map((c) => {return {_id: c._id, badge: 0}});
+        let churches = [];
+        if (this.userData.user.churches && this.userData.user.churches.length) {
+            churches = this.userData.user.churches.map((c) => {return {_id: c._id, badge: 0}});
+        }
         let connectTabBadge = 0;
         const conversations = await this.getAllUserConversations();
         if (conversations) {
