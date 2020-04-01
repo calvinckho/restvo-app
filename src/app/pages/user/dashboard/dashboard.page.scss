@@ -600,7 +600,6 @@ app-dashboard {
     height: 146px;
     width: 120px;
     margin: 0 3%;
-
   }
 
   .relationship-photo-container {
@@ -626,7 +625,8 @@ app-dashboard {
   }
 
   .relationship-name-container.top {
-    margin-top: 5px;
+    height: 32px;
+    margin-top: 2px;
   }
 
   .relationship-name {
@@ -642,7 +642,7 @@ app-dashboard {
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
-    line-height: 14px;
+    line-height: 12px;
     text-align: center;
     color: var(--ion-color-dark);
   }
