@@ -241,7 +241,7 @@
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Community</ion-label>
             </ion-item>
-            <ion-slides class="program-slides" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+            <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
                 <ion-card class="program-card" (click)="openProgram($event, program)">
                   <ion-card-header class="ion-no-padding">
