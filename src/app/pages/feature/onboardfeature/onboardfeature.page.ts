@@ -175,13 +175,14 @@ export class OnboardfeaturePage {
                     avatar: this.userData.user.avatar
                 };
                 this.responses = [moment.response];
+                this.responseObj.moment = moment._id;
                 this.responseObj = moment.response; // load the response object with backend data, since it is user only response it should only have one response
             } else {
                 this.responses = [];
                 this.responseObj = { // load with default value
                     matrix_string: [],
                     matrix_number: [],
-                    moment: '',
+                    moment: moment._id,
                     array_number: [],
                     createdAt: new Date()
                 };
@@ -281,7 +282,7 @@ export class OnboardfeaturePage {
         if (!updatedExistingVote) { // submit a new vote
             this.responseObj.matrix_number.push([interactableId, pollOptionIndex]);
         }
-        this.responseObj.moment = this.moment._id;
+        //this.responseObj.moment = this.moment._id;
         this.responseObj.array_number = this.moment.resource.matrix_number[0];
         this.responseObj.createdAt = new Date();
         this.momentService.submitResponse(this.moment, this.responseObj, true);
@@ -337,7 +338,7 @@ export class OnboardfeaturePage {
         if (!updatedExistingResponse) { // add a new entry to array
             this.responseObj.matrix_number.push([interactableId, null, null, null, null, interactableOption]);
         }
-        this.responseObj.moment = this.moment._id;
+        // this.responseObj.moment = this.moment._id;
         this.responseObj.array_number = this.moment.resource.matrix_number[0];
         this.responseObj.createdAt = new Date();
         let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
