@@ -340,7 +340,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // click Send button
     async sendMessage() {
         // first process Media files
-        if (this.awsService.sessionAssets.length && this.awsService.sessionAssets[0]) {
+        this.awsService.sessionAssets = this.awsService.sessionAssets.filter((c) => c && c.length);
+        if (this.awsService.sessionAssets.length) { // ensure media urls integrity
             this.socketData = {
                 conversationId: this.chatService.currentChatProps[this.propIndex].conversationId,
                 attachments: this.awsService.sessionAssets,
