@@ -340,7 +340,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // click Send button
     async sendMessage() {
         // first process Media files
-        if (this.awsService.sessionAssets.length) {
+        if (this.awsService.sessionAssets.length && this.awsService.sessionAssets[0]) {
             this.socketData = {
                 conversationId: this.chatService.currentChatProps[this.propIndex].conversationId,
                 attachments: this.awsService.sessionAssets,
@@ -1018,7 +1018,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
         const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[i]));
         this.awsService.sessionAssets.splice(i, 1);
         await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets); // store the unsent media
-        this.awsService.removeFile(url);
+        if (url) {
+            this.awsService.removeFile(url);
+        }
     }
 
     incomingMessageHandler = async (message) => {
