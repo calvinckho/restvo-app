@@ -1345,5 +1345,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
       this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
       this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+      this.awsService.cleanUp(true); // clean up the temporarily uploaded media
   }
 }
