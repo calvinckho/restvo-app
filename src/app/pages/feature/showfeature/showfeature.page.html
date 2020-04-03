@@ -286,7 +286,7 @@
           <ion-card-content class="goal-content overall ion-no-padding">
             <ion-badge color="grey" class="favorite-goal-type">Overall Progress</ion-badge>
             <div class="overall-progress">
-              <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
+              <progress-bar [progress]="((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) ? 0 : (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
               <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar>  -->
               <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
             </div>
