@@ -64,10 +64,14 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-item>
+
+
+          <!-- Removed Mentoring Mode feature per Issue Request #22-->
+
+          <!-- <ion-item>
             <ion-label class="ion-text-wrap">Mentoring Mode</ion-label>
             <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode()"></ion-toggle>
-          </ion-item>
+          </ion-item> -->
 
           <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
             <ion-list-header>Developer Mode</ion-list-header>

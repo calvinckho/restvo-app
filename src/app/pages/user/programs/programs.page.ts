@@ -61,12 +61,14 @@ export class ProgramsPage implements OnInit, OnDestroy {
           await recipientModal.present();
       }
   }
-
+// this is where I need to work to make the changes
     selectDefault(event, program) {
       event.stopPropagation();
       this.userData.defaultProgram = program;
       this.userData.UIAdminMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
+
+      // to here
       let activityURL;
         if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
             activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;

@@ -107,6 +107,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.menuCtrl.close();
     }
 
+
+    //Not sure if this function is tied to another feature beyond the "mentoring mode" feature that has been commented out
+    //If it isn't tied to another feature, then perhaps we can also remove this code as well
+    
     async toggleAdminMode() {
         if (!this.userData.UIready) return;
         await this.storage.set('UIAdminMode', this.userData.UIAdminMode);
