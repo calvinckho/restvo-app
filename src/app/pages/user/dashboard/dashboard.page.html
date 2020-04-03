@@ -77,30 +77,32 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
+
+  <!--editing code below for profile picture card design-->
   <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
     <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-      <ion-card-header>
         <div class="person-photo-container">
-          <ion-img class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
-          <ion-img class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+        <ion-avatar> <!--changed to avatar so it shows up circular-->
+          <ion-img 
+            class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar">
+          </ion-img>
+        </ion-avatar>
+        <ion-avatar>
+          <ion-img 
+          class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg">
+        </ion-img>
+        </ion-avatar>
         </div>
-      </ion-card-header>
-      <div class="top-pattern"></div>
-      <div class="middle-pattern"></div>
-      <div class="bottom-pattern"></div>
-      <ion-card-content class="person-content ion-no-padding">
-        <ion-item lines="none" class="person-content-item ion-no-margin">
-          <div class="person-content-left">
-            <div class="person-name ion-text-md-uppercase">
-              {{userData.user.first_name}} {{userData.user.last_name}}
-            </div>
-            <div class="person-title" [innerHTML]="userData.user.title"></div>
-          </div>
-          <div class="person-content-right" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div> <!--Short Biography-->
-        </ion-item>
-      </ion-card-content>
+        <ion-card-header class="person-name-right"> <!--name is now to the right and aligned with edit profile button-->
+          <ion-card-title class="person-name">
+               {{userData.user.first_name}} {{userData.user.last_name}}
+          </ion-card-title>
+           <ion-card-subtitle class="person-title" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio">></ion-card-subtitle> <!--Short Biography-->
+          <ion-button shape="round" color="danger" class="button-edit-profile" fill="outline" (click)="openMyProfile()">Edit Profile</ion-button>
+        </ion-card-header>
     </ion-card>
   </ion-row>
+  
   <!--List My Mentors-->
   <div *ngIf="myMentors && myMentors.length && view === 'profile'">
     <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
