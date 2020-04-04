@@ -710,6 +710,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     } else if (this.platform.is('mobileweb')) { // mobile web, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
                     } else if (this.electronService.isElectronApp) { // eletron app, open in same window
@@ -722,6 +723,12 @@ export class MainTabPage implements OnInit, OnDestroy {
                     } else {
                         window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
                         /*get('https://meet.jit.si/external_api.js', () => {
+>>>>>>> move video conferencing to a dedicated page on desktop
+=======
+                    } else if (this.platform.is('mobileweb')) { // mobile web, display download app page
+                        this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
+                    } else if (this.electronService.isElectronApp) { // eletron app, open in same window
+                        get('https://meet.jit.si/external_api.js', () => {
 >>>>>>> move video conferencing to a dedicated page on desktop
                             const domain = videoEndpoint.url;
                             const options = {
@@ -755,11 +762,17 @@ export class MainTabPage implements OnInit, OnDestroy {
                             };
                             this.jitsi = new JitsiMeetExternalAPI(domain, options);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         });
                     } else { // on desktop web, open another tab and run external API
                         window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
 =======
                         });*/
+>>>>>>> move video conferencing to a dedicated page on desktop
+=======
+                        });
+                    } else { // on desktop web, open another tab and run external API
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
 >>>>>>> move video conferencing to a dedicated page on desktop
                     }
                 } catch (err) {
