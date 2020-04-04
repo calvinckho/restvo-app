@@ -438,16 +438,16 @@ export class CreatechatPage implements OnInit {
                     correctOrientation: false
                 });
                 if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image);
+                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, this.groupForm.value.churchId);
                 } else {
-                    result = await this.awsService.uploadImage('users', this.userData.user._id, image);
+                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.userData.user._id);
                 }
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed);
+                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, this.groupForm.value.churchId);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.userData.user._id);
                 }
             }
             if(result === "Upload succeeded"){

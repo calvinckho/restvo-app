@@ -262,7 +262,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
             source: CameraSource.Camera,
             correctOrientation: false
         });
-        const result: any = await this.awsService.uploadImage('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, image);
+        const result: any = await this.awsService.uploadImage('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, image, this.boardId);
         if (result === "Upload succeeded") {
             this.sendAttachments();
         }
@@ -281,10 +281,10 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
                     source: CameraSource.Photos,
                     correctOrientation: false
                 });
-                result = await this.awsService.uploadImage('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, image);
+                result = await this.awsService.uploadImage('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, image, this.boardId);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, compressed);
+                result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, compressed, this.boardId);
             }
             if (result === "Upload succeeded") {
                 this.sendAttachments();
@@ -296,7 +296,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     async selectFileFromDeviceAndUpload(event) {
         try {
-            const result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, event.target.files[0]);
+            const result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, event.target.files[0], this.boardId);
             console.log("result", result);
             if (result === "Upload succeeded") {
                 this.sendAttachments();
