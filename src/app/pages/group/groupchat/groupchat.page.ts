@@ -104,6 +104,10 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+<<<<<<< HEAD
+=======
+        this.awsService.sessionAssets = [];
+>>>>>>> move video conferencing to a dedicated page on desktop
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);

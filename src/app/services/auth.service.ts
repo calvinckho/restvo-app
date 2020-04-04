@@ -121,7 +121,11 @@ export class Auth {
             } else {
                 this.router.navigate([activityURL], { queryParamsHandling: 'preserve' });
             }
+<<<<<<< HEAD
         } else if (this.router.url.includes('app/video')) { // route /app/.../video to /video
+=======
+        } else if (this.router.url.includes('video')) { // route /app/.../video to /video
+>>>>>>> move video conferencing to a dedicated page on desktop
             const activityIdStartIndex = this.router.url.search('video') + 6; // the index of the first character of the activity id
             const activityAfterIdEndIndex = this.router.url.includes(';') ? this.router.url.search(';') : this.router.url.length; // the index of the character after the last character of the video chat room id
             const activityURL = '/video/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
@@ -129,12 +133,19 @@ export class Auth {
                 this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
             } else {
                 this.router.navigate([activityURL], { queryParamsHandling: 'preserve' });
+<<<<<<< HEAD
             }
             if (this.platform.is('desktop')) {
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             }
+=======
+            }
+            setTimeout(() => { // page reload is needed because the Jitsi external API needs to be re-initiated
+                window.location.reload();
+            }, 1000);
+>>>>>>> move video conferencing to a dedicated page on desktop
         } else {
             const loading = await this.loadingCtrl.create({
                 message: 'Loading...',
