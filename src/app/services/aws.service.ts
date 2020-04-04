@@ -228,7 +228,7 @@ export class Aws {
         toast.present();
     }
 
-    async selectStockPhoto(sessionId, photo) {
+    async selectStockPhoto(photo, sessionId) {
         const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
         if (result === 'Upload succeeded'){
             this.resourceService.searchKeyword = '';

@@ -102,7 +102,7 @@
             <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
                 <ion-row>
                     <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">
-                        <ion-thumbnail (click)="awsService.selectStockPhoto(photo)">
+                        <ion-thumbnail (click)="awsService.selectStockPhoto(photo, this.boardId)">
                             <ion-img [src]="photo.previewURL"></ion-img>
                         </ion-thumbnail>
                     </ion-col>
