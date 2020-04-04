@@ -1,4 +1,4 @@
-<ion-content *ngIf="!platform.is('mobile')">
+<ion-content *ngIf="!platform.is('mobileweb')">
   <div id="videoConference" *ngIf="!videoEnded"></div>
   <ion-grid style="height: 100%" *ngIf="videoEnded">
     <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
@@ -16,28 +16,25 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-content *ngIf="platform.is('mobile')">
+<ion-content *ngIf="platform.is('mobileweb')">
   <ion-grid style="height: 100%">
     <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
-      <ion-list>
-        <ion-row>
-          <ion-col>
-            <img class="login-logo" src="assets/img/icon.png"/>
-            <div class="welcome-name">Restvo</div>
-          </ion-col>
+      <div>
+        <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
+          <ion-img class="login-logo" src="assets/img/icon.png"></ion-img>
         </ion-row>
-        <ion-row class="ion-justify-content-center ion-margin-bottom">
-          <ion-label>You need the Restvo mobile app to join this meeting on your phone.</ion-label>
+        <ion-row class="ion-justify-content-center" style="margin: 30px 10%">
+          <ion-card-title class="ion-text-center">You need the Restvo mobile app to join this meeting on your phone.</ion-card-title>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button *ngIf="platform.is('android')" routerLink="https://play.google.com/store/apps/details?id=com.restvo.app">Download the app</ion-button>
-          <ion-button *ngIf="platform.is('ios')" routerLink="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8">Download the app</ion-button>
+          <ion-button *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app">Download the app</ion-button>
+          <ion-button *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8">Download the app</ion-button>
           <ion-button *ngIf="!platform.is('ios') && !platform.is('android')" routerLink="https://restvo.com">Download the app</ion-button>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button [routerLink]="[router.url]" fill="clear">Continue to the app</ion-button>
+          <ion-button [href]="router.url" fill="clear">Continue to the app</ion-button>
         </ion-row>
-      </ion-list>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

@@ -696,6 +696,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
+                    } else if (this.platform.is('mobileweb')) {
+                        this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
                     } else {
                         window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
                         /*get('https://meet.jit.si/external_api.js', () => {
