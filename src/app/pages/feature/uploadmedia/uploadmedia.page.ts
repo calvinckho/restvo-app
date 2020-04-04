@@ -35,7 +35,7 @@ export class UploadmediaPage implements OnInit {
   }
 
   async selectStockPhoto(photo) {
-    await this.awsService.selectStockPhoto(photo, this.userData.user._id);
+    await this.awsService.selectStockPhoto(photo, this.sessionId);
     this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
   }
 
