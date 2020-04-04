@@ -203,9 +203,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             const uploadedMedia = await this.storage.get('media-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
             if (uploadedMedia && uploadedMedia.length) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = uploadedMedia.filter((c) => c && c.length);
 =======
                 this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = uploadedMedia;
+>>>>>>> add sessionId to awsService.sessionAssets
+=======
+                this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = uploadedMedia.filter((c) => c && c.length);
 >>>>>>> add sessionId to awsService.sessionAssets
                 this.moreMediaOptions = false;
             } else {
@@ -1041,6 +1045,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async removeMedia(i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (this.awsService.sessionAssets.hasOwnProperty(this.chatService.currentChatProps[this.propIndex].conversationId) && this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].length) {
             const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId][i]));
             this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].splice(i, 1);
@@ -1050,6 +1055,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
             const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId][i]));
             this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].splice(i, 1);
             await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); // store the unsent media
+>>>>>>> add sessionId to awsService.sessionAssets
+=======
+        if (this.awsService.sessionAssets.hasOwnProperty(this.chatService.currentChatProps[this.propIndex].conversationId) && this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].length) {
+            const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId][i]));
+            this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].splice(i, 1);
+            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].filter((c) => c && c.length)); // store the unsent media
 >>>>>>> add sessionId to awsService.sessionAssets
             if (url) {
                 this.awsService.removeFile(url);

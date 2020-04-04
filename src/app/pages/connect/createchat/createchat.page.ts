@@ -447,6 +447,7 @@ export class CreatechatPage implements OnInit {
                 });
                 if (this.groupForm.value.churchId.length ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, 'createchat');
                 } else {
                     result = await this.awsService.uploadImage('users', this.userData.user._id, image, 'createchat');
@@ -455,10 +456,16 @@ export class CreatechatPage implements OnInit {
                 } else {
                     result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.userData.user._id);
 >>>>>>> add sessionId to awsService.sessionAssets
+=======
+                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, 'createchat');
+                } else {
+                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, 'createchat');
+>>>>>>> add sessionId to awsService.sessionAssets
                 }
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 if (this.groupForm.value.churchId.length ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
                     result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, 'createchat');
                 } else {
@@ -467,6 +474,11 @@ export class CreatechatPage implements OnInit {
                     result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, this.groupForm.value.churchId);
                 } else {
                     result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.userData.user._id);
+>>>>>>> add sessionId to awsService.sessionAssets
+=======
+                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, 'createchat');
+                } else {
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, 'createchat');
 >>>>>>> add sessionId to awsService.sessionAssets
                 }
             }
