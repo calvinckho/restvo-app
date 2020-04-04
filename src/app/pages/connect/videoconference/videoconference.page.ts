@@ -7,7 +7,11 @@ import {Location} from "@angular/common";
 import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Resource} from '../../../services/resource.service';
 import {get} from "scriptjs";
+<<<<<<< HEAD
 >>>>>>> move video conferencing to a dedicated page on desktop
+=======
+import {Location} from "@angular/common";
+>>>>>>> add sessionId to awsService.sessionAssets
 import {ActivatedRoute, Router} from "@angular/router";
 import {MenuController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
@@ -51,9 +55,13 @@ export class VideoconferencePage implements OnInit {
   constructor(
       public platform: Platform,
 <<<<<<< HEAD
+<<<<<<< HEAD
       public location: Location,
 =======
 >>>>>>> move video conferencing to a dedicated page on desktop
+=======
+      public location: Location,
+>>>>>>> add sessionId to awsService.sessionAssets
       private router: Router,
       private menuCtrl: MenuController,
       private route: ActivatedRoute,

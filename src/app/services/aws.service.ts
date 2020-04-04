@@ -51,11 +51,17 @@ export class Aws {
                 const result: any = await this.upload(type, id, photoBlob, 'image.jpg', photoBlob.size, loading);
                 if (result.msg === 'Upload succeeded') {
                     this.url = result.url;
+<<<<<<< HEAD
                     if (sessionId) {
                         this.addToSessionAssets(sessionId, result.url); // save this as session url
                         if (!this.tempUploadedMedia.includes(this.url)) {
                             this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                         }
+=======
+                    this.addToSessionAssets(sessionId, result.url); // save this as session url
+                    if (!this.tempUploadedMedia.includes(this.url)) {
+                        this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+>>>>>>> add sessionId to awsService.sessionAssets
                     }
                 }
                 return result.msg;
@@ -114,11 +120,17 @@ export class Aws {
                     console.log("result", result);
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
+<<<<<<< HEAD
                         if (sessionId) {
                             this.addToSessionAssets(sessionId, result.url); // save this as session url
                             if (!this.tempUploadedMedia.includes(this.url)) {
                                 this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                             }
+=======
+                        this.addToSessionAssets(sessionId, result.url); // save this as session url
+                        if (!this.tempUploadedMedia.includes(this.url)) {
+                            this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+>>>>>>> add sessionId to awsService.sessionAssets
                         }
                     }
                     resolve(result.msg);
@@ -144,11 +156,17 @@ export class Aws {
             console.log("result", result);
             if (result.msg === 'Upload succeeded') {
                 this.url = result.url;
+<<<<<<< HEAD
                 if (sessionId) {
                     this.addToSessionAssets(sessionId, result.url); // save this as session url
                     if (!this.tempUploadedMedia.includes(this.url)) {
                         this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                     }
+=======
+                this.addToSessionAssets(sessionId, result.url); // save this as session url
+                if (!this.tempUploadedMedia.includes(this.url)) {
+                    this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+>>>>>>> add sessionId to awsService.sessionAssets
                 }
             }
             return result.msg;
@@ -234,7 +252,11 @@ export class Aws {
         toast.present();
     }
 
+<<<<<<< HEAD
     async selectStockPhoto(photo, sessionId) {
+=======
+    async selectStockPhoto(sessionId, photo) {
+>>>>>>> add sessionId to awsService.sessionAssets
         const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
         if (result === 'Upload succeeded'){
             this.resourceService.searchKeyword = '';

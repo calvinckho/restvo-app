@@ -313,10 +313,25 @@ export class EditgroupPage implements AfterViewInit {
                 if (!image) {
                     return;
                 }
+<<<<<<< HEAD
                 result = await this.awsService.uploadImage('users', this.userData.user._id, image, null);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, null);
+=======
+                if (this.groupForm.value.churchId.length ) {
+                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, this.group._id);
+                } else {
+                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.group._id);
+                }
+            } else {
+                const compressed = await this.awsService.compressPhoto(event.target.files[0]);
+                if (this.groupForm.value.churchId.length ) {
+                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, this.group._id);
+                } else {
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.group._id);
+                }
+>>>>>>> add sessionId to awsService.sessionAssets
             }
             if (result === 'Upload succeeded') {
                 if(this.groupForm.value.background.length){
