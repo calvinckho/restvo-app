@@ -81,13 +81,13 @@ export class UploadmediaPage implements OnInit {
     this.urls.splice(i, 1);
   }
 
-  async promptVideoUrl(provider) {
+  async promptMediaUrl(provider) {
     const alert2 = await this.alertCtrl.create({
-      header: 'Input the Youtube link',
+      header: provider === 'youtube' ? 'Input the Youtube link' : 'Input the Media Url',
       inputs: [{
         name: 'src',
         type: 'text',
-        placeholder: 'Youtube link'
+        placeholder: provider === 'youtube' ? 'Youtube link' : 'Media Link'
       }],
       buttons: [
         {
@@ -101,7 +101,7 @@ export class UploadmediaPage implements OnInit {
           text: 'Ok',
           handler: data => {
             this.urls.push(data.src);
-            console.log("urls", this.urls)
+            this.awsService.sessionAssets[this.sessionId].push(data.src);
           }
         }
       ],

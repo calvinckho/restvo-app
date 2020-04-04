@@ -16,6 +16,7 @@
       <ion-segment-button value="photo">Photo</ion-segment-button>
       <ion-segment-button value="video">Video</ion-segment-button>
       <ion-segment-button value="file">File</ion-segment-button>
+      <ion-segment-button value="url">Url</ion-segment-button>
     </ion-segment>
   </ion-toolbar>
   <ion-item *ngIf="mediaType === 'photo'">
@@ -35,13 +36,14 @@
       </ion-row>
     </ion-grid>
   </div>
+  <!--Video-->
   <ion-item *ngIf="mediaType === 'video'">
     <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></label>
     <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
   </ion-item>
   <ion-item *ngIf="mediaType === 'video'">
     <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></div>
-    <div class="moment-input" (click)="promptVideoUrl('youtube')">
+    <div class="moment-input" (click)="promptMediaUrl('youtube')">
       <span>Select Youtube</span>
     </div>
   </ion-item>
@@ -49,7 +51,12 @@
     <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
     <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
   </ion-item>
-  <!--Video-->
+  <ion-item *ngIf="mediaType === 'url'">
+    <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="link-outline"></ion-icon></div>
+    <div class="moment-input" (click)="promptMediaUrl('media')">
+      <span>Select Media Link</span>
+    </div>
+  </ion-item>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
