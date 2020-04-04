@@ -253,10 +253,14 @@ export class Aws {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     async selectStockPhoto(photo, sessionId) {
 =======
     async selectStockPhoto(sessionId, photo) {
 >>>>>>> add sessionId to awsService.sessionAssets
+=======
+    async selectStockPhoto(photo, sessionId) {
+>>>>>>> fix pick stock photos
         const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
         if (result === 'Upload succeeded'){
             this.resourceService.searchKeyword = '';
