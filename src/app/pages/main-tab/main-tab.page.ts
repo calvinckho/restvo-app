@@ -748,7 +748,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             } else {
                 this.readyToControlVideoChat = true;
                 // logically only happens on non-native app (the toggleVideoChat button is covered by the native Jitsi view during call)
-                if (await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
+                if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
                 this.userData.videoChatRoomId = '';
                 if (this.platform.is('cordova')) {
                     // onJitisiUnloaded will take care of clean up
@@ -765,9 +765,11 @@ export class MainTabPage implements OnInit, OnDestroy {
         console.log('loaded Jitsi');
         this.readyToControlVideoChat = true;
         this.userData.videoChatRoomId = this.pendingVideoChatRoomId;
-        if (await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
+        if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
         if (!this.platform.is('cordova')) {
-            this.jitsi.executeCommand('displayName', this.userData.user.first_name + ' ' + this.userData.user.last_name);
+            if (this.userData.user) {
+                this.jitsi.executeCommand('displayName', this.userData.user.first_name + ' ' + this.userData.user.last_name);
+            }
             if (this.userData.user.avatar) {
                 this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
             }
@@ -779,7 +781,7 @@ export class MainTabPage implements OnInit, OnDestroy {
     onJitsiUnloaded = async () => {
         console.log('unloading Jitsi');
         this.readyToControlVideoChat = true;
-        if (await this.userData.checkRestExpired()) {
+        if (this.userData.user && await this.userData.checkRestExpired()) {
             this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
         }
         this.userData.videoChatRoomId = '';
