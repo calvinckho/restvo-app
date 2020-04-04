@@ -684,7 +684,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         this.readyToControlVideoChat = true;
                     }, 10000); // default video chat load timeout = 10s
                     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
-                    if (this.platform.is('cordova')) {
+                    if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
                         const { Jitsi } = Plugins;
                         // if (await this.userData.checkRestExpired()) this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
                         await Jitsi.joinConference({
@@ -696,11 +696,10 @@ export class MainTabPage implements OnInit, OnDestroy {
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-                    } else if (this.platform.is('mobileweb')) {
+                    } else if (this.platform.is('mobileweb')) { // mobile web, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
-                    } else {
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
-                        /*get('https://meet.jit.si/external_api.js', () => {
+                    } else if (this.electronService.isElectronApp) { // eletron app, open in same window
+                        get('https://meet.jit.si/external_api.js', () => {
                             const domain = videoEndpoint.url;
                             const options = {
                                 roomName: params.videoChatRoomId,
@@ -732,7 +731,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                                 onload: this.onJitsiLoaded(params)
                             };
                             this.jitsi = new JitsiMeetExternalAPI(domain, options);
-                        });*/
+                        });
+                    } else { // on desktop web, open another tab and run external API
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
                     }
                 } catch (err) {
                     this.readyToControlVideoChat = true;
