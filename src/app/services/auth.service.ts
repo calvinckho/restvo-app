@@ -118,11 +118,21 @@ export class Auth {
             const activityURL = '/activity/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
             if (this.cachedRouteParams) {
                 this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
+            } else {
+                this.router.navigate([activityURL], { queryParamsHandling: 'preserve' });
             }
-        } else if (this.router.url.includes('connect')) {
-            // TODO: connect routing
-        } else if (this.router.url.includes('reply')) {
-            // TODO: reply routing
+        } else if (this.router.url.includes('video')) { // route /app/.../video to /video
+            const activityIdStartIndex = this.router.url.search('video') + 6; // the index of the first character of the activity id
+            const activityAfterIdEndIndex = this.router.url.includes(';') ? this.router.url.search(';') : this.router.url.length; // the index of the character after the last character of the video chat room id
+            const activityURL = '/video/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
+            if (this.cachedRouteParams) {
+                this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
+            } else {
+                this.router.navigate([activityURL], { queryParamsHandling: 'preserve' });
+            }
+            setTimeout(() => { // page reload is needed because the Jitsi external API needs to be re-initiated
+                window.location.reload();
+            }, 1000);
         } else {
             const loading = await this.loadingCtrl.create({
                 message: 'Loading...',

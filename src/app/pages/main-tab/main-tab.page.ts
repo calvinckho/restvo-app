@@ -113,7 +113,9 @@ export class MainTabPage implements OnInit, OnDestroy {
         try {
             const user: any = await this.storage.get('user');
             if (user && user._id) {
-                this.menuCtrl.enable(true);
+                if (!this.router.url.includes('/app/video')) {
+                    this.menuCtrl.enable(true);
+                }
                 this.userData.user = user;
                 await this.userData.loadStoredCommunity();
                 this.setupDevice();
@@ -695,7 +697,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
                     } else {
-                        get('https://meet.jit.si/external_api.js', () => {
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
+                        /*get('https://meet.jit.si/external_api.js', () => {
                             const domain = videoEndpoint.url;
                             const options = {
                                 roomName: params.videoChatRoomId,
@@ -727,7 +730,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                                 onload: this.onJitsiLoaded(params)
                             };
                             this.jitsi = new JitsiMeetExternalAPI(domain, options);
-                        });
+                        });*/
                     }
                 } catch (err) {
                     this.readyToControlVideoChat = true;
