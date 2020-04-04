@@ -71,6 +71,7 @@ export class VideoconferencePage implements OnInit {
     this.startWithAudioMuted = this.route.snapshot.paramMap.get('startWithAudioMuted') === 'true';
     this.startWithVideoMuted = this.route.snapshot.paramMap.get('startWithVideoMuted') === 'true';
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
   }
 
@@ -78,6 +79,9 @@ export class VideoconferencePage implements OnInit {
     if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
 =======
     if (this.videoChatRoomId && !this.platform.is('mobile')) { // only if chat room ID is valid and if platform is desktop
+>>>>>>> move video conferencing to a dedicated page on desktop
+=======
+    if (this.videoChatRoomId && !this.platform.is('mobileweb')) { // only if chat room ID is valid and if platform is desktop
 >>>>>>> move video conferencing to a dedicated page on desktop
       this.initializeVideoConference();
     }
