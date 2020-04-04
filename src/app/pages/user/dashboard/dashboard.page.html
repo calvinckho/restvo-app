@@ -72,7 +72,7 @@
               {{userData.user.first_name}} {{userData.user.last_name}}
             </ion-card-title>
             <div class="person-title" [innerHTML]="userData.user.bio"></div>
-            <ion-button shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
+            <ion-button shape="round" id="edit-profile-button" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
         </ion-item>
       </ion-card>
