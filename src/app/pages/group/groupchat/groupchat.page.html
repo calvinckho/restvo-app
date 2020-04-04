@@ -449,11 +449,11 @@
       </ion-buttons>
       <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
-        <ion-grid *ngIf="awsService.sessionAssets.length">
+        <ion-grid *ngIf="awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId]?.length">
           <ion-row>
-            <ion-col class="ion-align-self-center" size="auto" *ngFor="let attachment of awsService.sessionAssets; index as i;">
+            <ion-col class="ion-align-self-center" size="auto" *ngFor="let attachment of this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId]; index as i;">
               <div *ngIf="attachment && attachment.length">
-                <ion-thumbnail [ngClass]="{'small-thumbnail': awsService.sessionAssets.length > 1}" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
+                <ion-thumbnail [ngClass]="{'small-thumbnail': this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length > 1}" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
                   <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
                 </ion-thumbnail>
                 <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
@@ -488,10 +488,10 @@
         </ion-grid>
       </ion-textarea>
       <ion-buttons>
-        <ion-button class="actionButton" (click)="sendMessage()" fill="clear" *ngIf="((composedMessage.length || awsService.sessionAssets.length || selectedMoments.length) && !listening) || !platform.is('cordova')" [disabled]="!(composedMessage.length || awsService.sessionAssets.length || selectedMoments.length)">
+        <ion-button class="actionButton" (click)="sendMessage()" fill="clear" *ngIf="((composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length) && !listening) || !platform.is('cordova')" [disabled]="!(composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length)">
           <img class="sendImage" src="assets/img/Send_Gray.png"/>
         </ion-button>
-        <ion-button class="actionButton" (click)="toggleVoiceRecognition()" fill="clear" *ngIf="platform.is('cordova') && (!(composedMessage.length || awsService.sessionAssets.length || selectedMoments.length) || listening)" >
+        <ion-button class="actionButton" (click)="toggleVoiceRecognition()" fill="clear" *ngIf="platform.is('cordova') && (!(composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length) || listening)" >
           <img class="recordAudioImg" [ngClass]="{'fade': listening}" src="assets/img/microphone.png"/>
         </ion-button>
       </ion-buttons>

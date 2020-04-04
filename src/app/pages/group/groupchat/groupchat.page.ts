@@ -102,7 +102,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
-        this.awsService.sessionAssets = [];
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
@@ -136,7 +135,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.chatReachedEnd = false;
             this.chatPageNum = 0;
             const currentChatId = this.chatService.currentChatProps[0].conversationId;
-            this.awsService.sessionAssets = [];
+            this.awsService.sessionAssets[currentChatId] = [];
             this.selectedMoments = [];
             this.resetBadge(currentChatId, refreshMyConversations);
             // lower priority tasks
@@ -167,6 +166,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async setup() {
         this.propIndex = this.chatService.currentChatProps.length - 1;
+        //this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = [];
         // if current chat props exists, which is needed to retrieve the conversationId
         if (this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]) {
             const messages = await this.storage.get('conversation-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId); // load from storage
@@ -184,10 +184,10 @@ export class GroupchatPage implements OnInit, OnDestroy {
             // restore uploaded but unsent media
             const uploadedMedia = await this.storage.get('media-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
             if (uploadedMedia && uploadedMedia.length) {
-                this.awsService.sessionAssets = uploadedMedia;
+                this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = uploadedMedia;
                 this.moreMediaOptions = false;
             } else {
-                this.awsService.sessionAssets = [];
+                this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = [];
             }
             // restore unsent moment
             const uploadedMoments = await this.storage.get('moment-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId);
@@ -341,11 +341,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // click Send button
     async sendMessage() {
         // first process Media files
-        this.awsService.sessionAssets = this.awsService.sessionAssets.filter((c) => c && c.length);
-        if (this.awsService.sessionAssets.length) { // ensure media urls integrity
+        const conversationId = this.chatService.currentChatProps[this.propIndex].conversationId;
+        this.awsService.sessionAssets[conversationId] = this.awsService.sessionAssets.hasOwnProperty(conversationId) ? this.awsService.sessionAssets[conversationId].filter((c) => c && c.length) : [];
+        if (this.awsService.sessionAssets[conversationId].length) { // ensure media urls integrity
             this.socketData = {
                 conversationId: this.chatService.currentChatProps[this.propIndex].conversationId,
-                attachments: this.awsService.sessionAssets,
+                attachments: this.awsService.sessionAssets[conversationId],
                 quote: {
                     body: '',
                     attachments: [],
@@ -369,12 +370,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }, 10000);
             try {
                 await this.chatService.sendReply(this.chatService.currentChatProps[this.propIndex].conversationId, {
-                    attachments: this.awsService.sessionAssets,
+                    attachments: this.awsService.sessionAssets[conversationId],
                     page: this.chatService.currentChatProps[this.propIndex].page, // obsolete in 3.3.32+
                     groupId: (this.chatService.currentChatProps[this.propIndex].group) ? this.chatService.currentChatProps[this.propIndex].group._id : null,
                     groupName: (this.chatService.currentChatProps[this.propIndex].group) ? this.chatService.currentChatProps[this.propIndex].group.name : null
                 }, this.socketData);
-                this.awsService.sessionAssets = [];
+                this.awsService.sessionAssets[conversationId] = [];
                 this.storage.remove('media-' + this.chatService.currentChatProps[this.propIndex].conversationId); // clear the cache of composed message
                 this.noNetwork = false;
             } catch (err) {
@@ -604,12 +605,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
         });
         let result: any;
         if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-            result = await this.awsService.uploadImage('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, image);
+            result = await this.awsService.uploadImage('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, image, this.chatService.currentChatProps[this.propIndex].conversationId);
         } else {
-            result = await this.awsService.uploadImage('users', this.userData.user._id, image);
+            result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.chatService.currentChatProps[this.propIndex].conversationId);
         }
         if (result === "Upload succeeded") {
-            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets); //store the unsent media
+            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
         }
     }
 
@@ -628,20 +629,20 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     correctOrientation: false
                 });
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadImage('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, image);
+                    result = await this.awsService.uploadImage('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, image, this.chatService.currentChatProps[this.propIndex].conversationId);
                 } else {
-                    result = await this.awsService.uploadImage('users', this.userData.user._id, image);
+                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.chatService.currentChatProps[this.propIndex].conversationId);
                 }
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
                 }
             }
             if (result === "Upload succeeded") {
-                await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets); //store the unsent media
+                await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
             }
         } catch (err) {
             console.log(err);
@@ -655,13 +656,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (event.target.files[0].size < 50000000) {
                 console.log("uploading file: ", event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0]);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0]);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
                 }
                 console.log("result", result);
                 if (result === "Upload succeeded") {
-                    await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets); //store the unsent media
+                    await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
                 }
             } else {
                 const largeFileAlert = await this.alertCtrl.create({
@@ -1017,11 +1018,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async removeMedia(i) {
-        const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[i]));
-        this.awsService.sessionAssets.splice(i, 1);
-        await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets); // store the unsent media
-        if (url) {
-            this.awsService.removeFile(url);
+        if (this.awsService.sessionAssets.hasOwnProperty(this.chatService.currentChatProps[this.propIndex].conversationId)) {
+            const url = JSON.parse(JSON.stringify(this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId][i]));
+            this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId].splice(i, 1);
+            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); // store the unsent media
+            if (url) {
+                this.awsService.removeFile(url);
+            }
         }
     }
 

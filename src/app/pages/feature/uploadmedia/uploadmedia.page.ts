@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import { Plyr } from "plyr";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {Aws} from "../../../services/aws.service";
@@ -14,6 +14,7 @@ import {UserData} from "../../../services/user.service";
 })
 export class UploadmediaPage implements OnInit {
 
+  @Input() sessionId: string;
   mediaType = 'photo';
   urls = [];
   mediaList: Array<{_id: string, player: Plyr}> = [];
@@ -34,14 +35,14 @@ export class UploadmediaPage implements OnInit {
   }
 
   async selectStockPhoto(photo) {
-    await this.awsService.selectStockPhoto(photo);
-    this.urls.push(this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1]);
+    await this.awsService.selectStockPhoto(photo, this.userData.user._id);
+    this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
   }
 
   async selectFileFromDeviceAndUpload(event) {
     try {
-      await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0]);
-          this.urls.push(this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1]);
+      await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.sessionId);
+          this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
     } catch (err) {
       console.log(err);
     }
@@ -60,22 +61,22 @@ export class UploadmediaPage implements OnInit {
           correctOrientation: false
         });
         if (image) {
-          await this.awsService.uploadImage('users', this.userData.user._id, image);
+          await this.awsService.uploadImage('users', this.userData.user._id, image, this.sessionId);
         }
       } else {
         const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-        await this.awsService.uploadFile('users', this.userData.user._id, compressed);
+        await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.sessionId);
       }
-          this.urls.push(this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1]);
+          this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
     } catch (err) {
       console.log(err);
     }
   }
 
   async removeMedia(i) {
-    const index = this.awsService.sessionAssets.indexOf(this.urls[i]);
+    const index = this.awsService.sessionAssets[this.sessionId].indexOf(this.urls[i]);
     if (index > -1) {
-      this.awsService.sessionAssets.splice(index, 1);
+      this.awsService.sessionAssets[this.sessionId].splice(index, 1);
     }
     this.urls.splice(i, 1);
   }
