@@ -820,7 +820,11 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     onJitsiUnloaded = async () => {
         console.log('unloading Jitsi');
+<<<<<<< HEAD
         this.userData.readyToControlVideoChat = true;
+=======
+        this.readyToControlVideoChat = true;
+>>>>>>> add deeplinking support to opening video conferencing link
         if (this.userData.user && await this.userData.checkRestExpired()) {
             this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
         }

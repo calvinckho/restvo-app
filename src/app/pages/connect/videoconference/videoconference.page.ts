@@ -94,13 +94,15 @@ export class VideoconferencePage implements OnInit {
 >>>>>>> move video conferencing to a dedicated page on desktop
 =======
     if (this.videoChatRoomId && this.platform.is('cordova')) { // if open via deeplinking by mobile app
-      this.chatService.toggleVideoChat({
-        videoChatRoomId: this.videoChatRoomId,
-        videoChatRoomSubject: this.videoChatRoomSubject,
-        channelLastN: this.channelLastN, // only the last 6 active dominate speakers' stream will be sent
-        startWithAudioMuted: this.startWithAudioMuted,
-        startWithVideoMuted: this.startWithVideoMuted,
-      });
+      setTimeout(() => {
+        this.chatService.toggleVideoChat({
+          videoChatRoomId: this.videoChatRoomId,
+          videoChatRoomSubject: this.videoChatRoomSubject,
+          channelLastN: this.channelLastN, // only the last 6 active dominate speakers' stream will be sent
+          startWithAudioMuted: this.startWithAudioMuted,
+          startWithVideoMuted: this.startWithVideoMuted,
+        });
+      }, 8000);
     } else if (this.videoChatRoomId && !this.platform.is('mobileweb')) { // only if chat room ID is valid and if platform is desktop
 >>>>>>> add deeplinking support to opening video conferencing link
       this.initializeVideoConference();
