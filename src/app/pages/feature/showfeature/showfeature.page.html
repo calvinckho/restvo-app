@@ -292,6 +292,7 @@
             <div class="overall-progress">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
               <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
 =======
@@ -300,6 +301,9 @@
 >>>>>>> random progress bar value testing
 =======
               <progress-bar [progress]="((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) * 100" [color]="'#488aff'"></progress-bar>
+=======
+              <progress-bar [progress]="((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) ? ((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) * 100 : 0" [color]="'#488aff'"></progress-bar>
+>>>>>>> changed null values to 0
               <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
 >>>>>>> found out progress bar is always at null
               <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
