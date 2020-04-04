@@ -102,6 +102,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.awsService.sessionAssets = [];
+        this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
 
@@ -110,7 +112,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
             this.setup();
         }
-        this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
     }
 
     reloadHandler = async (data) => {

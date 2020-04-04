@@ -1,0 +1,18 @@
+app-videoconference {
+  #videoConference {
+    background-color: var(--ion-color-secondary);
+    border: none;
+    height: 100%;
+  }
+
+  .login-logo {
+    max-width: 25%;
+    margin: 0 auto;
+  }
+
+  .welcome-name {
+    font-size: 20px;
+    //color: var(--ion-color-secondary);
+    margin: 2% auto 0 auto;
+  }
+}

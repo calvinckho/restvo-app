@@ -56,20 +56,24 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     async ngAfterViewInit() {
         await this.platform.ready();
-        if (Capacitor.isPluginAvailable('App')) {
-            const data = await App.getLaunchUrl();
-            if (data && data.url) {
-                this.openUrl(data.url);
-            }
-            App.addListener('appUrlOpen', async (app_data) => {
-                if (app_data && app_data.url) {
-                    this.zone.run(() => {
-                        this.openUrl(app_data.url);
-                    });
+        try {
+            if (Capacitor.isPluginAvailable('App')) {
+                const data = await App.getLaunchUrl();
+                if (data && data.url) {
+                    this.openUrl(data.url);
                 }
-            });
-        } else {
-            console.log("App Plugin not available");
+                App.addListener('appUrlOpen', async (app_data) => {
+                    if (app_data && app_data.url) {
+                        this.zone.run(() => {
+                            this.openUrl(app_data.url);
+                        });
+                    }
+                });
+            } else {
+                console.log("App Plugin not available");
+            }
+        } catch (err) {
+            console.log("error when activating Capacitor's App Plugin");
         }
     }
 
