@@ -796,11 +796,11 @@ export class RegisterPage implements OnInit {
                     correctOrientation: false
                 });
                 if (image) {
-                    result = await this.awsService.uploadImage('users', this.userData.user._id, image);
+                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.userData.user._id);
                 }
             } else {
                 result = await this.awsService.compressPhoto(event.target.files[0]);
-                await this.awsService.uploadFile('users', this.userData.user._id, result);
+                await this.awsService.uploadFile('users', this.userData.user._id, result, this.userData.user._id);
             }
             if (result) {
                 if (this.userData.user.avatar) {

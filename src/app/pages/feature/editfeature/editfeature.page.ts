@@ -402,7 +402,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   }
               });
           }
-          this.awsService.sessionAssets = this.moment.assets; // store all asset urls associated with this moment in the awsAssets
+          this.awsService.sessionAssets[this.moment._id] = this.moment.assets; // store all asset urls associated with this moment in the awsAssets
       } else {
           this.startTime = new Date(new Date().setMinutes(0)).toISOString();
           this.endTime = new Date(new Date().setMinutes(0)).toISOString();
@@ -589,19 +589,19 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     async selectFileFromDeviceAndUpload(event, i) {
       try {
-          await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0]);
-          this.moment.matrix_string[i][0] = this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1];
+          await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.moment._id);
+          this.moment.matrix_string[i][0] = this.awsService.sessionAssets[this.moment._id][this.awsService.sessionAssets[this.moment._id].length - 1];
       } catch (err) {
           console.log(err);
       }
     }
 
   async selectStockPhoto(photo, component_index, option_index) {
-      await this.awsService.selectStockPhoto(photo);
+      await this.awsService.selectStockPhoto(photo, this.moment._id);
       if (this.moment.resource.matrix_number[0][component_index] === 40020) {
-          this.moment.matrix_string[component_index][option_index] = this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1];
+          this.moment.matrix_string[component_index][option_index] = this.awsService.sessionAssets[this.moment._id][this.awsService.sessionAssets[this.moment._id].length - 1];
       } else {
-          this.moment.matrix_string[component_index][0] = this.awsService.sessionAssets[this.awsService.sessionAssets.length - 1];
+          this.moment.matrix_string[component_index][0] = this.awsService.sessionAssets[this.moment._id][this.awsService.sessionAssets[this.moment._id].length - 1];
       }
   }
 
@@ -620,9 +620,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   async removeMedia(i, j) {
       const url = this.moment.matrix_string[i][j];
-      const index = this.awsService.sessionAssets.indexOf(url);
+      const index = this.awsService.sessionAssets[this.moment._id].indexOf(url);
       if (index > -1) {
-          this.awsService.sessionAssets.splice(index, 1);
+          this.awsService.sessionAssets[this.moment._id].splice(index, 1);
       }
       this.moment.matrix_string[i].splice(j, 1);
   }
@@ -1161,10 +1161,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
 
       // clean up DO of unlinked media URLs in this.moment.assets before it is overwritten by sessionAssets
-      await this.awsService.cleanUp(this.moment.assets);
+      await this.awsService.cleanUp(this.moment._id, this.moment.assets);
       //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
-      this.moment.assets = this.awsService.sessionAssets;
+      this.moment.assets = this.awsService.sessionAssets[this.moment._id];
+      console.log("assets", this.awsService.sessionAssets[this.moment._id])
       if (this.moment._id) { // sending moment object with fully populated resource object to server
           try {
               await this.momentService.update(this.moment);
@@ -1303,7 +1304,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     }
 
     async openUploadMedia(i, componentIndex) {
-      const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { modalPage: true}});
+      const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: this.moment._id, modalPage: true }});
       await modal.present();
         const {data: media_list} = await modal.onDidDismiss();
         // event is an a moment object see server/models/moment.js
@@ -1324,7 +1325,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   async closeModal(refreshNeeded) {
       this.destroyPlayers(null);
-      this.awsService.cleanUp(true); // clean up the temporarily uploaded media
+      this.awsService.cleanUp(this.moment._id, true); // clean up the temporarily uploaded media
       /*const promises = this.removedMoments.map( async (moment) => {
           console.log('removing abandoned Programs', moment);
           await this.momentService.delete(moment);
@@ -1345,6 +1346,5 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
       this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
       this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
-      this.awsService.cleanUp(true); // clean up the temporarily uploaded media
   }
 }

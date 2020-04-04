@@ -178,10 +178,10 @@ export class EditcommunityPage implements OnInit {
                 if (!image) {
                     return;
                 }
-                result = await this.awsService.uploadImage('communities', this.community._id.length ? this.community._id : "temporary", image);
+                result = await this.awsService.uploadImage('communities', this.community._id.length ? this.community._id : "temporary", image, this.community._id);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                result = await this.awsService.uploadFile('communities', this.community._id.length ? this.community._id : "temporary", compressed);
+                result = await this.awsService.uploadFile('communities', this.community._id.length ? this.community._id : "temporary", compressed, this.community._id);
             }
             if (result === "Upload succeeded"){
                 if(this.community.background){

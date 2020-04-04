@@ -22,7 +22,7 @@ export class Aws {
     private reader: any = new FileReader();
 
     sessionAllowedCount = 1;
-    sessionAssets = []; // sessionAssets stores the latest, valid media URLs for the session (e.g. moment, group, etc)
+    sessionAssets: any = {}; // sessionAssets stores the latest, valid media URLs for the session (e.g. moment, group, etc)
     tempUploadedMedia = []; // list of UploadedUri keeps track of uploaded URLs in a session. If an uploaded URL is no longer in sessionAssets when leaving a session, that media will be removed from DO
 
     constructor(private http: HttpClient,
@@ -38,7 +38,7 @@ export class Aws {
                 public userData: UserData) {
     }
 
-    public async uploadImage(type: string, id: string, image: any) {
+    public async uploadImage(type: string, id: string, image: any, sessionId: string) {
         const loading = await this.loadingCtrl.create({
             message: 'Uploading Photo...'
         });
@@ -51,7 +51,7 @@ export class Aws {
                 const result: any = await this.upload(type, id, photoBlob, 'image.jpg', photoBlob.size, loading);
                 if (result.msg === 'Upload succeeded') {
                     this.url = result.url;
-                    this.addToSessionAssets(result.url); // save this as session url
+                    this.addToSessionAssets(sessionId, result.url); // save this as session url
                     if (!this.tempUploadedMedia.includes(this.url)) {
                         this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                     }
@@ -86,7 +86,7 @@ export class Aws {
         })
     }
 
-    public async uploadFile(type: string, id: string, file: any) {
+    public async uploadFile(type: string, id: string, file: any, sessionId: string) {
         return new Promise(async (resolve, reject) => {
             if (file && file.size > 50000000) {
                 const largeFileAlert = await this.alertCtrl.create({
@@ -112,7 +112,7 @@ export class Aws {
                     console.log("result", result);
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
-                        this.addToSessionAssets(result.url); // save this as session url
+                        this.addToSessionAssets(sessionId, result.url); // save this as session url
                         if (!this.tempUploadedMedia.includes(this.url)) {
                             this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                         }
@@ -127,7 +127,7 @@ export class Aws {
         });
     }
 
-    public async uploadImageUri(type: string, id: string, uri: string) {
+    public async uploadImageUri(type: string, id: string, uri: string, sessionId: string) {
         let filename = uri.substring(uri.lastIndexOf('/') + 1).toLowerCase();
         const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
         let blob = await imgSrcToBlob(uri, (['jpg', 'jpeg'].indexOf(ext) > -1 ? 'image/jpeg' : 'image/png'), 'Anonymous');
@@ -140,7 +140,7 @@ export class Aws {
             console.log("result", result);
             if(result.msg === 'Upload succeeded') {
                 this.url = result.url;
-                this.addToSessionAssets(result.url); // save this as session url
+                this.addToSessionAssets(sessionId, result.url); // save this as session url
                 if (!this.tempUploadedMedia.includes(this.url)) {
                     this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                 }
@@ -228,55 +228,58 @@ export class Aws {
         toast.present();
     }
 
-    async selectStockPhoto(photo) {
-        const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL);
+    async selectStockPhoto(sessionId, photo) {
+        const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
         if (result === 'Upload succeeded'){
             this.resourceService.searchKeyword = '';
             this.resourceService.showPixabay = -1;
         }
     }
 
-    addToSessionAssets(url) {
+    addToSessionAssets(sessionId, url) {
+        if (!this.sessionAssets.hasOwnProperty(sessionId)) {
+            this.sessionAssets[sessionId] = []; // initiate the object property with an empty array;
+        }
         if (url.length) {
-            if (this.sessionAssets.length < this.sessionAllowedCount) {
-                this.sessionAssets.push(url);
+            if (this.sessionAssets[sessionId].length < this.sessionAllowedCount) {
+                this.sessionAssets[sessionId].push(url);
             } else {
-                this.sessionAssets.pop(); // erase the last item
-                this.sessionAssets.push(url);
+                this.sessionAssets[sessionId].pop(); // erase the last item
+                this.sessionAssets[sessionId].push(url);
             }
         }
     }
 
     // clean up previously uploaded assets (e.g. in this.moment.assets) that are no longer linked, or clean up all unused uploaded assets
-    async cleanUp(origin: any) {
+    async cleanUp(sessionId: string, origin: any) {
         const imageSource: any = JSON.parse(JSON.stringify(origin));
         switch (typeof imageSource) {
             case 'object': // imageSource is an array. Typical use case is to clean up unlinked Media URL from DO
                 //remove valid media from the tempUploadedMedia array. The temp array will be used in the final clean up process
-                for (let i = this.sessionAssets.length - 1; i >= 0; i--) {
-                    if (this.sessionAssets[i] && this.sessionAssets[i].length) {
-                        const index = this.tempUploadedMedia.indexOf(this.sessionAssets[i]);
+                for (let i = this.sessionAssets[sessionId].length - 1; i >= 0; i--) {
+                    if (this.sessionAssets[sessionId][i] && this.sessionAssets[sessionId][i].length) {
+                        const index = this.tempUploadedMedia.indexOf(this.sessionAssets[sessionId][i]);
                         if (index > -1) {
                             this.tempUploadedMedia.splice(index, 1);
                         }
                     } else { // if empty string, splice the element. This is needed to handle empty string
-                        this.sessionAssets.splice(i, 1);
+                        this.sessionAssets[sessionId].splice(i, 1);
                     }
                 }
                 // sort the list and move any graphics to the front
-                this.sessionAssets.sort((a, b) => {
+                this.sessionAssets[sessionId].sort((a, b) => {
                     const c: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(a.substring(a.lastIndexOf('.') + 1).toLowerCase()) > -1;
                     const d: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(b.substring(b.lastIndexOf('.') + 1).toLowerCase()) > -1;
                     return (d - c);
                 });
                 break;
             case 'string': // imageSource is a string. e.g. user avatar, group chat - media deletion
-                if (imageSource.length && this.sessionAssets.indexOf(imageSource) < 0 && (imageSource.indexOf('https://pixabay.com') < 0)) {
+                if (imageSource.length && this.sessionAssets[sessionId].indexOf(imageSource) < 0 && (imageSource.indexOf('https://pixabay.com') < 0)) {
                     await this.removeFile(imageSource); // remove the previous background from Digital Ocean
                 }
-                if (this.sessionAssets.length && this.sessionAssets[0].length) {
+                if (this.sessionAssets[sessionId].length && this.sessionAssets[sessionId][0].length) {
                     // clean up the DO storage of unused urls
-                    const index = this.tempUploadedMedia.indexOf(this.sessionAssets[0]);
+                    const index = this.tempUploadedMedia.indexOf(this.sessionAssets[sessionId][0]);
                     if (index > -1) {
                         this.tempUploadedMedia.splice(index, 1);
                     }
@@ -287,7 +290,7 @@ export class Aws {
                     await this.removeFile(url);
                 });
                 this.url = '';
-                this.sessionAssets = [];
+                this.sessionAssets[sessionId] = [];
                 this.tempUploadedMedia = [];
                 this.resourceService.searchKeyword = '';
                 this.resourceService.showPixabay = -1;

@@ -32,7 +32,7 @@
           <ion-button *ngIf="!platform.is('ios') && !platform.is('android')" routerLink="https://restvo.com">Download the app</ion-button>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button [href]="router.url" fill="clear">Continue to the app</ion-button>
+          <ion-button (click)="location.back()" fill="clear">Continue to the app</ion-button>
         </ion-row>
       </div>
     </ion-row>

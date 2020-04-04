@@ -166,7 +166,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
             correctOrientation: false
         });
         if (image) {
-            await this.awsService.uploadImage('communities', this.churchId, image);
+            await this.awsService.uploadImage('communities', this.churchId, image, this.boardId);
         }
     }
 
@@ -275,10 +275,10 @@ export class EditboardpostPage implements OnInit, OnDestroy {
                     source: CameraSource.Photos,
                     correctOrientation: false
                 });
-                await this.awsService.uploadImage('communities', this.churchId, image);
+                await this.awsService.uploadImage('communities', this.churchId, image, this.boardId);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                await this.awsService.uploadFile('boards', this.userData.user._id, compressed);
+                await this.awsService.uploadFile('boards', this.userData.user._id, compressed, this.boardId);
             }
         } catch (err) {
             console.log(err);
@@ -288,7 +288,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
 
     async selectFileFromDeviceAndUpload(event) {
         try {
-            await this.awsService.uploadFile('communities', this.churchId, event.target.files[0]);
+            await this.awsService.uploadFile('communities', this.churchId, event.target.files[0], this.boardId);
         } catch (err) {
             console.log(err);
         }
@@ -395,7 +395,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
             return;
         }
         // process the photos upload and clean up
-        this.awsService.cleanUp(this.post.attachments);
+        this.awsService.cleanUp(this.boardId, this.post.attachments);
         this.post.attachments = this.awsService.sessionAssets;
 
         console.log("The post looks like this: " + JSON.stringify(this.post));
@@ -414,7 +414,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
 
     closeModal(refreshNeeded) {
         //erase uploaded but abandoned files
-        this.awsService.cleanUp(true);
+        this.awsService.cleanUp(this.boardId, true);
         if (this.player) this.player.destroy();
         this.modalCtrl.dismiss(refreshNeeded);
     }
