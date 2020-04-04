@@ -45,7 +45,7 @@ export class VideoconferencePage implements OnInit {
     this.channelLastN = this.route.snapshot.paramMap.get('channelLastN') || this.channelLastN;
     this.startWithAudioMuted = this.route.snapshot.paramMap.get('startWithAudioMuted') === 'true';
     this.startWithVideoMuted = this.route.snapshot.paramMap.get('startWithVideoMuted') === 'true';
-    if (this.videoChatRoomId && !this.platform.is('mobile')) { // only if chat room ID is valid and if platform is desktop
+    if (this.videoChatRoomId && !this.platform.is('mobileweb')) { // only if chat room ID is valid and if platform is desktop
       this.initializeVideoConference();
     }
   }
