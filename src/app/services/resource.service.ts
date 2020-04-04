@@ -164,7 +164,7 @@ export class Resource {
     }
 
     assignVideoEndpoint(videoChatRoomId) {
-        return this.http.get(this.networkService.domain + '/api/resource/videoendpoint' + '?videoChatRoomId=' + videoChatRoomId, this.authService.httpAuthOptions).toPromise();
+        return this.http.get(this.networkService.domain + '/api/resource/videoendpoint' + '?videoChatRoomId=' + videoChatRoomId, this.authService.httpOptions).toPromise();
     }
 
     forwardGeocode(address) {

@@ -195,6 +195,10 @@ const routes: Routes = [
                 loadChildren: '../user/completeprofile/completeprofile.module#CompleteprofilePageModule'
             },
             {
+                path: 'video/:id',
+                loadChildren: () => import('../connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
+            },
+            {
                 path: '',
                 redirectTo: '/app/discover',
                 pathMatch: 'full'

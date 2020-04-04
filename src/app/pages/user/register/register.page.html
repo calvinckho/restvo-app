@@ -1,6 +1,6 @@
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
-    <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
@@ -15,8 +15,8 @@
               </ion-buttons>
               <ion-row>
                 <ion-col>
-                  <img class="login-logo-2" src="assets/img/icon.png"/>
-                  <div class="welcome-name-2">Restvo</div>
+                  <img class="login-logo" src="assets/img/icon.png"/>
+                  <div class="welcome-name">Restvo</div>
                 </ion-col>
               </ion-row>
               <ion-segment [value]="loginMode" (ionChange)="changeLoginMode($event)">
