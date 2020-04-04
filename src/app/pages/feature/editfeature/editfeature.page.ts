@@ -21,7 +21,7 @@ import {Moment} from "../../../services/moment.service";
 import {Resource} from "../../../services/resource.service";
 import {Response} from "../../../services/response.service";
 import {CalendarService} from "../../../services/calendar.service";
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import {Plugins} from "@capacitor/core";
 import {PickpeoplePopoverPage} from "../pickpeople-popover/pickpeople-popover.page";
 import {NetworkService} from "../../../services/network-service.service";
 import {Location} from "@angular/common";
@@ -182,6 +182,16 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   async ngOnInit() {
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
+  }
+
+    // for Desktop routing, it is possible for user to jump between page views without properly using the back button (closeModal and ngOnDestroy).
+    // assumption: leaving the page improperly will lose all unsaved changes. Re-entering will refresh the edit page to its initial state.
+    // in such case, ionViewWillEnter listener is used to detect re-entering a page view and reloading the page
+  ionViewWillEnter() {
+      if (this.moment && this.moment._id) {
+          console.log("re-entering edit feature");
+          this.setup();
+      }
   }
 
     reloadEditPage = async () => { // refresh the Edit Page
@@ -970,7 +980,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 });
             }
         });
-        console.log("cool", this.match_configs, this.preferences);
+        //console.log("cool", this.match_configs, this.preferences);
     }
 
     async selectedParentMoment(response) {
