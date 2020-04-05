@@ -56,7 +56,6 @@ export class MainTabPage implements OnInit, OnDestroy {
     hasSetupEventListeners = false;
     jitsi: any;
     pendingVideoChatRoomId = '';
-    readyToControlVideoChat = true;
     subscriptions: any = {};
 
     constructor(      public router: Router,
@@ -90,6 +89,13 @@ export class MainTabPage implements OnInit, OnDestroy {
             if (data && data.type === 'setup device') {
                 this.setupDevice();
             }
+            // if authentication takes a long time, this listen to when user data is ready and can be used to update the Jitsi
+            if (this.authService.token && this.userData.user && this.jitsi && this.userData.readyToControlVideoChat) {
+                this.jitsi.executeCommand('displayName', this.userData.user.first_name + ' ' + this.userData.user.last_name);
+                if (this.userData && this.userData.user && this.userData.user.avatar) {
+                    this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
+                }
+            }
         });
         if (this.platform.is('cordova')) {
             const status = await Network.getStatus();
@@ -113,7 +119,10 @@ export class MainTabPage implements OnInit, OnDestroy {
         try {
             const user: any = await this.storage.get('user');
             if (user && user._id) {
-                if (!this.router.url.includes('/app/video')) {
+                // turn on menu in most cases except when showing video on desktop
+                if (this.router.url.includes('/app/video') && this.platform.is('desktop')) {
+                    // menu remains disabled
+                } else {
                     this.menuCtrl.enable(true);
                 }
                 this.userData.user = user;
@@ -676,17 +685,16 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async toggleVideoChat(params) {
-        if (this.readyToControlVideoChat) {
+        if (this.userData.readyToControlVideoChat) {
             if (!this.userData.videoChatRoomId) {
                 try {
-                    this.readyToControlVideoChat = false;
+                    this.userData.readyToControlVideoChat = false;
                     setTimeout(() => {
-                        this.readyToControlVideoChat = true;
+                        this.userData.readyToControlVideoChat = true;
                     }, 10000); // default video chat load timeout = 10s
                     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
                     if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
                         const { Jitsi } = Plugins;
-                        // if (await this.userData.checkRestExpired()) this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
                         await Jitsi.joinConference({
                             roomName: params.videoChatRoomId,
                             url: videoEndpoint.ssl + videoEndpoint.url,
@@ -736,7 +744,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
                     }
                 } catch (err) {
-                    this.readyToControlVideoChat = true;
+                    this.userData.readyToControlVideoChat = true;
                     const networkAlert = await await this.alertCtrl.create({
                         header: 'No Internet Connection',
                         message: 'Please check your internet connection.',
@@ -746,7 +754,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                     await networkAlert.present();
                 }
             } else {
-                this.readyToControlVideoChat = true;
+                this.userData.readyToControlVideoChat = true;
                 // logically only happens on non-native app (the toggleVideoChat button is covered by the native Jitsi view during call)
                 if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
                 this.userData.videoChatRoomId = '';
@@ -763,7 +771,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     onJitsiLoaded = async (params) => {
         console.log('loaded Jitsi');
-        this.readyToControlVideoChat = true;
+        this.userData.readyToControlVideoChat = true;
         this.userData.videoChatRoomId = this.pendingVideoChatRoomId;
         if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
         if (!this.platform.is('cordova')) {
@@ -780,7 +788,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     onJitsiUnloaded = async () => {
         console.log('unloading Jitsi');
-        this.readyToControlVideoChat = true;
+        this.userData.readyToControlVideoChat = true;
         if (this.userData.user && await this.userData.checkRestExpired()) {
             this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
         }
