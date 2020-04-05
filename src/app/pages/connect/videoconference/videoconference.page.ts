@@ -152,7 +152,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.userData.readyToControlVideoChat = false;
     setTimeout(() => {
       this.userData.readyToControlVideoChat = true;
+<<<<<<< HEAD
     }, this.platform.is('cordova') ? 2000 : 10000); // default video chat load timeout = 2 sec for mobile plugin, 10s for desktop. it needs shorter load time because TODO: onJitsiUnloaded is not working on mobile plugin so needs to manually readyToControlVideoChat to true after 2 sec
+=======
+    }, 2000); // default video chat load timeout = 10s
+>>>>>>> deeplinking to video conferencing page
     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(this.videoChatRoomId);
     if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
       await Jitsi.joinConference({
@@ -333,8 +337,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     if (this.authService.token && await this.userData.checkRestExpired()) {
       this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId });
     }
+<<<<<<< HEAD
 =======
     this.userData.readyToControlVideoChat = true;
+>>>>>>> deeplinking to video conferencing page
+=======
 >>>>>>> deeplinking to video conferencing page
     this.userData.videoChatRoomId = '';
     if (this.platform.is('cordova')) {
@@ -355,9 +362,6 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       // @ts-ignore
       $(`#videoConference`).empty();
       this.videoEnded = true;
-    }
-    if (this.authService.token && await this.userData.checkRestExpired()) {
-      this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId });
     }
   };
 
