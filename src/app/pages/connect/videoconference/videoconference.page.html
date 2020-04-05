@@ -7,7 +7,11 @@
         <ion-spinner name="dots"></ion-spinner>
       </ion-row>
     </ion-grid>
+<<<<<<< HEAD
     <ion-grid style="height: 100%" *ngIf="userData.readyToControlVideoChat">
+=======
+    <ion-grid style="height: 100%" *ngIf="userData.readyToControlVideoChat && !userData.videoChatRoomId">
+>>>>>>> deeplinking to video conferencing page
       <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
         <div>
           <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
@@ -41,6 +45,7 @@
       </ion-row>
     </ion-grid>
   </div>
+<<<<<<< HEAD
 </ion-content>
 <ion-content *ngIf="platform.is('mobileweb')">
   <ion-grid style="height: 100%">
@@ -82,6 +87,8 @@
       </ion-list>
     </ion-row>
   </ion-grid>
+=======
+>>>>>>> deeplinking to video conferencing page
 </ion-content>
 <ion-content *ngIf="platform.is('mobileweb')">
   <ion-grid style="height: 100%">

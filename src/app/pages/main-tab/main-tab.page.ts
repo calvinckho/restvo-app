@@ -120,13 +120,19 @@ export class MainTabPage implements OnInit, OnDestroy {
             const user: any = await this.storage.get('user');
             if (user && user._id) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> deeplinking to video conferencing page
                 // turn on menu in most cases except when showing video on desktop
                 if (this.router.url.includes('/app/video') && this.platform.is('desktop')) {
                     // menu remains disabled
                 } else {
+<<<<<<< HEAD
 =======
                 if (!this.router.url.includes('/app/video')) {
 >>>>>>> move video conferencing to a dedicated page on desktop
+=======
+>>>>>>> deeplinking to video conferencing page
                     this.menuCtrl.enable(true);
                 }
                 this.userData.user = user;
@@ -821,10 +827,14 @@ export class MainTabPage implements OnInit, OnDestroy {
     onJitsiUnloaded = async () => {
         console.log('unloading Jitsi');
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.userData.readyToControlVideoChat = true;
 =======
         this.readyToControlVideoChat = true;
 >>>>>>> add deeplinking support to opening video conferencing link
+=======
+        this.userData.readyToControlVideoChat = true;
+>>>>>>> deeplinking to video conferencing page
         if (this.userData.user && await this.userData.checkRestExpired()) {
             this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId });
         }

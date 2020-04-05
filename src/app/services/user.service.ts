@@ -40,8 +40,11 @@ export class UserData {
     UIrestStatus = "active"; // user's current UI rest status: active or away
     videoChatRoomId = ''; // the current video chat ID if one is in session
 <<<<<<< HEAD
+<<<<<<< HEAD
     UIready = false; // give app.component.html time to render correct UI params (e.g. UIMentoringMode) before enabling it
 =======
+=======
+>>>>>>> deeplinking to video conferencing page
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
     UIready = false; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
 >>>>>>> deeplinking to video conferencing page
@@ -751,7 +754,11 @@ export class UserData {
         this.splitPaneState = 'md';
         this.UIrestStatus = 'active';
         this.videoChatRoomId = '';
+<<<<<<< HEAD
         // this.readyToControlVideoChat = true;
+=======
+        this.readyToControlVideoChat = true;
+>>>>>>> deeplinking to video conferencing page
         this.showDownloadLink = true;
         this.defaultProgram = null;
         this.UIMentoringMode = false;
