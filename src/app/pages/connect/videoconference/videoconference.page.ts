@@ -68,6 +68,9 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 
   async initializeVideoConference() {
     this.userData.readyToControlVideoChat = false;
+    setTimeout(() => {
+      this.userData.readyToControlVideoChat = true;
+    }, 2000); // default video chat load timeout = 10s
     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(this.videoChatRoomId);
     if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
       await Jitsi.joinConference({
@@ -139,6 +142,9 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   onJitsiUnloaded = async () => {
     console.log('unloading Jitsi');
     this.userData.readyToControlVideoChat = true;
+    if (this.authService.token && await this.userData.checkRestExpired()) {
+      this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId });
+    }
     this.userData.videoChatRoomId = '';
     if (this.platform.is('cordova')) {
       window.removeEventListener('onConferenceJoined', this.onJitsiLoaded);
@@ -148,9 +154,6 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       // @ts-ignore
       $(`#videoConference`).empty();
       this.videoEnded = true;
-    }
-    if (this.authService.token && await this.userData.checkRestExpired()) {
-      this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId });
     }
   };
 
