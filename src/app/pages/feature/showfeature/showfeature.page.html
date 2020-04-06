@@ -293,6 +293,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
               <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
 =======
@@ -304,6 +305,9 @@
 =======
               <progress-bar [progress]="((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) ? ((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }) * 100 : 0" [color]="'#488aff'"></progress-bar>
 >>>>>>> changed null values to 0
+=======
+              <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
+>>>>>>> moved ternary operations to calendar.pipe.ts
               <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
 >>>>>>> found out progress bar is always at null
               <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
