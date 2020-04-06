@@ -55,13 +55,13 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    if (!this.router.url.includes('app/video') && !this.platform.is('cordova')) {
+    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     }
   }
 
   userLoadedHander = () => {
-    if (this.userData.user && this.authService.token && !this.platform.is('cordova')) {
+    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     }
   };
@@ -158,7 +158,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   };
 
   reload() {
-    if (this.platform.is('cordova')) {
+    if (this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     } else {
       window.location.reload();
