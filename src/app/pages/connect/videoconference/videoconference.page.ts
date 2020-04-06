@@ -54,14 +54,14 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
   }
 
-  ionViewWillEnter() {
-    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+  ionViewWillEnter() { // for unauthenticated user joining after the re-routing by Angular router
+    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     }
   }
 
-  userLoadedHander = () => {
-    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+  userLoadedHander = () => { // for authenticated user joining when the observable is first subscribed to
+    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     }
   };
@@ -70,7 +70,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.userData.readyToControlVideoChat = false;
     setTimeout(() => {
       this.userData.readyToControlVideoChat = true;
-    }, 2000); // default video chat load timeout = 10s
+    }, this.platform.is('cordova') ? 2000 : 10000); // default video chat load timeout = 2 sec for mobile plugin, 10s for desktop. it needs shorter load time because TODO: onJitsiUnloaded is not working on mobile plugin so needs to manually readyToControlVideoChat to true after 2 sec
     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(this.videoChatRoomId);
     if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
       await Jitsi.joinConference({
@@ -158,7 +158,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   };
 
   reload() {
-    if (this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+    if (this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
       this.initializeVideoConference();
     } else {
       window.location.reload();
