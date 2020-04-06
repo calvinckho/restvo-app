@@ -129,8 +129,12 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+<<<<<<< HEAD
     if (!this.router.url.includes('app/video') && !this.platform.is('cordova')) {
 >>>>>>> deeplinking to video conferencing page
+=======
+    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     }
   }
@@ -141,8 +145,12 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
 =======
   userLoadedHander = () => {
+<<<<<<< HEAD
     if (this.userData.user && this.authService.token && !this.platform.is('cordova')) {
 >>>>>>> deeplinking to video conferencing page
+=======
+    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     }
   };
@@ -368,10 +376,14 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   reload() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
 =======
     if (this.platform.is('cordova')) {
 >>>>>>> deeplinking to video conferencing page
+=======
+    if (this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     } else {
       window.location.reload();
