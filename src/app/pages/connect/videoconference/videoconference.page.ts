@@ -128,6 +128,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
   }
 
+<<<<<<< HEAD
   ionViewWillEnter() {
 <<<<<<< HEAD
     if (!this.router.url.includes('app/video') && !this.platform.is('cordova')) {
@@ -135,10 +136,15 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 =======
     if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
 >>>>>>> bug fix: user joins multiple times
+=======
+  ionViewWillEnter() { // for unauthenticated user joining after the re-routing by Angular router
+    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     }
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   userLoadedHander = () => { // for authenticated user joining when the observable is first subscribed to
@@ -151,6 +157,10 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 =======
     if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
 >>>>>>> bug fix: user joins multiple times
+=======
+  userLoadedHander = () => { // for authenticated user joining when the observable is first subscribed to
+    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     }
   };
@@ -161,10 +171,14 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     setTimeout(() => {
       this.userData.readyToControlVideoChat = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
     }, this.platform.is('cordova') ? 2000 : 10000); // default video chat load timeout = 2 sec for mobile plugin, 10s for desktop. it needs shorter load time because TODO: onJitsiUnloaded is not working on mobile plugin so needs to manually readyToControlVideoChat to true after 2 sec
 =======
     }, 2000); // default video chat load timeout = 10s
 >>>>>>> deeplinking to video conferencing page
+=======
+    }, this.platform.is('cordova') ? 2000 : 10000); // default video chat load timeout = 2 sec for mobile plugin, 10s for desktop. it needs shorter load time because TODO: onJitsiUnloaded is not working on mobile plugin so needs to manually readyToControlVideoChat to true after 2 sec
+>>>>>>> bug fix: user joins multiple times
     const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(this.videoChatRoomId);
     if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
       await Jitsi.joinConference({
@@ -377,12 +391,16 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
 =======
     if (this.platform.is('cordova')) {
 >>>>>>> deeplinking to video conferencing page
 =======
     if (this.platform.is('cordova') && !this.videoChatRoomId && this.userData.readyToControlVideoChat) {
+>>>>>>> bug fix: user joins multiple times
+=======
+    if (this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
 >>>>>>> bug fix: user joins multiple times
       this.initializeVideoConference();
     } else {
