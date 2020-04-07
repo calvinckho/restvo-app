@@ -413,10 +413,18 @@ export class CreatechatPage implements OnInit {
             this.selectedAppUsers.forEach((appuser) => {
                 this.userData.socket.emit('refresh user status', appuser._id, {type: 'update group participation', conversationId: null});
             });
+            this.chatService.currentChatProps.push({
+                conversationId: createdGroup.conversation,
+                name: createdGroup.name,
+                group: createdGroup,
+                page: 'chat',
+                badge: 0,
+                modalPage: this.platform.width() < 768
+            });
             this.ionSpinner = false;
             this.modalCtrl.dismiss(true);
         } catch (err) {
-            if(err){
+            if (err) {
                 console.log(JSON.stringify(err));
                 this.noNetworkConnection();
                 this.ionSpinner = false;

@@ -96,13 +96,14 @@ export class EditgroupPage implements AfterViewInit {
     }
 
     ngAfterViewInit() {
+        console.log("edit group", this.group)
         setTimeout(() => {
             this.setupForm();
             this.initialized = true;
         }, 100);
     }
 
-    async setupForm(){
+    async setupForm() {
         if (this.group) { // if editing a group
             this.saveType = 'update';
             const group = JSON.parse(JSON.stringify(this.group));
