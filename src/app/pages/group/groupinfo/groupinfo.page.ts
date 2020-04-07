@@ -409,8 +409,8 @@ export class GroupinfoPage implements OnInit, OnDestroy {
     }
 
     closeGroupInfoHandler = (res) => {
-        if (res && res.type === 'close group view' && res.data) {
-            if (res.data._id === this.group._id) {
+        if (res && res.type === 'close group view' && res.data && this.group) {
+            if (this.modalPage && res.data._id === this.group._id) {
                 this.closeModal(true);
             }
         }

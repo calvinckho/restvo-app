@@ -74,15 +74,15 @@ export class Groups {
         await this.userData.load();
         this.userData.refreshUserStatus({ type: 'close group view', data: { _id: group._id } });
         if (group.conversation) {
-            this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
+            //this.authService.refreshGroupStatus({conversationId: group.conversation, data: group});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'leave group', groupId: group._id}});
-
         }
         if (group.board) {
             this.userData.communitiesboards = await this.boardService.loadUserChurchBoards();
             this.userData.refreshUserStatus({ type: 'refresh community board page' });
         }
         this.userData.refreshUserStatus({type: 'leave group', groupId: group._id});
+        this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'leave group', groupId: group._id});
         return promise;
     }
