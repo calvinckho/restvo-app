@@ -111,7 +111,7 @@ export class Aws {
                 try {
                     await loading.present();
                     const result: any = await this.upload(type, id, fileBlob, file.name, file.size, loading);
-                    console.log("result", result);
+                    console.log("result", result, sessionId);
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
                         if (sessionId) {
