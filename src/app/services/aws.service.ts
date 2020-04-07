@@ -52,16 +52,22 @@ export class Aws {
                 if (result.msg === 'Upload succeeded') {
                     this.url = result.url;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix edit group bug
                     if (sessionId) {
                         this.addToSessionAssets(sessionId, result.url); // save this as session url
                         if (!this.tempUploadedMedia.includes(this.url)) {
                             this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                         }
+<<<<<<< HEAD
 =======
                     this.addToSessionAssets(sessionId, result.url); // save this as session url
                     if (!this.tempUploadedMedia.includes(this.url)) {
                         this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
 >>>>>>> add sessionId to awsService.sessionAssets
+=======
+>>>>>>> fix edit group bug
                     }
                 }
                 return result.msg;
@@ -121,16 +127,22 @@ export class Aws {
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix edit group bug
                         if (sessionId) {
                             this.addToSessionAssets(sessionId, result.url); // save this as session url
                             if (!this.tempUploadedMedia.includes(this.url)) {
                                 this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                             }
+<<<<<<< HEAD
 =======
                         this.addToSessionAssets(sessionId, result.url); // save this as session url
                         if (!this.tempUploadedMedia.includes(this.url)) {
                             this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
 >>>>>>> add sessionId to awsService.sessionAssets
+=======
+>>>>>>> fix edit group bug
                         }
                     }
                     resolve(result.msg);
@@ -157,16 +169,22 @@ export class Aws {
             if (result.msg === 'Upload succeeded') {
                 this.url = result.url;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix edit group bug
                 if (sessionId) {
                     this.addToSessionAssets(sessionId, result.url); // save this as session url
                     if (!this.tempUploadedMedia.includes(this.url)) {
                         this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                     }
+<<<<<<< HEAD
 =======
                 this.addToSessionAssets(sessionId, result.url); // save this as session url
                 if (!this.tempUploadedMedia.includes(this.url)) {
                     this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
 >>>>>>> add sessionId to awsService.sessionAssets
+=======
+>>>>>>> fix edit group bug
                 }
             }
             return result.msg;

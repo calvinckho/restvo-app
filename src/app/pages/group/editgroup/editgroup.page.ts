@@ -314,6 +314,7 @@ export class EditgroupPage implements AfterViewInit {
                     return;
                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
                 result = await this.awsService.uploadImage('users', this.userData.user._id, image, null);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
@@ -333,6 +334,14 @@ export class EditgroupPage implements AfterViewInit {
                 }
 >>>>>>> add sessionId to awsService.sessionAssets
             }
+=======
+                result = await this.awsService.uploadImage('users', this.userData.user._id, image, (this.group ? this.group._id : null));
+            } else {
+                const compressed = await this.awsService.compressPhoto(event.target.files[0]);
+                result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, (this.group ? this.group._id : null));
+            }
+            console.log("check asset", this.awsService.url);
+>>>>>>> fix edit group bug
             if (result === 'Upload succeeded') {
                 if(this.groupForm.value.background.length){
                     await this.awsService.removeFile(this.groupForm.value.background); //remove the previous background from Digital Ocean
