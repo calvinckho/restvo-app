@@ -41,7 +41,7 @@ export class Groups {
     }
 
     async updateGroupProfile(group){
-        let promise = this.http.put(this.networkService.domain + '/api/group/update', JSON.stringify(group), this.authService.httpAuthOptions)
+        let promise = await this.http.put(this.networkService.domain + '/api/group/update', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.userData.load();
         return promise;

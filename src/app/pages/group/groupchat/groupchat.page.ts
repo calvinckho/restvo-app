@@ -40,6 +40,7 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 import {ProfilePage} from "../../user/profile/profile.page";
 import {GroupinfoPage} from "../groupinfo/groupinfo.page";
 import {CalendarService} from "../../../services/calendar.service";
+import {Auth} from "../../../services/auth.service";
 
 @Component({
     selector: 'app-groupchat',
@@ -91,6 +92,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         private modalCtrl: ModalController,
         private popoverCtrl: PopoverController,
         private groupService: Groups,
+        private authService: Auth,
         public userData: UserData,
         public chatService: Chat,
         private awsService: Aws,
@@ -104,6 +106,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     async ngOnInit() {
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
+        this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
 
         this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
@@ -113,19 +116,27 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    reloadHandler = async (data) => {
-        if (data) {
-            if (data.action === 'reload chat view') {
+    reloadHandler = async (res) => {
+        if (res) {
+            if (res.action === 'reload chat view') {
                 if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
                     await this.cleanup(this.chatService.currentChatProps.badge);
                     await this.setup();
                     this.reloadChatView();
                 }
-            } else if (data.action === 'disconnect chat view' && data.conversationId === this.chatService.currentChatProps[this.propIndex]._id) {
+            } else if (res.action === 'disconnect chat view' && (this.propIndex > -1) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId) {
                 this.closeModal(true);
             }
         }
+    };
 
+    reloadGroupHandler = (res) => {
+        if (res) {
+            if ((this.propIndex > -1) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
+                // update group name
+                this.chatService.currentChatProps[this.propIndex].name = res.data.name;
+            }
+        }
     };
 
     async cleanup(refreshMyConversations) {

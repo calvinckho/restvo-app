@@ -58,38 +58,18 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         }
     }
 
-    // triggered when there is an incoming message from socket.io
-    incomingMessageHandler = async (message) => {
-        if (message) {
-            this.zone.run(async() => {
-                const data = this.chatService.conversations.find((c) => c.conversation._id === message.conversationId);
-                if (data) {
-                    if (message.author._id !== this.userData.user._id) { // incrementing the badges if incoming message is received from another user
-                        data.data.badge++;
-                    }
-                    data.message = JSON.parse(JSON.stringify(message)); // exact copy to avoid updating the referenced object
-                    data.message.author = data.message.author._id; // depopulate the author from socket.io
-                    data.message.preview = ((data.message.author === this.userData.user._id) ? "You: " : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
-                    data.conversation.updatedAt = new Date().toISOString(); // update the latest updated conversation for caching of the lastUpdatedDate
-                }
-                this.renderConversations();
-            });
-        }
-    };
-
     // event listener when the page needs to be refreshed or re-rendered
     refreshPageHandler = async (data) => {
         if (data) {
-            if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
+            if (data.action === 'reload' && data.conversationId === 'all') { // e.g. a user joins or leaves a group
+                await this.loadMyConversations(true);
+            } else if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
                 this.datas.forEach((obj: any) => {
                     if (data.conversationId === obj.conversation._id){
                         obj.data.badge = 0;
                     }
                 });
                 await this.renderConversations();
-            }
-            if (data.action === 'reload') { // e.g. a user joins or leaves a group
-                await this.loadMyConversations(true);
             } else if (data.action === 'render') { // e.g. socket.io event informing change in online status
                 await this.renderConversations();
             }
@@ -118,7 +98,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 }
             }
             // Community Groups
-            else if(obj.conversation.group && obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === obj.conversation.group.churchId || this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+            else if (obj.conversation.group && obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === obj.conversation.group.churchId || this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
                 this.noConversationLoaded = false;
                 if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
                     this.datas.push(obj); //push the conversation object into an array
@@ -321,6 +301,26 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         this.userData.delayImportContactListReminder = 100;
         await this.storage.set('delayImportContactListReminder', 100);
     }
+
+
+    // triggered when there is an incoming message from socket.io
+    incomingMessageHandler = async (message) => {
+        if (message) {
+            this.zone.run(async() => {
+                const data = this.chatService.conversations.find((c) => c.conversation._id === message.conversationId);
+                if (data) {
+                    if (message.author._id !== this.userData.user._id) { // incrementing the badges if incoming message is received from another user
+                        data.data.badge++;
+                    }
+                    data.message = JSON.parse(JSON.stringify(message)); // exact copy to avoid updating the referenced object
+                    data.message.author = data.message.author._id; // depopulate the author from socket.io
+                    data.message.preview = ((data.message.author === this.userData.user._id) ? "You: " : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
+                    data.conversation.updatedAt = new Date().toISOString(); // update the latest updated conversation for caching of the lastUpdatedDate
+                }
+                this.renderConversations();
+            });
+        }
+    };
 
     public ngOnDestroy(): void {
         this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);
