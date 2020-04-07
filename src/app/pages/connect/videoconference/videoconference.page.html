@@ -24,7 +24,7 @@
   <div *ngIf="!platform.is('cordova')" style="height: 100%">
     <div id="videoConference" *ngIf="!videoEnded"></div>
     <ion-grid style="height: 100%" *ngIf="videoEnded">
-      <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+      <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
         <ion-list>
           <ion-row class="ion-justify-content-center ion-margin-bottom">
             <ion-label>Your Have Left the Video Session</ion-label>
@@ -42,7 +42,7 @@
 </ion-content>
 <ion-content *ngIf="platform.is('mobileweb')">
   <ion-grid style="height: 100%">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
       <div>
         <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
           <ion-img class="login-logo" src="assets/img/icon.png"></ion-img>
