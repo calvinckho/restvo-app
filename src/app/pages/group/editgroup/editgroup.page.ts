@@ -315,6 +315,7 @@ export class EditgroupPage implements AfterViewInit {
                 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 result = await this.awsService.uploadImage('users', this.userData.user._id, image, null);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
@@ -336,12 +337,18 @@ export class EditgroupPage implements AfterViewInit {
             }
 =======
                 result = await this.awsService.uploadImage('users', this.userData.user._id, image, (this.group ? this.group._id : null));
+=======
+                result = await this.awsService.uploadImage('users', this.userData.user._id, image, null);
+>>>>>>> fix the conflict of function names selectPhotoFromDeviceAndUpload in Groupchat and EditGroup. Change the function name in EditGroup to selectPhotoFromDeviceAndUploadInEdit
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, (this.group ? this.group._id : null));
+                result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, null);
             }
+<<<<<<< HEAD
             console.log("check asset", this.awsService.url);
 >>>>>>> fix edit group bug
+=======
+>>>>>>> fix the conflict of function names selectPhotoFromDeviceAndUpload in Groupchat and EditGroup. Change the function name in EditGroup to selectPhotoFromDeviceAndUploadInEdit
             if (result === 'Upload succeeded') {
                 if(this.groupForm.value.background.length){
                     await this.awsService.removeFile(this.groupForm.value.background); //remove the previous background from Digital Ocean

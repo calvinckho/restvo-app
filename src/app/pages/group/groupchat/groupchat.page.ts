@@ -140,10 +140,14 @@ export class GroupchatPage implements OnInit, OnDestroy {
     reloadGroupHandler = (res) => {
         if (res) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             if ((this.propIndex > -1) && this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
 =======
             if ((this.propIndex > -1) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
 >>>>>>> fix edit group bug
+=======
+            if ((this.propIndex > -1) && this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
+>>>>>>> fix the conflict of function names selectPhotoFromDeviceAndUpload in Groupchat and EditGroup. Change the function name in EditGroup to selectPhotoFromDeviceAndUploadInEdit
                 // update group name
                 this.chatService.currentChatProps[this.propIndex].name = res.data.name;
             }
