@@ -200,7 +200,7 @@ app-showfeature {
     width: 15%;
     .votecount{
       padding-top: 12px;
-      color: black;
+      color: var(--ion-color-dark);
       font-size: x-small;
     }
   }
@@ -209,12 +209,12 @@ app-showfeature {
     float: right;
     width: 15%;
     padding: 0 auto;
-    .uservote{
+    .uservote {
       margin: 15px 5% 0 5%;
       font-size: x-small;
       width: 90%;
       height: 30px;
-      color: black;
+      color: var(--ion-color-dark);
     }
     .uservoted{
       padding-top: 20px;
@@ -224,13 +224,13 @@ app-showfeature {
   }
 
   .pollNotes{
-    color: black;
+    color: var(--ion-color-dark);
     width: 100%;
   }
 
   .voteCount{
     font-weight: bold;
-    color: black;
+    color: var(--ion-color-dark);
     width: 100%;
   }
 
