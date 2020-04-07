@@ -361,11 +361,11 @@ export class EditgroupPage implements AfterViewInit {
         await alert.present();
     }
 
-    closeModal(){
+    closeModal() {
         this.modalCtrl.dismiss(false);
     }
 
-    async noNetworkConnection(){
+    async noNetworkConnection() {
         const networkAlert = await this.alertCtrl.create({
             header: 'No Internet Connection',
             subHeader: 'Please check your internet connection.',
