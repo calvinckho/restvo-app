@@ -211,6 +211,7 @@ export class Chat {
         });
         //socket.io broadcasting refresh status update about a group/topic/conversation
         this.socket.on('refresh status', async (conversationId, data) => {
+            console.log("receiving refresh", data);
             if (data.action === 'update leader status'){
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
             } else if (data.action === 'update group member list'){
@@ -224,16 +225,10 @@ export class Chat {
                 // ex. Goal is due, Poll is due
                 this.toastNotification({type: 'moment', data: data}); //this triggers app.component.ts line
             } else {
+                console.log("receiving refresh 2", data);
                 await this.userData.load();
-                let activePage = await this.storage.get("activePage");
-                if (activePage) {
-                    if (activePage.page === "myconversations") {
-                        await this.storage.remove('conversations'); //when a leader updates the group churchId that requires a full reload of myconversations
-                        this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    }
-                }
+                this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-
             }
         });
         //user-data provider requesting to send a chat socket emit
@@ -288,11 +283,9 @@ export class Chat {
                         conversationIdsFromServer.splice(index, 1); // remove the conversation Id from the list
                     } else { // check for disconnected conversations
                         this.socket.emit('leave conversation', this.conversations.map((c) => c.conversation._id)[i], this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'offline' } : null));
-                        console.log("splice", !conversationIdsFromServer.includes(this.conversations.map((c) => c.conversation._id)[i]), this.conversations.map((c) => c.conversation._id)[i], this.conversations[i]);
                         this.conversations.splice(i, 1);
                     }
                 }
-                console.log("number of conversations missing in cache:", conversationIdsFromServer.length);
                 if (conversationIdsFromServer.length) { // if a conversation is missing in the cached conversation array, get a fresh copy of the conversations array from the server
                     this.conversations = await this.fetchLatestConversations(null);
                 }
@@ -301,6 +294,7 @@ export class Chat {
                 this.storage.set('conversations', this.conversations);
             }
             console.log('current conv length', this.conversations.length, this.conversations.find((c) => c.conversation._id === '5e0e6f8200b2420a07547c2c'));
+            this.userData.refreshMyConversations({action: 'render', data: null}); // refresh the list of conversation
             return this.conversations;
         } catch (err) {
             console.log(err);

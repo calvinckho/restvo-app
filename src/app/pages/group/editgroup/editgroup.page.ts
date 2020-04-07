@@ -197,16 +197,15 @@ export class EditgroupPage implements AfterViewInit {
     async updateGroupProfile() {
         try {
             await this.groupService.updateGroupProfile(this.group);
-            if (this.group.conversation){
+            if (this.group.conversation) {
                 this.chatService.socket.emit('update status', this.group.conversation, this.group); // group leader will receive update through socket.io
                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group});
-
-            } else if (this.group.board){
+            } else if (this.group.board) {
                 this.boardService.socket.emit('refresh board', this.group.board, {action: 'refresh board'}); // refresh the news feed page
                 this.userData.communitiesboards = await this.boardService.loadUserChurchBoards(); //in case of a board group
                 this.userData.refreshUserStatus({ type: 'refresh community board page' }); // refresh News Feed page
             }
-            const alert = await this.alertCtrl.create({
+            /*const alert = await this.alertCtrl.create({
                 header: 'Success',
                 subHeader: this.group.name + ' is updated. Information on the Discover Page can take up to 1 minute to be updated.',
                 buttons: [{ text: 'Ok',
@@ -218,7 +217,7 @@ export class EditgroupPage implements AfterViewInit {
                     }}],
                 cssClass: 'level-15'
             });
-            await alert.present();
+            await alert.present();*/
         } catch (err) {
             this.noNetworkConnection();
             console.log(err);
@@ -313,20 +312,13 @@ export class EditgroupPage implements AfterViewInit {
                 if (!image) {
                     return;
                 }
-                if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, this.group._id);
-                } else {
-                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.group._id);
-                }
+                result = await this.awsService.uploadImage('users', this.userData.user._id, image, (this.group ? this.group._id : null));
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, this.group._id);
-                } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.group._id);
-                }
+                result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, (this.group ? this.group._id : null));
             }
-            if (result === "Upload succeeded") {
+            console.log("check asset", this.awsService.url);
+            if (result === 'Upload succeeded') {
                 if(this.groupForm.value.background.length){
                     await this.awsService.removeFile(this.groupForm.value.background); //remove the previous background from Digital Ocean
                 }
