@@ -1,7 +1,7 @@
 <ion-header *ngIf="chatService.currentChatProps[propIndex]">
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button *ngIf="!modalPage" color="secondary" disabled="true"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button *ngIf="!modalPage" color="dark" disabled="true"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
       <ion-button (click)="closeModal(false)" *ngIf="modalPage"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
       <div style="width: 36px" *ngIf="modalPage && platform.width() >= 768"></div>
       <div style="width: 36px"></div>
@@ -12,10 +12,10 @@
         <ion-icon name="open"></ion-icon>
       </ion-button>
       <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}">
-        <ion-icon name="videocam" color="primary"></ion-icon>
+        <ion-icon name="videocam" color="dark"></ion-icon>
       </ion-button>
       <ion-button (click)="seeMoreInfo()">
-        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="primary"></ion-icon>
+        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
