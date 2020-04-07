@@ -21,9 +21,12 @@
           <ion-icon name="albums"></ion-icon>
         </ion-button>
       </div>
+      <ion-button (click)="deleteCalendarItem($event)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
       <div *ngIf="relationshipId && calendarItem">
         <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
-          Done
+          Save
         </ion-button>
       </div>
       <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
@@ -1051,7 +1054,7 @@
             </div>
             <div class="component" *ngIf="item === 40010"> <!--text answer-->
               <ion-item lines="none" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]">
-                <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
+                <div style="font-size: 34px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
               <ion-item lines="none">
                 <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
@@ -1425,7 +1428,7 @@
       <ion-fab-button (click)="createCalendarItem($event, '5e4b39cd76ffc96ae6aba323')" color="primary" *ngIf="moment.resource.matrix_number[0].includes(12000) && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(12000)])">Note</ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <ion-toolbar *ngIf="calendarItem">
+  <!-- <ion-toolbar *ngIf="calendarItem">
     <ion-button expand="block" shape="round" (click)="deleteCalendarItem($event)" color="primary">Delete</ion-button>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-footer>
