@@ -3,13 +3,14 @@
 <ion-content *ngIf="!platform.is('mobileweb')">
   <div *ngIf="platform.is('cordova')" style="height: 100%">
     <ion-grid style="height: 100%" *ngIf="!userData.readyToControlVideoChat">
-      <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+      <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
         <ion-spinner name="dots"></ion-spinner>
       </ion-row>
     </ion-grid>
 <<<<<<< HEAD
 <<<<<<< HEAD
     <ion-grid style="height: 100%" *ngIf="userData.readyToControlVideoChat">
+<<<<<<< HEAD
 =======
     <ion-grid style="height: 100%" *ngIf="userData.readyToControlVideoChat && !userData.videoChatRoomId">
 >>>>>>> deeplinking to video conferencing page
@@ -17,6 +18,9 @@
     <ion-grid style="height: 100%" *ngIf="userData.readyToControlVideoChat">
 >>>>>>> deeplinking to video conferencing page
       <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+=======
+      <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+>>>>>>> fix full height ion-spinner position
         <div>
           <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
             <ion-img class="login-logo" src="assets/img/icon.png"></ion-img>
@@ -34,7 +38,7 @@
   <div *ngIf="!platform.is('cordova')" style="height: 100%">
     <div id="videoConference" *ngIf="!videoEnded"></div>
     <ion-grid style="height: 100%" *ngIf="videoEnded">
-      <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+      <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
         <ion-list>
           <ion-row class="ion-justify-content-center ion-margin-bottom">
             <ion-label>Your Have Left the Video Session</ion-label>
@@ -96,7 +100,7 @@
 </ion-content>
 <ion-content *ngIf="platform.is('mobileweb')">
   <ion-grid style="height: 100%">
-    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <div>
         <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
           <ion-img class="login-logo" src="assets/img/icon.png"></ion-img>
