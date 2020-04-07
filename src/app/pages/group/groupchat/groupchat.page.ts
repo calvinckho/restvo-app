@@ -132,7 +132,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     reloadGroupHandler = (res) => {
         if (res) {
-            if ((this.propIndex > -1) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
+            if ((this.propIndex > -1) && this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && res.conversationId === this.chatService.currentChatProps[this.propIndex].conversationId && this.chatService.currentChatProps[this.propIndex].group && res.data && res.data.name) {
                 // update group name
                 this.chatService.currentChatProps[this.propIndex].name = res.data.name;
             }

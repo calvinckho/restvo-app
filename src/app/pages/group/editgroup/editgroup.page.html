@@ -20,7 +20,7 @@
         </div>
         <div *ngIf="!platform.is('cordova')" class="edit-icon-container">
           <label for="image"><ion-icon name="cog" color="primary"></ion-icon></label>
-          <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
+          <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUploadInEdit($event)" accept="image/*"/>
         </div>
       </div>
       <ion-item>
