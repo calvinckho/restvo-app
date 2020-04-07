@@ -51,9 +51,11 @@ export class Aws {
                 const result: any = await this.upload(type, id, photoBlob, 'image.jpg', photoBlob.size, loading);
                 if (result.msg === 'Upload succeeded') {
                     this.url = result.url;
-                    this.addToSessionAssets(sessionId, result.url); // save this as session url
-                    if (!this.tempUploadedMedia.includes(this.url)) {
-                        this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                    if (sessionId) {
+                        this.addToSessionAssets(sessionId, result.url); // save this as session url
+                        if (!this.tempUploadedMedia.includes(this.url)) {
+                            this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                        }
                     }
                 }
                 return result.msg;
@@ -83,7 +85,7 @@ export class Aws {
                     console.log(err.message);
                 },
             });
-        })
+        });
     }
 
     public async uploadFile(type: string, id: string, file: any, sessionId: string) {
@@ -112,9 +114,11 @@ export class Aws {
                     console.log("result", result);
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
-                        this.addToSessionAssets(sessionId, result.url); // save this as session url
-                        if (!this.tempUploadedMedia.includes(this.url)) {
-                            this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                        if (sessionId) {
+                            this.addToSessionAssets(sessionId, result.url); // save this as session url
+                            if (!this.tempUploadedMedia.includes(this.url)) {
+                                this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                            }
                         }
                     }
                     resolve(result.msg);
@@ -138,11 +142,13 @@ export class Aws {
             await loading.present();
             const result: any = await this.upload(type, id, blob, filename, blob.size, loading);
             console.log("result", result);
-            if(result.msg === 'Upload succeeded') {
+            if (result.msg === 'Upload succeeded') {
                 this.url = result.url;
-                this.addToSessionAssets(sessionId, result.url); // save this as session url
-                if (!this.tempUploadedMedia.includes(this.url)) {
-                    this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                if (sessionId) {
+                    this.addToSessionAssets(sessionId, result.url); // save this as session url
+                    if (!this.tempUploadedMedia.includes(this.url)) {
+                        this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
+                    }
                 }
             }
             return result.msg;
