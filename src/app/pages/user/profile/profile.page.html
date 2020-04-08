@@ -15,8 +15,11 @@
     </ion-grid>
     <form [formGroup]="userForm">
         <ion-list *ngIf="user && user._id">
-            <ion-item lines="none" color="lightgrey">
+            <!--<ion-item lines="none" color="lightgrey">
                 <ion-label color="darkgrey">Profile Picture</ion-label>
+            </ion-item>-->
+            <ion-item lines="none">
+                <ion-note class="ion-padding-vertical text-wrap">Upload your photo to help your friends see you more easily on Restvo.</ion-note>
             </ion-item>
             <ion-item class="ion-text-wrap" lines="none">
                 <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
@@ -30,9 +33,6 @@
                     <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
                 </div>
             </ion-item>
-            <ion-item-divider class="ion-text-wrap">
-                <p class="ion-padding-vertical">Upload your photo to help your friends see you more easily on Restvo.</p>
-            </ion-item-divider>
             <ion-item>
                 <ion-label position="stacked">First Name *</ion-label>
                 <ion-input type="text" formControlName="first_name"></ion-input>
@@ -51,14 +51,13 @@
                     This is a required field.
                 </p>
             </ion-item>
-            <ion-item lines="none"  color="lightgrey">
-                <ion-label color="darkgrey">
-                    Account Information
-                </ion-label>
+            <ion-item-divider></ion-item-divider>
+            <!--<ion-item lines="none"  color="lightgrey">
+                <ion-label color="darkgrey">Account Information</ion-label>
+            </ion-item>-->
+            <ion-item class="ion-text-wrap" lines="none">
+                <ion-note class="ion-padding-vertical">Verify your email and phone number to ensure that you can recover your account in the future if you forget your password.</ion-note>
             </ion-item>
-            <ion-item-divider class="ion-text-wrap">
-                <p class="ion-padding-vertical">Verify your email and phone number to ensure that you can recover your account in the future if you forget your password.</p>
-            </ion-item-divider>
             <ion-item *ngIf="user.email">
                 <ion-label position="stacked">Verified Email Address</ion-label>
                 <ion-input type="text" formControlName="email"></ion-input>
@@ -94,14 +93,13 @@
                     Invalid mobile number.
                 </p>
             </ion-item>
-            <ion-item lines="none"  color="lightgrey">
-                <ion-label color="darkgrey">
-                    Contact Info
-                </ion-label>
+            <ion-item-divider></ion-item-divider>
+            <!--<ion-item lines="none"  color="lightgrey">
+                <ion-label color="darkgrey">Contact Info</ion-label>
+            </ion-item>-->
+            <ion-item class="ion-text-wrap" lines="none">
+                <ion-note class="ion-padding-vertical">Your contact information is private and can only be viewed by people with whom you choose to share.</ion-note>
             </ion-item>
-            <ion-item-divider class="ion-text-wrap">
-                <p class="ion-padding-vertical">Your contact information is private and can only be viewed by people with whom you choose to share.</p>
-            </ion-item-divider>
             <ion-item-group>
                 <ion-item lines="none" *ngIf="!showContactInfo" (click)="showContactInfo = !showContactInfo">
                     <ion-label slot="start">Optional</ion-label>

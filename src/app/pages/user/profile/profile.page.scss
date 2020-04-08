@@ -5,12 +5,16 @@ app-profile {
     flex-direction: column;
   }
 
+  ion-note {
+    font-size: 12px;
+  }
+
   .image-cropper {
     width: 200px;
     height: 200px;
     overflow: hidden;
     border-radius: 50%;
-    margin: 5% auto 0;
+    margin: 0 auto;
   }
 
   .browser-upload {

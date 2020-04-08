@@ -1,5 +1,9 @@
 app-groupchat {
 
+  ion-infinite-scroll {
+    height: 0;
+  }
+
   .titles {
     margin: 0 10%;
   }
@@ -46,7 +50,8 @@ app-groupchat {
 
 
   .chat-list {
-    padding-top: 5%;
+    //padding-top: 5%;
+    min-height: 100%;
   }
 
   //time stamp
