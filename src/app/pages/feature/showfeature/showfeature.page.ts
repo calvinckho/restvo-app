@@ -1157,6 +1157,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async respondToTextArea(event, componentIndex) {
         this.anyChangeMade = true;
+        // Showing the user that the content is saving
+        this.currentSaveState = "Saving...";
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1208,6 +1210,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (this.moment.program) {
                 this.userData.refreshUserStatus({});
             }
+
+            // Showing the user that the content has been saved at the end of the timeout
+            this.currentSaveState = "Saved";
         }, 3000);
     }
 

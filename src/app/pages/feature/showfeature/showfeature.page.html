@@ -25,9 +25,10 @@
         <ion-icon name="trash-outline"></ion-icon>
       </ion-button>
       <div *ngIf="relationshipId && calendarItem">
-        <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
+        <!-- <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
           Save
-        </ion-button>
+        </ion-button> -->
+        <ion-label color="primary">{{ currentSaveState }}</ion-label>
       </div>
       <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
         <ion-icon name="person-add"></ion-icon>
