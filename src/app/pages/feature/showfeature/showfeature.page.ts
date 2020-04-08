@@ -69,6 +69,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   setupPermissionCompleted = false;
   loadCompleted = false;
   anyChangeMade = false;
+  currentSaveState = "";
   hasAddedToCalendar = false;
   hasAddedToAttendEventList = false;
   hasOrganizerAccess = false;
