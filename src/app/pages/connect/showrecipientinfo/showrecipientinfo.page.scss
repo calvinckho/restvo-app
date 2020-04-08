@@ -1,16 +1,8 @@
 app-showrecipientinfo {
-
-/*  .header-toolbar {
-    position: absolute;
-    --opacity: 0;
-    .header-buttons {
-      --opacity: 100;
-    }
-  }*/
-
-/*  ion-content {
-    --padding-top: 24px;
-  }*/
+  .header-toolbar {
+    padding: 6px;
+    --background: transparent;
+  }
 
   ion-spinner {
     position: absolute;
