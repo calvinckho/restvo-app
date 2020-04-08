@@ -1219,7 +1219,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
             // Showing the user that the content has been saved at the end of the timeout
             this.currentSaveState = "Saved";
-        }, 3000);
+        }, 1500);
     }
 
   async changeView(event) {
