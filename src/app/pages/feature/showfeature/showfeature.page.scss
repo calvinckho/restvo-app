@@ -645,6 +645,10 @@ app-showfeature {
     margin-right: 8px;
   }
 
+  .ql-editor {
+    padding: 0;
+  }
+
   .ql-editor.ql-blank::before {
     color: var(--ion-color-dark);
   }
