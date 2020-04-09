@@ -81,9 +81,7 @@ export class ActivitiesPage implements OnInit, OnDestroy {
         this.reachedEnd = true;
         event.target.disabled = true;
       } else {
-        for (const activity of activities) {
-          this.activities.push(activity);
-        }
+        this.activities.push(...activities);
       }
       event.target.complete();
     } else {

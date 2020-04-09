@@ -105,7 +105,7 @@ export class Churches {
     }
 
     loadAllCommunityActivities(churchId, searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/church/activities/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
+        return this.http.get(this.networkService.domain + '/api/church/activities/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum + '&version=1', this.authService.httpAuthOptions).toPromise();
     }
 
     async createChurchProfile(church) {
