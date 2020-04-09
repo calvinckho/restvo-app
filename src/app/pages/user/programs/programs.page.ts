@@ -64,7 +64,11 @@ export class ProgramsPage implements OnInit, OnDestroy {
 // this is where I need to work to make the changes
     selectDefault(event, program) {
       event.stopPropagation();
+      console.log(this.userData)
       this.userData.defaultProgram = program;
+      console.log(program)
+      console.log("testing the program!")
+      //Not sure if we need this line of code due to getting rid of the "mentoring toggle" feature
       this.userData.UIAdminMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
 

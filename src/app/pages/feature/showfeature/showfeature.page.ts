@@ -1321,6 +1321,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async joinActivity() {
+      console.log(("made it to joinActivity"))
     if (this.authService.token) {
       this.openOnboarding(2);
     } else {
@@ -1338,6 +1339,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
     async openOnboarding(participant_type) {
+        console.log("made it to openOboarding")
         const modal = await this.modalCtrl.create({component: OnboardfeaturePage, componentProps: { programId: this.moment._id, type: participant_type, token: this.token, modalPage: true }});
         await modal.present();
     }

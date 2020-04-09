@@ -384,8 +384,6 @@ export class DashboardPage implements OnInit, OnDestroy {
             // if community or program
             if (activity.categories.includes('5c915324e172e4e64590e346') || activity.categories.includes('5c915475e172e4e64590e348')) {
                 this.programs.push(activity);
-                console.log(activity.categories)
-                console.log("community and or program!")
             } else {
                 activity.program = 'Restvo';
                 const combinedUsers = activity.user_list_1.concat(activity.user_list_3);

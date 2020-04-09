@@ -477,6 +477,7 @@ export class OnboardfeaturePage {
     }
 
     async addUserToProgramUserList(programId, type, token) {
+        console.log("made it to oboardfeature.addUserToProgramUserList", programId, type, token, this.completedDefaultOnboarding)
         if (programId) {
             let user_list = '';
             switch (type) {
