@@ -14,14 +14,14 @@
   <ion-list>
     <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)">
       <ion-thumbnail slot="start">
-        <img *ngIf="activity.images.length && activity.images[0]" [src]="activity.images[0]"/>
-        <img *ngIf="!activity.images.length || !activity.images[0]" src="assets/img/group-default.png"/>
+        <img *ngIf="activity.assets.length && activity.assets[0]" [src]="activity.assets[0]"/>
+        <img *ngIf="!activity.assets.length || !activity.assets[0]" src="assets/img/group-default.png"/>
       </ion-thumbnail>
       <ion-label>
-        <h2 class="ion-text-wrap">{{activity.name}}</h2>
+        <h2 class="ion-text-wrap">{{activity.matrix_string[0][0]}}</h2>
       </ion-label>
-      <ion-badge color="primary" *ngIf="activity.moment && activity.moment.array_boolean && activity.moment.array_boolean.length > 1 && activity.moment.array_boolean[1]">Marketplace</ion-badge>
-      <ion-badge color="grey" *ngIf="!(activity.moment && activity.moment.array_boolean && activity.moment.array_boolean.length > 1 && activity.moment.array_boolean[1])">Private</ion-badge>
+      <ion-badge color="primary" *ngIf="activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1]">Marketplace</ion-badge>
+      <ion-badge color="grey" *ngIf="!(activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1])">Private</ion-badge>
     </ion-item>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{activities.length}}&nbsp;<span *ngIf="activities.length <= 1"> activity</span><span *ngIf="activities.length > 1"> activities</span>
