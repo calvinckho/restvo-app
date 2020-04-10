@@ -243,6 +243,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // for current user refreshing the app
   loadAndProcessMomentHandler = async (data) => {
+      console.log("loadAndProcessMomentHandler");
       if (this.calendarId) {
           await this.loadCalendarItem();
       }
