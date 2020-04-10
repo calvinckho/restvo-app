@@ -36,9 +36,9 @@
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/myconversations']">
-              <ion-icon slot="start"  name="chatbox"></ion-icon>
+              <ion-icon slot="start" name="chatbox"></ion-icon>
               <ion-label>Chat</ion-label>
-              <ion-badge *ngIf="chatService && chatService.connectTabBadge" color="primary" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
+              <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
