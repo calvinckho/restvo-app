@@ -66,7 +66,7 @@
     </ion-item-group>
     <ion-item lines="none">
       <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Frequency</ion-label>
-      <ion-select [(ngModel)]="schedule.options.recurrence" (ionChange)="touchSchedule('update schedule')" slot="end">
+      <ion-select [(ngModel)]="schedule.options.recurrence" slot="end">
         <ion-select-option value=''>None</ion-select-option>
         <ion-select-option value='daily'>Daily</ion-select-option>
         <ion-select-option value='weekly'>Weekly</ion-select-option>
@@ -76,11 +76,14 @@
     </ion-item>
     <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
       <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
-      <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" (ionChange)="touchSchedule('update schedule')" slot="end"></ion-input>
+      <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
     </ion-item>
     <ion-row class="ion-justify-content-center">
       <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
         <span>Create Schedule</span>
+      </ion-button>
+      <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && this.parentCategoryId === '5c915476e172e4e64590e349'"> <!--Plan's Schedule-->
+        <span>Save</span>
       </ion-button>
       <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence"> <!--Only available for non-Plan child Activity-->
         <span>Repopulate Timeline</span>
@@ -172,24 +175,27 @@
     <ion-item-group class="ion-margin-left" lines="full">
       <ion-item lines="none" [disabled]="this.parentCategoryId !== '5c915476e172e4e64590e349'"> <!--Only enable for Plan-->
         <ion-label class="ion-margin-left">Floating Start Date</ion-label>
-        <ion-checkbox [(ngModel)]="schedule.array_boolean[0]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[0]"></ion-checkbox>
       </ion-item>
       <ion-item lines="none">
         <ion-label class="ion-margin-left">Unique Answers for Each Repeated Content</ion-label>
-        <ion-checkbox [(ngModel)]="schedule.array_boolean[1]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[1]"></ion-checkbox>
       </ion-item>
       <ion-item lines="none">
         <ion-label class="ion-margin-left">Add to Participant's Timeline</ion-label>
-        <ion-checkbox [(ngModel)]="schedule.array_boolean[2]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[2]"></ion-checkbox>
       </ion-item>
       <ion-item lines="none">
         <ion-label class="ion-margin-left">Add to Leader's Timeline</ion-label>
-        <ion-checkbox [(ngModel)]="schedule.array_boolean[4]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[4]"></ion-checkbox>
       </ion-item>
       <ion-item lines="none">
         <ion-label class="ion-margin-left">Add to Admin's Timeline</ion-label>
-        <ion-checkbox [(ngModel)]="schedule.array_boolean[3]" (ionChange)="touchSchedule('update schedule')"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="schedule.array_boolean[3]"></ion-checkbox>
       </ion-item>
     </ion-item-group>
   </ion-list>
 </ion-content>
+<ion-toolbar *ngIf="view === 'settings'">
+  <ion-button expand="block" shape="round" (click)="touchSchedule('update schedule')">Save</ion-button>
+</ion-toolbar>
