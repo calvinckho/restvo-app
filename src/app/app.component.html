@@ -11,13 +11,13 @@
         </ion-toolbar>
         <ion-list>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
+            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && userData.UIMentoringMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
               <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
               <ion-label>Dashboard</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
+            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && (!userData.UIMentoringMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
               <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
               <ion-label>Dashboard</ion-label>
             </ion-item>
@@ -29,7 +29,7 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item slot="start" [routerLink]="['/app/news']" *ngIf="!userData.UIAdminMode">
+            <ion-item slot="start" [routerLink]="['/app/news']" *ngIf="!userData.UIMentoringMode">
               <ion-icon slot="start" name="newspaper"></ion-icon>
               <ion-label>News</ion-label>
             </ion-item>
@@ -70,7 +70,7 @@
 
           <!-- <ion-item>
             <ion-label class="ion-text-wrap">Mentoring Mode</ion-label>
-            <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode()"></ion-toggle>
+            <ion-toggle [(ngModel)]="userData.UIMentoringMode" (ionChange)="toggleAdminMode()"></ion-toggle>
           </ion-item> -->
 
           <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">

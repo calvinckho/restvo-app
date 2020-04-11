@@ -69,7 +69,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
       console.log(program)
       console.log("testing the program!")
       //Not sure if we need this line of code due to getting rid of the "mentoring toggle" feature
-      this.userData.UIAdminMode = true;
+      this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
 
       // to here

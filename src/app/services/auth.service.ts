@@ -174,8 +174,8 @@ export class Auth {
             if (defaultProgram) {
                 activityURL = '/app/discover/home/' + defaultProgram._id;
             }
-            const UIAdminMode: any = await this.storage.get('UIAdminMode');
-            if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
+            const UIMentoringMode: any = await this.storage.get('UIMentoringMode');
+            if (UIMentoringMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
                 activityURL = '/app/dashboard/insight/' + defaultProgram._id;
             }
             this.router.navigate([activityURL]);

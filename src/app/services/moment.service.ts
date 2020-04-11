@@ -621,23 +621,22 @@ export class Moment {
             alert.present();
           }
         }
-        //This login changes the userData.defaultProgram to equal the program just joined
+        //This logic changes the userData.defaultProgram to equal the program just joined
         //IF they successfully joined the community
         //AND it is the second community they have joined (the first is the default Restvo Community)
-        if (result === "success") {
-          let activities = await this.userData.loadPrograms(true);
+        if (result === 'success') {
+          const activities = await this.userData.loadPrograms(true);
           // activities is an Array like object
-          let newActivities = Array.prototype.slice.call(activities);
-          //newActivities is now an array
+          const newActivities = Array.prototype.slice.call(activities);
+          // newActivities is now an array
           if (newActivities.length === 2) {
-            let activity = newActivities.filter(
-              (activity) => activity._id !== "5d5785b462489003817fee18"
-            );
-            //activity should now be an array with a single object and length of 1
-            //update the userData default program to equal the object
-            if (activity[0] && activity[0]._id !== "5d5785b462489003817fee18") {
-              this.userData.defaultProgram = activity[0];
-            }
+            const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+            // activity should now be an object of the new Activity
+            // update the userData default program to equal the object
+            if (activity) {
+              this.userData.defaultProgram = activity;
+              this.userData.UIMentoringMode = true; // toggling on the Mentoring Mode
+            } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
           }
         }
         return result;
