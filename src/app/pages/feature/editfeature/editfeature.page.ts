@@ -82,7 +82,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   removedMoments = [];
   participantsView = 'participants';
   anyChangeMade: any;
-  shareOption = false;
   advancedFeature = false;
   initialSetupCompleted = false;
     participantLabel = 'Participant';
@@ -681,17 +680,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     event.stopPropagation();
     user.name = user.first_name + ' ' + user.last_name;
       this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
-  }
-
-  // select people to be included as participants in the Moment creation process
-  async presentPickPeoplePopover(event, filter, title) {
-    event.stopPropagation();
-    const modal = await this.modalCtrl.create({component: PickpeoplePopoverPage, componentProps: { filter: filter, includeSelf: false, title: title, conversations: this.selectedPersonOrGroup }});
-    await modal.present();
-    const {data: result} = await modal.onDidDismiss();
-    if (result && result.conversations) {
-      this.selectedPersonOrGroup = result.conversations;
-    }
   }
 
     async reloadMomentUserLists() {
