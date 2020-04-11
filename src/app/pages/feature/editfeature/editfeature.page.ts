@@ -691,7 +691,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     async addParticipants(event, filter, listOfNames, inviteeLabel) {
         event.stopPropagation();
-        const response: any = await this.momentService.addParticipants(this.moment, this.resource, filter, listOfNames, this.resource['en-US'].value[31] + ' ' + inviteeLabel, this.resource['en-US'].value[31], inviteeLabel);
+        const response: any = await this.momentService.addParticipants(this.moment, this.resource, filter, listOfNames, this.resource['en-US'].value[31] + ' ' + inviteeLabel, this.resource['en-US'].value[31]);
         if (response === 'success') {
             this.anyChangeMade = true;
             this.reloadMomentUserLists();

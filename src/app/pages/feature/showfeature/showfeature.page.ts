@@ -886,7 +886,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: { moment: this.moment, title: this.resource['en-US'].value[32] + ' to ' + this.moment.matrix_string[0][0], modalPage: true }});
                 await modal.present();
             } else {
-                this.momentService.addParticipants(this.moment, this.resource, 'both', ['user_list_1'], this.resource['en-US'].value[32] + ' to ' + this.moment.matrix_string[0][0], this.resource['en-US'].value[32], this.participantsLabel);
+                this.momentService.addParticipants(this.moment, this.resource, 'both', ['user_list_1'], this.resource['en-US'].value[32] + ' to ' + this.moment.matrix_string[0][0], this.resource['en-US'].value[32]);
             }
       } else {
           this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
