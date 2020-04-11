@@ -137,6 +137,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async promptTouchSchedule() {
+    //await this.touchSchedule('update schedule');
     const alert = await this.alertCtrl.create({
       header: 'Re-populate Timeline',
       subHeader: 'You are about to delete your existing timeline and re-populate it. Are you sure you want to proceed?',
@@ -150,7 +151,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async touchSchedule(operation) {
-    console.log("touching")
     if (operation === 'create schedule' || this.schedule._id) {
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();

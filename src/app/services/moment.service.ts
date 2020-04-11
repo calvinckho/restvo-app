@@ -625,13 +625,13 @@ export class Moment {
             if (peopleComponentId > -1) {
                 participantsLabel = moment.matrix_string[peopleComponentId].length && moment.matrix_string[peopleComponentId].length > 3 && moment.matrix_string[peopleComponentId][3] ? moment.matrix_string[peopleComponentId][3] : moment.resource['en-US'].matrix_string[peopleComponentId][5];
             }
-            this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32], participantsLabel);
+            this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
         }
     }
 
     // an user adding another user to an Activity's participant list. 
     // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
-    async addParticipants(moment, resource, filter, listOfNames, title, action, inviteeLabel) {
+    async addParticipants(moment, resource, filter, listOfNames, title, action) {
         const selectedPersonOrGroup = [];
         this.chatService.conversations.forEach((item) => {
             if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).includes(item.data.participant._id)) {
