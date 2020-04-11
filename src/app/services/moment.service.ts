@@ -435,14 +435,34 @@ export class Moment {
     // an user adding another user to an Activity's participant list. 
     // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
     async addParticipants(moment, resource, filter, listOfNames, title, action, inviteeLabel) {
-        this.chatService.addSelfToConversation(); // add user's own profile to the conversation list for display purposes
+        //await this.chatService.addSelfToConversation(); // add user's own profile to the conversation list for display purposes
         const selectedPersonOrGroup = [];
         this.chatService.conversations.forEach((item) => {
-            if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).indexOf(item.data.participant._id) > -1) {
+            if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).includes(item.data.participant._id)) {
                 item.locked = true;
                 selectedPersonOrGroup.push(item);
             }
         });
+        if (moment[listOfNames[0]].map((c) => c._id).includes(this.userData.user._id)) { // add self to the selectedPersonOrGroup list if user is included in the user_list
+            selectedPersonOrGroup.push({
+                select: true,
+                locked: true,
+                conversation: {
+                    _id: this.userData.user._id, // this is not applicable because such a conversation does not exist. this exception will be handled in chat.service.ts notifyOfInvitation()
+                    type: 'self',
+                    updatedAt: new Date().toISOString()
+                },
+                data: {
+                    name: this.userData.user.first_name + ' ' + this.userData.user.last_name,
+                    participant: {
+                        _id: this.userData.user._id,
+                        first_name: this.userData.user.first_name,
+                        last_name: this.userData.user.last_name,
+                        avatar: this.userData.user.avatar
+                    }
+                },
+            });
+        }
         const modal = await this.modalCtrl.create({component: PickpeoplePopoverPage, componentProps: { moment: moment, invitationType: listOfNames[0], filter: filter, includeSelf: true, title: title, action: action, conversations: selectedPersonOrGroup }});
         await modal.present();
         const {data: result} = await modal.onDidDismiss();
@@ -451,19 +471,23 @@ export class Moment {
         let userObjectIds = [];
         const conversations = (result && result.conversations) ? result.conversations : [];
         const listOfAppUsers = (result && result.listOfAppUsers) ? result.listOfAppUsers : [];
-        if (conversations && conversations.length) {
+        if (conversations && conversations.length) { // process selected users from selectedConversations
             result.conversations.forEach((item) => {
                 if (item.data.participant._id) {
                     userObjectIds.push(item.data.participant._id);
                 }
             });
         }
-        if (listOfAppUsers && listOfAppUsers.length) {
+        if (listOfAppUsers && listOfAppUsers.length) { // process users selected from selected App Users
             listOfAppUsers.forEach((appUser) => {
                 if (appUser._id) {
                     userObjectIds.push(appUser._id);
                 }
             });
+        }
+        // process if user has selected self
+        if (result && result.conversations && result.conversations.find((c) => c.conversation._id === this.userData.user._id)) {
+            userObjectIds.push(this.userData.user._id);
         }
         userObjectIds = [...new Set(userObjectIds)]; // create unique set of user Ids
         // add selected users to participant list
