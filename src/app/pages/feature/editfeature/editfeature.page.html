@@ -1323,20 +1323,6 @@
       </div>
     </ion-reorder-group>
   </ion-list>
-  <ion-buttons class="ion-padding">
-      <span *ngFor="let obj of selectedPersonOrGroup">
-        <ion-button color="primary" shape="round" fill="solid" *ngIf="obj.conversation.type === 'connect'" (click)="unselect(obj)">{{obj.data.name}}<ion-icon [hidden]="obj.locked" name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
-        <ion-button color="primary" shape="round" fill="solid" *ngIf="obj.conversation.type === 'group'" (click)="unselect(obj)">{{obj.conversation.group.name}}<ion-icon [hidden]="obj.locked" name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
-      </span>
-  </ion-buttons>
-  <ion-item [hidden]="moment._id || !shareOption" (click)="presentPickPeoplePopover($event, 'connect', resource['en-US'].value[6])"> <!--Add Friends-->
-    <div class="moment-label"> <img class="side-image" src="assets/img/avatar-group.png"></div>
-    <div class="moment-input">{{resource['en-US'].value[6]}}</div>
-  </ion-item>
-  <ion-item [hidden]="moment._id || !shareOption" (click)="presentPickPeoplePopover($event, 'group', resource['en-US'].value[7])"> <!--Add Groups-->
-    <div class="moment-label"> <img class="side-image" src="assets/img/avatar-group.png"></div>
-    <div class="moment-input">{{resource['en-US'].value[7]}}</div>
-  </ion-item>
 </ion-content>
 <ion-footer style="max-height: 20%; overflow: scroll" *ngIf="editTemplate && resource && resource._id && moment.resource && moment.resource.field">
   <ion-toolbar>
