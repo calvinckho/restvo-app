@@ -99,6 +99,14 @@ const routes: Routes = [
             },
         ]
     },
+  {
+    path: 'feature-subscription',
+    loadChildren: () => import('./feature-subscription/feature-subscription.module').then( m => m.FeatureSubscriptionPageModule)
+  },
+  {
+    path: 'feature-billing',
+    loadChildren: () => import('./feature-billing/feature-billing.module').then( m => m.FeatureBillingPageModule)
+  },
     ];
 
 @NgModule({

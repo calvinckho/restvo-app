@@ -49,7 +49,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       recurrenceInterval: 1,  // e.g. once every 2 months, default: 1
       recurrenceEndDate: new Date().toISOString(), // leave null to add events into infinity and beyond
     },
-    array_boolean: [ null, null, true, false, true ] // default is to add to both participant's and mentor's timeline
+    array_boolean: [ true, true, true, false, true ] // default is to enable floating start date, unique answer for each content item, and to add to both participant's and mentor's timeline
   };
 
   calendarObj = { // create the calendar object for each timeline content
@@ -150,6 +150,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async touchSchedule(operation) {
+    console.log("touching")
     if (operation === 'create schedule' || this.schedule._id) {
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();

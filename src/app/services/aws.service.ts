@@ -305,23 +305,25 @@ export class Aws {
         const imageSource: any = JSON.parse(JSON.stringify(origin));
         switch (typeof imageSource) {
             case 'object': // imageSource is an array. Typical use case is to clean up unlinked Media URL from DO
-                //remove valid media from the tempUploadedMedia array. The temp array will be used in the final clean up process
-                for (let i = this.sessionAssets[sessionId].length - 1; i >= 0; i--) {
-                    if (this.sessionAssets[sessionId][i] && this.sessionAssets[sessionId][i].length) {
-                        const index = this.tempUploadedMedia.indexOf(this.sessionAssets[sessionId][i]);
-                        if (index > -1) {
-                            this.tempUploadedMedia.splice(index, 1);
+                // remove valid media from the tempUploadedMedia array. The temp array will be used in the final clean up process
+                if (this.sessionAssets.hasOwnProperty(sessionId) && this.sessionAssets[sessionId].length) {
+                    for (let i = this.sessionAssets[sessionId].length - 1; i >= 0; i--) {
+                        if (this.sessionAssets[sessionId][i] && this.sessionAssets[sessionId][i].length) {
+                            const index = this.tempUploadedMedia.indexOf(this.sessionAssets[sessionId][i]);
+                            if (index > -1) {
+                                this.tempUploadedMedia.splice(index, 1);
+                            }
+                        } else { // if empty string, splice the element. This is needed to handle empty string
+                            this.sessionAssets[sessionId].splice(i, 1);
                         }
-                    } else { // if empty string, splice the element. This is needed to handle empty string
-                        this.sessionAssets[sessionId].splice(i, 1);
                     }
+                    // sort the list and move any graphics to the front
+                    this.sessionAssets[sessionId].sort((a, b) => {
+                        const c: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(a.substring(a.lastIndexOf('.') + 1).toLowerCase()) > -1;
+                        const d: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(b.substring(b.lastIndexOf('.') + 1).toLowerCase()) > -1;
+                        return (d - c);
+                    });
                 }
-                // sort the list and move any graphics to the front
-                this.sessionAssets[sessionId].sort((a, b) => {
-                    const c: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(a.substring(a.lastIndexOf('.') + 1).toLowerCase()) > -1;
-                    const d: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(b.substring(b.lastIndexOf('.') + 1).toLowerCase()) > -1;
-                    return (d - c);
-                });
                 break;
             case 'string': // imageSource is a string. e.g. user avatar, group chat - media deletion
                 if (imageSource.length && this.sessionAssets[sessionId].indexOf(imageSource) < 0 && (imageSource.indexOf('https://pixabay.com') < 0)) {
