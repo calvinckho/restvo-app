@@ -467,6 +467,7 @@ export class Moment {
         } catch (err) {
           console.log(err);
         }
+<<<<<<< HEAD
       }
     }
   }
@@ -601,6 +602,123 @@ export class Moment {
                 cssClass: "level-15",
               });
               alert.present();
+=======
+    }
+    
+    // decide whether to open the participants edit mode (for organizer) or select from the PeoplePicker and add as participant to an Activity
+    async initiateParticipantsView(moment, loading) {
+        await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
+        let hasOrganizerAccess: any;
+        if (moment.user_list_2 && moment.user_list_2.length && moment.user_list_2[0] && typeof moment.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
+            hasOrganizerAccess = moment.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+        } else if (moment.user_list_2 && moment.user_list_2.length && moment.user_list_2[0] && typeof moment.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
+            hasOrganizerAccess = moment.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+        }
+        if (loading) {
+            await loading.dismiss();
+        }
+        if (hasOrganizerAccess) {
+            this.editParticipants( { moment: moment, title: this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], modalPage: true });
+        } else {
+            const peopleComponentId = moment.resource.matrix_number[0].indexOf(10500);
+            let participantsLabel = 'Participants';
+            if (peopleComponentId > -1) {
+                participantsLabel = moment.matrix_string[peopleComponentId].length && moment.matrix_string[peopleComponentId].length > 3 && moment.matrix_string[peopleComponentId][3] ? moment.matrix_string[peopleComponentId][3] : moment.resource['en-US'].matrix_string[peopleComponentId][5];
+            }
+            this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32], participantsLabel);
+        }
+    }
+
+    // an user adding another user to an Activity's participant list. 
+    // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
+    async addParticipants(moment, resource, filter, listOfNames, title, action, inviteeLabel) {
+        //await this.chatService.addSelfToConversation(); // add user's own profile to the conversation list for display purposes
+        const selectedPersonOrGroup = [];
+        this.chatService.conversations.forEach((item) => {
+            if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).includes(item.data.participant._id)) {
+                item.locked = true;
+                selectedPersonOrGroup.push(item);
+            }
+        });
+        if (moment[listOfNames[0]].map((c) => c._id).includes(this.userData.user._id)) { // add self to the selectedPersonOrGroup list if user is included in the user_list
+            selectedPersonOrGroup.push({
+                select: true,
+                locked: true,
+                conversation: {
+                    _id: this.userData.user._id, // this is not applicable because such a conversation does not exist. this exception will be handled in chat.service.ts notifyOfInvitation()
+                    type: 'self',
+                    updatedAt: new Date().toISOString()
+                },
+                data: {
+                    name: this.userData.user.first_name + ' ' + this.userData.user.last_name,
+                    participant: {
+                        _id: this.userData.user._id,
+                        first_name: this.userData.user.first_name,
+                        last_name: this.userData.user.last_name,
+                        avatar: this.userData.user.avatar
+                    }
+                },
+            });
+        }
+        const modal = await this.modalCtrl.create({component: PickpeoplePopoverPage, componentProps: { moment: moment, invitationType: listOfNames[0], filter: filter, includeSelf: true, title: title, action: action, conversations: selectedPersonOrGroup }});
+        await modal.present();
+        const {data: result} = await modal.onDidDismiss();
+        let response: any;
+        // the selected people will be added to moment participants list, and then shared the moment with the invitees via chat'
+        let userObjectIds = [];
+        const conversations = (result && result.conversations) ? result.conversations : [];
+        const listOfAppUsers = (result && result.listOfAppUsers) ? result.listOfAppUsers : [];
+        if (conversations && conversations.length) { // process selected users from selectedConversations
+            result.conversations.forEach((item) => {
+                if (item.data.participant._id) {
+                    userObjectIds.push(item.data.participant._id);
+                }
+            });
+        }
+        if (listOfAppUsers && listOfAppUsers.length) { // process users selected from selected App Users
+            listOfAppUsers.forEach((appUser) => {
+                if (appUser._id) {
+                    userObjectIds.push(appUser._id);
+                }
+            });
+        }
+        // process if user has selected self
+        if (result && result.conversations && result.conversations.find((c) => c.conversation._id === this.userData.user._id)) {
+            userObjectIds.push(this.userData.user._id);
+        }
+        userObjectIds = [...new Set(userObjectIds)]; // create unique set of user Ids
+        // add selected users to participant list
+        if (userObjectIds.length) {
+            response = await this.updateMomentUserLists({
+                operation: 'add to lists and calendar',
+                user_lists: listOfNames,
+                users: userObjectIds,
+                momentId: moment._id,
+                calendarId: moment.calendar._id
+            }, null);
+        }
+        if (response === 'success') { // only if the users are successfully added do we prepare to send out notifications
+            // check if there is any unconnected individual. If so, it needs to create conversations first so chat rooms are ready to receive notifications
+            if (listOfAppUsers && listOfAppUsers.length) {
+                const promises = listOfAppUsers.map( async (appUser) => {
+                    if (appUser._id === this.userData.user._id) return; // terminate if the recipient selected is the user herself
+                    const isConnected: any = await this.chatService.getConversationByRecipientId(appUser._id, false, false); // API-controlled recipient info access permission
+                    if (isConnected && isConnected.conversation) { // if the recipient has been connected
+                        const conversation = isConnected.conversation;
+                        if (conversation.type === 'connect') {
+                            // add the conversation to the list
+                            conversations.push({ conversation: isConnected.conversation });
+                        } // ignore if the conversation is blocked
+                    } else {
+                        // if a new conversation needs to be created
+                        const welcomeMessage = this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.';
+                        const newConversationId = await this.chatService.newConversation(appUser._id, { composedMessage : welcomeMessage, type: 'connect' });
+                        conversations.push({ conversation: { _id: newConversationId, type: 'connect' } });
+                    }
+                });
+                await Promise.all(promises);
+                this.chatService.refreshTabBadges();
+>>>>>>> improve pickPeople-popover - include user self logic
             }
           } else {
             const alert = await this.alertCtrl.create({
