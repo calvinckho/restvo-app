@@ -184,7 +184,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
 
   async selectPlan(plan) {
     try {
-      if (plan === 'per 50 users' && !this.moment.subscriptionId){
+      if (plan === 'Growth' && !this.moment.subscriptionId) {
         const result: any = await this.paymentService.loadCommunityParticipants(this.moment._id);
         if (result && result.community_participants) {
           this.community_participants = result.community_participants;
@@ -200,7 +200,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
               handler: () => {
                 const navTransition = alert.dismiss();
                 navTransition.then(async () => {
-                  window.open('https://app.restvo.com/register', "_blank");
+                  window.open('https://app.restvo.com/register', '_blank');
                 });
               }},
               { text: 'Cancel' }],
@@ -208,18 +208,18 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
           });
           await alert.present();
         }
-      } else if (plan === 'per 50 users' && this.moment.subscriptionId){
-        await this.paymentService.subscribe(this.moment._id, this.resource['en-US'].matrix_string[1][0], null, null);
+      } else if (plan === 'Growth' && this.moment.subscriptionId) {
+        await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], null, null);
         this.userData.refreshUserStatus({type: 'change aux data'});
       } else {
         const alert = await this.alertCtrl.create({
-          header: 'Cancel ' + this.resource['en-US'].matrix_string[1][0] + ' Plan',
-          subHeader: 'Are you sure you want to cancel your subscription to the ' + this.resource['en-US'].matrix_string[1][0] + ' Plan?',
+          header: 'Cancel ' + this.subscriptionResource['en-US'].matrix_string[1][0] + ' Plan',
+          subHeader: 'Are you sure you want to cancel your subscription to the ' + this.subscriptionResource['en-US'].matrix_string[1][0] + ' Plan?',
           buttons: [{ text: 'Ok',
             handler: () => {
               const navTransition = alert.dismiss();
               navTransition.then(async () => {
-                await this.paymentService.subscribe(this.moment._id, 'Free', null,null);
+                await this.paymentService.subscribe(this.moment._id, plan, null, null);
                 this.userData.refreshUserStatus({type: 'change aux data'});
               });
             }},
@@ -230,7 +230,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       }
     } catch (err) {
       const alert = await this.alertCtrl.create({
-        header: 'Something Went Wrong', //delete board
+        header: 'Something Went Wrong', // delete board
         subHeader: 'We cannot process your request at this time. Please try again later.',
         buttons: [{ text: 'Ok' }],
         cssClass: 'level-15'
@@ -256,13 +256,13 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
         owner: owner,
       }).subscribe(async (result) => {
         if (result.source) {
-          const updateResult = await this.paymentService.subscribe(this.moment._id, this.resource['en-US'].matrix_string[1][0], owner, result.source);
+          const updateResult = await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], owner, result.source);
           this.ionSpinner = false;
           if (updateResult === 'success') {
             this.userData.refreshUserStatus({type: 'change aux data'});
             const alert = await this.alertCtrl.create({
               header: 'Success',
-              subHeader: this.moment.matrix_string[0][0] + ' is now upgraded to the ' + this.resource['en-US'].matrix_string[1][0] + ' Plan.',
+              subHeader: this.moment.matrix_string[0][0] + ' is now upgraded to the ' + this.subscriptionResource['en-US'].matrix_string[1][0] + ' Plan.',
               buttons: [{
                 text: 'Ok',
                 handler: () => {

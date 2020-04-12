@@ -46,11 +46,11 @@
                   </ion-item>
                 </ion-list>
               </ion-card-content>
-              <ion-col *ngIf="!moment.subscription || moment.subscription === '1 - 10 users'">
+              <ion-col *ngIf="!moment.subscription || moment.subscription === 'Free'">
                 <ion-button color="primary" fill="solid" shape="round" [disabled]="true">Current Plan</ion-button>
               </ion-col>
-              <ion-col *ngIf="moment.subscription === 'per 50 users'">
-                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('1 - 10 users')">Downgrade Plan</ion-button>
+              <ion-col *ngIf="moment.subscription === 'Growth'">
+                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('Free')">Downgrade Plan</ion-button>
               </ion-col>
             </ion-card>
           </ion-col>
@@ -83,11 +83,11 @@
                   </ion-item>
                 </ion-list>
               </ion-card-content>
-              <ion-col *ngIf="moment.subscription === 'per 50 users'">
+              <ion-col *ngIf="moment.subscription === 'Growth'">
                 <ion-button color="primary" fill="solid" shape="round" [disabled]="true">Current Plan</ion-button>
               </ion-col>
-              <ion-col *ngIf="moment.subscription !== 'per 50 users'">
-                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('per 50 users')">Upgrade Plan</ion-button>
+              <ion-col *ngIf="moment.subscription !== 'Growth'">
+                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('Growth')">Upgrade Plan</ion-button>
               </ion-col>
             </ion-card>
           </ion-col>

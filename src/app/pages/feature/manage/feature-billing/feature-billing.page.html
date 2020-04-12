@@ -23,7 +23,7 @@
       <h2 class="ion-text-center">{{(community_participants.length/50).toFixed(0)*50 + 1}} - {{(community_participants.length/50 + 1).toFixed(0)*50}} growth users (currently {{community_participants.length}}) = ${{(community_participants.length/50 + 1).toFixed(0)*subscriptionResource.matrix_number[1][0]}}</h2>
     </ion-card-content>
   </ion-card>
-  <ion-card>
+  <!--<ion-card>
     <ion-card-header>
       <ion-card-title>
         Current Amount
@@ -34,7 +34,7 @@
       <h2 class="ion-text-center" *ngIf="moment.subscription === 'Plus - Monthly'">$40, per month</h2>
       <h2 class="ion-text-center" *ngIf="moment.subscription === 'Plus - Yearly'">$320, per year</h2>
     </ion-card-content>
-  </ion-card>
+  </ion-card>-->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Payment Information</ion-card-title>
