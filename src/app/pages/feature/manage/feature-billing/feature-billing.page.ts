@@ -126,7 +126,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
 
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user) {
-      this.setup(); // this needs to be added because reloadEditPage overwrites the parent handler of the same name
+      await this.setup(); // this needs to be added because reloadEditPage overwrites the parent handler of the same name
       this.updatePayment = false;
       this.invoices = [];
       this.preparePage();
