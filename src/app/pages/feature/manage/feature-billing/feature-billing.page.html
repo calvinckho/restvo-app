@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+<ion-content *ngIf="subscriptionResource && moment.resource && moment.resource.field">
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>

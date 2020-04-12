@@ -64,11 +64,11 @@
           </ion-item>
           <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community Only Feature-->
             <ion-item (click)="clickManageMenu('billing', null)" [hidden]="!this.stripeCustomer">
-              <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
             </ion-item>
             <ion-item (click)="clickManageMenu('subscription', null)">
-              <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'subscription')}">Subscription</ion-label>
             </ion-item>
           </ion-item-group>
