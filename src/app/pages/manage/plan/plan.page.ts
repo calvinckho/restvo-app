@@ -83,7 +83,7 @@ export class PlanPage implements OnInit, OnDestroy {
 
     refreshHandler = async (data) => {
         if (data && data.type === 'load community ready') {
-            this.prevSlide();
+            //this.prevSlide();
             this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
 
         }

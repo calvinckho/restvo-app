@@ -62,6 +62,16 @@
             <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'onboarding')}">Onboarding</ion-label>
           </ion-item>
+          <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community Only Feature-->
+            <ion-item (click)="clickManageMenu('billing', null)" [hidden]="!this.stripeCustomer">
+              <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
+            </ion-item>
+            <ion-item (click)="clickManageMenu('subscription', null)">
+              <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'subscription')}">Subscription</ion-label>
+            </ion-item>
+          </ion-item-group>
           <ion-item (click)="switchToUserView()">
             <ion-icon slot="start" name="eye" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>View as User</ion-label>
