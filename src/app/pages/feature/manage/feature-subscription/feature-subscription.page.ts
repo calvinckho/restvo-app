@@ -189,25 +189,8 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
         if (result && result.community_participants) {
           this.community_participants = result.community_participants;
         }
-        if (!this.platform.is('cordova')) {
-          this.nextSlide();
-          this.prepareBillingElement();
-        } else {
-          const alert = await this.alertCtrl.create({
-            header: 'Opening the In-App Browser',
-            subHeader: 'To upgrade your plan, you will be redirected to app.restvo.com.',
-            buttons: [{ text: 'Ok',
-              handler: () => {
-                const navTransition = alert.dismiss();
-                navTransition.then(async () => {
-                  window.open('https://app.restvo.com/register', '_blank');
-                });
-              }},
-              { text: 'Cancel' }],
-            cssClass: 'level-15'
-          });
-          await alert.present();
-        }
+        this.nextSlide();
+        this.prepareBillingElement();
       } else if (plan === 'Growth' && this.moment.subscriptionId) {
         await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], null, null);
         this.userData.refreshUserStatus({type: 'change aux data'});
