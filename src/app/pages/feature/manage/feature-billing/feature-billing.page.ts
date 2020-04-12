@@ -177,25 +177,8 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   }
 
   async updatePaymentMethod() {
-    if (!this.platform.is('cordova')) {
-      this.updatePayment = true;
-      this.prepareBillingElement();
-    } else {
-      const alert = await this.alertCtrl.create({
-        header: 'Opening the In-App Browser',
-        subHeader: 'To update the billing information, you will be redirected to app.restvo.com.',
-        buttons: [{ text: 'Ok',
-          handler: () => {
-            const navTransition = alert.dismiss();
-            navTransition.then(async () => {
-              window.open('https://app.restvo.com/register', "_blank");
-            });
-          }},
-          { text: 'Cancel' }],
-        cssClass: 'level-15'
-      });
-      await alert.present();
-    }
+    this.updatePayment = true;
+    this.prepareBillingElement();
   }
 
   async submitBillingMethod() {
