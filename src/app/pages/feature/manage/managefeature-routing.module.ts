@@ -97,16 +97,29 @@ const routes: Routes = [
                     },
                 ]
             },
+            {
+                path: 'subscription',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: () => import('./feature-subscription/feature-subscription.module')
+                            .then( m => m.FeatureSubscriptionPageModule)
+                    },
+                ]
+            },
+            {
+                path: 'billing',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: () => import('./feature-billing/feature-billing.module')
+                            .then( m => m.FeatureBillingPageModule)
+
+                    },
+                ]
+            },
         ]
     },
-  {
-    path: 'feature-subscription',
-    loadChildren: () => import('./feature-subscription/feature-subscription.module').then( m => m.FeatureSubscriptionPageModule)
-  },
-  {
-    path: 'feature-billing',
-    loadChildren: () => import('./feature-billing/feature-billing.module').then( m => m.FeatureBillingPageModule)
-  },
     ];
 
 @NgModule({

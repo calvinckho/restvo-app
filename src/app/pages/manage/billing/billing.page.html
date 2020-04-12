@@ -31,15 +31,15 @@
       <div *ngFor="let source of sources">
         <ion-item>
           <ion-label slot="start">Card Type</ion-label>
-          <p slot="end">{{source.brand}}</p>
+          <p slot="end">{{source.card.brand}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Last 4 Digits</ion-label>
-          <p slot="end">{{source.last4}}</p>
+          <p slot="end">{{source.card.last4}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Expiration Date</ion-label>
-          <p slot="end">{{source.exp_month}}/{{source.exp_year}}</p>
+          <p slot="end">{{source.card.exp_month}}/{{source.card.exp_year}}</p>
         </ion-item>
       </div>
     </ion-card-content>
@@ -113,6 +113,7 @@
         </ion-item>
       </ion-card-content>
     </form>
+    <div class="ion-margin">* I authorise Restvo to send instructions to the financial institution that issued my card to take payments from my card account in accordance with the terms of my agreement with you.</div>
     <ion-row>
       <ion-col>
         <ion-button color="primary" shape="round" fill="solid" expand="block" (click)="submitBillingMethod()" [disabled]="!billingForm.valid">Update</ion-button>

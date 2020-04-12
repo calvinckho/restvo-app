@@ -16,25 +16,29 @@ export class PaymentService {
                 public userData: UserData) {
     }
 
-    loadCustomer(churchId) {
-        return this.http.get(this.networkService.domain + '/api/payment/loadcustomer/' + churchId, this.authService.httpAuthOptions).toPromise();
+    loadCommunityParticipants(orgId) {
+        return this.http.get(this.networkService.domain + '/api/payment/loadcommunityparticipants/' + orgId, this.authService.httpAuthOptions).toPromise();
+    }
+
+    loadCustomer(orgId) {
+        return this.http.get(this.networkService.domain + '/api/payment/loadcustomer/' + orgId, this.authService.httpAuthOptions).toPromise();
     }
 
 
-    loadBillingInfo(churchId) {
-        return this.http.get(this.networkService.domain + '/api/payment/loadbilling/' + churchId, this.authService.httpAuthOptions).toPromise();
+    loadBillingInfo(orgId) {
+        return this.http.get(this.networkService.domain + '/api/payment/loadbilling/' + orgId, this.authService.httpAuthOptions).toPromise();
     }
 
-    listInvoices(churchId, query) {
-        return this.http.get(this.networkService.domain + '/api/payment/listinvoices/' + churchId + query, this.authService.httpAuthOptions).toPromise();
+    listInvoices(orgId, query) {
+        return this.http.get(this.networkService.domain + '/api/payment/listinvoices/' + orgId + query, this.authService.httpAuthOptions).toPromise();
     }
 
 
-    subscribe(churchId, plan, owner, source) {
-        return this.http.post(this.networkService.domain + '/api/payment/subscribe/' + churchId, JSON.stringify({plan: plan, owner: owner, source: source}), this.authService.httpAuthOptions).toPromise();
+    subscribe(orgId, plan, owner, source) {
+        return this.http.post(this.networkService.domain + '/api/payment/subscribe/' + orgId, JSON.stringify({plan: plan, owner: owner, source: source}), this.authService.httpAuthOptions).toPromise();
     }
 
-    updateBillingMethod(churchId, source) {
-        return this.http.post(this.networkService.domain + '/api/payment/updatebilling/' + churchId, JSON.stringify({source: source}), this.authService.httpAuthOptions).toPromise();
+    updateBillingMethod(orgId, source) {
+        return this.http.post(this.networkService.domain + '/api/payment/updatebilling/' + orgId, JSON.stringify({source: source}), this.authService.httpAuthOptions).toPromise();
     }
 }

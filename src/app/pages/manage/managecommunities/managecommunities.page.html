@@ -57,14 +57,14 @@
             <ion-icon slot="start" name="key" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'administrators')}">Administrators</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('plan')">
+          <!--<ion-item (click)="clickManageMenu('plan')">
             <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plan')}">Plan</ion-label>
           </ion-item>
           <ion-item (click)="clickManageMenu('billing')" *ngIf="stripeCustomer">
             <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
-          </ion-item>
+          </ion-item>-->
           <ion-item (click)="clickManageMenu('platforms')" *ngIf="restvoStaff">
             <ion-icon slot="start" name="cog" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'platforms')}">Platforms</ion-label>
