@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="subscriptionResource && moment.resource && moment.resource.field">
+<ion-content *ngIf="subscriptionResource && moment && moment.resource && moment.resource.field">
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
@@ -40,18 +40,18 @@
       <ion-card-title>Payment Information</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div *ngFor="let source of sources">
+      <div *ngIf="sources && sources.length">
         <ion-item>
           <ion-label slot="start">Card Type</ion-label>
-          <p slot="end">{{source.card.brand}}</p>
+          <p slot="end">{{sources[0].card.brand}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Last 4 Digits</ion-label>
-          <p slot="end">{{source.card.last4}}</p>
+          <p slot="end">{{sources[0].card.last4}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Expiration Date</ion-label>
-          <p slot="end">{{source.card.exp_month}}/{{source.card.exp_year}}</p>
+          <p slot="end">{{sources[0].card.exp_month}}/{{sources[0].card.exp_year}}</p>
         </ion-item>
       </div>
     </ion-card-content>
