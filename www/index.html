@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-wf-page="5c04bdeb75e85aedb5cfc5a5" data-wf-site="5a87de50d9716c0001a3e6bd">
+<head>
+  <meta charset="UTF-8">
+  <title>Restvo</title>
+
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- add to homescreen for ios -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <!--WEBAPP & ELETRON APP-->
+  <base href="/"> <!--needs to be "./" for electron app-->
+
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <!--<script src="https://unpkg.com/@ionic/pwa-elements@1.0.1/dist/ionicpwaelements.js"></script>-->
+  <script type="module" src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.esm.js"></script>
+  <script nomodule src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.js"></script>
+  <script src="assets/js/jquery-3.4.1.min.js"></script>
+  <script>if (window.module) module = window.module;</script>
+
+  <link rel="icon" type="image/png" href="assets/img/icon.png">
+
+  <!--<link rel="icon" type="image/x-icon" href="assets/img/appicon.png">
+  <link rel="manifest" href="assets/manifest.json">
+
+  <link rel="apple-touch-icon" href="assets/img/appicon.png">-->
+
+
+  <!--<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>-->
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css" rel="stylesheet"/>
+  <!--
+      Use Unwired Maps JS & CSS in addition to Mapbox's GL library for the simplest implementation of Unwired Map Tiles
+  -->
+  <!--<script src='https://tiles.unwiredmaps.com/v2/js/unwired-gl.js?v=0.1.6'></script>-->
+  <link href="https://tiles.unwiredmaps.com/v2/js/unwired-gl.css?v=0.1.6" rel="stylesheet"/>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1976d2">
+</head>
+<body>
+  <app-root></app-root>
+  <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>-->
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+<script src="runtime.js" defer></script><script src="polyfills-es5.js" nomodule defer></script><script src="polyfills.js" defer></script><script src="styles.js" defer></script><script src="vendor.js" defer></script><script src="main.js" defer></script></body>
+</html>
