@@ -416,9 +416,9 @@ export class Chat {
                         break;
                 }
             }
-            conversations.forEach((obj) => {
+            conversations.forEach( async (obj) => {
                 if (obj.conversation.type === 'self') return; // no need to send notification if the conversation record is self
-                this.sendReply(obj.conversation._id, {
+                await this.sendReply(obj.conversation._id, {
                     composedMessage: this.userData.user.first_name + ' ' + this.userData.user.last_name + ' added you as ' + inviteeLabel,
                     page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
                     groupId: obj.conversation.type === 'connect' ? null : obj.conversation.group._id,
