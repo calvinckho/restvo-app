@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission\/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.restvo.app",
+      "sha256_cert_fingerprints": [
+        "BD:B4:66:1D:28:56:06:3C:BC:7B:F3:B0:8B:2E:78:71:40:40:20:2D:4A:50:12:59:83:12:26:A6:BC:97:5A:4F"
+      ]
+    }
+  }
+]
