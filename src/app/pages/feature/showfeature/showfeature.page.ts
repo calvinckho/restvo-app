@@ -1234,6 +1234,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePeople(null);
       }
+
+      // Locks the swiper if slides is at the end
+      this.peopleSlides.isEnd().then(response => {
+        if (response) {
+          this.peopleSlides.lockSwipeToNext(true);
+        } else {
+          this.peopleSlides.lockSwipeToNext(false);
+        }
+      });
     }
   }
 
@@ -1749,6 +1758,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePrograms();
       }
+
+      // Locks the swiper if slides is at the end
+      this.programsSlides.isEnd().then(response => {
+        if (response) {
+          this.programsSlides.lockSwipeToNext(true);
+        } else {
+          this.programsSlides.lockSwipeToNext(false);
+        }
+      });
     }
   }
 
