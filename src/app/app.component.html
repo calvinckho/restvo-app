@@ -64,6 +64,7 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
+<<<<<<< HEAD
 
 
           <!-- Removed Mentoring Mode feature per Issue Request #22-->
@@ -72,6 +73,8 @@
             <ion-label class="ion-text-wrap">Mentoring Mode</ion-label>
             <ion-toggle [(ngModel)]="userData.UIMentoringMode" (ionChange)="toggleAdminMode()"></ion-toggle>
           </ion-item> -->
+=======
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
 
           <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
             <ion-list-header>Developer Mode</ion-list-header>

@@ -111,11 +111,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.menuCtrl.close();
     }
 
+<<<<<<< HEAD
 
     //Not sure if this function is tied to another feature beyond the "mentoring mode" feature that has been commented out
     //If it isn't tied to another feature, then perhaps we can also remove this code as well
     
     async toggleAdminMode() {
+=======
+    /*async toggleAdminMode() {
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
         if (!this.userData.UIready) return;
         await this.storage.set('UIMentoringMode', this.userData.UIMentoringMode);
         if (this.userData.UIMentoringMode) {
@@ -128,7 +132,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.router.navigateByUrl('/app/discover');
             }
         }
-    }
+    }*/
 
     async saveToLocalStorage() {
         await this.storage.set('serverDomain', this.networkService.domain);

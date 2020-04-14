@@ -66,9 +66,12 @@ export class ProgramsPage implements OnInit, OnDestroy {
       event.stopPropagation();
       console.log(this.userData)
       this.userData.defaultProgram = program;
+<<<<<<< HEAD
       console.log(program)
       console.log("testing the program!")
       //Not sure if we need this line of code due to getting rid of the "mentoring toggle" feature
+=======
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
       this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
 

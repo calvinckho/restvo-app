@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AlertController, ModalController, Platform } from "@ionic/angular";
@@ -17,6 +18,26 @@ import { PickpeoplePopoverPage } from "../pages/feature/pickpeople-popover/pickp
 import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({ providedIn: "root" })
+=======
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
+import { Aws } from './aws.service';
+import { Chat } from './chat.service';
+import { Auth } from './auth.service';
+import { Response } from './response.service';
+import { Resource } from './resource.service';
+import { UserData } from './user.service'
+import { CalendarService } from './calendar.service';
+import { NetworkService } from './network-service.service';
+import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+import * as io from 'socket.io-client';
+import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
+import { Observable, BehaviorSubject } from 'rxjs';
+import {Storage} from "@ionic/storage";
+
+@Injectable({ providedIn: 'root' })
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
 export class Moment {
   socket: io;
   icons = [
@@ -52,12 +73,77 @@ export class Moment {
     },
   ];
 
+<<<<<<< HEAD
   private _openMoment: BehaviorSubject<any> = new BehaviorSubject(null);
   private _editMoment: BehaviorSubject<any> = new BehaviorSubject(null);
   private _refreshMoment: BehaviorSubject<any> = new BehaviorSubject(null);
   private _manageMoment: BehaviorSubject<any> = new BehaviorSubject(null);
   private _openPreferences: BehaviorSubject<any> = new BehaviorSubject(null);
   private _editParticipants: BehaviorSubject<any> = new BehaviorSubject(null);
+=======
+    socket: io;
+    icons = [
+        {
+            field: 'Track',
+            url: 'assets/img/Peak_Gray.png',
+            color: 'primary'
+        },
+        {
+            field: 'Meetup',
+            url: 'assets/img/transparent-avatar.png',
+            color: 'tertiary'
+        },
+        {
+            field: 'Goal',
+            url: 'assets/img/Peak_Gray.png',
+            color: 'success'
+        },
+        {
+            field: 'Event',
+            url: 'assets/img/Calendar_Gray.png',
+            color: 'tertiary'
+        },
+        {
+            field: 'Poll',
+            url: 'assets/img/Poll_Gray.png',
+            color: 'success'
+        },
+        {
+            field: 'User Defined Activity',
+            url: 'assets/img/Calendar_Gray.png',
+            color: 'primary'
+        },
+    ];
+
+    private _openMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _editMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _refreshMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _manageMoment: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _openPreferences: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _editParticipants: BehaviorSubject<any> = new BehaviorSubject(null);
+
+    public readonly openMoment$: Observable<any> = this._openMoment.asObservable();
+    public readonly editMoment$: Observable<any> = this._editMoment.asObservable()
+    public readonly refreshMoment$: Observable<any> = this._refreshMoment.asObservable();
+    public readonly manageMoment$: Observable<any> = this._manageMoment.asObservable();
+    public readonly openPreferences$: Observable<any> = this._openPreferences.asObservable();
+    public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
+
+    constructor(private http: HttpClient,
+                private storage: Storage,
+                private platform: Platform,
+                private alertCtrl: AlertController,
+                private modalCtrl: ModalController,
+                private awsService: Aws,
+                private authService: Auth,
+                private userData: UserData,
+                private chatService: Chat,
+                private responseService: Response,
+                private resourceService: Resource,
+                private calendarService: CalendarService,
+                private networkService: NetworkService) {
+    }
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
 
   public readonly openMoment$: Observable<
     any
@@ -472,6 +558,7 @@ export class Moment {
     }
   }
 
+<<<<<<< HEAD
   async updateMomentUserLists(data, token) {
     const promise = await this.http
       .put<string>(
@@ -603,6 +690,89 @@ export class Moment {
               });
               alert.present();
 =======
+=======
+    // user actively joins an Activity
+    async addUserToProgramUserList(momentId, user_list, type, token, notifyUser) {
+        const moment: any = await this.load(momentId);
+        if (this.userData.user) {
+            try {
+                const result: any = await this.updateMomentUserLists({
+                    operation: 'add to lists and calendar',
+                    user_lists: [user_list],
+                    users: [this.userData.user._id],
+                    momentId: moment._id,
+                    calendarId: moment.calendar._id
+                }, token);
+                if (notifyUser) { // open modal box to notify user of status of joining the program
+                    if (result === 'success') {
+                        if (type <= 2) { // participant
+                            const alert = await this.alertCtrl.create({
+                                header: 'Success',
+                                message: 'You have successfully joined ' + moment.matrix_string[0][0],
+                                buttons: [{ text: 'Ok',
+                                    handler: () => {
+                                        const navTransition = alert.dismiss();
+                                        navTransition.then( async () => {
+                                        });
+                                    }}],
+                                cssClass: 'level-15'
+                            });
+                            alert.present();
+                        } else {
+                            const alert = await this.alertCtrl.create({
+                                header: 'Success',
+                                message: 'You have now been added as ' + (user_list === 'user_list_2' ? 'an organizer of ' : (user_list === 'user_list_3' ? 'a leader of ' : '')) + moment.matrix_string[0][0],
+                                buttons: [{ text: 'Ok',
+                                    handler: () => {
+                                        const navTransition = alert.dismiss();
+                                        navTransition.then( async () => {
+                                        });
+                                    }}],
+                                cssClass: 'level-15'
+                            });
+                            alert.present();
+                        }
+                    } else {
+                        const alert = await this.alertCtrl.create({
+                            header: 'Permission Denied',
+                            message: 'You do not have the required permission. Please contact the organizer for assistance.',
+                            buttons: [{ text: 'Dismiss',
+                                handler: () => {
+                                    const navTransition = alert.dismiss();
+                                    navTransition.then( async () => {
+                                    });
+                                }}],
+                            cssClass: 'level-15'
+                        });
+                        alert.present();
+                    }
+                }
+                // This logic changes the userData.defaultProgram to equal the program just joined
+                // IF they successfully joined the community
+                // AND it is the second community they have joined (the first is the default Restvo Community)
+                if (result === 'success') {
+                    const activities = await this.userData.loadPrograms(true);
+                    // activities is an Array like object
+                    const newActivities = Array.prototype.slice.call(activities);
+                    // newActivities is now an array
+                    if (newActivities.length === 2) {
+                        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+                        // activity should now be an object of the new Activity
+                        // update the userData default program to equal the object
+                        if (activity) {
+                            this.userData.defaultProgram = activity;
+                            this.userData.UIMentoringMode = true; // toggling on the Mentoring Mode
+                            this.storage.set('defaultProgram', activity);
+                        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
+                    }
+                }
+                return result;
+            } catch (err) {
+                console.log(err);
+                return false;
+            }
+        }
+>>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
     }
     
     // decide whether to open the participants edit mode (for organizer) or select from the PeoplePicker and add as participant to an Activity
