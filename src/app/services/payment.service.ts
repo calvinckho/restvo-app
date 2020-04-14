@@ -6,14 +6,54 @@ import 'rxjs/add/operator/toPromise';
 import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
+import {AlertController} from "@ionic/angular";
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
 
     constructor(private http: HttpClient,
+                private alertCtrl: AlertController,
                 public authService: Auth,
                 public networkService: NetworkService,
                 public userData: UserData) {
+    }
+
+    async checkSubscriptionAllowance(moment) {
+        let orgId;
+        if (moment && moment.parent_programs && moment.parent_programs.length) {
+            // grandparent community
+            if (moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0]) {
+                orgId = moment.parent_programs[0].parent_programs[0]._id;
+            // parent community
+            } else {
+                orgId = moment.parent_programs[0]._id;
+            }
+            // current community
+        } else {
+            orgId = moment._id;
+        }
+        const promise: any = await this.http.get(this.networkService.domain + '/api/payment/checkallowance/' + orgId, this.authService.httpAuthOptions).toPromise();
+        if (promise) {
+            if (promise.status === 'success') {
+                return true;
+            } else {
+                const alert = await this.alertCtrl.create({
+                    header: promise.title || 'Upgrade Required',
+                    message: promise.msg || 'Your community has exceeded the 10 users allowance under the Free Plan. Please upgrade your plan to add more users.',
+                    buttons: [{ text: 'Ok',
+                        handler: () => {
+                            const navTransition = alert.dismiss();
+                            navTransition.then( async () => {
+                            });
+                        }}],
+                    cssClass: 'level-15'
+                });
+                alert.present();
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     loadCommunityParticipants(orgId) {
@@ -23,7 +63,6 @@ export class PaymentService {
     loadCustomer(orgId) {
         return this.http.get(this.networkService.domain + '/api/payment/loadcustomer/' + orgId, this.authService.httpAuthOptions).toPromise();
     }
-
 
     loadBillingInfo(orgId) {
         return this.http.get(this.networkService.domain + '/api/payment/loadbilling/' + orgId, this.authService.httpAuthOptions).toPromise();
