@@ -240,7 +240,7 @@ export class UserData {
     }
 
     async hasRestvoStaffAccess(communityId) {
-        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasRestvoStaffAccess/' + communityId, this.authService.httpAuthOptions).toPromise();
+        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId, this.authService.httpAuthOptions).toPromise();
     }
 
     initializeUser() {
