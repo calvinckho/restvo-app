@@ -202,7 +202,7 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.startEventSubscription();
           }
           if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-              this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+              this.userData.restvoStaffAccess = await this.userData.hasRestvoStaffAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
           }
       }
   }
@@ -230,7 +230,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await this.userData.load();
                 await this.userData.loadStoredCommunity();
                 if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                    this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                    this.userData.restvoStaffAccess = await this.userData.hasRestvoStaffAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
                 }
                 // hasSetupEventListeners is true if setupDevice() was run successfully on startup.
                 // therefore, on network status change detection, if setupDevice() was not carried up successfully on start up, run setupDevice() again
@@ -385,7 +385,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                     this.userData.loginAt = new Date();
                     try {
                         if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                            this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                            this.userData.restvoStaffAccess = await this.userData.hasRestvoStaffAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
                         }
                     } catch (err) {
                         console.log('failed to check admin access');

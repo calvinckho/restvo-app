@@ -31,7 +31,7 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
     leaveGroupTag: boolean = false;
     deleteGroupTag: boolean = false;
     isGroupLeader = false;
-    hasAdminAccess = false;
+    hasRestvoStaffAccess = false;
     loadCompleted = false;
 
     constructor(private electronService: ElectronService,
@@ -92,10 +92,10 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
             this.deleteGroupTag = true;
             this.isGroupLeader = true;
         }
-        if(this.group.churchId && await this.userData.hasAdminAccess(this.group.churchId)){ //special admin privileges
+        if(this.group.churchId && await this.userData.hasRestvoStaffAccess(this.group.churchId)){ //special admin privileges
             this.editGroupTag = true;
             this.deleteGroupTag = true;
-            this.hasAdminAccess = true;
+            this.hasRestvoStaffAccess = true;
         }
         this.group_type = this.group.board ? 'Topic' : 'Group';
     }

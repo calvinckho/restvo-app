@@ -27,7 +27,7 @@ export class UserData {
     socket: io;
     currentCommunityIndex: number; // Update page community carousel slide actual index, it can go beyond the total number of slides (x+1 = 0)
     loginAt: any;
-    currentCommunityAdminStatus: boolean = false;
+    restvoStaffAccess: boolean = false;
     developerModeClick: number = 0;
     deviceToken: string;
     pushSubscription: any;
@@ -116,7 +116,7 @@ export class UserData {
             console.log("got refresh");
             if (this.user._id === userId) { //only if user status update is for current user
                 if (data.type === 'update admin') {
-                    this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    this.restvoStaffAccess = await this.hasRestvoStaffAccess(this.user.churches[this.currentCommunityIndex]._id);
                 } else if (data.type === 'connect conversation') {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 } else if (data.type === 'disconnect conversation') {
@@ -205,14 +205,6 @@ export class UserData {
         this.currentCommunityIndex = 0;
         const restvoIndex = this.user.churches.map((c) => c._id).indexOf('5ab62be8f83e2c1a8d41f894');
         if (this.user.churches && this.user.churches.length) { //  && restvoIndex > -1 ensure the user has joined Restvo
-            /*const index = await this.storage.get('currentCommunityIndex');
-            if (index && index.length) {
-                // in the event index is larger than the total number of communities, i.e. the user left a community since the last session
-                this.currentCommunityIndex = (parseInt(index, 10) > this.user.churches.length - 1) ? (this.user.churches.length - 1) : parseInt(index, 10);
-                this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
-            } else {
-                this.storage.set('currentCommunityIndex', restvoIndex.toString());
-            }*/
             // always returning Restvo as the default index
             this.currentCommunityIndex = restvoIndex;
         } else { // a safeguard against app crashes before the user finishes the onboarding process and got assigned to Restvo as the default community
@@ -246,8 +238,8 @@ export class UserData {
         //this.menuCtrl.close();
         //this.currentCommunityIndex = index; // this will always be smaller than churches.length
         this.storage.set("currentCommunityIndex", this.currentCommunityIndex.toString());
-        this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
-        if (this.router.url.indexOf('/app/manage') > -1 && !this.currentCommunityAdminStatus) { // if user switches to a community where he is no longer an admin
+        this.restvoStaffAccess = await this.hasRestvoStaffAccess(this.user.churches[this.currentCommunityIndex]._id);
+        if (this.router.url.indexOf('/app/manage') > -1 && !this.restvoStaffAccess) { // if user switches to a community where he is no longer an admin
             this.router.navigateByUrl('/app/discover');
         } else {
             this.refreshAppPages();
@@ -258,8 +250,8 @@ export class UserData {
         return this.http.put(this.networkService.domain + '/api/auth/devicetoken', JSON.stringify(data), this.authService.httpAuthOptions);
     }
 
-    async hasAdminAccess(communityId) {
-        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId, this.authService.httpAuthOptions).toPromise();
+    async hasRestvoStaffAccess(communityId) {
+        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasRestvoStaffAccess/' + communityId, this.authService.httpAuthOptions).toPromise();
     }
 
     initializeUser() {
@@ -750,7 +742,7 @@ export class UserData {
 
     async resetUserData() {
         this.user = {};
-        this.currentCommunityAdminStatus = false;
+        this.restvoStaffAccess = false;
         this.currentCommunityIndex = 0;
         this.developerModeClick = 0;
         this.delayPushNotificationReminder = 0;
