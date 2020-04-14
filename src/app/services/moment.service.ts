@@ -14,6 +14,7 @@ import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {Storage} from "@ionic/storage";
+import {PaymentService} from "./payment.service";
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -77,6 +78,7 @@ export class Moment {
                 private chatService: Chat,
                 private responseService: Response,
                 private resourceService: Resource,
+                private paymentService: PaymentService,
                 private calendarService: CalendarService,
                 private networkService: NetworkService) {
     }
@@ -456,6 +458,8 @@ export class Moment {
     // an user adding another user to an Activity's participant list. 
     // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
     async addParticipants(moment, resource, filter, listOfNames, title, action) {
+        const success = await this.paymentService.checkSubscriptionAllowance(moment);
+        if (!success) { return; }
         const selectedPersonOrGroup = [];
         this.chatService.conversations.forEach((item) => {
             if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).includes(item.data.participant._id)) {
