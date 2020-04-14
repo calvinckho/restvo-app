@@ -88,7 +88,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     if (this.userData.user) {
       this.loadSchedules();
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
-      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346')) { // only check if it is a Community
+      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
