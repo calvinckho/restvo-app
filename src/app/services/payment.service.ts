@@ -32,7 +32,7 @@ export class PaymentService {
         } else {
             orgId = moment._id;
         }
-        const promise: any = await this.http.get(this.networkService.domain + '/api/payment/checkallowance/' + orgId, this.authService.httpAuthOptions).toPromise();
+        const promise: any = await this.http.get(this.networkService.domain + '/api/payment/checkallowance/' + orgId + '?momentId=' + moment._id, this.authService.httpAuthOptions).toPromise();
         if (promise) {
             if (promise.status === 'success') {
                 return true;
