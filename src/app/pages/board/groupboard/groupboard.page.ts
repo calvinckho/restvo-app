@@ -56,7 +56,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
     pageNum: number = 0;
     reachedEnd = false;
     isGroupLeader = false;
-    hasAdminAccess = false;
+    hasRestvoStaffAccess = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
     // group
     groupLoaded = false;
@@ -120,7 +120,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
             //check if the current user is a leader
             this.leaderIds = this.group.leaders.map((c) => {return c._id;});
             if(this.userData.user){
-                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasRestvoStaffAccess);
             }
             this.reloadDirectory();
         }
@@ -246,7 +246,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                 this.isGroupLeader = this.group.leaders.map((c)=>{return c._id;}).indexOf(this.userData.user._id) > -1;
             }
             if (this.userData.user && this.group.churchId){
-                this.hasAdminAccess = await this.userData.hasAdminAccess(this.group.churchId);
+                this.hasRestvoStaffAccess = await this.userData.hasRestvoStaffAccess(this.group.churchId);
             }
             this.listcommunityboardposts({target: this.infiniteScroll});
         }, 50);
@@ -351,7 +351,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
     }
 
     async openPost(post){
-        let showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: this.group.board, post: post, isGroupLeader: this.isGroupLeader, hasAdminAccess: this.hasAdminAccess }});
+        let showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: this.group.board, post: post, isGroupLeader: this.isGroupLeader, hasRestvoStaffAccess: this.hasRestvoStaffAccess }});
         await showBoardPage.present();
     }
 
@@ -718,7 +718,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
             if (res.conversationId === this.group.conversation) {
                 if (res.data.action === 'update leader status') {
                     this.leaderIds = res.data.leaders.map((c) => c._id);
-                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasRestvoStaffAccess);
                 }
                 this.reloadDirectory();
             } else if (res.data._id === this.group._id){

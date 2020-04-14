@@ -74,7 +74,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="userData.currentCommunityAdminStatus && recipient.reportStatus?.length">
+        <div *ngIf="userData.restvoStaffAccess && recipient.reportStatus?.length">
           <ion-item class="ion-text-wrap">
             <ion-label class="label-title" color="danger">Abuse Report Status</ion-label>
             <ion-badge color="primary">{{recipient.reportStatus}}</ion-badge>
@@ -134,7 +134,7 @@
         <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 
-      <div style="margin-top: 5px;" *ngIf="userData.currentCommunityAdminStatus && manageMode">
+      <div style="margin-top: 5px;" *ngIf="userData.restvoStaffAccess && manageMode">
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Management</ion-label>
         </ion-item>

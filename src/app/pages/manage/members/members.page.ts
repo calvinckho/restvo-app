@@ -44,7 +44,7 @@ export class MembersPage implements OnInit, OnDestroy {
               private modalCtrl: ModalController) { }
 
     ngOnInit() {
-        if (this.userData && this.userData.currentCommunityAdminStatus) {
+        if (this.userData && this.userData.restvoStaffAccess) {
             this.setupManagePeople();
         }
         // link refreshUserStatus Observable with refresh handler.

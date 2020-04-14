@@ -50,7 +50,7 @@
               </ion-badge>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle auto-hide="false" *ngIf="userData.restvoStaffAccess">
             <ion-item [routerLink]="['/app/manage']">
               <ion-icon slot="start" name="bulb"></ion-icon>
               <ion-label>Manage</ion-label>
