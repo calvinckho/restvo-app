@@ -65,7 +65,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
     selectDefault(event, program) {
       event.stopPropagation();
       this.userData.defaultProgram = program;
-      this.userData.UIAdminMode = true;
+      this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
       let activityURL;
         if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {

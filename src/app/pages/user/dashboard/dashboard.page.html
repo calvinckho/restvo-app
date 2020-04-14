@@ -64,7 +64,8 @@
         <ion-item lines="none">
           <div class="person-photo-container">
             <ion-avatar class="person-avatar">
-              <img class="person-avatar" [src]="userData.user.avatar">
+              <ion-img class="person-avatar" *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
+              <ion-img class="person-avatar" *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
             </ion-avatar>
           </div>
           <div class="person-content-left">

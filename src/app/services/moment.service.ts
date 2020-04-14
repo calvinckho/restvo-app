@@ -13,6 +13,7 @@ import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
+import {Storage} from "@ionic/storage";
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -66,6 +67,7 @@ export class Moment {
     public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
 
     constructor(private http: HttpClient,
+                private storage: Storage,
                 private platform: Platform,
                 private alertCtrl: AlertController,
                 private modalCtrl: ModalController,
@@ -398,6 +400,25 @@ export class Moment {
                             cssClass: 'level-15'
                         });
                         alert.present();
+                    }
+                }
+                // This logic changes the userData.defaultProgram to equal the program just joined
+                // IF they successfully joined the community
+                // AND it is the second community they have joined (the first is the default Restvo Community)
+                if (result === 'success') {
+                    const activities = await this.userData.loadPrograms(true);
+                    // activities is an Array like object
+                    const newActivities = Array.prototype.slice.call(activities);
+                    // newActivities is now an array
+                    if (newActivities.length === 2) {
+                        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+                        // activity should now be an object of the new Activity
+                        // update the userData default program to equal the object
+                        if (activity) {
+                            this.userData.defaultProgram = activity;
+                            this.userData.UIMentoringMode = true; // toggling on the Mentoring Mode
+                            this.storage.set('defaultProgram', activity);
+                        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
                     }
                 }
                 return result;
