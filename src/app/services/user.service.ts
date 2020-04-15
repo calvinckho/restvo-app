@@ -110,6 +110,12 @@ export class UserData {
                     const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
                     this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
                     this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                    if (this.router.url.includes('/app/manage')) { // if user switches to a community where he is no longer an admin
+                        this.router.navigateByUrl('/app/me');
+                    } else {
+                        this.refreshAppPages();
+                    }
                 } else if (data.type === 'connect conversation') {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 } else if (data.type === 'disconnect conversation') {
@@ -130,6 +136,14 @@ export class UserData {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                     this.refreshUserStatus({ type: 'load user community boards' });
                     this.refreshUserStatus({ type: 'refresh community board page' }); // when a user leave a group with board
+                    // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
+                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                    if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
+                        this.router.navigateByUrl('/app/me');
+                    }
                 } else if (data.type === 'update church participation') {
                     await this.load();
                 } else if (data.type === 'update moment and calendar participation') {
@@ -230,11 +244,11 @@ export class UserData {
         event.stopPropagation();
         //this.menuCtrl.close();
         //this.currentCommunityIndex = index; // this will always be smaller than churches.length
-        this.storage.set("currentCommunityIndex", this.currentCommunityIndex.toString());
+        this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
         const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
         this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
         this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-        if (this.router.url.includes('/app/manage') && !this.hasPlatformAdminAccess) { // if user switches to a community where he is no longer an admin
+        if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
             this.router.navigateByUrl('/app/discover');
         } else {
             this.refreshAppPages();
@@ -243,7 +257,6 @@ export class UserData {
 
     async changeManageActivity(event) {
         event.stopPropagation();
-        console.log("pick", event.detail.value);
         this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
     }
 
