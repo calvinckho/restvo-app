@@ -1,13 +1,13 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Plan</ion-title>
+    <ion-title *ngIf="resource && resource._id && moment.resource && moment.resource.field">{{moment.matrix_string[0][0]}}: Plan</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="subscriptionResource && moment && moment.resource && moment.resource.field">
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
@@ -18,76 +18,76 @@
       <ion-grid *ngIf="resource">
         <ion-row>
           <ion-col size-xs="12" size-sm="12" size-md="12" size-lg="6">
-            <ion-card class="ion-text-center">
+            <ion-card class="ion-text-center ion-no-margin ion-padding-vertical">
               <ion-card-header>
-                <ion-card-title>{{resource['en-US'].matrix_string[0][0]}}</ion-card-title>
+                <ion-card-title>{{subscriptionResource['en-US'].matrix_string[0][0]}}</ion-card-title>
                 <img src=""/>
               </ion-card-header>
               <ion-card-header>
-                <ion-card-title>{{resource['en-US'].matrix_string[0][1]}}</ion-card-title>
-                <ion-card-subtitle>{{resource['en-US'].matrix_string[0][2]}}</ion-card-subtitle>
+                <ion-card-title>{{subscriptionResource['en-US'].matrix_string[0][1]}}</ion-card-title>
+                <ion-card-subtitle>{{subscriptionResource['en-US'].matrix_string[0][2]}}</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
                 <ion-list class="ion-text-center">
                   <ion-item>
-                    {{resource['en-US'].matrix_string[0][11]}}
+                    {{subscriptionResource['en-US'].matrix_string[0][11]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[0][12]}}
+                    {{subscriptionResource['en-US'].matrix_string[0][12]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[0][13]}}
+                    {{subscriptionResource['en-US'].matrix_string[0][13]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[0][14]}}
+                    {{subscriptionResource['en-US'].matrix_string[0][14]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[0][15]}}
+                    {{subscriptionResource['en-US'].matrix_string[0][15]}}
                   </ion-item>
                 </ion-list>
               </ion-card-content>
-              <ion-col *ngIf="churchService.currentManagedCommunity && (!churchService.currentManagedCommunity.hasOwnProperty('subscription') || churchService.currentManagedCommunity.subscription === 'Free')">
+              <ion-col *ngIf="!moment.subscription || moment.subscription === 'Free'">
                 <ion-button color="primary" fill="solid" shape="round" [disabled]="true">Current Plan</ion-button>
               </ion-col>
-              <ion-col *ngIf="churchService.currentManagedCommunity && churchService.currentManagedCommunity.hasOwnProperty('subscription') && churchService.currentManagedCommunity.subscription !== 'Free'">
+              <ion-col *ngIf="moment.subscription === 'Growth'">
                 <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('Free')">Downgrade Plan</ion-button>
               </ion-col>
             </ion-card>
           </ion-col>
           <ion-col size-xs="12" size-sm="12" size-md="12" size-lg="6">
-            <ion-card class="ion-text-center">
+            <ion-card class="ion-text-center ion-no-margin ion-padding-vertical">
               <ion-card-header>
-                <ion-card-title>{{resource['en-US'].matrix_string[1][0]}}</ion-card-title>
+                <ion-card-title>{{subscriptionResource['en-US'].matrix_string[1][0]}}</ion-card-title>
                 <img src=""/>
               </ion-card-header>
               <ion-card-header>
-                <ion-card-title>{{resource['en-US'].matrix_string[1][1]}}</ion-card-title>
-                <ion-card-subtitle>{{resource['en-US'].matrix_string[1][2]}}</ion-card-subtitle>
+                <ion-card-title>{{subscriptionResource['en-US'].matrix_string[1][1]}}</ion-card-title>
+                <ion-card-subtitle>{{subscriptionResource['en-US'].matrix_string[1][2]}}</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
                 <ion-list class="ion-text-center">
                   <ion-item>
-                    {{resource['en-US'].matrix_string[1][11]}}
+                    {{subscriptionResource['en-US'].matrix_string[1][11]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[1][12]}}
+                    {{subscriptionResource['en-US'].matrix_string[1][12]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[1][13]}}
+                    {{subscriptionResource['en-US'].matrix_string[1][13]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[1][14]}}
+                    {{subscriptionResource['en-US'].matrix_string[1][14]}}
                   </ion-item>
                   <ion-item>
-                    {{resource['en-US'].matrix_string[1][15]}}
+                    {{subscriptionResource['en-US'].matrix_string[1][15]}}
                   </ion-item>
                 </ion-list>
               </ion-card-content>
-              <ion-col *ngIf="churchService.currentManagedCommunity && churchService.currentManagedCommunity.hasOwnProperty('subscription') && churchService.currentManagedCommunity.subscription === resource['en-US'].matrix_string[1][0]">
+              <ion-col *ngIf="moment.subscription === 'Growth'">
                 <ion-button color="primary" fill="solid" shape="round" [disabled]="true">Current Plan</ion-button>
               </ion-col>
-              <ion-col *ngIf="churchService.currentManagedCommunity && (!churchService.currentManagedCommunity.hasOwnProperty('subscription') || churchService.currentManagedCommunity.subscription !== resource['en-US'].matrix_string[1][0])">
-                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan(resource['en-US'].matrix_string[1][0])">Upgrade Plan</ion-button>
+              <ion-col *ngIf="moment.subscription !== 'Growth'">
+                <ion-button color="primary" fill="solid" shape="round" (click)="selectPlan('Growth')">Upgrade Plan</ion-button>
               </ion-col>
             </ion-card>
           </ion-col>
@@ -98,15 +98,20 @@
       <ion-grid *ngIf="resource">
         <ion-row>
           <ion-col>
-            <ion-label class="text-start">You are switching to the Standard Plan</ion-label>
+            <ion-label class="text-start">You are switching to the {{subscriptionResource['en-US'].matrix_string[1][0]}} Plan</ion-label>
             <ion-card>
+              <ion-card-header>
                 <ion-card-title>Billing Amount</ion-card-title>
+              </ion-card-header>
               <ion-card-content>
-                <h2 class="ion-text-center">{{churchService.numberOfActiveUsers}} active users x {{resource['en-US'].matrix_string[1][1]}} (per user, per month) = ${{(churchService.numberOfActiveUsers*resource.matrix_number[1][0]).toFixed(2)}}</h2>
+                <!--<h2 class="ion-text-center" *ngIf="community_participants.length <= 50">0 - 50 growth users (current {{community_participants.length}}) = ${{(community_participants.length/50 + 1).toFixed(0)*subscriptionResource.matrix_number[1][0]}}</h2>-->
+                <h2 class="ion-text-center">{{(community_participants.length/50).toFixed(0)*50 + 1}} - {{(community_participants.length/50 + 1).toFixed(0)*50}} growth users (currently {{community_participants.length}}) = ${{(community_participants.length/50 + 1).toFixed(0)*subscriptionResource.matrix_number[1][0]}}</h2>
               </ion-card-content>
             </ion-card>
             <ion-card>
+              <ion-card-header>
                 <ion-card-title>Billing Information</ion-card-title>
+              </ion-card-header>
               <ion-card-content>
                 <form [formGroup]="billingForm">
                   <div [id]=stripeElementName class="field"></div>

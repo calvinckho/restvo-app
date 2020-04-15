@@ -26,6 +26,9 @@ import {FeatureInsightPage} from "./feature-insight/feature-insight.page";
 import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
 import {FeatureChildActivitiesPage} from "./feature-childactivities/feature-childactivities.page";
 import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
+import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
+import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
+import {PaymentService} from "../../../services/payment.service";
 
 @Component({
   selector: 'app-managefeature',
@@ -39,6 +42,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   menu: any;
   schedules: any;
   selectedSchedule: any;
+  stripeCustomer: any;
 
   constructor(
       public cache: CacheService,
@@ -64,7 +68,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public momentService: Moment,
       public resourceService: Resource,
       public responseService: Response,
-      public calendarService: CalendarService
+      public calendarService: CalendarService,
+      public paymentService: PaymentService
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
@@ -77,17 +82,17 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
       this.selectedMenuOption = 'profile';
     }
-    /*if (this.userData.user) {
-      this.loadSchedules();
-    }*/
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user) {
-      this.setup();
       this.loadSchedules();
+      await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
+      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
+        this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
+      }
     }
-  }
+  };
 
   async loadSchedules() {
     const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
@@ -169,7 +174,17 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         label: 'Onboarding Processes',
         component: null, // this is not required as we are using event to open this component to avoid circular dependency
         params: { programId: this.moment._id, organizer: true, showHeader: false }
-      }
+      },
+      {
+        url: 'billing',
+        label: 'Billing',
+        component: FeatureBillingPage,
+      },
+      {
+        url: 'subscription',
+        label: 'Subscription',
+        component: FeatureSubscriptionPage,
+      },
     ];
     const menuItem = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {

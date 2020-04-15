@@ -49,7 +49,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       recurrenceInterval: 1,  // e.g. once every 2 months, default: 1
       recurrenceEndDate: new Date().toISOString(), // leave null to add events into infinity and beyond
     },
-    array_boolean: [ null, null, true, false, true ] // default is to add to both participant's and mentor's timeline
+    array_boolean: [ true, true, true, false, true ] // default is to enable floating start date, unique answer for each content item, and to add to both participant's and mentor's timeline
   };
 
   calendarObj = { // create the calendar object for each timeline content
@@ -137,6 +137,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async promptTouchSchedule() {
+    //await this.touchSchedule('update schedule');
     const alert = await this.alertCtrl.create({
       header: 'Re-populate Timeline',
       subHeader: 'You are about to delete your existing timeline and re-populate it. Are you sure you want to proceed?',

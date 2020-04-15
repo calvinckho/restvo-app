@@ -1,13 +1,13 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{userData.user.churches[userData.currentCommunityIndex].name}}: Billing</ion-title>
+    <ion-title *ngIf="resource && resource._id && moment.resource && moment.resource.field">{{moment.matrix_string[0][0]}}: Billing</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="subscriptionResource && moment && moment.resource && moment.resource.field">
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
@@ -20,26 +20,38 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content *ngIf="resource">
-      <h2 class="ion-text-center">{{churchService.numberOfActiveUsers}} active users x {{resource['en-US'].matrix_string[1][1]}} (per user, per month) = ${{(churchService.numberOfActiveUsers*resource.matrix_number[1][0]).toFixed(2)}}</h2>
+      <h2 class="ion-text-center">{{(community_participants.length/50).toFixed(0)*50 + 1}} - {{(community_participants.length/50 + 1).toFixed(0)*50}} growth users (currently {{community_participants.length}}) = ${{(community_participants.length/50 + 1).toFixed(0)*subscriptionResource.matrix_number[1][0]}}</h2>
     </ion-card-content>
   </ion-card>
+  <!--<ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Current Amount
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="resource">
+      <h2 class="ion-text-center" *ngIf="moment.subscription === 'Free - Monthly'">$0, per month</h2>
+      <h2 class="ion-text-center" *ngIf="moment.subscription === 'Plus - Monthly'">$40, per month</h2>
+      <h2 class="ion-text-center" *ngIf="moment.subscription === 'Plus - Yearly'">$320, per year</h2>
+    </ion-card-content>
+  </ion-card>-->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Payment Information</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div *ngFor="let source of sources">
+      <div *ngIf="sources && sources.length">
         <ion-item>
           <ion-label slot="start">Card Type</ion-label>
-          <p slot="end">{{source.brand}}</p>
+          <p slot="end">{{sources[0].card.brand}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Last 4 Digits</ion-label>
-          <p slot="end">{{source.last4}}</p>
+          <p slot="end">{{sources[0].card.last4}}</p>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Expiration Date</ion-label>
-          <p slot="end">{{source.exp_month}}/{{source.exp_year}}</p>
+          <p slot="end">{{sources[0].card.exp_month}}/{{sources[0].card.exp_year}}</p>
         </ion-item>
       </div>
     </ion-card-content>
@@ -113,6 +125,7 @@
         </ion-item>
       </ion-card-content>
     </form>
+    <div class="ion-margin">* I authorise Restvo to send instructions to the financial institution that issued my card to take payments from my card account in accordance with the terms of my agreement with you.</div>
     <ion-row>
       <ion-col>
         <ion-button color="primary" shape="round" fill="solid" expand="block" (click)="submitBillingMethod()" [disabled]="!billingForm.valid">Update</ion-button>

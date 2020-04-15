@@ -82,7 +82,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   removedMoments = [];
   participantsView = 'participants';
   anyChangeMade: any;
-  shareOption = false;
   advancedFeature = false;
   initialSetupCompleted = false;
     participantLabel = 'Participant';
@@ -683,17 +682,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
   }
 
-  // select people to be included as participants in the Moment creation process
-  async presentPickPeoplePopover(event, filter, title) {
-    event.stopPropagation();
-    const modal = await this.modalCtrl.create({component: PickpeoplePopoverPage, componentProps: { filter: filter, includeSelf: false, title: title, conversations: this.selectedPersonOrGroup }});
-    await modal.present();
-    const {data: result} = await modal.onDidDismiss();
-    if (result && result.conversations) {
-      this.selectedPersonOrGroup = result.conversations;
-    }
-  }
-
     async reloadMomentUserLists() {
         const moment: any = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
         if (moment.hasOwnProperty('user_list_1')) this.moment.user_list_1 = moment.user_list_1;
@@ -703,7 +691,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     async addParticipants(event, filter, listOfNames, inviteeLabel) {
         event.stopPropagation();
-        const response: any = await this.momentService.addParticipants(this.moment, this.resource, filter, listOfNames, this.resource['en-US'].value[31] + ' ' + inviteeLabel, this.resource['en-US'].value[31], inviteeLabel);
+        const response: any = await this.momentService.addParticipants(this.moment, this.resource, filter, listOfNames, this.resource['en-US'].value[31] + ' ' + inviteeLabel, this.resource['en-US'].value[31]);
         if (response === 'success') {
             this.anyChangeMade = true;
             this.reloadMomentUserLists();

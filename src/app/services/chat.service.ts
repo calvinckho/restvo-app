@@ -416,9 +416,9 @@ export class Chat {
                         break;
                 }
             }
-            conversations.forEach((obj) => {
-                if (obj.conversation.type === 'self') return; // selecting the user's own profile will result in a non-existent conversation record. For more info, consult addSelfToConversation()
-                this.sendReply(obj.conversation._id, {
+            conversations.forEach( async (obj) => {
+                if (obj.conversation.type === 'self') return; // no need to send notification if the conversation record is self
+                await this.sendReply(obj.conversation._id, {
                     composedMessage: this.userData.user.first_name + ' ' + this.userData.user.last_name + ' added you as ' + inviteeLabel,
                     page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
                     groupId: obj.conversation.type === 'connect' ? null : obj.conversation.group._id,
@@ -533,28 +533,6 @@ export class Chat {
             }
         } catch (err) {
             console.log(err);
-        }
-    }
-
-    // add user's own profile to the conversation list for display purposes. used in this.addParticipants
-    addSelfToConversation() {
-        if (!this.conversations.find((c) => c.conversation.type === 'self')) {
-            this.conversations.unshift({
-                conversation: {
-                    _id: this.userData.user._id, // this is not applicable because such a conversation does not exist. this exception will be handled in chat.service.ts notifyOfInvitation()
-                    type: 'self',
-                    updatedAt: new Date().toISOString()
-                },
-                data: {
-                    name: this.userData.user.first_name + ' ' + this.userData.user.last_name,
-                    participant: {
-                        _id: this.userData.user._id,
-                        first_name: this.userData.user.first_name,
-                        last_name: this.userData.user.last_name,
-                        avatar: this.userData.user.avatar
-                    }
-                },
-            });
         }
     }
 }

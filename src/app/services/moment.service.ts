@@ -13,6 +13,8 @@ import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
+import {Storage} from "@ionic/storage";
+import {PaymentService} from "./payment.service";
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -66,6 +68,7 @@ export class Moment {
     public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
 
     constructor(private http: HttpClient,
+                private storage: Storage,
                 private platform: Platform,
                 private alertCtrl: AlertController,
                 private modalCtrl: ModalController,
@@ -75,6 +78,7 @@ export class Moment {
                 private chatService: Chat,
                 private responseService: Response,
                 private resourceService: Resource,
+                private paymentService: PaymentService,
                 private calendarService: CalendarService,
                 private networkService: NetworkService) {
     }
@@ -400,6 +404,25 @@ export class Moment {
                         alert.present();
                     }
                 }
+                // This logic changes the userData.defaultProgram to equal the program just joined
+                // IF they successfully joined the community
+                // AND it is the second community they have joined (the first is the default Restvo Community)
+                if (result === 'success') {
+                    const activities = await this.userData.loadPrograms(true);
+                    // activities is an Array like object
+                    const newActivities = Array.prototype.slice.call(activities);
+                    // newActivities is now an array
+                    if (newActivities.length === 2) {
+                        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+                        // activity should now be an object of the new Activity
+                        // update the userData default program to equal the object
+                        if (activity) {
+                            this.userData.defaultProgram = activity;
+                            this.userData.UIMentoringMode = true; // toggling on the Mentoring Mode
+                            this.storage.set('defaultProgram', activity);
+                        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
+                    }
+                }
                 return result;
             } catch (err) {
                 console.log(err);
@@ -428,21 +451,42 @@ export class Moment {
             if (peopleComponentId > -1) {
                 participantsLabel = moment.matrix_string[peopleComponentId].length && moment.matrix_string[peopleComponentId].length > 3 && moment.matrix_string[peopleComponentId][3] ? moment.matrix_string[peopleComponentId][3] : moment.resource['en-US'].matrix_string[peopleComponentId][5];
             }
-            this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32], participantsLabel);
+            this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
         }
     }
 
     // an user adding another user to an Activity's participant list. 
     // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
-    async addParticipants(moment, resource, filter, listOfNames, title, action, inviteeLabel) {
-        this.chatService.addSelfToConversation(); // add user's own profile to the conversation list for display purposes
+    async addParticipants(moment, resource, filter, listOfNames, title, action) {
+        const success = await this.paymentService.checkSubscriptionAllowance(moment);
+        if (!success) { return; }
         const selectedPersonOrGroup = [];
         this.chatService.conversations.forEach((item) => {
-            if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).indexOf(item.data.participant._id) > -1) {
+            if ((item.conversation.type === 'connect' || item.conversation.type === 'self') && item.data.participant && moment[listOfNames[0]].map((c) => c._id).includes(item.data.participant._id)) {
                 item.locked = true;
                 selectedPersonOrGroup.push(item);
             }
         });
+        if (moment[listOfNames[0]].map((c) => c._id).includes(this.userData.user._id)) { // add self to the selectedPersonOrGroup list if user is included in the user_list
+            selectedPersonOrGroup.push({
+                select: true,
+                locked: true,
+                conversation: {
+                    _id: this.userData.user._id, // this is not applicable because such a conversation does not exist. this exception will be handled in chat.service.ts notifyOfInvitation()
+                    type: 'self',
+                    updatedAt: new Date().toISOString()
+                },
+                data: {
+                    name: this.userData.user.first_name + ' ' + this.userData.user.last_name,
+                    participant: {
+                        _id: this.userData.user._id,
+                        first_name: this.userData.user.first_name,
+                        last_name: this.userData.user.last_name,
+                        avatar: this.userData.user.avatar
+                    }
+                },
+            });
+        }
         const modal = await this.modalCtrl.create({component: PickpeoplePopoverPage, componentProps: { moment: moment, invitationType: listOfNames[0], filter: filter, includeSelf: true, title: title, action: action, conversations: selectedPersonOrGroup }});
         await modal.present();
         const {data: result} = await modal.onDidDismiss();
@@ -451,19 +495,23 @@ export class Moment {
         let userObjectIds = [];
         const conversations = (result && result.conversations) ? result.conversations : [];
         const listOfAppUsers = (result && result.listOfAppUsers) ? result.listOfAppUsers : [];
-        if (conversations && conversations.length) {
+        if (conversations && conversations.length) { // process selected users from selectedConversations
             result.conversations.forEach((item) => {
                 if (item.data.participant._id) {
                     userObjectIds.push(item.data.participant._id);
                 }
             });
         }
-        if (listOfAppUsers && listOfAppUsers.length) {
+        if (listOfAppUsers && listOfAppUsers.length) { // process users selected from selected App Users
             listOfAppUsers.forEach((appUser) => {
                 if (appUser._id) {
                     userObjectIds.push(appUser._id);
                 }
             });
+        }
+        // process if user has selected self
+        if (result && result.conversations && result.conversations.find((c) => c.conversation._id === this.userData.user._id)) {
+            userObjectIds.push(this.userData.user._id);
         }
         userObjectIds = [...new Set(userObjectIds)]; // create unique set of user Ids
         // add selected users to participant list

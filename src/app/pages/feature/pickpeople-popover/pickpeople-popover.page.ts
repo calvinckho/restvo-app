@@ -45,6 +45,7 @@ export class PickpeoplePopoverPage implements OnInit {
     leadersLabel = 'Leaders';
     ionSpinner: boolean = true;
     churchId: string = '';
+    selfConversationObj: any;
 
     constructor(
         public alertCtrl: AlertController,
@@ -98,6 +99,29 @@ export class PickpeoplePopoverPage implements OnInit {
               }
           }
       });
+      // populate the selfConversationObj with user's data. It can be updated by this.selectedConversations if user is selected
+      this.selfConversationObj = {
+          select: false,
+          lock: false,
+          conversation: {
+              _id: this.userData.user._id, // this is not applicable because such a conversation does not exist. this exception will be handled in chat.service.ts notifyOfInvitation()
+              type: 'self',
+              updatedAt: new Date().toISOString()
+          },
+          data: {
+              name: this.userData.user.first_name + ' ' + this.userData.user.last_name,
+              participant: {
+                  _id: this.userData.user._id,
+                  first_name: this.userData.user.first_name,
+                  last_name: this.userData.user.last_name,
+                  avatar: this.userData.user.avatar
+              }
+          },
+      };
+      const index = this.selectedConversations.map((c) => c.conversation._id).indexOf(this.userData.user._id);
+      if (index > -1) {
+          this.selfConversationObj = this.selectedConversations[index];
+      }
   }
 
     setupLoadAppUsers() {
@@ -202,6 +226,9 @@ export class PickpeoplePopoverPage implements OnInit {
         let index = this.conversations.indexOf(obj);
         if (index > -1) {
             this.conversations[index].select = false;
+        }
+        if (obj.conversation._id === this.userData.user._id) {
+            this.selfConversationObj.select = false;
         }
         index = this.selectedConversations.indexOf(obj);
         if (index > -1) {

@@ -293,12 +293,11 @@ app-editfeature {
 
   .participant-centered {
     width: 100px;
-    height: 65px;
-    margin: auto 0 auto 0;
+    //height: 65px;
+    margin: auto 0;
 
     .participant-avatar {
-      margin: 0 auto;
-      top: 0
+      margin: 6px auto;
     }
 
     .participant-joined {
@@ -308,7 +307,7 @@ app-editfeature {
     }
 
     .participant-label {
-      margin: 5px auto 0 auto;
+      margin: 5px auto 6px;
       color: grey;
       font-size: 12px;
     }

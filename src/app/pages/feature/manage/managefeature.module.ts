@@ -9,6 +9,8 @@ import {ManagefeatureRoutingModule} from "./managefeature-routing.module";
 import {FeatureInsightPageModule} from "./feature-insight/feature-insight.module";
 import {FeatureChildActivitiesPageModule} from "./feature-childactivities/feature-childactivities.module";
 import {FeatureSchedulePageModule} from "./feature-schedule/feature-schedule.module";
+import {FeatureBillingPageModule} from "./feature-billing/feature-billing.module";
+import {FeatureSubscriptionPageModule} from "./feature-subscription/feature-subscription.module";
 
 @NgModule({
   imports: [
@@ -18,7 +20,9 @@ import {FeatureSchedulePageModule} from "./feature-schedule/feature-schedule.mod
     ManagefeatureRoutingModule,
     FeatureInsightPageModule,
     FeatureSchedulePageModule,
-    FeatureChildActivitiesPageModule
+    FeatureChildActivitiesPageModule,
+      FeatureBillingPageModule,
+      FeatureSubscriptionPageModule
   ],
   declarations: [ManagefeaturePage]
 })

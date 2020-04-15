@@ -111,10 +111,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.menuCtrl.close();
     }
 
-    async toggleAdminMode() {
+    /*async toggleAdminMode() {
         if (!this.userData.UIready) return;
-        await this.storage.set('UIAdminMode', this.userData.UIAdminMode);
-        if (this.userData.UIAdminMode) {
+        await this.storage.set('UIMentoringMode', this.userData.UIMentoringMode);
+        if (this.userData.UIMentoringMode) {
             this.userData.openUserPrograms({ modalPage: this.platform.width() < 768 });
             this.menuCtrl.close();
         } else {
@@ -124,7 +124,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.router.navigateByUrl('/app/discover');
             }
         }
-    }
+    }*/
 
     async saveToLocalStorage() {
         await this.storage.set('serverDomain', this.networkService.domain);
