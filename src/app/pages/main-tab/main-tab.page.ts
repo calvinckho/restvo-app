@@ -196,8 +196,9 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
               this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
               const activityId = await this.storage.get('currentManageActivityId');
+              console.log("cached admin activity", activityId);
               if (activityId && this.userData.activitiesWithAdminAccess.length) {
-                  if (this.userData.activitiesWithAdminAccess.includes(activityId)) {
+                  if (this.userData.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
                       this.userData.currentManageActivityId = activityId;
                   } else {
                       this.userData.currentManageActivityId = this.userData.activitiesWithAdminAccess[0]._id;
