@@ -38,7 +38,7 @@ export class UserData {
     showDownloadLink = true;
     splitPaneState: any = 'md';
     defaultProgram: any;
-    UIMentoringMode = false;
+    UIAdminMode = false;
     UIrestStatus = "active"; // user's current UI rest status: active or away
     videoChatRoomId = ''; // the current video chat ID if one is in session
 <<<<<<< HEAD
@@ -49,11 +49,15 @@ export class UserData {
 >>>>>>> deeplinking to video conferencing page
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
 <<<<<<< HEAD
+<<<<<<< HEAD
     UIready = false; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
 >>>>>>> deeplinking to video conferencing page
 =======
     UIready = false; // give app.component.html time to render correct UI params (e.g. UIMentoringMode) before enabling it
 >>>>>>> removed Mentoring mode button. The first program/community joined is now set as default Dashboard page for user
+=======
+    UIready = false; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
+>>>>>>> refactor UIMentoringMode to UIAdminMode
     versions = { // current app's version that will be used to compare with labels loaded from the database
         'Activity Components': 18, // this is the current activity components version used by this code
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
@@ -244,9 +248,9 @@ export class UserData {
             this.stripeService.setKey('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
         }
         this.defaultProgram = await this.storage.get('defaultProgram');
-        this.UIMentoringMode = await this.storage.get('UIMentoringMode');
+        this.UIAdminMode = await this.storage.get('UIAdminMode');
         setTimeout(() => {
-            this.UIready = true; // give app.component.html time to render correct UI params (e.g. UIMentoringMode) before enabling it
+            this.UIready = true; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
         }, 500);
     }
 
@@ -784,7 +788,7 @@ export class UserData {
 >>>>>>> deeplinking to video conferencing page
         this.showDownloadLink = true;
         this.defaultProgram = null;
-        this.UIMentoringMode = false;
+        this.UIAdminMode = false;
         this.UIready = false;
         this.authService.logout();
         // deviceToken is not removed because it needs to be used when another user sign in.

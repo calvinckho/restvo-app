@@ -16,16 +16,16 @@
               <ion-label>Admin</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <!--<ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIMentoringMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
             <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]">
-              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-              <ion-label>Dashboard</ion-label>
+              <ion-icon slot="start" name="home"></ion-icon>
+              <ion-label>Home</ion-label>
             </ion-item>
-          </ion-menu-toggle>-->
-          <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram"><!-- && (!userData.UIMentoringMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">-->
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
             <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]">
-              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-              <ion-label>Dashboard</ion-label>
+              <ion-icon slot="start" name="home"></ion-icon>
+              <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="!userData.defaultProgram">

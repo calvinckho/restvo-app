@@ -112,6 +112,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     //Not sure if this function is tied to another feature beyond the "mentoring mode" feature that has been commented out
     //If it isn't tied to another feature, then perhaps we can also remove this code as well
@@ -134,6 +135,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }*/
 
+=======
+>>>>>>> refactor UIMentoringMode to UIAdminMode
     async saveToLocalStorage() {
         await this.storage.set('serverDomain', this.networkService.domain);
         if (this.networkService.domain === 'https://server.restvo.com') {

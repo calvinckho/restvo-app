@@ -8,8 +8,12 @@
 </ion-header>
 
 <ion-content>
+  <ion-item lines="none" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
+    <ion-label>Show Admin View When Possible</ion-label>
+    <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)"></ion-toggle>
+  </ion-item>
   <ion-item lines="none">
-    <ion-label>Choose Your Default Mentoring:</ion-label>
+    <ion-label>Choose Your Home Page:</ion-label>
   </ion-item>
   <ion-grid class="program-grid">
     <ion-row class="program-row">

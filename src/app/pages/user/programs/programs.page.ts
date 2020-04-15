@@ -61,11 +61,20 @@ export class ProgramsPage implements OnInit, OnDestroy {
           await recipientModal.present();
       }
   }
+<<<<<<< HEAD
 // this is where I need to work to make the changes
+=======
+
+    async toggleAdminMode(event) {
+          await this.storage.set('UIAdminMode', event.detail.value);
+      }
+
+>>>>>>> refactor UIMentoringMode to UIAdminMode
     selectDefault(event, program) {
       event.stopPropagation();
       console.log(this.userData)
       this.userData.defaultProgram = program;
+<<<<<<< HEAD
 <<<<<<< HEAD
       console.log(program)
       console.log("testing the program!")
@@ -83,11 +92,16 @@ export class ProgramsPage implements OnInit, OnDestroy {
       //let activityURL;
         /*if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
 >>>>>>> introduce admin section
+=======
+      this.storage.set('defaultProgram', this.userData.defaultProgram);
+      let activityURL;
+        if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
+>>>>>>> refactor UIMentoringMode to UIAdminMode
             activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
         } else {
             activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
-        }*/
-        this.router.navigate(['/app/discover/home/' + this.userData.defaultProgram._id]);
+        }
+        this.router.navigate([activityURL]);
         if (this.modalPage) {
             setTimeout(() => {
                 this.closeModal();
