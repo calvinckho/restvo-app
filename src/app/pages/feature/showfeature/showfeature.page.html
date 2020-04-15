@@ -729,63 +729,7 @@
           <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
-          <ion-slides *ngIf="(platform.width() >= 768)" class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 4, grabCursor: true, updateOnWindowResize: true}">
-            <ion-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
-              <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-                <ion-card-header>
-                  <div class="person-photo-container">
-                    <ion-img class="person-photo" src="assets/img/avatar-default.jpg"></ion-img>
-                  </div>
-                </ion-card-header>
-                <div class="top-pattern"></div>
-                <div class="middle-pattern"></div>
-                <div class="bottom-pattern"></div>
-                <ion-card-content class="person-content ion-no-padding">
-                  <ion-item lines="none" class="person-content-item ion-no-margin">
-                    <div class="person-content-left" style="margin-top: 10px">
-                      <div class="person-name ion-text-md-uppercase" style="height: 18px">
-                        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-                      </div>
-                      <div class="person-title">
-                        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-                      </div>
-                    </div>
-                    <div class="person-content-right" [ngClass]="{'content-border': true }">
-                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></div>
-                    </div> <!--Short Biography-->
-                  </ion-item>
-                </ion-card-content>
-              </ion-card>
-            </ion-slide>
-            <ion-slide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
-              <ion-card class="person-card" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-                <ion-card-header>
-                  <div class="person-photo-container">
-                    <ion-img class="person-photo" *ngIf="person.avatar" [src]="person.avatar"></ion-img>
-                    <ion-img class="person-photo" *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-                  </div>
-                </ion-card-header>
-                <div class="top-pattern"></div>
-                <div class="middle-pattern"></div>
-                <div class="bottom-pattern"></div>
-                <ion-card-content class="person-content ion-no-padding">
-                  <ion-item lines="none" class="person-content-item ion-no-margin">
-                    <div class="person-content-left">
-                      <div class="person-name ion-text-md-uppercase">
-                        {{person.first_name}} {{person.last_name}}
-                      </div>
-                      <div class="person-title" [innerHTML]="person.title"></div>
-                    </div>
-                    <div class="person-content-right" [ngClass]="{'content-border': person.bio }" [innerHTML]="person.bio"></div> <!--Short Biography-->
-                  </ion-item>
-                </ion-card-content>
-              </ion-card>
-            </ion-slide>
-          </ion-slides>
-          <ion-slides *ngIf="(platform.width() <= 768)" class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.5, grabCursor: true, updateOnWindowResize: true}">
+          <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: (platform.width() / 500), grabCursor: true, updateOnWindowResize: true}">
             <ion-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
               <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header>
@@ -1451,19 +1395,7 @@
     <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Communities/Programs Section Header-->
       <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured Communities</ion-label>
     </ion-item>
-    <ion-slides *ngIf="(platform.width() >= 768)" class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: 10, grabCursor: true, updateOnWindowResize: true}">
-      <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
-        <ion-card class="program-card" (click)="openProgram($event, program)">
-          <ion-card-header class="ion-no-padding">
-            <div class="program-photo-container">
-              <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
-            </div>
-          </ion-card-header>
-          <div class="program-name">{{program.matrix_string[0][0]}}</div>
-        </ion-card>
-      </ion-slide>
-    </ion-slides>
-    <ion-slides *ngIf="(platform.width() <= 768)" class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+    <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: (platform.width() / 175), grabCursor: true, updateOnWindowResize: true}">
       <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
         <ion-card class="program-card" (click)="openProgram($event, program)">
           <ion-card-header class="ion-no-padding">
