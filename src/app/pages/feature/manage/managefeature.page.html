@@ -84,6 +84,10 @@
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'subscription')}">Subscription</ion-label>
             </ion-item>
           </ion-item-group>
+          <ion-item routerLink="/app/manage" *ngIf="moment._id === '5d5785b462489003817fee18' && userData.hasPlatformAdminAccess">
+            <ion-icon slot="start" name="eye" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label>Platform</ion-label>
+          </ion-item>
           <ion-item (click)="switchToUserView()">
             <ion-icon slot="start" name="eye" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>View as User</ion-label>
