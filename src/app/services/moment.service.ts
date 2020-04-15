@@ -418,7 +418,7 @@ export class Moment {
                         // update the userData default program to equal the object
                         if (activity) {
                             this.userData.defaultProgram = activity;
-                            this.userData.UIMentoringMode = true; // toggling on the Mentoring Mode
+                            this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
                             this.storage.set('defaultProgram', activity);
                         } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
                     }

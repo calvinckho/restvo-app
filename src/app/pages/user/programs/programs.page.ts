@@ -62,18 +62,21 @@ export class ProgramsPage implements OnInit, OnDestroy {
       }
   }
 
+    async toggleAdminMode(event) {
+          await this.storage.set('UIAdminMode', event.detail.value);
+      }
+
     selectDefault(event, program) {
       event.stopPropagation();
       this.userData.defaultProgram = program;
-      this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
-      //let activityURL;
-        /*if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
+      let activityURL;
+        if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
             activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
         } else {
             activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
-        }*/
-        this.router.navigate(['/app/discover/home/' + this.userData.defaultProgram._id]);
+        }
+        this.router.navigate([activityURL]);
         if (this.modalPage) {
             setTimeout(() => {
                 this.closeModal();
