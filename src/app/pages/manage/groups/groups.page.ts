@@ -44,7 +44,7 @@ export class GroupsPage implements OnInit, OnDestroy {
         private alertCtrl: AlertController,) { }
 
     ngOnInit() {
-        if (this.userData && this.userData.restvoStaffAccess) {
+        if (this.userData && this.userData.hasPlatformAdminAccess) {
             this.setupManageGroups();
         }
 

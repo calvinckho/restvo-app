@@ -39,7 +39,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     @Input() boardId: any;
     @Input() isGroupLeader: boolean;
-    @Input() hasRestvoStaffAccess: boolean;
+    @Input() hasPlatformAdminAccess: boolean;
     @Input() post: any;
     resource = { "en-US": { matrix_string: [[''], [''], [''], ['']] }};
     moment: any;
@@ -630,7 +630,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
         event.stopPropagation();
         let buttons = [];
         if (this.post.status !== 'suspended') {
-            if (this.post.status === 'review' && (this.hasRestvoStaffAccess || this.isGroupLeader) && this.post.author._id !== this.userData.user._id){
+            if (this.post.status === 'review' && (this.hasPlatformAdminAccess || this.isGroupLeader) && this.post.author._id !== this.userData.user._id){
                 buttons.unshift({
                     text: 'Remove Abuse Report',
                     handler: () => {
@@ -646,7 +646,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
                 });
             }
         }
-        if (this.hasRestvoStaffAccess || this.isGroupLeader || this.post.author._id === this.userData.user._id) {
+        if (this.hasPlatformAdminAccess || this.isGroupLeader || this.post.author._id === this.userData.user._id) {
             buttons.unshift({
                 text: 'Delete Post',
                 handler: () => {

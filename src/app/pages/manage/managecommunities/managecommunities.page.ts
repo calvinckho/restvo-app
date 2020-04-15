@@ -98,7 +98,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
                 private actionSheetCtrl: ActionSheetController) {}
 
     async ngOnInit() {
-        if (this.userData && this.userData.restvoStaffAccess) {
+        if (this.userData && this.userData.hasPlatformAdminAccess) {
             this.setupManagePage();
             this.title = this.userData.user.churches[this.userData.currentCommunityIndex].name;
         }

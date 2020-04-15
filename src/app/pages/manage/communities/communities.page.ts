@@ -48,7 +48,7 @@ export class CommunitiesPage {
                 private alertCtrl: AlertController,) { }
 
     ionViewWillEnter() {
-        if (this.userData && this.userData.restvoStaffAccess) {
+        if (this.userData && this.userData.hasPlatformAdminAccess) {
             this.setupManageCommunities();
         }
 

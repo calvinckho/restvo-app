@@ -67,13 +67,13 @@ export class ProgramsPage implements OnInit, OnDestroy {
       this.userData.defaultProgram = program;
       this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
-      let activityURL;
-        if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
+      //let activityURL;
+        /*if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
             activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
         } else {
             activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
-        }
-        this.router.navigate([activityURL]);
+        }*/
+        this.router.navigate(['/app/discover/home/' + this.userData.defaultProgram._id]);
         if (this.modalPage) {
             setTimeout(() => {
                 this.closeModal();
