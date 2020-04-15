@@ -49,7 +49,7 @@ export class CommunityPopoverPage implements OnInit {
                 this.joinChurchTag = false;
                 this.editChurchTag = true;
                 this.leaveChurchTag = true;
-                this.userData.restvoStaffAccess = true;
+                this.userData.hasPlatformAdminAccess = true;
             }
         });
     }

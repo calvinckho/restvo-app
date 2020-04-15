@@ -29,6 +29,7 @@ import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
 import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
+import {Storage} from "@ionic/storage";
 
 @Component({
   selector: 'app-managefeature',
@@ -69,7 +70,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public resourceService: Resource,
       public responseService: Response,
       public calendarService: CalendarService,
-      public paymentService: PaymentService
+      public paymentService: PaymentService,
+      private storage: Storage
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
@@ -96,6 +98,9 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   async loadSchedules() {
     const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
+    this.userData.currentManageActivityId = momentId;
+    console.log("show manage id", this.userData.currentManageActivityId)
+    this.storage.set('currentManageActivityId', momentId);
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
   }

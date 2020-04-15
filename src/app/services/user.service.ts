@@ -26,8 +26,10 @@ export class UserData {
     communitiesboards: any; // [CommunitiesBoards];
     socket: io;
     currentCommunityIndex: number; // Update page community carousel slide actual index, it can go beyond the total number of slides (x+1 = 0)
+    currentManageActivityId: string;
     loginAt: any;
-    restvoStaffAccess: boolean = false;
+    hasPlatformAdminAccess: boolean = false;
+    activitiesWithAdminAccess: any = [];
     developerModeClick: number = 0;
     deviceToken: string;
     pushSubscription: any;
@@ -116,7 +118,9 @@ export class UserData {
             console.log("got refresh");
             if (this.user._id === userId) { //only if user status update is for current user
                 if (data.type === 'update admin') {
-                    this.restvoStaffAccess = await this.hasRestvoStaffAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
                 } else if (data.type === 'connect conversation') {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 } else if (data.type === 'disconnect conversation') {
@@ -238,20 +242,28 @@ export class UserData {
         //this.menuCtrl.close();
         //this.currentCommunityIndex = index; // this will always be smaller than churches.length
         this.storage.set("currentCommunityIndex", this.currentCommunityIndex.toString());
-        this.restvoStaffAccess = await this.hasRestvoStaffAccess(this.user.churches[this.currentCommunityIndex]._id);
-        if (this.router.url.indexOf('/app/manage') > -1 && !this.restvoStaffAccess) { // if user switches to a community where he is no longer an admin
+        const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+        if (this.router.url.includes('/app/manage') && !this.hasPlatformAdminAccess) { // if user switches to a community where he is no longer an admin
             this.router.navigateByUrl('/app/discover');
         } else {
             this.refreshAppPages();
         }
     }
 
+    async changeManageActivity(event) {
+        event.stopPropagation();
+        console.log("pick", event.detail.value);
+        this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+    }
+
     addDeviceToken(data) {
         return this.http.put(this.networkService.domain + '/api/auth/devicetoken', JSON.stringify(data), this.authService.httpAuthOptions);
     }
 
-    async hasRestvoStaffAccess(communityId) {
-        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId, this.authService.httpAuthOptions).toPromise();
+    async checkAdminAccess(communityId) {
+        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
     }
 
     initializeUser() {
@@ -742,8 +754,10 @@ export class UserData {
 
     async resetUserData() {
         this.user = {};
-        this.restvoStaffAccess = false;
+        this.hasPlatformAdminAccess = false;
+        this.activitiesWithAdminAccess = [];
         this.currentCommunityIndex = 0;
+        this.currentManageActivityId = '';
         this.developerModeClick = 0;
         this.delayPushNotificationReminder = 0;
         this.delayImportContactListReminder = 0;

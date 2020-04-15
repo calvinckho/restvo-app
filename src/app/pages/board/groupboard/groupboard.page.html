@@ -77,7 +77,7 @@
         <div class="author-container">
           <div class="author ion-text-wrap" >
             {{post.author.first_name}} {{post.author.last_name}}
-            <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasRestvoStaffAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+            <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasPlatformAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
           </div>
         </div>
         <ion-col slot="end" class="note-col">

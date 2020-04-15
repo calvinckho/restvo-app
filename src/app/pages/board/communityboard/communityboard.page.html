@@ -42,7 +42,7 @@
         Sign In
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end" *ngIf="userData.restvoStaffAccess">
+    <ion-buttons slot="end" *ngIf="userData.hasPlatformAdminAccess">
       <ion-button (click)="setupLoadGroups()" id="moreoptions" color="grey">
         <ion-icon name="add"></ion-icon>
       </ion-button>
