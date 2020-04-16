@@ -45,7 +45,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <div *ngIf="page === 1">
+  <div *ngIf="page === 1 && !ionSpinner">
     <ion-list-header>Friends</ion-list-header>
     <ion-list>
       <ion-item *ngFor="let person of listOfFriends; trackBy: customTrackBy" (click)="select(person)">
