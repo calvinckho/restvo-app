@@ -11,8 +11,11 @@
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title id="show-event-title" *ngIf="!modalPage && userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
-      <ion-select [(ngModel)]="userData.currentManageActivityId" (ionChange)="changeManageActivity($event)" interface="popover">
+    <!--<ion-title *ngIf="!modalPage && userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
+
+    </ion-title>-->
+    <ion-title (click)="select.open($event)" *ngIf="!modalPage">{{moment.matrix_string[0][0]}} <ion-note><ion-icon name="create-outline"></ion-icon></ion-note>
+      <ion-select [(ngModel)]="userData.currentManageActivityId" (ionChange)="changeManageActivity($event)" interface="popover" hidden>
         <div *ngFor="let activity of userData.activitiesWithAdminAccess">
           <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5c915324e172e4e64590e346')">{{activity.name}}</ion-select-option>
         </div>
@@ -22,7 +25,7 @@
         <div *ngFor="let activity of userData.activitiesWithAdminAccess">
           <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5dfdbb547b00ea76b75e5a70')">{{activity.name}}</ion-select-option>
         </div>
-     </ion-select>
+      </ion-select>
     </ion-title>
     <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">

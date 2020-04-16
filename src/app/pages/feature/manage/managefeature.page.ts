@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Location} from "@angular/common";
 import {ElectronService} from "ngx-electron";
 import {SwUpdate} from "@angular/service-worker";
@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CacheService} from "ionic-cache";
 import {
   ActionSheetController,
-  AlertController,
+  AlertController, IonContent, IonSelect,
   LoadingController,
   ModalController,
   Platform, PopoverController, ToastController
@@ -38,7 +38,7 @@ import {Storage} from "@ionic/storage";
   encapsulation: ViewEncapsulation.None
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
-
+  @ViewChild(IonSelect, {static: false}) select: IonSelect;
   selectedMenuOption = '';
   menu: any;
   schedules: any;
