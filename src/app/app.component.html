@@ -4,7 +4,8 @@
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
           <ion-item>
-            <ion-label>Restvo</ion-label>
+            <ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
+            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
             <!--<ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
             <ion-label *ngIf="userData.defaultProgram">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>-->
           </ion-item>
@@ -19,13 +20,13 @@
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
             <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]">
               <ion-icon slot="start" name="home"></ion-icon>
-              <ion-label>{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
+              <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
             <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]">
               <ion-icon slot="start" name="home"></ion-icon>
-              <ion-label>{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
+              <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="!userData.defaultProgram">

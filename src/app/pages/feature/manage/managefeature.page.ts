@@ -88,7 +88,13 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user) {
-      this.loadSchedules();
+      const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
+      if (!this.modalPage) {
+        this.userData.currentManageActivityId = momentId;
+        this.storage.set('currentManageActivityId', momentId);
+      }
+      this.loadSchedules(momentId);
+
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
@@ -96,11 +102,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     }
   };
 
-  async loadSchedules() {
-    const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
-    this.userData.currentManageActivityId = momentId;
-    console.log("show manage id", this.userData.currentManageActivityId)
-    this.storage.set('currentManageActivityId', momentId);
+  async loadSchedules(momentId) {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
   }
@@ -229,5 +231,14 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     } else {
       this.router.navigate(['/app/edit/' + this.moment._id]);
     }
+  }
+
+  async changeManageActivity(event) {
+    event.stopPropagation();
+    this.storage.set('currentManageActivityId', event.detail.value);
+    this.userData.currentManageActivityId = event.detail.value;
+    if (!this.modalPage) {
+      this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+    } // modal view cannot change Activity
   }
 }

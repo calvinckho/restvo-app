@@ -6,13 +6,13 @@
       </ion-button>
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
-    <ion-buttons *ngIf="modalPage || platform.width() >= 768" slot="start">
+    <ion-buttons *ngIf="modalPage" slot="start">
       <ion-button (click)="closeModal(false)">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title id="show-event-title" *ngIf="userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
-      <ion-select [(ngModel)]="userData.currentManageActivityId" (ionChange)="userData.changeManageActivity($event)" interface="popover">
+    <ion-title id="show-event-title" *ngIf="!modalPage && userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
+      <ion-select [(ngModel)]="userData.currentManageActivityId" (ionChange)="changeManageActivity($event)" interface="popover">
         <div *ngFor="let activity of userData.activitiesWithAdminAccess">
           <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5c915324e172e4e64590e346')">{{activity.name}}</ion-select-option>
         </div>
@@ -24,6 +24,7 @@
         </div>
      </ion-select>
     </ion-title>
+    <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="edit()">{{resource['en-US'].value[18]}}</ion-button> <!--Edit-->
     </ion-buttons>

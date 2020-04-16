@@ -255,13 +255,6 @@ export class UserData {
         }
     }
 
-    async changeManageActivity(event) {
-        event.stopPropagation();
-        this.storage.set('currentManageActivityId', event.detail.value);
-        this.currentManageActivityId = event.detail.value;
-        this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
-    }
-
     addDeviceToken(data) {
         return this.http.put(this.networkService.domain + '/api/auth/devicetoken', JSON.stringify(data), this.authService.httpAuthOptions);
     }
