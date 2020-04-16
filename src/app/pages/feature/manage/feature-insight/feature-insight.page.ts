@@ -88,6 +88,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   loadAndProcessMomentHandler = async (data) => {
     // data.type - 'change aux data' or null or others. In all cases, reload moment and redo permission
       // ready to check authentication status
+    this.setup(data);
     this.loadInsight();
   };
 

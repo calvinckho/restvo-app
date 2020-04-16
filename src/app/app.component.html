@@ -11,12 +11,6 @@
           </ion-item>
         </ion-toolbar>
         <ion-list>
-          <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
-            <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]">
-              <ion-icon slot="start" name="bulb"></ion-icon>
-              <ion-label>Admin</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
             <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]">
               <ion-icon slot="start" name="home"></ion-icon>
@@ -36,16 +30,16 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/news']">
-              <ion-icon slot="start" name="newspaper"></ion-icon>
-              <ion-label>News</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/myconversations']">
               <ion-icon slot="start" name="chatbox"></ion-icon>
               <ion-label>Chat</ion-label>
               <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/news']">
+              <ion-icon slot="start" name="newspaper"></ion-icon>
+              <ion-label>News</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
@@ -63,6 +57,12 @@
               <ion-label>
                 Settings
               </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
+            <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]">
+              <ion-icon slot="start" name="bulb"></ion-icon>
+              <ion-label>Admin</ion-label>
             </ion-item>
           </ion-menu-toggle>
 

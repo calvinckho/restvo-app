@@ -243,7 +243,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // for current user refreshing the app
   loadAndProcessMomentHandler = async (data) => {
-      console.log("loadAndProcessMomentHandler");
+      this.setup(data);
+  };
+
+  async setup(data) {
       if (this.calendarId) {
           await this.loadCalendarItem();
       }
@@ -276,7 +279,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (data && data.type === 'search map') {
           this.searchMap();
       }
-  };
+  }
 
   // for refreshing moment either because of real-time interactables, or for refreshing participation
   refreshMomentHandler = async (res) => {
