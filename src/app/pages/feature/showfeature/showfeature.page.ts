@@ -453,9 +453,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           // prepare to respond to the parent relationship (i.e. Choose whether the Content Calendar belongs to a Goal, which requires submitting the parentRelationshipResponseObj via submitResponse API
           const results: any = await this.responseService.findResponsesByMomentId(this.relationshipId, null, null);
           if (results && results.responses && results.responses.length) {
+              // parentRelationshipResponseObj can only be correctly populated if there is at least 1 response returned
               this.parentRelationshipResponseObj = JSON.parse(JSON.stringify(results.responses[results.responses.length - 1]));
               delete this.parentRelationshipResponseObj._id; // the latest response id is erased, since it may be saved as a new doc
-              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals and not master goals
+              // parentRelationshipListOfGoals needs to have at least a length of 1 (at least 1 goal) in order to parentRelationshipResponseObj to be sent to the backend
+              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals only. not master goals
               const parentRelationshipInteractable = results.responses[results.responses.length - 1].matrix_string.find((c) => c[0] === this.calendarId);
               if (parentRelationshipInteractable) {
                   this.parentRelationshipGoalAttributes = parentRelationshipInteractable.slice(10);
