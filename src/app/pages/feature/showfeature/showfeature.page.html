@@ -21,14 +21,13 @@
           <ion-icon name="albums"></ion-icon>
         </ion-button>
       </div>
-      <ion-button (click)="deleteCalendarItem($event)">
-        <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
       <div *ngIf="relationshipId && calendarItem">
-        <!-- <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
+        <ion-button (click)="deleteCalendarItem($event)" [disabled]="!calendarItem.title" class="ion-margin-end">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+         <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
           Save
-        </ion-button> -->
-        <ion-label color="primary">{{ currentSaveState }}</ion-label>
+        </ion-button>
       </div>
       <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
         <ion-icon name="person-add"></ion-icon>
@@ -620,6 +619,9 @@
         <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
+        <ion-row class="ion-padding-horizontal ion-justify-content-end ion-padding-top" style="height: 12px">
+          <ion-note style="font-size: 10px;">{{ currentSaveState }}</ion-note>
+        </ion-row>
         <ion-item lines="none" class="ion-margin-vertical">
           <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
                         (onContentChanged)="respondToTextArea($event, i)" [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"

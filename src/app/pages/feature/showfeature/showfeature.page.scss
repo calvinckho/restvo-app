@@ -646,11 +646,12 @@ app-showfeature {
   }
 
   .ql-editor {
-    padding: 0;
+    padding-left: 0;
   }
 
   .ql-editor.ql-blank::before {
     color: var(--ion-color-dark);
+    left: 0;
   }
 
   .ql-container,.ql-editor, .ql-editor.ql-blank, .ql-editor.ql-blank::before, .ql-editor.ql-blank::after {
