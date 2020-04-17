@@ -137,39 +137,35 @@
       <ion-card-title>Billing History</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <table>
-        <thead>
-        <tr>
-          <th>Invoice Number</th>
-          <th>Plan</th>
-          <th>Total &nbsp;</th>
-          <th>Due &nbsp;</th>
-          <th>Created</th>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-        </tr>
-        </thead>
-        <tbody *ngIf="invoices.length">
-        <tr *ngFor="let invoice of invoices">
-          <td>
-            <p>{{invoice.number}} &nbsp;&nbsp;</p>
-          </td>
-          <td>
-            <p>{{invoice.lines.data[0].description}} &nbsp;</p>
-          </td>
-          <td>
-            <p>${{invoice.total/100}} {{invoice.currency.toUpperCase()}} &nbsp;</p>
-          </td>
-          <td>
-            <p>${{invoice.amount_due/100}} {{invoice.currency.toUpperCase()}} &nbsp;</p>
-          </td>
-          <td>
-            <p>{{invoice.created*1000 | datetime: 'm:l,d:n,y:n'}}</p>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+    
+      <ion-list>
+        <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+          <div class="column column-label" slot='start'>Invoice<br>Number</div>
+          <div class="column-label plan">Plan</div>
+          <div class="money column-label ion-no-margin" slot='end'>Total</div>
+          <div class="money column-label ion-no-margin" slot='end'>Due</div>
+          <div class="created column-label ion-no-margin" slot='end'>Created</div>
+        </ion-item >
+
+        <ion-item *ngFor="let invoice of invoices" >
+          <div class="column ion-no-margin small-font" slot='start'>
+            <ion-label class="ion-text-center ion-text-wrap">{{invoice.number}} &nbsp;&nbsp;</ion-label>
+          </div>
+          <div class="plan small-font">
+            <ion-label class="ion-text-center ion-text-wrap">{{invoice.lines.data[0].description}} &nbsp;</ion-label>
+          </div>
+          <div class="money ion-no-margin small-font" slot='end'>
+            <ion-label class="ion-text-center ion-text-wrap">${{invoice.total/100}} {{invoice.currency.toUpperCase()}} &nbsp;</ion-label>
+          </div>
+          <div class="money ion-no-margin small-font" slot='end'>
+            <ion-label class="ion-text-center ion-text-wrap">${{invoice.amount_due/100}} {{invoice.currency.toUpperCase()}} &nbsp;</ion-label>
+          </div>
+          <div class="created ion-no-margin small-font" slot='end'>
+            <ion-label class="ion-text-center ion-text-wrap">{{invoice.created*1000 | datetime: 'm:l,d:n,y:n'}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-list>
+
     </ion-card-content>
     <ion-row *ngIf="invoices.length">
       <ion-col>
