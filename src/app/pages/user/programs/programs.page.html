@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content>
+  <ion-grid style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
   <ion-item lines="none" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
     <ion-label>Show Admin View When Possible</ion-label>
     <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)"></ion-toggle>

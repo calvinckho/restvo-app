@@ -1,10 +1,10 @@
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list class="ion-no-padding">
+  <ion-list class="ion-no-padding" *ngIf="loadCompleted">
     <ion-toolbar class="header-toolbar" lines="none">
       <ion-buttons class="header-buttons" slot="start">
         <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>

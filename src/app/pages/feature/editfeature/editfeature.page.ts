@@ -50,6 +50,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     subscriptions: any = {};
     editTemplate = false;
   templateChanged = false;
+  ionSpinner = false;
 
   reminders: any = [];
   group: any;

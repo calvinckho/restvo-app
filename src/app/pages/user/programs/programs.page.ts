@@ -18,6 +18,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
   subscriptions: any = {};
   resources: any;
   programs: any;
+  ionSpinner = false;
 
   constructor(
       private router: Router,
@@ -37,8 +38,10 @@ export class ProgramsPage implements OnInit, OnDestroy {
     };
 
   async loadPrograms() {
+      this.ionSpinner = true;
       this.userData.defaultProgram = await this.storage.get('defaultProgram');
       this.programs = await this.userData.loadPrograms(false);
+      this.ionSpinner = false;
     this.programs.forEach((program) => {
         if (program.user_list_1.includes(this.userData.user._id)) {
           program.isParticipant = true;

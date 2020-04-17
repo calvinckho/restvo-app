@@ -20,6 +20,7 @@ import {PaymentService} from "./payment.service";
 export class Moment {
 
     socket: io;
+    ionSpinner = false;
     icons = [
         {
             field: 'Track',
@@ -516,6 +517,10 @@ export class Moment {
         userObjectIds = [...new Set(userObjectIds)]; // create unique set of user Ids
         // add selected users to participant list
         if (userObjectIds.length) {
+            this.ionSpinner = true;
+            setTimeout(() => {
+                this.ionSpinner = false;
+            }, 8000);
             response = await this.updateMomentUserLists({
                 operation: 'add to lists and calendar',
                 user_lists: listOfNames,
@@ -524,6 +529,7 @@ export class Moment {
                 calendarId: moment.calendar._id
             }, null);
         }
+        this.ionSpinner = false;
         if (response === 'success') { // only if the users are successfully added do we prepare to send out notifications
             // check if there is any unconnected individual. If so, it needs to create conversations first so chat rooms are ready to receive notifications
             if (listOfAppUsers && listOfAppUsers.length) {
