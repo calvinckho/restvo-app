@@ -199,6 +199,10 @@ const routes: Routes = [
                 loadChildren: () => import('../connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
             },
             {
+                path: 'designsystem',
+                loadChildren: () => import('../manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
+            },
+            {
                 path: '',
                 redirectTo: '/app/discover',
                 pathMatch: 'full'
