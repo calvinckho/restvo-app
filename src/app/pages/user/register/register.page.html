@@ -8,7 +8,7 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
         <ion-col>
-          <form [formGroup]="loginForm" class="login-form">
+          <form (ngSubmit)="login()" [formGroup]="loginForm" class="login-form">
             <ion-list lines="none" class="ion-no-padding">
               <ion-buttons *ngIf="!authService.token" slot="start">
                 <ion-button (click)="close()"><ion-icon name="chevron-back-outline" color="primary"></ion-icon></ion-button>
@@ -48,6 +48,7 @@
             <ion-button expand="block" shape="round" *ngIf="!recovery_mode" (click)="login()" color="primary" id="login-button">Login</ion-button>
             <ion-button expand="block" shape="round" *ngIf="recovery_mode && loginMode === 'mobile'" (click)="recover()" color="primary">Send Recovery Code</ion-button>
             <ion-button expand="block" shape="round" *ngIf="recovery_mode && loginMode === 'email'" (click)="recover()" color="primary">Send Recovery Link</ion-button>
+            <input style="display: none;" type="submit">
           </form>
           <div style="margin-top: 10px">
             <ion-button *ngIf="!recovery_mode" (click)="view = 'welcome'" class="create-account" fill="clear">Create an Account</ion-button>
