@@ -44,7 +44,7 @@ export class ActivitiesPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    if (this.userData && this.userData.currentCommunityAdminStatus && this.churchService.currentManagedCommunity) {
+    if (this.userData && this.userData.hasPlatformAdminAccess && this.churchService.currentManagedCommunity) {
       this.setupManageActivities();
     }
 

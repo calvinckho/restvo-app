@@ -171,9 +171,9 @@ export class Board {
         }
     }
 
-    async explainPostAbuse(event, hasAdminAccess) {
+    async explainPostAbuse(event, hasPlatformAdminAccess) {
         event.stopPropagation();
-        if (hasAdminAccess) {
+        if (hasPlatformAdminAccess) {
             const alert = await this.alertCtrl.create({
                 header: "Action Required", // this post has been reported
                 message: "This post has been reported by a user. Please review its content and take the appropriate actions. If no action is taken, Restvo may remove this post and suspend its author.",

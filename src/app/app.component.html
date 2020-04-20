@@ -4,34 +4,29 @@
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
           <ion-item>
-            <ion-label>Restvo</ion-label>
+            <ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
+            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
             <!--<ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
             <ion-label *ngIf="userData.defaultProgram">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>-->
           </ion-item>
         </ion-toolbar>
         <ion-list>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && userData.UIMentoringMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
-              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-              <ion-label>Dashboard</ion-label>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
+            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]">
+              <ion-icon slot="start" name="home"></ion-icon>
+              <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" *ngIf="userData.defaultProgram && (!userData.UIMentoringMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
-              <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
-              <ion-label>Dashboard</ion-label>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
+            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]">
+              <ion-icon slot="start" name="home"></ion-icon>
+              <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/discover']" *ngIf="!userData.defaultProgram">
+          <ion-menu-toggle auto-hide="false" *ngIf="!userData.defaultProgram">
+            <ion-item [routerLink]="['/app/discover']">
               <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
               <ion-label>Discover</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item slot="start" [routerLink]="['/app/news']" *ngIf="!userData.UIMentoringMode">
-              <ion-icon slot="start" name="newspaper"></ion-icon>
-              <ion-label>News</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
@@ -39,6 +34,12 @@
               <ion-icon slot="start" name="chatbox"></ion-icon>
               <ion-label>Chat</ion-label>
               <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/news']">
+              <ion-icon slot="start" name="newspaper"></ion-icon>
+              <ion-label>News</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
@@ -51,17 +52,17 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/manage']">
-              <ion-icon slot="start" name="bulb"></ion-icon>
-              <ion-label>Manage</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/user/profile']">
               <ion-icon slot="start" name="cog"></ion-icon>
               <ion-label>
                 Settings
               </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
+            <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]">
+              <ion-icon slot="start" name="bulb"></ion-icon>
+              <ion-label>Admin</ion-label>
             </ion-item>
           </ion-menu-toggle>
 

@@ -14,7 +14,7 @@
 
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
@@ -27,7 +27,7 @@
       <div class="post-author-container">
         <div class="post-author ion-text-wrap" >
           {{post.author.first_name}} {{post.author.last_name}}
-          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasPlatformAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
         </div>
       </div>
       <ion-col slot="end" class="note-col">
@@ -128,7 +128,7 @@
           <ion-icon name="share"></ion-icon>Share</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="hasAdminAccess || isGroupLeader || post.author._id === userData.user._id">
+    <ion-row *ngIf="hasPlatformAdminAccess || isGroupLeader || post.author._id === userData.user._id">
       <ion-col>
         <ion-button fill="clear" size="small" (click)="editPost()">
           <ion-icon name="cog"></ion-icon>

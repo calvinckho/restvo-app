@@ -101,7 +101,9 @@ export class UploadmediaPage implements OnInit {
           text: 'Ok',
           handler: data => {
             this.urls.push(data.src);
-            this.awsService.sessionAssets[this.sessionId].push(data.src);
+            if ((['jpg', 'jpeg', 'gif', 'png']).includes(data.src.substring(data.src.lastIndexOf('.') + 1).toLowerCase())) { // only add to the the asset array if an image
+              this.awsService.sessionAssets[this.sessionId].push(data.src);
+            }
           }
         }
       ],

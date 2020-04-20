@@ -1,0 +1,507 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="!authService.token">
+      <ion-button>
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-menu-toggle menu="main" *ngIf="authService.token" slot="start">
+      <ion-button fill="clear" color="grey">
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-menu-toggle>
+    <ion-title>Title</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="select.open($event)">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-select hidden #addSelect interface="action-sheet" [interfaceOptions]="{header: 'Program'}">
+      <ion-select-option>Option 1</ion-select-option>
+      <ion-select-option>Option 2</ion-select-option>
+    </ion-select>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Typography</ion-badge>
+
+    <ion-item lines="none">
+      <ion-label>Roboto</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-note color="grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</ion-note>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label style="font-size: 20px;">Header 1 - 20</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label style="font-size: 18px;">Header 2 - 18</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label style="font-size: 16px;">Header 3 - 16</ion-label>
+    </ion-item>
+
+    <ion-item lines="none" class="ion-margin-top">
+      <ion-label style="font-size: 16px;">Body Large - 16</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label style="font-size: 14px;">Body Regular - 14</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label style="font-size: 12px;">Body Small - 12</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label style="font-size: 10px;">Body Micro - 10</ion-label>
+    </ion-item>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label" *ngIf="!this.prefersDark.matches">Light Mode Color</ion-badge>
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label" *ngIf="this.prefersDark.matches">Dark Mode Color</ion-badge>
+
+    <ion-grid>
+      <ion-row class="ion-justify-content-start">
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-primary)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Primary #E2666A</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Primary #ED9194</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-secondary)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Secondary #FFF</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Secondary #222428</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-tertiary)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Tertiary #053055</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Secondary #1E5485</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-success)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Success #10dc60</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Success #2fdf75</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-warning)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Warning #f6c653</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Warning #ffd534</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-danger)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Danger #F65374</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Danger #ff4961</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-lightgrey)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Lightgrey #F2F2F2</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Lightgrey #2D2525</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-grey)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Grey #909090</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Grey #EAEAEA</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-darkgrey)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Darkgrey #6A6A6A</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Darkgrey #C6C6C6</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-button1)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Button 1 #4267B2</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Button 1 #4267B2</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-button2)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Button 2 #66cdaa</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Button 2 #66cdaa</ion-note>
+          </ion-row>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-card class="grid-program-card" style="background-color: var(--ion-color-button3)">
+          </ion-card>
+          <ion-row class="ion-justify-content-center" style="margin: 5px 5px 5px;">
+            <ion-note *ngIf="!this.prefersDark.matches">Button 3 #f6c653</ion-note>
+            <ion-note *ngIf="this.prefersDark.matches">Button 3 #f6c653</ion-note>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Buttons</ion-badge>
+
+    <ion-toolbar>
+      <ion-row class="ion-justify-content-evenly">
+        <ion-button>Default</ion-button>
+        <ion-button shape="round">Round</ion-button>
+        <ion-button fill="clear" color="primary" shape="round">Clear</ion-button>
+        <ion-button fill="outline" shape="round">Round Outline</ion-button>
+      </ion-row>
+    </ion-toolbar>
+
+    <ion-toolbar class="ion-padding-horizontal">
+      <ion-button expand="full" shape="round">Full</ion-button>
+    </ion-toolbar>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Segment</ion-badge>
+
+    <ion-toolbar>
+      <ion-segment mode="md" value="segment1">
+        <ion-segment-button value="segment1">Segment 1</ion-segment-button>
+        <ion-segment-button>Segment 2</ion-segment-button>
+        <ion-segment-button>Segment 3</ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Static Card</ion-badge>
+    <ion-row class="profile-row">
+      <ion-card [routerLink]="['/designsystem']" class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+        <ion-item-sliding>
+          <ion-item lines="none">
+            <div class="completed_percentage">
+              55%
+            </div>
+            <div class="ion-text-wrap message-container">
+              <ion-label style="font-size: 14px">Complete the Setup</ion-label>
+              <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
+            </div>
+            <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
+          </ion-item>
+          <ion-item-options>
+            <ion-item-option color="primary">
+              Dismiss
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-card>
+    </ion-row>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Grid + Cards</ion-badge>
+
+    <ion-grid class="content-grid">
+      <ion-row>
+        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ion-slide>
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ion-slide>
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ion-slide>
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ion-slide>
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'efg'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 3</div>
+                </ion-card>
+              </ion-slide>
+              <ion-slide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'ijk'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 4</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'abc'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'efg'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 3</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center grid-col" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'ijk'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 4</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Item with Underline + Label</ion-badge>
+    <ion-item>
+      <ion-label>Name</ion-label>
+    </ion-item>
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Item without Underline + Label</ion-badge>
+    <ion-item lines="none">
+      <ion-label>Name</ion-label>
+    </ion-item>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Select</ion-badge>
+    <ion-item lines="none">
+      <ion-label>Program</ion-label>
+      <ion-select placeholder="Action Sheet" interface="action-sheet" [interfaceOptions]="{header: 'Program'}">
+        <ion-select-option>Option 1</ion-select-option>
+        <ion-select-option>Option 2</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Program</ion-label>
+      <ion-select placeholder="Alert" interface="alert">
+        <ion-select-option>Option 1</ion-select-option>
+        <ion-select-option>Option 2</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Program</ion-label>
+      <ion-select placeholder="Popover" interface="popover" [interfaceOptions]="{header: 'Program'}">
+        <ion-select-option>Option 1</ion-select-option>
+        <ion-select-option>Option 2</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Checkbox</ion-badge>
+    <ion-item lines="none">
+      <ion-label>Name</ion-label>
+      <ion-checkbox></ion-checkbox>
+    </ion-item>
+
+    <ion-list>  <!--*ngIf="platform.width() > 768"-->
+      <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+        <div class="column column-label">Participants</div>
+        <div class="column column-label">Coaches</div>
+        <div class="column column-label">Program</div>
+        <div class="progress column-label ion-no-margin" slot="end">Progress</div>
+        <div class="last-date column-label ion-no-margin" slot="end">Last Check-in</div>
+      </ion-item>
+      <ion-item>
+        <div class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" src="assets/img/avatar-default.jpg"/>
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Jonathan Edwards</ion-label>
+        </div>
+        <div class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" src="assets/img/avatar-default.jpg"/>
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Thomas Aquinas</ion-label>
+        </div>
+        <div class="column">
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Program</ion-label>
+        </div>
+        <ion-progress-bar class="progress ion-no-margin" value=".2" buffer="1" slot="end"></ion-progress-bar>
+        <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{null | datetime: 'm:n,d:n,y:n'}}</div>
+      </ion-item>
+      <ion-item>
+        <div class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" src="assets/img/avatar-default.jpg"/>
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Martin Luther</ion-label>
+        </div>
+        <div class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" src="assets/img/avatar-default.jpg"/>
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Thomas Merton</ion-label>
+        </div>
+        <div class="column">
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">Program</ion-label>
+        </div>
+        <ion-progress-bar class="progress ion-no-margin" value=".6" buffer="1" slot="end"></ion-progress-bar>
+        <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{null | datetime: 'm:n,d:n,y:n'}}</div>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -85,7 +85,7 @@ var TopicsPage = /** @class */ (function () {
         };
     }
     TopicsPage.prototype.ionViewWillEnter = function () {
-        if (this.userData && this.userData.currentCommunityAdminStatus) {
+        if (this.userData && this.userData.hasPlatformAdminAccess) {
             this.setupManageGroups();
         }
         // PWA fast load listener + reload listener

@@ -1,0 +1,172 @@
+app-designsystem {
+
+  .color-box {
+    margin: 10px 10px 5px;
+    width: 125px;
+    height: 99px;
+  }
+
+  .badge-label {
+    font-size: 12px;
+    position: relative;
+    margin-top: 5px;
+    left: -25px;
+    padding-left: 41px;
+    z-index: 5;
+  }
+
+  .profile-row {
+    padding: 6px 0;
+  }
+
+  .profile-card {
+    width: 100%;
+    margin: 0 5px;
+    padding: 10px 0;
+  }
+
+  .message-container {
+    margin-left: 16px;
+    //width: 80%;
+  }
+
+  .message-detail {
+    color: grey;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 12px;
+    margin: 4px 0 0 0;
+  }
+
+  .content-grid {
+    padding: 0;
+  }
+
+  .completed_percentage {
+    //width: 40px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    color: var(--ion-color-button1);
+  }
+
+  .content-container {
+    margin: 5px auto;
+    max-width: 936px;
+  }
+
+  .content-grid {
+    padding: 0;
+  }
+
+  .section {
+    --min-height: 26px;
+    --background: transparent;
+
+    .section-label {
+      font-size: 15px;
+    }
+  }
+
+  .section-card {
+    height: 100%;
+  }
+
+  .mobile-card {
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .program-slides {
+    padding: 10px 0;
+    background-color: transparent;
+  }
+
+  .program-slide {
+    width: 150px !important;
+  }
+
+  .program-card {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .grid-program-card {
+    height: 100px;
+    width: 133px;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .program-photo-container {
+    height: 100px;
+    overflow: hidden;
+    //border-radius: 50%;
+    //margin: 5% auto;
+  }
+
+  .program-photo {
+    object-fit: cover;
+    cursor: pointer;
+    //opacity: 50%;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .program-name {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 15;
+  }
+
+  // list of people
+  .column-label {
+    text-align: center;
+  }
+
+  .column {
+    width: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .insight-person-avatar {
+      margin: 0 auto;
+    }
+
+    .insight-person-label {
+      margin: 5px auto 0 auto;
+      color: grey;
+      font-size: 12px;
+    }
+  }
+
+  .program {
+    width: 12%;
+    text-align: center;
+  }
+
+  .progress {
+    text-align: center;
+    width: 20%; // 32%
+  }
+
+  .last-date {
+    //color: var(--ion-color-dark);
+    text-align: center;
+    width: 18%;
+  }
+
+  .small-font {
+    font-size: 12px;
+  }
+}

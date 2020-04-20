@@ -111,21 +111,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.menuCtrl.close();
     }
 
-    /*async toggleAdminMode() {
-        if (!this.userData.UIready) return;
-        await this.storage.set('UIMentoringMode', this.userData.UIMentoringMode);
-        if (this.userData.UIMentoringMode) {
-            this.userData.openUserPrograms({ modalPage: this.platform.width() < 768 });
-            this.menuCtrl.close();
-        } else {
-            if (this.userData.defaultProgram) {
-                this.router.navigateByUrl('/app/discover/home/' + this.userData.defaultProgram._id);
-            } else {
-                this.router.navigateByUrl('/app/discover');
-            }
-        }
-    }*/
-
     async saveToLocalStorage() {
         await this.storage.set('serverDomain', this.networkService.domain);
         if (this.networkService.domain === 'https://server.restvo.com') {

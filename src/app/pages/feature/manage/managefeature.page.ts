@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Location} from "@angular/common";
 import {ElectronService} from "ngx-electron";
 import {SwUpdate} from "@angular/service-worker";
@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CacheService} from "ionic-cache";
 import {
   ActionSheetController,
-  AlertController,
+  AlertController, IonContent, IonSelect,
   LoadingController,
   ModalController,
   Platform, PopoverController, ToastController
@@ -29,6 +29,7 @@ import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
 import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
+import {Storage} from "@ionic/storage";
 
 @Component({
   selector: 'app-managefeature',
@@ -37,7 +38,7 @@ import {PaymentService} from "../../../services/payment.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
-
+  @ViewChild(IonSelect, {static: false}) select: IonSelect;
   selectedMenuOption = '';
   menu: any;
   schedules: any;
@@ -69,7 +70,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public resourceService: Resource,
       public responseService: Response,
       public calendarService: CalendarService,
-      public paymentService: PaymentService
+      public paymentService: PaymentService,
+      private storage: Storage
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
@@ -85,8 +87,14 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
-    if (this.userData.user) {
-      this.loadSchedules();
+    if (this.userData.user && this.router.url.includes('manage')) {
+      const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
+      if (!this.modalPage) {
+        this.userData.currentManageActivityId = momentId;
+        this.storage.set('currentManageActivityId', momentId);
+      }
+      this.loadSchedules(momentId);
+
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
@@ -94,8 +102,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     }
   };
 
-  async loadSchedules() {
-    const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
+  async loadSchedules(momentId) {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
   }
@@ -224,5 +231,14 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     } else {
       this.router.navigate(['/app/edit/' + this.moment._id]);
     }
+  }
+
+  async changeManageActivity(event) {
+    event.stopPropagation();
+    this.storage.set('currentManageActivityId', event.detail.value);
+    this.userData.currentManageActivityId = event.detail.value;
+    if (!this.modalPage) {
+      this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+    } // modal view cannot change Activity
   }
 }

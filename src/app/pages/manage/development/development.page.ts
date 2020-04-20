@@ -45,7 +45,7 @@ export class DevelopmentPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    if (this.userData && this.userData.currentCommunityAdminStatus) {
+    if (this.userData && this.userData.hasPlatformAdminAccess) {
       this.setupManageActivities();
     }
 

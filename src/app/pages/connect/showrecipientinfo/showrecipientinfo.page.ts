@@ -61,7 +61,7 @@ export class ShowrecipientinfoPage implements OnInit {
     }
 
     ngOnInit() {
-        if (this.userData.currentCommunityAdminStatus){
+        if (this.userData.hasPlatformAdminAccess){
             this.setToggle();
         }
         this.manageMode = this.recipient.wee_user;

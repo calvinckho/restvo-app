@@ -1,10 +1,11 @@
+<ion-header style="height: 0"></ion-header>
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list class="ion-no-padding">
+  <ion-list class="ion-no-padding" *ngIf="loadCompleted">
     <ion-toolbar class="header-toolbar" lines="none">
       <ion-buttons class="header-buttons" slot="start">
         <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
@@ -74,7 +75,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="userData.currentCommunityAdminStatus && recipient.reportStatus?.length">
+        <div *ngIf="userData.hasPlatformAdminAccess && recipient.reportStatus?.length">
           <ion-item class="ion-text-wrap">
             <ion-label class="label-title" color="danger">Abuse Report Status</ion-label>
             <ion-badge color="primary">{{recipient.reportStatus}}</ion-badge>
@@ -134,7 +135,7 @@
         <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 
-      <div style="margin-top: 5px;" *ngIf="userData.currentCommunityAdminStatus && manageMode">
+      <div style="margin-top: 5px;" *ngIf="userData.hasPlatformAdminAccess && manageMode">
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Management</ion-label>
         </ion-item>

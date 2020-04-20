@@ -309,7 +309,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
             await boardPage.present();*/
             this.createNewPost(board);
         } else {
-            if (await this.userData.hasAdminAccess(community._id)) {
+            const result: any = await this.userData.checkAdminAccess(community._id);
+            if (result && result.hasRestvoAdminAccess) {
                 this.createNewPost(board);
             } else {
                 const alert = await this.alertCtrl.create({
@@ -324,13 +325,14 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     }
 
     async createNewBoard(community) {
-        let hasAdminAccess = false;
+        let hasPlatformAdminAccess = false;
         if (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894') {
-            hasAdminAccess = await this.userData.hasAdminAccess(community._id);
+            const result: any = await this.userData.checkAdminAccess(community._id);
+            hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
         } else {
-            hasAdminAccess = this.userData.currentCommunityAdminStatus;
+            hasPlatformAdminAccess = this.userData.hasPlatformAdminAccess;
         }
-        this.promptBoardName(hasAdminAccess, community._id);
+        this.promptBoardName(hasPlatformAdminAccess, community._id);
 
     }
 
@@ -437,14 +439,15 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     async openPost(event, board, post) {
         event.stopPropagation();
         let isGroupLeader = false;
-        let hasAdminAccess = false;
+        let hasPlatformAdminAccess = false;
         if (board.group && board.group.leaders){
             isGroupLeader = board.group.leaders.map((c) => c._id).indexOf(this.userData.user._id) > -1;
         }
         if (board.group && board.group.churchId) {
-            hasAdminAccess = await this.userData.hasAdminAccess(board.group.churchId);
+            const result: any = await this.userData.checkAdminAccess(board.group.churchId);
+            hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
         }
-        const showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: board._id, post: post, isGroupLeader: isGroupLeader, hasAdminAccess: hasAdminAccess }});
+        const showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: board._id, post: post, isGroupLeader: isGroupLeader, hasPlatformAdminAccess: hasPlatformAdminAccess }});
         await showBoardPage.present();
         const {data: refreshNeeded} = await showBoardPage.onDidDismiss();
         if(refreshNeeded){
@@ -659,7 +662,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
 
     async showGroupProfile(group){
         let groupIds = this.userData.user.groups.map((c) => {return c._id;});
-        if (groupIds.indexOf(group._id) > -1 || this.userData.currentCommunityAdminStatus){ //if user is admin or has already joined this group
+        if (groupIds.indexOf(group._id) > -1 || this.userData.hasPlatformAdminAccess){ //if user is admin or has already joined this group
             if (group.conversation) {
                 this.chatService.currentChatProps.push({
                     conversationId: group.conversation,

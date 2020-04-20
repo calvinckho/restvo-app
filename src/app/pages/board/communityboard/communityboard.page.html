@@ -42,7 +42,7 @@
         Sign In
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end" *ngIf="userData.currentCommunityAdminStatus">
+    <ion-buttons slot="end" *ngIf="userData.hasPlatformAdminAccess">
       <ion-button (click)="setupLoadGroups()" id="moreoptions" color="grey">
         <ion-icon name="add"></ion-icon>
       </ion-button>
@@ -98,7 +98,7 @@
 <ion-content>
   <!--get new data when page is refreshed-->
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>

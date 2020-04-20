@@ -69,6 +69,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   setupPermissionCompleted = false;
   loadCompleted = false;
   anyChangeMade = false;
+  currentSaveState = "";
   hasAddedToCalendar = false;
   hasAddedToAttendEventList = false;
   hasOrganizerAccess = false;
@@ -243,7 +244,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // for current user refreshing the app
   loadAndProcessMomentHandler = async (data) => {
-      console.log("loadAndProcessMomentHandler");
+      this.setup(data);
+  };
+
+  async setup(data) {
       if (this.calendarId) {
           await this.loadCalendarItem();
       }
@@ -276,7 +280,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (data && data.type === 'search map') {
           this.searchMap();
       }
-  };
+  }
 
   // for refreshing moment either because of real-time interactables, or for refreshing participation
   refreshMomentHandler = async (res) => {
@@ -446,11 +450,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           if (this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) { // if calendar context is provided and if it is an unique answer per calendar, also assign it to the responseObj property
               this.responseObj.calendar = this.calendarId;
           }
+          // prepare to respond to the parent relationship (i.e. Choose whether the Content Calendar belongs to a Goal, which requires submitting the parentRelationshipResponseObj via submitResponse API
           const results: any = await this.responseService.findResponsesByMomentId(this.relationshipId, null, null);
           if (results && results.responses && results.responses.length) {
+              // parentRelationshipResponseObj can only be correctly populated if there is at least 1 response returned
               this.parentRelationshipResponseObj = JSON.parse(JSON.stringify(results.responses[results.responses.length - 1]));
               delete this.parentRelationshipResponseObj._id; // the latest response id is erased, since it may be saved as a new doc
-              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals and not master goals
+              // parentRelationshipListOfGoals needs to have at least a length of 1 (at least 1 goal) in order to parentRelationshipResponseObj to be sent to the backend
+              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals only. not master goals
               const parentRelationshipInteractable = results.responses[results.responses.length - 1].matrix_string.find((c) => c[0] === this.calendarId);
               if (parentRelationshipInteractable) {
                   this.parentRelationshipGoalAttributes = parentRelationshipInteractable.slice(10);
@@ -1128,6 +1135,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async checkAndLoadNotes() {
+        console.log("check and load notes", this.moment);
         // if there is the tab component
         if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab
@@ -1158,6 +1166,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async respondToTextArea(event, componentIndex) {
         this.anyChangeMade = true;
+        // Showing the user that the content is saving
+        this.currentSaveState = 'Saving...';
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1209,7 +1219,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (this.moment.program) {
                 this.userData.refreshUserStatus({});
             }
-        }, 3000);
+
+            // Showing the user that the content has been saved at the end of the timeout
+            this.currentSaveState = 'Saved';
+            setTimeout(() => {
+                this.currentSaveState = '';
+            }, 3000);
+        }, 1500);
     }
 
   async changeView(event) {
@@ -2033,10 +2049,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         //this.progressView = 'Current';
     }
 
-    // Content Calendar Item
+    // saving the Content Calendar Item
     async saveCalendarItem() {
       this.calendarItem.endDate = this.calendarItem.startDate; // update the endDate as well
-      if (this.moment._id !== this.responseObj.moment) { // in the event that the this.moment._id has been changed to another object id
+      if (this.moment._id !== this.responseObj.moment) { // in the event that the this.moment._id has been changed to another object id TODO: find out what this scenario is. (e.g. deleting a To-Do would convert the To-Do to Note?)
           // create a new Content Calendar
           this.calendarItem.moment = this.moment._id;
           const calendarItem: any = await this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'create calendar item', calendaritem: this.calendarItem });
@@ -2049,38 +2065,39 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
           this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'delete calendar items', calendaritems: [this.calendarItem] });
       } else { // for all other Content Calendar item save
-          // just updating the calendar
+            // just updating the calendar
           await this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'update calendar item', calendaritem: this.calendarItem });
           // update the parent Relationship's Goal response entry
-          const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(this.calendarId);
-          if (index >= 0) {
-              this.parentRelationshipResponseObj.matrix_string[index].splice(10, this.parentRelationshipResponseObj.matrix_string[index].length - 10);
-              this.parentRelationshipResponseObj.matrix_string[index].push(...this.parentRelationshipGoalAttributes);
-          } else {
-              let interactableObj = new Array(10);
-              interactableObj[0] = this.calendarId;
-              if (this.parentRelationshipGoalAttributes) {
-                  interactableObj.push(...this.parentRelationshipGoalAttributes);
+          if (this.parentRelationshipListOfGoals && this.parentRelationshipListOfGoals.length) {
+              const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(this.calendarId);
+              if (index >= 0) {
+                  this.parentRelationshipResponseObj.matrix_string[index].splice(10, this.parentRelationshipResponseObj.matrix_string[index].length - 10);
+                  this.parentRelationshipResponseObj.matrix_string[index].push(...this.parentRelationshipGoalAttributes);
+              } else {
+                  let interactableObj = new Array(10);
+                  interactableObj[0] = this.calendarId;
+                  if (this.parentRelationshipGoalAttributes) {
+                      interactableObj.push(...this.parentRelationshipGoalAttributes);
+                  }
+                  this.parentRelationshipResponseObj.matrix_string.push(interactableObj);
               }
-              this.parentRelationshipResponseObj.matrix_string.push(interactableObj);
+              // save the Goal attributes via Response
+              await this.momentService.submitResponse({ _id: this.relationshipId }, this.parentRelationshipResponseObj, false);
+              let socketData: any;
+              socketData = {
+                  calendarId: this.calendarId,
+                  interactable: this.parentRelationshipResponseObj.matrix_string.find((c) => c[0] === this.calendarId),
+                  goals: this.parentRelationshipGoalAttributes,
+                  author: {
+                      _id: this.userData.user._id,
+                      first_name: this.userData.user.first_name,
+                      last_name: this.userData.user.last_name,
+                      avatar: this.userData.user.avatar
+                  }
+              };
+              // signal parent relationship to update data via socket.io
+              this.momentService.socket.emit('refresh moment', this.relationshipId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
           }
-          // save the Goal attributes via Response
-          await this.momentService.submitResponse({ _id: this.relationshipId }, this.parentRelationshipResponseObj, false);
-          let socketData: any;
-          socketData = {
-              calendarId: this.calendarId,
-              interactable: this.parentRelationshipResponseObj.matrix_string.find((c) => c[0] === this.calendarId),
-              goals: this.parentRelationshipGoalAttributes,
-              author: {
-                  _id: this.userData.user._id,
-                  first_name: this.userData.user.first_name,
-                  last_name: this.userData.user.last_name,
-                  avatar: this.userData.user.avatar
-              }
-          };
-          // signal parent relationship to update data via socket.io
-          this.momentService.socket.emit('refresh moment', this.relationshipId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-
       }
         this.closeModal();
     }
