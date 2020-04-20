@@ -45,26 +45,26 @@
           </ion-item>
           <ion-item (click)="clickManageMenu('profile', null)">
             <ion-icon slot="start" name="clipboard" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'profile')}" *ngIf="moment && !moment.categories.includes('5c915476e172e4e64590e349')">Profile</ion-label>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'profile')}" *ngIf="moment && moment.categories.includes('5c915476e172e4e64590e349')">Plan</ion-label>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'profile')}" *ngIf="moment && moment.categories && !moment.categories.includes('5c915476e172e4e64590e349')">Profile</ion-label>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'profile')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">Plan</ion-label>
           </ion-item>
           <ion-item (click)="clickManageMenu('people', null)">
             <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'people')}">People</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community-->
+          <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community-->
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'programs')}">Programs</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories.includes('5c915476e172e4e64590e349')"> <!--show this for everything except Plan-->
+          <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')"> <!--show this for everything except Plan-->
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plans')}">Plans</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('relationships', null)" *ngIf="moment && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--Community or Program-->
+          <ion-item (click)="clickManageMenu('relationships', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--Community or Program-->
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'relationships')}">Relationships</ion-label>
           </ion-item>
-          <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
+          <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
             <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'schedule' && selectedSchedule._id === schedule._id)}">Schedule {{i + 1}}</ion-label>
@@ -74,7 +74,7 @@
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'new-schedule')}">+ Schedule</ion-label>
             </ion-item>
           </ion-item-group>
-          <ion-item (click)="clickManageMenu('onboarding', null)" [hidden]="moment && moment.categories.includes('5c915476e172e4e64590e349')">
+          <ion-item (click)="clickManageMenu('onboarding', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">
             <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'onboarding')}">Onboarding</ion-label>
           </ion-item>
