@@ -87,7 +87,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
-    if (this.userData.user) {
+    if (this.userData.user && this.router.url.includes('manage')) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;

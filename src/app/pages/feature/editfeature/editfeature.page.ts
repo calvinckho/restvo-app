@@ -406,9 +406,13 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           if (this.moment.resource.hasOwnProperty('matrix_number') && this.moment.resource.matrix_number.length) {
               // rebuild the moment assets array using raw data
               this.moment.assets = [];
-              this.moment.resource.matrix_number[0].forEach((componentId, index) => { // refresh the sessionAssets array
+              this.moment.resource.matrix_number[0].forEach((componentId, index) => { // loop through all component ids
                   if (componentId >= 10300 && componentId <= 10360) {
-                      this.moment.assets.push(this.moment.matrix_string[index][0]);
+                      for (const asset of this.moment.matrix_string[index]) { // loop through all media file and add the ones that is an image to the moment.assets array
+                          if (asset && asset.length && (['jpg', 'jpeg', 'gif', 'png']).includes(asset.substring(asset.lastIndexOf('.') + 1).toLowerCase())) {
+                              this.moment.assets.push(asset);
+                          }
+                      }
                   }
               });
           }

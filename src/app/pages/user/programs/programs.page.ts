@@ -39,7 +39,10 @@ export class ProgramsPage implements OnInit, OnDestroy {
 
   async loadPrograms() {
       this.ionSpinner = true;
-      this.userData.defaultProgram = await this.storage.get('defaultProgram');
+      const defaultProgram = await this.storage.get('defaultProgram');
+      if (defaultProgram) {
+          this.userData.defaultProgram = defaultProgram;
+      }
       this.programs = await this.userData.loadPrograms(false);
       this.ionSpinner = false;
     this.programs.forEach((program) => {
