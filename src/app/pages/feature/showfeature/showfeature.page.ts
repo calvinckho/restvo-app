@@ -106,6 +106,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     // 10210 Schedule
     scheduleIds: any = [];
     customSchedule: any;
+    toDosPrivate = false;
     adminAccessContentCalendars = [];
     newCalendarItem = { // create the calendar object
         moment: '5e3e5743364afa55e52ce785', // the default is the To Do content moment ID
@@ -481,31 +482,33 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           calendarItem.completed = false;
       }
       for (const response of this.responses) {
-          for (const interactable of response.matrix_string) { // process the interactable and schedule responses
-              // regular user calendar items list
-              for (const calendarItem of this.calendarService.calendarItems) {
-                  if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                      calendarItem.completed = interactable[5]; // check-in state
+          if (!this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id))  {
+              for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+                  // regular user calendar items list
+                  for (const calendarItem of this.calendarService.calendarItems) {
+                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                          calendarItem.completed = interactable[5]; // check-in state
+                      }
+                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                      }
                   }
-                  if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                  // super admin's calendar items list
+                  for (const calendarItem of this.adminAccessContentCalendars) {
+                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                          calendarItem.completed = interactable[5]; // check-in state
+                      }
+                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                      }
                   }
-              }
-              // super admin's calendar items list
-              for (const calendarItem of this.adminAccessContentCalendars) {
-                  if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                      calendarItem.completed = interactable[5]; // check-in state
+                  // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+                  const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+                  if (index >= 0) {
+                      this.responseObj.matrix_string.splice(index, 1, interactable);
+                  } else {
+                      this.responseObj.matrix_string.push(interactable);
                   }
-                  if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                  }
-              }
-              // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
-              const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
-              if (index >= 0) {
-                  this.responseObj.matrix_string.splice(index, 1, interactable);
-              } else {
-                  this.responseObj.matrix_string.push(interactable);
               }
           }
       }
@@ -550,8 +553,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
-            // if Schedule is turned on
+            // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
+                const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
+                this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
                 const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
                 this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
                 this.scheduleIds = schedules.map((c) => c._id);

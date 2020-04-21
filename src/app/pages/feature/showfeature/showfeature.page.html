@@ -22,7 +22,7 @@
         </ion-button>
       </div>
       <div *ngIf="relationshipId && calendarItem">
-        <ion-button (click)="deleteCalendarItem($event)" [disabled]="!calendarItem.title" class="ion-margin-end">
+        <ion-button (click)="deleteCalendarItem($event)" class="ion-margin-end">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
          <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
