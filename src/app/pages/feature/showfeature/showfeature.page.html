@@ -99,7 +99,7 @@
     </ion-item>
     <div *ngIf="!joinDisabled">
       <!--Already Joined-->
-      <ion-item *ngIf="hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
+      <ion-item *ngIf="hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap message-container">
           <ion-label class="ion-margin-top">You are a {{participantLabel}}</ion-label>
@@ -108,7 +108,7 @@
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <!--Not yet Joined - permission check-->
-      <ion-item *ngIf="authService.token && !token && !hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
+      <ion-item *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -1415,10 +1415,10 @@
     </ion-slides>
   </div>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
