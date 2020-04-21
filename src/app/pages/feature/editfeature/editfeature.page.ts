@@ -545,6 +545,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (i > -1) {
           this.resource.matrix_number[1][i]++;
       }
+      console.log("count", this.resource.matrix_number[1]);
       // remove component id, max count, and inputed value from moment object
       this.moment.matrix_number.splice(index, 1); // input field
       this.moment.matrix_string.splice(index, 1); // input field
@@ -1087,6 +1088,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
+          this.editTemplate = false; // turn edit mode off
       }
 
       // for all day events, start time is set to 12a on selected date and end time is set to 12a the following day

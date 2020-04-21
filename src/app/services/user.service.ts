@@ -44,7 +44,7 @@ export class UserData {
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
     UIready = false; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
     versions = { // current app's version that will be used to compare with labels loaded from the database
-        'Activity Components': 18, // this is the current activity components version used by this code
+        'Activity Components': 19, // this is the current activity components version used by this code
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
     };
     private _refreshUserStatus: BehaviorSubject<any> = new BehaviorSubject(null);

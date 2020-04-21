@@ -330,6 +330,13 @@
             <ion-label class="ion-margin-left">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][16]}}</ion-label>
             <ion-input class="ion-text-end" type="text" maxlength="24" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][17]" [(ngModel)]="moment.matrix_string[i][3]"></ion-input>
           </ion-item>
+          <ion-item lines="none"> <!--Response Type-->
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][20]}}</ion-label>
+            <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="popover" [(ngModel)]="moment.matrix_number[i][5]" slot="end" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][21]">
+              <ion-select-option [value]=0>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][21]}}</ion-select-option> <!--Default: Collaborative-->
+              <ion-select-option [value]=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][22]}}</ion-select-option> <!--Private-->
+            </ion-select>
+          </ion-item>
           <ion-item lines="none"> <!--Enable Goal-->
             <ion-label class="ion-margin-left">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
             <ion-checkbox [(ngModel)]="moment.array_boolean[8]"></ion-checkbox>
@@ -669,27 +676,27 @@
             </ion-buttons>
           </ion-item>
           <ion-item> <!--Question-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="moment.matrix_string[i][0]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item> <!--Label-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][1]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item> <!--Placeholder-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][4]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item lines="none"> <!--number of lines-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-label>
-            <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="10" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-input>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-label>
+            <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="10" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-input>
           </ion-item>
           <ion-item lines="none"> <!--show text editor-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][11]}}</ion-label>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][11]}}</ion-label>
             <ion-checkbox [(ngModel)]="moment.matrix_number[i][2]" slot="end"></ion-checkbox>
           </ion-item>
           <ion-item lines="none"> <!--Response Type-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-label>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-label>
             <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="popover" [(ngModel)]="moment.matrix_number[i][1]" slot="end">
               <ion-select-option [value]=0>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option> <!--Private-->
               <ion-select-option [value]=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option> <!--Collaborative-->
