@@ -464,7 +464,11 @@ export class MainTabPage implements OnInit, OnDestroy {
                             params.modalPage = true;
                             this.momentService.openMoment(params);
                         } else {
-                            this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
+                            if (this.router.url.includes('video')) { // if already in a video tab, open the chat in a new tab
+                                window.open(window.location.protocol + '//' + window.location.host + '/app/myconversations/chat', "_blank");
+                            } else {
+                                this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
+                            }
                         }
                     }
                 });
