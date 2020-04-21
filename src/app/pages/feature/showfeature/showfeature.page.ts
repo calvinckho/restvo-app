@@ -63,15 +63,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   };
   loading: any;
   resource: any = {};
-  categories = [];
-  eventName: string = '';
-  description: string = '';
+  description = '';
   setupPermissionCompleted = false;
   loadCompleted = false;
   anyChangeMade = false;
-  currentSaveState = "";
+  currentSaveState = '';
   hasAddedToCalendar = false;
-  hasAddedToAttendEventList = false;
+  hasParticipantAccess = false;
   hasOrganizerAccess = false;
   hasLeaderAccess = false;
   mapURL = '';
@@ -127,7 +125,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     progressView = '';
 
   // 10500 Manage Participants
-  participantsView = 'partcipants';
+  participantsView = 'participants';
 
   // 12000 Notes
     notes: any = [];
@@ -235,7 +233,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.calendarId = this.calendarId || this.route.snapshot.paramMap.get('calendarId');
       const result: any = await this.resourceService.loadSystemResources();
       this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
-      this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
+      //this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
 
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
@@ -272,7 +270,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.loadPrograms();
 
       // if user has not joined, or if token is provided
-      if ((this.authService.token && !this.token && !this.hasAddedToAttendEventList && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
+      if ((this.authService.token && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
           this.showSpecialAccess = true;
       } else {
@@ -737,7 +735,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
         this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
-      this.hasAddedToAttendEventList = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
+      this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
       // if Activity's organizer
         if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
           this.hasOrganizerAccess = true;
@@ -1405,7 +1403,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async moreParticipantOptions() {
       let actionSheet: any;
       let buttons = [];
-      if (!this.hasAddedToAttendEventList) {
+      if (!this.hasParticipantAccess) {
         buttons.push({
           text: this.resource['en-US'].value[15], // Join X
           icon: 'log-in',
@@ -1442,7 +1440,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }]);
       }
       // if a participant or an organizer, and if participant chat is turned on
-      if ((this.hasAddedToAttendEventList || this.hasLeaderAccess || this.hasOrganizerAccess) && this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 5 && this.moment.array_boolean[5]) {
+      if ((this.hasParticipantAccess || this.hasLeaderAccess || this.hasOrganizerAccess) && this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 5 && this.moment.array_boolean[5]) {
           buttons.push({
               text: this.resource['en-US'].value[41], // View Chat
               icon: 'chatbubbles',
