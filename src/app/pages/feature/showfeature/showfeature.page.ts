@@ -380,32 +380,34 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                   }
               } else if (data.calendarId) {
-                  // update user's calendar items array
-                  for (const calendarItem of this.calendarService.calendarItems) {
-                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                          if (data.state) {
-                              calendarItem.completed = data.state;
-                          } else if (data.goals) {
-                              calendarItem.goals = data.goals;
+                  if (!this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id)) {
+                      // update user's calendar items array
+                      for (const calendarItem of this.calendarService.calendarItems) {
+                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                              if (data.state) {
+                                  calendarItem.completed = data.state;
+                              } else if (data.goals) {
+                                  calendarItem.goals = data.goals;
+                              }
                           }
                       }
-                  }
-                  // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                  for (const calendarItem of this.adminAccessContentCalendars) {
-                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                          if (data.hasOwnProperty('state')) {
-                              calendarItem.completed = data.state;
-                          } else if (data.goals) {
-                              calendarItem.goals = data.goals;
+                      // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
+                      for (const calendarItem of this.adminAccessContentCalendars) {
+                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                              if (data.hasOwnProperty('state')) {
+                                  calendarItem.completed = data.state;
+                              } else if (data.goals) {
+                                  calendarItem.goals = data.goals;
+                              }
                           }
                       }
-                  }
-                  // keep the responseObj fresh
-                  let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
-                  if (index >= 0) {
-                      this.responseObj.matrix_string.splice(index, 1, data.interactable);
-                  } else {
-                      this.responseObj.matrix_string.push(data.interactable);
+                      // keep the responseObj fresh
+                      let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                      if (index >= 0) {
+                          this.responseObj.matrix_string.splice(index, 1, data.interactable);
+                      } else {
+                          this.responseObj.matrix_string.push(data.interactable);
+                      }
                   }
               } else if (data.goal) {
                   if (data.action === 'delete') {
