@@ -8,48 +8,38 @@
       <ion-button (click)="done()" *ngIf="selectedMoments.length">Done</ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar *ngIf="step === 2">
+  <ion-toolbar *ngIf="step === 5">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid *ngIf="step === 1" class="full-height">
-    <ion-row class="full-height grid-row">
+    <ion-row class="full-height grid-row ion-align-items-center">
       <ion-grid>
         <ion-row>
-          <ion-label class="ion-margin-start">Choose a Mentoring Type:</ion-label>
+          <ion-label class="ion-margin-start">How do you want to begin?</ion-label>
         </ion-row>
-        <ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="categoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': categoryId === '5e9f46e1c8bf1a622fec69d5'}">
+              <ion-card-header>
+                <ion-card-title>On My Own</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Build confidence by taking small steps.</li>
+                <li>Restvo will guide you along the way. You can invite others to join later</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
           <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
             <ion-card id="personal" class="category-card" (click)="categoryId = '5dfdbb547b00ea76b75e5a70'" [ngClass]="{'selected': categoryId === '5dfdbb547b00ea76b75e5a70'}">
               <ion-card-header>
-                <ion-card-title>Relationship</ion-card-title>
+                <ion-card-title>With Others</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <li>The base unit of any mentoring relationship</li>
-                <li>Directly match a mentee with a mentor</li>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
-            <ion-card id="program" class="category-card" (click)="categoryId = '5c915475e172e4e64590e348'" [ngClass]="{'selected': categoryId === '5c915475e172e4e64590e348'}">
-              <ion-card-header>
-                <ion-card-title>Program</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <li>Contain multiple mentoring relationships</li>
-                <li>Display a directory to match mentors with mentees</li>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
-            <ion-card id="community" class="category-card" (click)="categoryId = '5c915324e172e4e64590e346'" [ngClass]="{'selected': categoryId === '5c915324e172e4e64590e346'}">
-              <ion-card-header>
-                <ion-card-title>Community</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <li>A Community can contain multiple mentoring programs</li>
+                <li>Embark on a journey with others and benefit from their support</li>
+                <li>Be intentional in investing in your existing relationships</li>
               </ion-card-content>
             </ion-card>
           </ion-col>
@@ -57,7 +47,130 @@
       </ion-grid>
     </ion-row>
   </ion-grid>
-  <div *ngIf="step === 2">
+  <ion-grid *ngIf="step === 2" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="ion-margin-start">What is your objective?</ion-label>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="categoryId = '5e9fe372c8bf1a622fec69d8'" [ngClass]="{'selected': categoryId === '5e9fe372c8bf1a622fec69d8'}">
+              <ion-card-header>
+                <ion-card-title>I want to grow a relationship</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Grow a 1-1 relationship, mentoring relationship, or small group</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="categoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': categoryId === '5e9f46e1c8bf1a622fec69d5'}">
+              <ion-card-header>
+                <ion-card-title>I want to grow in an area</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Restvo will show you a list of topics</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="step === 3" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="ion-margin-start">What kind of relationship are you cultivating?</ion-label>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <!--<ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="type = 'peer'" [ngClass]="{'selected': type === 'peer'}">
+              <ion-card-header>
+                <ion-card-title>Peer Relationship</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Cultivate intentional peer relationship</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>-->
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="categoryId = '5e9fe372c8bf1a622fec69d8'" [ngClass]="{'selected': categoryId === '5e9fe372c8bf1a622fec69d8'}">
+              <ion-card-header>
+                <ion-card-title>Mentoring Relationship</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Grow in a mentoring relationship</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="categoryId = '5e9fe35cc8bf1a622fec69d7'" [ngClass]="{'selected': categoryId === '5e9fe35cc8bf1a622fec69d7'}">
+              <ion-card-header>
+                <ion-card-title>Small Group</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Experience deeper and more meaningful community</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="step === 4" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="ion-margin-start">What role will you take?</ion-label>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="joinAs = 'user_list_1'" [ngClass]="{'selected': joinAs === 'user_list_1'}">
+              <ion-card-header>
+                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Learner</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentee</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Participant</ion-card-title>
+              </ion-card-header>
+              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+                <li>Restvo provides you with the resources along the way</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+                <li>A mentee learns from the guidance of a mentor</li>
+                <li>You can invite other mentors and mentors</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+                <li>You can invite one or multiple leaders to lead this group</li>
+                <li>You can invite other participants to join</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
+            <ion-card id="personal" class="category-card" (click)="joinAs = 'user_list_3'" [ngClass]="{'selected': joinAs === 'user_list_3'}">
+              <ion-card-header>
+                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Facilitator</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentor</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Leader</ion-card-title>
+              </ion-card-header>
+              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+                <li>You can guide someone along the journey. Restvo will assist you in the process</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+                <li>A mentor offers support and guidance</li>
+                <li>You can invite other mentors and mentees</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+                <li>You provide leadership to the group</li>
+                <li>You can invite other leaders and participants to join</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-row>
+  </ion-grid>
+  <div *ngIf="step === 5">
     <ion-toolbar class="filter">
       <ion-segment [(ngModel)]="currentView">
         <ion-segment-button value="new">New</ion-segment-button>
@@ -119,12 +232,12 @@
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar *ngIf="step === 1">
+  <ion-toolbar *ngIf="step < 5">
     <ion-row>
-      <ion-button (click)="selectCategory()" expand="full" shape="round" class="centered" id="next-button">Next</ion-button>
+      <ion-button (click)="next()" expand="full" shape="round" class="centered" id="next-button">Next</ion-button>
     </ion-row>
   </ion-toolbar>
-  <ion-toolbar *ngIf="step === 2 && selectedMoments.length">
+  <ion-toolbar *ngIf="step === 5 && selectedMoments.length">
     <ion-grid class="selected-grid">
       <ion-row>
         <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">

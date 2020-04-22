@@ -48,10 +48,6 @@
             <ion-icon slot="start" name="notifications" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'notifications')}">Notifications</ion-label>
           </ion-item>
-          <ion-item (click)="selectProgram()">
-            <ion-icon slot="start" ios="share" md="share" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label>Invite</ion-label>
-          </ion-item>
           <ion-item (click)="logout($event)">
             <ion-icon slot="start" name="log-out" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Log Out</ion-label>

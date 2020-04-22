@@ -195,6 +195,10 @@ const routes: Routes = [
                 loadChildren: '../user/completeprofile/completeprofile.module#CompleteprofilePageModule'
             },
             {
+                path: 'invite',
+                loadChildren: () => import('../feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule)
+            },
+            {
                 path: 'video/:id',
                 loadChildren: () => import('../connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
             },

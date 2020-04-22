@@ -558,12 +558,12 @@
               <ion-note style="max-width: 20%" class="ion-no-margin" class="ion-text-wrap" slot="end" *ngIf="referenceActivity.calendar && referenceActivity.calendar.startDate">{{referenceActivity.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
               <ion-buttons slot="end" class="ion-no-margin">
                 <ion-button fill="clear" color="grey" (click)="openPlanModule(j)"><ion-icon name="cog"></ion-icon></ion-button>
-                <ion-button fill="clear" (click)="removePlanItem($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+                <ion-button fill="clear" (click)="removeReferences($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-buttons>
             </ion-item>
           </ion-reorder-group>
           <ion-item lines="none">
-            <ion-button (click)="addPlanItem()">
+            <ion-button (click)="addReferences()">
               <div class="addRemoveText">+ Choose from Library</div>
             </ion-button>
           </ion-item>

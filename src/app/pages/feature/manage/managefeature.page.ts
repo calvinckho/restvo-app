@@ -134,12 +134,21 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         }
       },
       {
-        url: 'relationships',
-        label: 'Relationships',
-        categoryId: '5dfdbb547b00ea76b75e5a70', // relationship's category ID
+        url: 'mentoring',
+        label: 'Mentoring',
+        categoryId: '5e9fe372c8bf1a622fec69d8', // mentoring category ID
         component: FeatureChildActivitiesPage,
         params: {
-          categoryId: '5dfdbb547b00ea76b75e5a70',
+          categoryId: '5e9fe372c8bf1a622fec69d8',
+        }
+      },
+      {
+        url: 'groups',
+        label: 'Groups',
+        categoryId: '5e9fe35cc8bf1a622fec69d7', // group category ID
+        component: FeatureChildActivitiesPage,
+        params: {
+          categoryId: '5e9fe35cc8bf1a622fec69d7',
         }
       },
       {

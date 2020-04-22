@@ -202,7 +202,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
     refreshMomentHandler = async (res) => {
-        if (res && res.data && res.data.type === 'refresh participation' && this.moment._id) {
+        if (res && res.data && res.data.type === 'refresh participation' && this.moment && this.moment._id) {
             await this.reloadMomentUserLists();
             if (!['owner', 'staff', 'admin'].includes(this.userData.user.role) && !this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
                 // if user is no longer an organizer, and if not a system admin, exit edit view
@@ -805,25 +805,25 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     this.addressURL = '';
   }
 
-    async addPlanItem() {
+    async addReferences() {
         let categoryId: any;
         let allowSwitchCategory = true;
-        // if the current Activity is a Community, the Plan items can only be Programs
+        // if the current Activity is a Community, the references can only be Programs
         if (this.moment.categories && this.moment.categories.includes('5c915324e172e4e64590e346')) {
             categoryId = '5c915475e172e4e64590e348'; // only program is allowed in Picker
             allowSwitchCategory = false; // lock it so user is not allowed to switch category
-        // if the current Activity is a Relationship, the Plan items can only be Plans
+        // if the current Activity is a Relationship, the references can only be Journey
         } else if (this.moment.categories && this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) {
-            categoryId = '5c915476e172e4e64590e349'; // only Plan is allowed in Picker
+            categoryId = '5e9f46e1c8bf1a622fec69d5'; // only Journey is allowed in Picker
             allowSwitchCategory = false; // lock it so user is not allowed to switch category
         }
-        const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', categoryId: categoryId, allowSwitchCategory: allowSwitchCategory}});
+        const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', categoryId: categoryId, allowSwitchCategory: allowSwitchCategory, modalPage: true}});
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
         if (moments && moments.length) {
             const samples = [];
             for (const moment of moments) {
-                if (moment && moment.type === 'new') { // cloning a sample. copy everything except calendar
+                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar
                     moment.calendar = { // reset the calendar
                         title: moment.matrix_string[0][0],
                         location: '',
@@ -842,12 +842,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                     this.referenceActivities.push(moment);
                 }
             }
-            const selectedMoments = moments.filter((c) => c.type === 'new');
+            const selectedMoments = moments.filter((c) => c.cloned === 'new');
             if (selectedMoments && selectedMoments.length) {
                 const clonedMoments: any = await this.momentService.clone(selectedMoments, null);
                 if (clonedMoments) {
                     for (const clonedMoment of clonedMoments) {
-                        clonedMoment.type = 'new';
+                        clonedMoment.cloned = 'new';
                         const index = this.referenceActivities.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
                         if (index > -1) {
                             clonedMoment.resource = this.referenceActivities[index].resource; // clone the populated resource
@@ -859,9 +859,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-    removePlanItem(event, index) {
+    removeReferences(event, index) {
         event.stopPropagation();
-        if (this.referenceActivities[index] && this.referenceActivities[index]._id && this.referenceActivities[index].type === 'new') {
+        if (this.referenceActivities[index] && this.referenceActivities[index]._id && this.referenceActivities[index].cloned === 'new') {
             console.log("remove cloned Activity");
             this.removedMoments.push(this.referenceActivities[index]);
         }

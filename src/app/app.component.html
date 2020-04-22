@@ -54,9 +54,13 @@
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/user/profile']">
               <ion-icon slot="start" name="cog"></ion-icon>
-              <ion-label>
-                Settings
-              </ion-label>
+              <ion-label>Settings</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/invite']">
+              <ion-icon slot="start" name="share"></ion-icon>
+              <ion-label>Invite</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">

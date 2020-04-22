@@ -709,11 +709,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async openPickFeature() {
         try {
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId}});
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {
-                const sampleMoments = moments.filter((c) => c.type === 'new');
+                const sampleMoments = moments.filter((c) => c.cloned === 'new');
                 if (sampleMoments && sampleMoments.length) {
                     for (const sampleMoment of sampleMoments) {
                         sampleMoment.calendar = { // reset the calendar
@@ -732,7 +732,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     const clonedMoments: any = await this.momentService.clone(sampleMoments, null); // user will be participanting in the Activity
                     if (clonedMoments) {
                         for (const clonedMoment of clonedMoments) {
-                            clonedMoment.type = 'new';
+                            clonedMoment.cloned = 'new';
                             const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
                             if (index > -1) {
                                 clonedMoment.resource = moments[index].resource; // clone the populated resource
@@ -1020,7 +1020,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async removeMoment(i) {
-        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].type === 'new') {
+        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].cloned === 'new') {
             console.log("remove cloned Activity");
             this.removedMoments.push(this.selectedMoments[i]);
         }

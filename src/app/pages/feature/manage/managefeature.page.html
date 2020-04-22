@@ -60,9 +60,13 @@
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plans')}">Plans</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('relationships', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--Community or Program-->
+          <ion-item (click)="clickManageMenu('mentoring', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--Mentoring-->
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'relationships')}">Relationships</ion-label>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'mentoring')}">Mentoring</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('groups', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--Group-->
+            <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
           </ion-item>
           <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
             <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">

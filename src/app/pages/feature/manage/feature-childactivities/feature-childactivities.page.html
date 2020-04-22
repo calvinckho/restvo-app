@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list>
     <ion-list-header *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--non Plan child Activities-->
-      <ion-label>New Mentoring {{this.categoryLabel}} (Available in Library)</ion-label>
+      <ion-label>New {{this.categoryLabel}} (Available in Library)</ion-label>
     </ion-list-header>
     <ion-list-header *ngIf="categoryId === '5c915476e172e4e64590e349' && moment.categories.includes('5dfdbb547b00ea76b75e5a70')"> <!--Plan shown in Relationship-->
       <ion-label>Adopted {{this.categoryLabel}}</ion-label>
@@ -50,7 +50,7 @@
       </ion-row>
     </ion-grid>
     <ion-list-header *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--Only show for non-Plan child Activities-->
-      <ion-label>All Mentoring {{this.categoryLabel}}</ion-label>
+      <ion-label>All {{this.categoryLabel}}</ion-label>
     </ion-list-header>
     <ion-grid class="program-grid">
       <ion-row class="program-row">

@@ -1,11 +1,13 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, NavParams, ModalController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
+import {Location} from "@angular/common";
+import {CacheService} from 'ionic-cache';
+import {ActivatedRoute, Router} from "@angular/router";
+
 import {Chat} from "../../../services/chat.service";
 import { CalendarService } from '../../../services/calendar.service';
-import {CacheService} from 'ionic-cache';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
-import {Router} from "@angular/router";
 import {UserData} from "../../../services/user.service";
 
 @Component({
@@ -17,12 +19,15 @@ import {UserData} from "../../../services/user.service";
 export class PickfeaturePopoverPage implements OnInit {
 
     @Input() title: any;
-    @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
+    @Input() modalPage: any;
+    @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Journey', 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
     // onboarding process parameters
     @Input() programId: string; // the program
-    @Input() type: number; // for onboarding process only
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
+
+    // relationship: joinAs
+    @Input() joinAs = 'user_list_1'; // join as user_list_1 (participant) or user_list_3 (leader)
 
     @Input() conversationId: string; // necessary for momentService.share(moment). If provided, the Activity selected will be shared in this conversation chat room
     @Input() allowCreate = false;
@@ -41,11 +46,12 @@ export class PickfeaturePopoverPage implements OnInit {
     subscriptions: any = {};
 
     constructor(
+        private route: ActivatedRoute,
         public router: Router,
+        private location: Location,
         private alertCtrl: AlertController,
         private cache: CacheService,
         public resourceService: Resource,
-        private navParams: NavParams,
         public modalCtrl: ModalController,
         private momentService: Moment,
         private userData: UserData,
@@ -54,12 +60,13 @@ export class PickfeaturePopoverPage implements OnInit {
     ) {}
 
     async ngOnInit() {
+        this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Getting Started'; // the title
         // if picker for Onboarding Processes or if it is pre-selected via Input, assign categoryId the proceed to step 2
-        if (this.categoryId) { // if category is provided, skip to step 2
-            this.step = 2;
+        if (this.categoryId) { // if category is provided, skip to step 5
+            this.step = 5;
             this.loadSamples();
-        } else { // otherwise, assign Relationship as default
-            this.categoryId = '5dfdbb547b00ea76b75e5a70'; // Relationship
+        } else { // otherwise, assign Journey as default
+            this.categoryId = '5e9f46e1c8bf1a622fec69d5';
         }
         if (this.conversationId) {
             const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.conversationId);
@@ -100,12 +107,6 @@ export class PickfeaturePopoverPage implements OnInit {
         }
     }
 
-    async selectCategory() {
-        await this.loadSamples();
-        this.step = 2;
-        this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
-    }
-
     selectCalendarItem(calendarItem) {
         // restore moment as parent and calendar as child object
         const selectedCalendar = JSON.parse(JSON.stringify(calendarItem));
@@ -115,7 +116,8 @@ export class PickfeaturePopoverPage implements OnInit {
         if (this.conversation) {
             selectedMoment.conversations = [this.conversation];
         }
-        selectedMoment.type = 'recent';
+        selectedMoment.cloned = false;
+        selectedMoment.joinAs = this.joinAs;
         this.selectedMoments.push(selectedMoment);
         if (this.selectedMoments.length > this.maxMomentCount) {
             this.selectedMoments.splice(0, 1);
@@ -126,7 +128,8 @@ export class PickfeaturePopoverPage implements OnInit {
         if (this.conversation) {
             sample.conversations = [this.conversation];
         }
-        sample.type = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
+        sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
+        sample.joinAs = this.joinAs;
         this.selectedMoments.push(sample);
         if (this.selectedMoments.length > this.maxMomentCount) {
             this.selectedMoments.splice(0, 1);
@@ -160,17 +163,45 @@ export class PickfeaturePopoverPage implements OnInit {
         this.currentView = event.detail.value;
     }
 
+
+    async next() {
+        if (this.categoryId === '5e9f46e1c8bf1a622fec69d5') { // if choosing Journey
+            if (this.step === 1 || this.step === 4) {
+                await this.loadSamples();
+                this.step = 5;
+                this.title = 'Choose a Topic';
+            } else {
+                this.step = 4;
+            }
+        } else if (this.step === 4) {
+            await this.loadSamples();
+            this.step = 5;
+            this.title = 'Choose a Template';
+        } else {
+            this.step++;
+        }
+        this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
+    }
+
     back() {
         if (this.step > 1 && this.allowSwitchCategory) {
             this.allowCreate = false;
-            this.step--;
+            if (this.categoryId !== '5e9f46e1c8bf1a622fec69d5') {
+                this.step--;
+            } else {
+                this.step = 1;
+            }
         } else {
             this.close();
         }
     }
 
     close() {
-        this.modalCtrl.dismiss();
+        if (this.modalPage) {
+            this.modalCtrl.dismiss();
+        } else {
+            this.location.back();
+        }
         this.subscriptions['refresh'].unsubscribe(this.refreshAfterCreateMomentHandler);
     }
 }
