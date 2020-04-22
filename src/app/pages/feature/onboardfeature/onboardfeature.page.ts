@@ -45,7 +45,6 @@ export class OnboardfeaturePage {
     matchedPeople = [];
     planModules = [];
     mediaList: Array<{_id: string, player: Plyr}> = [];
-    currentMomentConversationId: string;
     interactableDisplay: any = {};     // an object of arrays of options to be listOfDisplayed
     responses = []; // an object of arrays of responses
     responseObj = {
@@ -486,14 +485,14 @@ export class OnboardfeaturePage {
                 case 3: // organizers
                     user_list = 'user_list_2';
                     break;
-                case 4: //leaders
+                case 4: // leaders
                     user_list = 'user_list_3';
                     break;
                 default:
                     user_list = 'user_list_1';
                     type = 2;
             }
-            await this.momentService.addUserToProgramUserList(programId, user_list, type, token, this.completedDefaultOnboarding);
+            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding);
             if (this.completedDefaultOnboarding) {
                 if (this.modalPage) { // onboarding is a popover by default
                     this.router.navigate([this.authService.cachedRouteUrl]); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl

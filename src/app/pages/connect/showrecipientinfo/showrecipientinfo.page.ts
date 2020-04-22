@@ -8,7 +8,6 @@ import { NetworkService } from "../../../services/network-service.service";
 import { Resource } from '../../../services/resource.service';
 import { Moment } from '../../../services/moment.service';
 import { UserData } from "../../../services/user.service";
-import {InvitetoconnectPage} from "../invitetoconnect/invitetoconnect.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
@@ -334,7 +333,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 duration: 5000
             });
             await this.loading.present();
-            if (moments[0] && moments[0].type === 'new') { // cloning a sample. copy everything except calendar
+            if (moments[0] && moments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
                 moments[0].calendar = { // reset the calendar
                     title: moments[0].matrix_string[0][0],
                     location: '',
@@ -349,7 +348,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 };
                 const clonedMoments: any = await this.momentService.clone(moments, null);
                 if (clonedMoments && clonedMoments.length) {
-                    clonedMoments[0].type = 'new';
+                    //clonedMoments[0].type = 'new';
                     clonedMoments[0].resource = moments[0].resource; // clone the populated resource
                     this.selectedProgram = clonedMoments[0];
                 }

@@ -308,7 +308,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     async pickFeatureModalPage(event, typeOfMoment){
         try{
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library'}});
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {

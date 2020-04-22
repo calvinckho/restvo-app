@@ -349,9 +349,12 @@ export class Moment {
         }
     }
 
-    // user actively joins an Activity
-    async addUserToProgramUserList(momentId, user_list, type, token, notifyUser) {
-        const moment: any = await this.load(momentId);
+    // user actively joins an Activity (from Onboarding Slideshow)
+    async addUserToProgramUserList(moment, user_list, token, notifyUser) {
+        if (moment && moment._id && !moment.resource) {
+            const result: any = await this.load(moment._id);
+            moment = JSON.parse(JSON.stringify(result));
+        }
         if (this.userData.user) {
             try {
                 const result: any = await this.updateMomentUserLists({
@@ -363,7 +366,7 @@ export class Moment {
                 }, token);
                 if (notifyUser) { // open modal box to notify user of status of joining the program
                     if (result === 'success') {
-                        if (type <= 2) { // participant
+                        if (user_list === 'user_list_1') { // participant
                             const alert = await this.alertCtrl.create({
                                 header: 'Success',
                                 message: 'You have successfully joined ' + moment.matrix_string[0][0],
@@ -431,7 +434,7 @@ export class Moment {
             }
         }
     }
-    
+
     // decide whether to open the participants edit mode (for organizer) or select from the PeoplePicker and add as participant to an Activity
     async initiateParticipantsView(moment, loading) {
         await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
@@ -447,11 +450,6 @@ export class Moment {
         if (hasOrganizerAccess) {
             this.editParticipants( { moment: moment, title: this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], modalPage: true });
         } else {
-            const peopleComponentId = moment.resource.matrix_number[0].indexOf(10500);
-            let participantsLabel = 'Participants';
-            if (peopleComponentId > -1) {
-                participantsLabel = moment.matrix_string[peopleComponentId].length && moment.matrix_string[peopleComponentId].length > 3 && moment.matrix_string[peopleComponentId][3] ? moment.matrix_string[peopleComponentId][3] : moment.resource['en-US'].matrix_string[peopleComponentId][5];
-            }
             this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
         }
     }

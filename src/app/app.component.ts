@@ -7,7 +7,7 @@ import {StripeService} from "ngx-stripe";
 //import {OAuth2Client} from '@byteowls/capacitor-oauth2';
 
 import {
-    ActionSheetController,
+    ActionSheetController, LoadingController,
     MenuController,
     ModalController,
     Platform,
@@ -17,6 +17,8 @@ import { UserData } from './services/user.service';
 import {Chat} from "./services/chat.service";
 import {ShowrecipientinfoPage} from "./pages/connect/showrecipientinfo/showrecipientinfo.page";
 import {Capacitor, Plugins} from "@capacitor/core";
+import {PickfeaturePopoverPage} from "./pages/feature/pickfeature-popover/pickfeature-popover.page";
+import {Moment} from "./services/moment.service";
 const { App } = Plugins;
 
 @Component({
@@ -27,6 +29,9 @@ const { App } = Plugins;
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+    selectedProgram: any;
+    loading: any;
+
     constructor(
         private router: Router,
         private storage: Storage,
@@ -35,8 +40,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         private actionSheetCtrl: ActionSheetController,
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
+        private loadingCtrl: LoadingController,
         public platform: Platform,
         public networkService: NetworkService,
+        private momentService: Moment,
         public userData: UserData,
         public chatService: Chat
   ) {}
@@ -104,6 +111,44 @@ export class AppComponent implements OnInit, AfterViewInit {
     changeTab(tab) {
         this.menuCtrl.close();
         this.router.navigateByUrl('app/' + tab);
+    }
+
+    async invite() {
+        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Invite Others to Grow with You', maxMomentCount: 1, modalPage: true}});
+        await pickProgramModal.present();
+        const {data: moments} = await pickProgramModal.onDidDismiss();
+        if (moments && moments.length) {
+            this.loading = await this.loadingCtrl.create({
+                message: 'Processing...',
+                duration: 5000
+            });
+            await this.loading.present();
+            if (moments[0] && moments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
+                moments[0].calendar = { // reset the calendar
+                    title: moments[0].matrix_string[0][0],
+                    location: '',
+                    notes: '',
+                    startDate: new Date().toISOString(),
+                    endDate: new Date().toISOString(),
+                    options: {
+                        firstReminderMinutes: 0,
+                        secondReminderMinutes: 0,
+                        reminders: []
+                    }
+                };
+                const clonedMoments: any = await this.momentService.clone(moments, null);
+                if (clonedMoments && clonedMoments.length) {
+                    clonedMoments[0].resource = moments[0].resource; // clone the populated resource
+                    this.selectedProgram = clonedMoments[0];
+                }
+            } else {
+                this.selectedProgram = moments[0];
+            }
+            if (this.selectedProgram.joinAs) { // join the Activity using the joinAs list
+                await this.momentService.addUserToProgramUserList(this.selectedProgram, this.selectedProgram.joinAs, null, false);
+            }
+            this.momentService.initiateParticipantsView(this.selectedProgram, this.loading);
+        }
     }
 
     async settings() {

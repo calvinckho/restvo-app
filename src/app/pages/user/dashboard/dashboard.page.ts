@@ -2,8 +2,7 @@ import {Component, Input, OnInit, OnDestroy, ViewChild, ViewEncapsulation} from 
 import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import {
-    IonContent, LoadingController, AlertController, ModalController, NavController, PopoverController,
-    IonSlides, Platform
+    IonContent, LoadingController, AlertController, ModalController, NavController, PopoverController, Platform
 } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import { Moment } from '../../../services/moment.service';
@@ -14,7 +13,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from "../../../services/network-service.service";
 import {AboutPage} from "../about/about.page";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
-import {ProfilePage} from "../profile/profile.page";
 import {Auth} from "../../../services/auth.service";
 import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
 
@@ -26,8 +24,6 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
 })
 export class DashboardPage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
-    //@ViewChild(IonSlides, {static: false}) slides: IonSlides;
-    //@ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
 
     @Input() view: any;
     @Input() modalPage: any;
@@ -37,9 +33,11 @@ export class DashboardPage implements OnInit, OnDestroy {
     deviceToken: any;
     loading: any;
     activities: any;
+    journeys: any;
     myMentors: any;
     myMentees: any;
     programs: any;
+    groups: any;
     role: any;
     bio: any;
 
@@ -374,15 +372,21 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     async loadPrograms() {
         this.activities = await this.userData.loadPrograms(true);
+        this.journeys = [];
         this.myMentors = [];
         this.myMentees = [];
+        this.groups = [];
         this.programs = [];
         this.activities.forEach((activity) => {
             activity.mentors = [];
             activity.mentees = [];
             activity.uniqueUsers = [];
             // if community or program
-            if (activity.categories.includes('5c915324e172e4e64590e346') || activity.categories.includes('5c915475e172e4e64590e348')) {
+            if (activity.categories.includes('5e9f46e1c8bf1a622fec69d5')) {
+                this.journeys.push(activity);
+            } else if (activity.categories.includes('5e9fe35cc8bf1a622fec69d7')) {
+                this.groups.push(activity);
+            } else if (activity.categories.includes('5c915324e172e4e64590e346') || activity.categories.includes('5c915475e172e4e64590e348')) {
                 this.programs.push(activity);
             } else {
                 activity.program = 'Restvo';
@@ -407,7 +411,7 @@ export class DashboardPage implements OnInit, OnDestroy {
                     activity.program = activity.parent_programs[0].matrix_string[0][0];
                 }
                 if (activity.uniqueUsers && activity.uniqueUsers.length > 4) { // if the relationship has more than 3 users, list it under Community
-                    this.programs.push(activity);
+                    this.groups.push(activity);
                 } else { // else, list it under either MyMentors or MyMentees
                     if (activity.mentors.map((c) => c._id).includes(this.userData.user._id)) { // if user is in the mentors list or is an admin
                         this.myMentees.push(activity);
@@ -447,7 +451,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
 
     async createMentoring() {
-        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Mentoring', maxMomentCount: 1}});
+        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Mentoring', maxMomentCount: 1, modalPage: true}});
         await pickProgramModal.present();
         const {data: moments} = await pickProgramModal.onDidDismiss();
         if (moments && moments.length) {
@@ -456,7 +460,7 @@ export class DashboardPage implements OnInit, OnDestroy {
                 duration: 5000
             });
             await this.loading.present();
-            if (moments[0] && moments[0].type === 'new') { // cloning a sample. copy everything except calendar
+            if (moments[0] && moments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
                 moments[0].calendar = { // reset the calendar
                     title: moments[0].matrix_string[0][0],
                     location: '',
@@ -471,7 +475,7 @@ export class DashboardPage implements OnInit, OnDestroy {
                 };
                 const clonedMoments: any = await this.momentService.clone(moments, null);
                 if (clonedMoments && clonedMoments.length) {
-                    clonedMoments[0].type = 'new';
+                    //clonedMoments[0].type = 'new';
                     clonedMoments[0].resource = moments[0].resource; // clone the populated resource
                     this.selectedProgram = clonedMoments[0];
                 }
