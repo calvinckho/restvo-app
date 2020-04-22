@@ -1,13 +1,15 @@
 <ion-header *ngIf="userData.user">
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start" fill="clear" id="user-menu-toggle">
-    <ion-button fill="clear" color="grey">
+      <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
       </ion-button>
-      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
+      <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">
+        {{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>Settings</ion-title>
-    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
+    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end"
+      mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -28,34 +30,42 @@
             <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'profile')}">User Profile</ion-label>
           </ion-item>
+
           <ion-item (click)="clickManageMenu('about')">
             <ion-icon slot="start" name="bicycle" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'about')}">About Me</ion-label>
           </ion-item>
+
           <ion-item (click)="clickManageMenu('programs')">
             <ion-icon slot="start" name="home" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'programs')}">Home</ion-label>
           </ion-item>
+
           <ion-item (click)="clickManageMenu('calendar')">
             <ion-icon slot="start" name="calendar" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'calendar')}">Calendar</ion-label>
           </ion-item>
+
           <ion-item (click)="clickManageMenu('privacy')">
             <ion-icon slot="start" name="settings" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'privacy')}">Privacy & Security</ion-label>
           </ion-item>
+
           <ion-item (click)="clickManageMenu('notifications')">
             <ion-icon slot="start" name="notifications" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'notifications')}">Notifications</ion-label>
           </ion-item>
+
           <ion-item (click)="selectProgram()">
             <ion-icon slot="start" ios="share" md="share" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Invite</ion-label>
           </ion-item>
+
           <ion-item (click)="logout($event)">
             <ion-icon slot="start" name="log-out" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Log Out</ion-label>
           </ion-item>
+
         </ion-list>
       </ion-col>
       <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">
