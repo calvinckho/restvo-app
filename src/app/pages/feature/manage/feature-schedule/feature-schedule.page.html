@@ -152,19 +152,19 @@
             <p>You have not selected any content yet.</p>
         </ion-row>
       <ion-reorder-group (ionItemReorder)="reorderContents($event)" disabled="false">
-        <ion-virtual-scroll [items]="schedule.child_moments" approxItemHeight="48px">
-          <ion-item *virtualItem="let content; let j = index;">
-          <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-          <ion-badge slot="start" class="moment-type">{{content.resource['en-US'].value[0]}}</ion-badge>
-          <span class="content-count">{{j+1}}.</span>
-          <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
-          <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
-          <ion-buttons slot="end" class="ion-no-margin">
-            <ion-button fill="clear" color="grey" (click)="openActivity($event, content)"><ion-icon name="cog"></ion-icon></ion-button>
-            <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
-          </ion-buttons>
-        </ion-item>
-        </ion-virtual-scroll>
+        <ion-list>
+          <ion-item *ngFor="let content of schedule.child_moments; let j = index;">
+            <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
+            <ion-badge slot="start" class="moment-type">{{content.resource['en-US'].value[0]}}</ion-badge>
+            <span class="content-count">{{j+1}}.</span>
+            <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
+            <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
+            <ion-buttons slot="end" class="ion-no-margin">
+              <ion-button fill="clear" color="grey" (click)="openActivity($event, content)"><ion-icon name="cog"></ion-icon></ion-button>
+              <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-list>
       </ion-reorder-group>
     </ion-list>
   <ion-list *ngIf="view === 'settings'">

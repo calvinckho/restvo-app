@@ -62,6 +62,15 @@ const routes: Routes = [
                 ]
             },
             {
+                path: 'journey',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                    },
+                ]
+            },
+            {
                 path: 'mentoring',
                 children: [
                     {

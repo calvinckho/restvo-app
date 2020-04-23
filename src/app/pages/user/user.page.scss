@@ -1,5 +1,9 @@
 app-user {
 
+  ion-item {
+    cursor: pointer;
+  }
+
   ion-menu-toggle {
     ion-badge {
       position: relative;
@@ -75,10 +79,5 @@ app-user {
     right: 5px;
     margin-top: 12px;
   }
-
-  ion-item{
-    cursor: pointer;
-  }
- 
 }
 

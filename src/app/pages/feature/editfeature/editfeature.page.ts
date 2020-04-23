@@ -213,246 +213,251 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     };
 
   async setup() {
-      this.churchId = this.userData.user.churches[this.userData.currentCommunityIndex]._id;
-      this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
-      this.churches = this.userData.user.churches.map((c) => {return {_id: c._id, name: c.name, selected: false};});
-      this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
-      this.churches.unshift({_id: '', name: 'None', selected: false});
+      try {
+          this.churchId = this.userData.user.churches[this.userData.currentCommunityIndex]._id;
+          this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
+          this.churches = this.userData.user.churches.map((c) => {return {_id: c._id, name: c.name, selected: false};});
+          this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
+          this.churches.unshift({_id: '', name: 'None', selected: false});
 
-      if (!this.modalPage) { // if angular routing, load moment id
-          this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
-          this.parent_programId = this.route.snapshot.paramMap.get('parent_programId'); // the program ID
-          this.type = parseInt(this.route.snapshot.paramMap.get('type'), 10); // 2: participants, 3: organizers, 4: leaders
-          this.categoryId = this.route.snapshot.paramMap.get('categoryId'); // get the categoryId
+          if (!this.modalPage) { // if angular routing, load moment id
+              this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
+              this.parent_programId = this.route.snapshot.paramMap.get('parent_programId'); // the program ID
+              this.type = parseInt(this.route.snapshot.paramMap.get('type'), 10); // 2: participants, 3: organizers, 4: leaders
+              this.categoryId = this.route.snapshot.paramMap.get('categoryId'); // get the categoryId
 
-          if (this.route.snapshot.paramMap.get('id')) {
-              this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
-          }
-      } // if enter via modalPage, the moment object should be provided via @Input
-
-      // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
-
-      // 1. if creating a new Activity
-      if (!this.moment) {
-          this.editTemplate = true;
-          this.moment = JSON.parse(JSON.stringify(this.momentObj));
-
-          // load the default template object
-          this.moment.resource = JSON.parse(JSON.stringify(this.activityResourceObj));
-          
-          if (this.programId) { // creating new onboarding process
-              this.moment.program = this.programId;
-              this.moment.array_boolean[(this.type || 2)] = true; // default to participant onboarding
-          } else {
-              delete this.moment.program; // null will cause mongoDB error when trying to convert it to ObjectId
-          }
-
-          if (this.parent_programId) { // creating new child Activity
-              this.moment.parent_programs = [this.parent_programId];
-          } else {
-              delete this.moment.parent_programs; // empty array will cause mongoDB error when trying to convert it to ObjectId
-          }
-      }
-
-      const result: any = await this.resourceService.loadSystemResources();
-      this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
-      this.categories = result.filter((c) => c.field === 'Activity Category'); // return the Activity Category array by filtering the result array
-      this.childActivityLabel = this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10370)][0]; // assign 'Plan' to childActivityLabel as default
-
-      // 2. create a new activity with a predefined template
-
-      // hard code the components to be added by calling addComponents with the component IDs (consult Restvo Feature Schematic.txt file)
-      if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Onboarding Process
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // Onboarding Process
-          this.addComponent(10000); // add the "Activity Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(20010); // add the slider to enable the walkthrough
-          this.addComponent(40010); // add text answer
-          this.editTemplate = true;
-      } else if (this.categoryId === '5c915324e172e4e64590e346') { // Community
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Community';
-          this.moment.categories = ['5c915324e172e4e64590e346'];
-          this.addComponent(10000); // add the "Community Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(10300); // Upload Media
-          this.addComponent(10050); // section header
-          this.addComponent(10010); // Description
-          // assign default Community description
-          this.moment.matrix_string[this.moment.resource.matrix_number[0].indexOf(10010)][0] = this.resource['en-US'].value[34];
-          this.addComponent(10370); // Plan
-          this.addComponent(10500); // People
-          this.addComponent(11000); // Chat
-          this.editTemplate = true;
-      } else if (this.categoryId === '5c915475e172e4e64590e348') { // Program
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Program';
-          this.moment.categories = ['5c915475e172e4e64590e348'];
-          this.addComponent(10000); // add the "Program Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(50000); // Directory
-          this.addComponent(10050); // section header
-          this.addComponent(10010); // Description
-          this.addComponent(10500); // People
-          this.addComponent(11000); // Chat
-          this.editTemplate = true;
-      } else if (this.categoryId === '5dfdbb547b00ea76b75e5a70') { // Relationship
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Relationship';
-          this.moment.categories = ['5dfdbb547b00ea76b75e5a70'];
-          this.addComponent(10000); // add the "Relationship Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(10300); // Upload Media
-          this.addComponent(10050); // section header
-          this.addComponent(10010); // Description
-          this.addComponent(10370); // Plan
-          this.addComponent(10500); // People
-          this.addComponent(11000); // Chat
-          this.editTemplate = true;
-      } else if (this.categoryId === '5c915476e172e4e64590e349') { // Plan
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Plan';
-          this.moment.categories = ['5c915476e172e4e64590e349'];
-          this.addComponent(10000); // add the "Plan Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(10300); // Upload Media
-          this.addComponent(10050); // section header
-          this.addComponent(10010); // Description
-          this.addComponent(10210); // Schedule
-          this.editTemplate = true;
-      } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
-          this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
-          this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
-          this.addComponent(10000); // add the "Relationship Name"
-          this.addComponent(20000); // Visibility
-          this.addComponent(10300); // Upload Media
-          this.addComponent(10050); // section header
-          this.addComponent(10010); // Description
-          this.editTemplate = true;
-      } else if (this.categoryId) {
-          this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
-          this.addComponent(10000); // add the "Activity Name"
-          this.editTemplate = true;
-      }
-
-      // 3. if loading an existing Activity
-      if (this.moment && this.moment._id) {
-          this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
-          // setup People (10500) labels
-          let peopleComponentId = -1;
-          if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
-              peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
-          }
-          if (peopleComponentId > -1) {
-              this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] > 4) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] : this.participantLabel;
-              this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6].length > 6) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6] : this.organizerLabel;
-              this.leaderLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 1 && this.moment.matrix_string[peopleComponentId][0] ? this.moment.matrix_string[peopleComponentId][0] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][8].length > 8) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][8] : this.leaderLabel;
-              this.participantsLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][3] ? this.moment.matrix_string[peopleComponentId][3] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 5) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][5] : this.participantsLabel;
-              this.organizersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][5] ? this.moment.matrix_string[peopleComponentId][5] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 7) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][7] : this.organizersLabel;
-              this.leadersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 1 && this.moment.matrix_string[peopleComponentId][1] ? this.moment.matrix_string[peopleComponentId][1] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 9) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][9] : this.leadersLabel;
-          }
-          this.referenceActivities = [];
-          this.moment.array_moment.forEach((moment) => {
-              this.referenceActivities.push(moment);
-          });
-          if (this.moment.hasOwnProperty('array_community') && this.moment.array_community.length) {
-              // convert populated community back to ids
-              const communityIds = this.moment.array_community.map((c) => c._id);
-              delete this.moment.array_community;
-              this.moment.array_community = communityIds;
-              if (this.moment.array_community.indexOf('5ab62be8f83e2c1a8d41f894') < 0) {
-                  this.moment.array_community.push('5ab62be8f83e2c1a8d41f894'); // Restvo is added by default
+              if (this.route.snapshot.paramMap.get('id')) {
+                  this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
               }
-              // add any outside community to the list
-              const listOfChurchIds = this.churches.map((c) => c._id );
-              const promises = this.moment.array_community.map( async (communityId) => {
-                  const index = listOfChurchIds.indexOf(communityId);
-                  if (index < 0) { // add the outside community to the list
-                      const [church] = await this.churchService.loadChurchProfile(communityId);
-                      this.churches.push({_id: church._id, name: church.name, selected: true});
-                  }
+          } // if enter via modalPage, the moment object should be provided via @Input
+
+          // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
+
+          // 1. if creating a new Activity
+          if (!this.moment) {
+              this.editTemplate = true;
+              this.moment = JSON.parse(JSON.stringify(this.momentObj));
+
+              // load the default template object
+              this.moment.resource = JSON.parse(JSON.stringify(this.activityResourceObj));
+
+              if (this.programId) { // creating new onboarding process
+                  this.moment.program = this.programId;
+                  this.moment.array_boolean[(this.type || 2)] = true; // default to participant onboarding
+              } else {
+                  delete this.moment.program; // null will cause mongoDB error when trying to convert it to ObjectId
+              }
+
+              if (this.parent_programId) { // creating new child Activity
+                  this.moment.parent_programs = [this.parent_programId];
+              } else {
+                  delete this.moment.parent_programs; // empty array will cause mongoDB error when trying to convert it to ObjectId
+              }
+          }
+
+          const result: any = await this.resourceService.loadSystemResources();
+          this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
+          this.categories = result.filter((c) => c.field === 'Activity Category'); // return the Activity Category array by filtering the result array
+          this.childActivityLabel = this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10370)][0]; // assign 'Plan' to childActivityLabel as default
+
+          // 2. create a new activity with a predefined template
+
+          // hard code the components to be added by calling addComponents with the component IDs (consult Restvo Feature Schematic.txt file)
+          if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Onboarding Process
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // Onboarding Process
+              this.addComponent(10000); // add the "Activity Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(20010); // add the slider to enable the walkthrough
+              this.addComponent(40010); // add text answer
+              this.editTemplate = true;
+          } else if (this.categoryId === '5c915324e172e4e64590e346') { // Community
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Community';
+              this.moment.categories = ['5c915324e172e4e64590e346'];
+              this.addComponent(10000); // add the "Community Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(10300); // Upload Media
+              this.addComponent(10050); // section header
+              this.addComponent(10010); // Description
+              // assign default Community description
+              this.moment.matrix_string[this.moment.resource.matrix_number[0].indexOf(10010)][0] = this.resource['en-US'].value[34];
+              this.addComponent(10370); // Plan
+              this.addComponent(10500); // People
+              this.addComponent(11000); // Chat
+              this.editTemplate = true;
+          } else if (this.categoryId === '5c915475e172e4e64590e348') { // Program
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Program';
+              this.moment.categories = ['5c915475e172e4e64590e348'];
+              this.addComponent(10000); // add the "Program Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(50000); // Directory
+              this.addComponent(10050); // section header
+              this.addComponent(10010); // Description
+              this.addComponent(10500); // People
+              this.addComponent(11000); // Chat
+              this.editTemplate = true;
+          } else if (this.categoryId === '5dfdbb547b00ea76b75e5a70') { // Relationship
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Relationship';
+              this.moment.categories = ['5dfdbb547b00ea76b75e5a70'];
+              this.addComponent(10000); // add the "Relationship Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(10300); // Upload Media
+              this.addComponent(10050); // section header
+              this.addComponent(10010); // Description
+              this.addComponent(10370); // Plan
+              this.addComponent(10500); // People
+              this.addComponent(11000); // Chat
+              this.editTemplate = true;
+          } else if (this.categoryId === '5c915476e172e4e64590e349') { // Plan
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Plan';
+              this.moment.categories = ['5c915476e172e4e64590e349'];
+              this.addComponent(10000); // add the "Plan Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(10300); // Upload Media
+              this.addComponent(10050); // section header
+              this.addComponent(10010); // Description
+              this.addComponent(10210); // Schedule
+              this.editTemplate = true;
+          } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
+              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
+              this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
+              this.addComponent(10000); // add the "Relationship Name"
+              this.addComponent(20000); // Visibility
+              this.addComponent(10300); // Upload Media
+              this.addComponent(10050); // section header
+              this.addComponent(10010); // Description
+              this.editTemplate = true;
+          } else if (this.categoryId) {
+              this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
+              this.addComponent(10000); // add the "Activity Name"
+              this.editTemplate = true;
+          }
+
+          // 3. if loading an existing Activity
+          if (this.moment && this.moment._id) {
+              this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
+              // setup People (10500) labels
+              let peopleComponentId = -1;
+              if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
+                  peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+              }
+              if (peopleComponentId > -1) {
+                  this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] > 4) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] : this.participantLabel;
+                  this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6].length > 6) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][6] : this.organizerLabel;
+                  this.leaderLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 1 && this.moment.matrix_string[peopleComponentId][0] ? this.moment.matrix_string[peopleComponentId][0] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][8].length > 8) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][8] : this.leaderLabel;
+                  this.participantsLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][3] ? this.moment.matrix_string[peopleComponentId][3] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 5) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][5] : this.participantsLabel;
+                  this.organizersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][5] ? this.moment.matrix_string[peopleComponentId][5] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 7) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][7] : this.organizersLabel;
+                  this.leadersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 1 && this.moment.matrix_string[peopleComponentId][1] ? this.moment.matrix_string[peopleComponentId][1] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)].length > 9) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][9] : this.leadersLabel;
+              }
+              this.referenceActivities = [];
+              this.moment.array_moment.forEach((moment) => {
+                  this.referenceActivities.push(moment);
               });
-              await Promise.all(promises);
-          } else {
-              this.moment.array_community = ['5ab62be8f83e2c1a8d41f894'];
-          }
-          if (this.moment.hasOwnProperty('categories') && this.moment.categories.length) {
-              // convert populated categories back to ids
-              const categoryIds = this.moment.categories.map((c) => c._id);
-              delete this.moment.categories;
-              this.moment.categories = categoryIds;
-          }
-          if (!this.moment.hasOwnProperty('array_boolean')) {
-              this.moment.array_boolean = [false, false]; // if array_boolean empty, initialize it for boolean values for list in Discover and show in Marketplace
-          } else if (this.moment.array_boolean && this.moment.array_boolean.length === 1) { // if index 1 (show in Marketplace) is missing, set default to false
-              this.moment.array_boolean.push(false);
-          } else if (this.moment.array_boolean[2]) { // participant onboarding
-              this.loadPeerOnboardActivities(2);
-          } else if (this.moment.array_boolean[3]) { // organizer onboarding
-              this.loadPeerOnboardActivities(3);
-          } else if (this.moment.array_boolean[4]) { // leader onboarding
-              this.loadPeerOnboardActivities(4);
-          } else if (this.moment.resource.hasOwnProperty('matrix_number') && this.moment.resource.matrix_number.length && this.moment.resource.matrix_number[0].indexOf(50000) > -1) {
-              this.loadProgramOnboardActivities(); // load list of onboarding processes
-          }
-          if (!this.moment.location) {
-              this.moment.location = {
-                  location: ''
-              };
-          }
-          if (this.moment.resource.matrix_number.length) {
-              this.moment.resource.matrix_number[0].forEach((componentId, index) => {
-                  if ((componentId >= 10300 && componentId <= 10360 || componentId === 20000) && !this.moment.matrix_number[index].length) {
-                      this.moment.matrix_number[index].push(...[0, 0]); // default: hide photo = false (pos 0), show caption = false (pos 1)
+              if (this.moment.hasOwnProperty('array_community') && this.moment.array_community.length) {
+                  // convert populated community back to ids
+                  const communityIds = this.moment.array_community.map((c) => c._id);
+                  delete this.moment.array_community;
+                  this.moment.array_community = communityIds;
+                  if (this.moment.array_community.indexOf('5ab62be8f83e2c1a8d41f894') < 0) {
+                      this.moment.array_community.push('5ab62be8f83e2c1a8d41f894'); // Restvo is added by default
                   }
-              });
-          }
-          // if the template has at least 1 component in it
-          if (this.moment.resource.hasOwnProperty('matrix_number') && this.moment.resource.matrix_number.length) {
-              // rebuild the moment assets array using raw data
-              this.moment.assets = [];
-              this.moment.resource.matrix_number[0].forEach((componentId, index) => { // loop through all component ids
-                  if (componentId >= 10300 && componentId <= 10360) {
-                      for (const asset of this.moment.matrix_string[index]) { // loop through all media file and add the ones that is an image to the moment.assets array
-                          if (asset && asset.length && (['jpg', 'jpeg', 'gif', 'png']).includes(asset.substring(asset.lastIndexOf('.') + 1).toLowerCase())) {
-                              this.moment.assets.push(asset);
+                  // add any outside community to the list
+                  const listOfChurchIds = this.churches.map((c) => c._id );
+                  const promises = this.moment.array_community.map( async (communityId) => {
+                      const index = listOfChurchIds.indexOf(communityId);
+                      if (index < 0) { // add the outside community to the list
+                          const [church] = await this.churchService.loadChurchProfile(communityId);
+                          this.churches.push({_id: church._id, name: church.name, selected: true});
+                      }
+                  });
+                  await Promise.all(promises);
+              } else {
+                  this.moment.array_community = ['5ab62be8f83e2c1a8d41f894'];
+              }
+              if (this.moment.hasOwnProperty('categories') && this.moment.categories.length) {
+                  // convert populated categories back to ids
+                  const categoryIds = this.moment.categories.map((c) => c._id);
+                  delete this.moment.categories;
+                  this.moment.categories = categoryIds;
+              }
+              if (!this.moment.hasOwnProperty('array_boolean')) {
+                  this.moment.array_boolean = [false, false]; // if array_boolean empty, initialize it for boolean values for list in Discover and show in Marketplace
+              } else if (this.moment.array_boolean && this.moment.array_boolean.length === 1) { // if index 1 (show in Marketplace) is missing, set default to false
+                  this.moment.array_boolean.push(false);
+              } else if (this.moment.array_boolean[2]) { // participant onboarding
+                  this.loadPeerOnboardActivities(2);
+              } else if (this.moment.array_boolean[3]) { // organizer onboarding
+                  this.loadPeerOnboardActivities(3);
+              } else if (this.moment.array_boolean[4]) { // leader onboarding
+                  this.loadPeerOnboardActivities(4);
+              } else if (this.moment.resource.hasOwnProperty('matrix_number') && this.moment.resource.matrix_number.length && this.moment.resource.matrix_number[0].indexOf(50000) > -1) {
+                  this.loadProgramOnboardActivities(); // load list of onboarding processes
+              }
+              if (!this.moment.location) {
+                  this.moment.location = {
+                      location: ''
+                  };
+              }
+              if (this.moment.resource.matrix_number.length) {
+                  this.moment.resource.matrix_number[0].forEach((componentId, index) => {
+                      if ((componentId >= 10300 && componentId <= 10360 || componentId === 20000) && !this.moment.matrix_number[index].length) {
+                          this.moment.matrix_number[index].push(...[0, 0]); // default: hide photo = false (pos 0), show caption = false (pos 1)
+                      }
+                  });
+              }
+              // if the template has at least 1 component in it
+              if (this.moment.resource.hasOwnProperty('matrix_number') && this.moment.resource.matrix_number.length) {
+                  // rebuild the moment assets array using raw data
+                  this.moment.assets = [];
+                  this.moment.resource.matrix_number[0].forEach((componentId, index) => { // loop through all component ids
+                      if (componentId >= 10300 && componentId <= 10360) {
+                          for (const asset of this.moment.matrix_string[index]) { // loop through all media file and add the ones that is an image to the moment.assets array
+                              if (asset && asset.length && (['jpg', 'jpeg', 'gif', 'png']).includes(asset.substring(asset.lastIndexOf('.') + 1).toLowerCase())) {
+                                  this.moment.assets.push(asset);
+                              }
                           }
                       }
+                  });
+              }
+              this.awsService.sessionAssets[this.moment._id] = this.moment.assets; // store all asset urls associated with this moment in the awsAssets
+          } else {
+              this.startTime = new Date(new Date().setMinutes(0)).toISOString();
+              this.endTime = new Date(new Date().setMinutes(0)).toISOString();
+          }
+          if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
+              this.addressURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
+          }
+          if (this.moment.calendar && this.moment.calendar._id) {
+              this.startDate = new Date(this.moment.calendar.startDate);
+              this.endDate = new Date(this.moment.calendar.endDate);
+              this.startTime = this.startDate.toISOString();
+              this.endTime = this.endDate.toISOString();
+              if ((this.endDate.getTime() - this.startDate.getTime()) === (24 * 60 * 60 * 1000)) { // determine whether it is an all-day event
+                  this.allDay = true;
+              }
+              if (this.moment.calendar.options && this.moment.calendar.options.firstReminderMinutes) {
+                  this.reminders[0] = this.moment.calendar.options.firstReminderMinutes.toString();
+              }
+              if (this.moment.calendar.options && this.moment.calendar.options.secondReminderMinutes) {
+                  this.reminders[1] = this.moment.calendar.options.secondReminderMinutes.toString();
+              }
+          } else { // a calendar property is required as of 1.7.4+. all Activity will now show up in the creator's timeline
+              this.moment.calendar = JSON.parse(JSON.stringify(this.momentObj.calendar));
+          }
+          // it renders the template and populate Activity with the components
+          if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) { // prepare activity for display
+              this.moment.resource.matrix_number[0].forEach( async (componentOptionId, component_index) => {
+                  const resource_index = this.resource.matrix_number[0].indexOf(componentOptionId);
+                  if (resource_index > -1) {
+                      this.resource.matrix_number[1][resource_index]--; // reduce the available component count
                   }
               });
           }
-          this.awsService.sessionAssets[this.moment._id] = this.moment.assets; // store all asset urls associated with this moment in the awsAssets
-      } else {
-          this.startTime = new Date(new Date().setMinutes(0)).toISOString();
-          this.endTime = new Date(new Date().setMinutes(0)).toISOString();
+          this.initialSetupCompleted = true;
+          console.log('moment resource', this.moment.resource);
+      } catch (err) {
+          // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
+          this.router.navigate(['/app/me']);
       }
-      if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
-          this.addressURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
-      }
-      if (this.moment.calendar && this.moment.calendar._id) {
-          this.startDate = new Date(this.moment.calendar.startDate);
-          this.endDate = new Date(this.moment.calendar.endDate);
-          this.startTime = this.startDate.toISOString();
-          this.endTime = this.endDate.toISOString();
-          if ((this.endDate.getTime() - this.startDate.getTime()) === (24 * 60 * 60 * 1000)) { // determine whether it is an all-day event
-              this.allDay = true;
-          }
-          if (this.moment.calendar.options && this.moment.calendar.options.firstReminderMinutes) {
-              this.reminders[0] = this.moment.calendar.options.firstReminderMinutes.toString();
-          }
-          if (this.moment.calendar.options && this.moment.calendar.options.secondReminderMinutes) {
-              this.reminders[1] = this.moment.calendar.options.secondReminderMinutes.toString();
-          }
-      } else { // a calendar property is required as of 1.7.4+. all Activity will now show up in the creator's timeline
-          this.moment.calendar = JSON.parse(JSON.stringify(this.momentObj.calendar));
-      }
-      // it renders the template and populate Activity with the components
-      if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) { // prepare activity for display
-          this.moment.resource.matrix_number[0].forEach( async (componentOptionId, component_index) => {
-              const resource_index = this.resource.matrix_number[0].indexOf(componentOptionId);
-              if (resource_index > -1) {
-                  this.resource.matrix_number[1][resource_index]--; // reduce the available component count
-              }
-          });
-      }
-      this.initialSetupCompleted = true;
-      console.log('moment resource', this.moment.resource);
   }
 
     async edit() { // toggle template edit mode
@@ -1321,6 +1326,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.momentService.delete(moment);
       });
       await Promise.all(promises);*/
+      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       if (this.modalPage) {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {

@@ -133,6 +133,15 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
           categoryId: '5c915475e172e4e64590e348',
         }
       },
+        {
+            url: 'journey',
+            label: 'Journey',
+            categoryId: '5e9f46e1c8bf1a622fec69d5', // journey category ID
+            component: FeatureChildActivitiesPage,
+            params: {
+                categoryId: '5e9f46e1c8bf1a622fec69d5',
+            }
+        },
       {
         url: 'mentoring',
         label: 'Mentoring',

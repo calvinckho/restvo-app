@@ -217,8 +217,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (this.step === 1) {
                 await this.loadSamples();
             }
-        } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned) {
+        } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Plan (Plan can only be adopted, and cannot be edited)
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {
                 this.step++;
             } else {
                 this.done();
