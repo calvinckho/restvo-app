@@ -71,40 +71,41 @@
   </ion-toolbar>
 </ion-header>
 
-<!--Intern-challenge - start-->
-<div class="containerProfile">
-  <ion-card class="borderEdge">
-    <div class ="cardSpace">
-      <ion-row>
-        <div class="col-xs-4 imageCenter">
-          <div class=“profilePicture”>
-            <img *ngIf="userData.user && userData.user.avatar" class="profile-pic" [src]="userData.user.avatar"/>
-            <img *ngIf="!userData.user || !userData.user.avatar" class="profile-pic"  src="assets/img/avatar-default.jpg"/>
-          </div>
 
-        </div>
-        <div class="col-xs-8  profile-data">
-          <div class="profile-name">
-            <ion-label>{{userData.user.first_name}} {{userData.user.last_name}}</ion-label>
-          </div>
-          <div class="profile-user-role">
-            <ion-label>{{userData.user.role}}</ion-label>
-          </div>
-          <div>
-            <button class="editProfileButton">
-              Edit Profile
-            </button>
-          </div>
-        </div>
-
-      </ion-row>
-    </div>
-
-  </ion-card>
-</div>
-<!--Intern-challenge - end-->
 
 <ion-content *ngIf="userData.user">
+  <!--Intern-challenge - start-->
+  <div class="containerProfile">
+    <ion-card class="borderEdge">
+      <div class ="cardSpace">
+        <ion-row>
+          <div class="col-xs-4 imageCenter">
+            <div class="profile-picture">
+              <img *ngIf="userData.user && userData.user.avatar" class="profile-pic" [src]="userData.user.avatar"/>
+              <img *ngIf="!userData.user || !userData.user.avatar" class="profile-pic"  src="assets/img/avatar-default.jpg"/>
+            </div>
+
+          </div>
+          <div class="col-xs-8  profile-data">
+            <div class="profile-name">
+              <ion-label>{{userData.user.first_name}} {{userData.user.last_name}}</ion-label>
+            </div>
+            <div class="profile-user-role">
+              <ion-label>{{userData.user.role}}</ion-label>
+            </div>
+            <div>
+              <button class="editProfileButton">
+                Edit Profile
+              </button>
+            </div>
+          </div>
+
+        </ion-row>
+      </div>
+
+    </ion-card>
+  </div>
+  <!--Intern-challenge - end-->
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-justify-content-end ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>

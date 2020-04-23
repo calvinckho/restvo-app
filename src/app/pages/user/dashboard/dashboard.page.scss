@@ -679,7 +679,7 @@ app-dashboard {
     padding: 20px
 }
 
-.profilePicture{
+.profile-picture{
     overflow: hidden;
     border-radius: 50%;
     margin: 2% auto 0 auto;
@@ -706,7 +706,7 @@ app-dashboard {
 }
 
 @media only screen and (max-width: 900px) {
-    .image-cropper {
+    .profile-picture {
         width: auto;
     }
 }
