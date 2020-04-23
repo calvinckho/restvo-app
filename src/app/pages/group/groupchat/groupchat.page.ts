@@ -394,12 +394,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
         // next process Moments
+        console.log("send moment", this.selectedMoments);
         if (this.selectedMoments.length) {
             let promises = this.selectedMoments.map( async (moment) => {
                 if (moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Poll') {
                     this.momentService.socket.emit('join moment', moment._id); // join the moment socket.io to receive real-time update for voting
                 }
-                await this.momentService.share(moment);
+                await this.momentService.share(moment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
             await Promise.all(promises);
             this.selectedMoments = []; // empty the selected moments array
@@ -741,14 +742,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         }
                     }
                 }
-                for (const moment of moments) {
-                    const index = this.calendarService.calendarItems.map((c) => c.moment && c.moment._id).indexOf(moment._id);
-                    if (index > -1) {
-                        this.selectedMoments.push(this.calendarService.calendarItems[index].moment);
-                    } else {
-                        console.log("Cannot find Activity in Calendar")
-                    }
-                }
+                this.selectedMoments.push(...moments);
                 this.moreMediaOptions = false;
                 await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
             }
@@ -881,11 +875,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 serverData.resource = result[0]._id;
                 const createdMoment: any = await this.momentService.create(serverData); //create feature
                 createdMoment.resource = result[0]; // repopulate resource
-                const index = this.chatService.conversations.map((c) => {return c.conversation._id;}).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
-                if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
-                }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
 
         }).catch(async (err) => {
@@ -941,9 +931,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 createdMoment.resource = result[0]; // repopulate resource
                 const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
                 if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
+                    createdMoment.conversations = [this.chatService.conversations[index].conversation];
                 }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
         } catch (err) {
             const networkAlert = await this.alertCtrl.create({

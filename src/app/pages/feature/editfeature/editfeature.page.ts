@@ -39,7 +39,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   @Input() modalPage: any; // whether the page is opened with hte modalController
   @Input() moment: any; // the object to store the activity
-    @Input() conversationId: any; // necessary for momentService.share(moment). If provided, the Activity selected will be shared in this conversation chat room
     @Input() categoryId: any;
     // for Onboarding Activity
     @Input() programId: any; //  program Id the onboarding activity is associated with
@@ -56,7 +55,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   group: any;
   churchId = '';
   selectedAppUsers: any = [];
-  selectedPersonOrGroup: any = []; // when creating new Activity, this is an array of conversations which is used to hold information for sharing with these people and groups
   resource: any = {}; // general resource for the EditFeaturePage
   categories: any;
   peer_preferences: any;
@@ -444,14 +442,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       } else { // a calendar property is required as of 1.7.4+. all Activity will now show up in the creator's timeline
           this.moment.calendar = JSON.parse(JSON.stringify(this.momentObj.calendar));
       }
-      if (this.conversationId) {
-          const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.conversationId);
-          if (index > -1) {
-              const currentConversation = JSON.parse(JSON.stringify(this.chatService.conversations[index]));
-              currentConversation.locked = true;
-              this.selectedPersonOrGroup.push(currentConversation);
-          }
-      }
       // it renders the template and populate Activity with the components
       if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) { // prepare activity for display
           this.moment.resource.matrix_number[0].forEach( async (componentOptionId, component_index) => {
@@ -765,13 +755,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             await alert.present();
         }
     }
-
-  unselect(obj) {
-    const index = this.selectedPersonOrGroup.indexOf(obj);
-    if (index > -1) {
-      this.selectedPersonOrGroup.splice(index, 1);
-    }
-  }
 
   async searchAddress() {
     if (this.addressSearchString.length) {
@@ -1122,7 +1105,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
 
       this.moment.author = this.userData.user._id;
-      this.moment.conversations = this.selectedPersonOrGroup;
       // remove Restvo community from event communities list because it is listed by default
       this.moment.array_community.forEach((community, index) => {
           if (community === '5ab62be8f83e2c1a8d41f894') {
