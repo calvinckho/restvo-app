@@ -709,7 +709,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async openPickFeature() {
         try {
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, modalPage: true}});
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, allowSwitchCategory: true, modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {

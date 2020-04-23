@@ -109,6 +109,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9f46e1c8bf1a622fec69d5']" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
@@ -143,6 +146,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_1' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -209,6 +215,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_3' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -275,6 +284,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Groups</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe35cc8bf1a622fec69d7']" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
@@ -309,6 +321,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Community</ion-label>
+              <ion-button slot="end" [routerLink]="['/app/create/community', { categoryId: '5c915324e172e4e64590e346' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">

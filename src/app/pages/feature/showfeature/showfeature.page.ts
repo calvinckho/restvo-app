@@ -286,8 +286,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (res && res.momentId && res.data) {
           const momentId = res.momentId;
           const data = res.data;
+          console.log('closing');
+          if (momentId === this.moment._id && data.operation === 'deleted moment') {
+              console.log('closing 2');
+              this.closeModal();
           // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
-          if (momentId === this.relationshipId) {
+          } else if (momentId === this.relationshipId) {
               if (data.calendarId) {
                   // keep the parentRelationshipResponseObj fresh
                   const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);

@@ -113,7 +113,7 @@
     <ion-list *ngIf="view === 'content'">
       <ion-item lines="none">
         <div class="moment-label"><img class="side-image" src="assets/img/Folder_Gray.png"></div>
-        <div class="moment-input">Mentoring {{this.categoryLabel}}</div>
+        <div class="moment-input">{{this.categoryLabel}}</div>
       </ion-item>
       <ion-toolbar>
         <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>

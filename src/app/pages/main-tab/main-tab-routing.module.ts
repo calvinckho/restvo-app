@@ -94,6 +94,10 @@ const routes: Routes = [
                 path: 'me',
                 children: [
                     {
+                        path: 'choose/:id',
+                        loadChildren: () => import('../feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule)
+                    },
+                    {
                         path: '',
                         loadChildren: '../user/dashboard/dashboard.module#DashboardPageModule'
                     },

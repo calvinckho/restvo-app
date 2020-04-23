@@ -450,42 +450,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.authService.openOnboarding({ modalPage: true });
     }
 
-    async createMentoring() {
-        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Mentoring', maxMomentCount: 1, modalPage: true}});
-        await pickProgramModal.present();
-        const {data: moments} = await pickProgramModal.onDidDismiss();
-        if (moments && moments.length) {
-            this.loading = await this.loadingCtrl.create({
-                message: 'Processing...',
-                duration: 5000
-            });
-            await this.loading.present();
-            if (moments[0] && moments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
-                moments[0].calendar = { // reset the calendar
-                    title: moments[0].matrix_string[0][0],
-                    location: '',
-                    notes: '',
-                    startDate: new Date().toISOString(),
-                    endDate: new Date().toISOString(),
-                    options: {
-                        firstReminderMinutes: 0,
-                        secondReminderMinutes: 0,
-                        reminders: []
-                    }
-                };
-                const clonedMoments: any = await this.momentService.clone(moments, null);
-                if (clonedMoments && clonedMoments.length) {
-                    //clonedMoments[0].type = 'new';
-                    clonedMoments[0].resource = moments[0].resource; // clone the populated resource
-                    this.selectedProgram = clonedMoments[0];
-                }
-            } else {
-                this.selectedProgram = moments[0];
-            }
-            this.momentService.initiateParticipantsView(this.selectedProgram, this.loading);
-        }
-    }
-
     executeSearch(event) {
         event.stopPropagation();
     }

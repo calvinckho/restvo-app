@@ -558,6 +558,7 @@ export class Moment {
     async delete(moment) {
         const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id, this.authService.httpAuthOptions)
             .toPromise();
+        await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
         await this.calendarService.getUserCalendar();
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
