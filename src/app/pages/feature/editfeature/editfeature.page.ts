@@ -208,6 +208,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 // if user is no longer an organizer, and if not a system admin, exit edit view
                 this.closeModal(true);
             }
+        } else if (res && res.data && this.moment && res.momentId === this.moment._id && res.data.operation === 'deleted moment') {
+            this.closeModal(false);
+            // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
         }
     };
 

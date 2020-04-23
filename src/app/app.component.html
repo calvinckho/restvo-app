@@ -57,7 +57,7 @@
               <ion-label>Settings</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
             <ion-item [routerLink]="['/app/invite']">
               <ion-icon slot="start" name="share"></ion-icon>
               <ion-label>Invite</ion-label>
