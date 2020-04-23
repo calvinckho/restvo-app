@@ -231,6 +231,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async loadMoreMessages(event) {
+        console.log("loading more", !this.chatReachedEnd, !this.chatAPIBusy, this.chatService.currentChatProps[this.propIndex])
         // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
         // if current chat props exists, which is needed to retrieve the conversationId
         if (!this.chatReachedEnd && !this.chatAPIBusy && this.chatService.currentChatProps[this.propIndex]) {
@@ -239,7 +240,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.chatAPIBusy = true;
                 const result: Conversation = await this.chatService.getConversationById(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatPageNum);
                 this.chatAPIBusy = false;
-                if (this.chatPageNum === 1){
+                if (this.chatPageNum === 1) {
                     this.messages = []; // if this is the first page load, empty the view first
                 }
                 const momentIds = [];
