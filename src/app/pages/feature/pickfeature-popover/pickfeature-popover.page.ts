@@ -25,15 +25,13 @@ export class PickfeaturePopoverPage implements OnInit {
     @Input() programId: string; // the program
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
-
     // relationship: joinAs
     @Input() joinAs; // join as user_list_1 (participant) or user_list_3 (leader)
 
-    @Input() conversationId: string; // necessary for momentService.share(moment). If provided, the Activity selected will be shared in this conversation chat room
     @Input() allowCreate = false;
     @Input() allowSwitchCategory;
     @Input() maxMomentCount = 1; // default max Moment count is 1
-    conversation: any;
+
     searchKeyword = '';
     currentView = 'new';
     samples = [];
@@ -77,20 +75,9 @@ export class PickfeaturePopoverPage implements OnInit {
 
     refreshAfterCreateMomentHandler = async () => {
         if (this.userData.user) {
-            this.setup();
+            this.loadSamples();
         }
     };
-
-    setup() {
-        //this.currentView = 'recent';
-        this.loadSamples();
-        if (this.conversationId) {
-            const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.conversationId);
-            if (index > -1) {
-                this.conversation = this.chatService.conversations[index].conversation;
-            }
-        }
-    }
 
     async loadSamples() {
         setTimeout(async () => {
@@ -124,9 +111,6 @@ export class PickfeaturePopoverPage implements OnInit {
         const selectedMoment = JSON.parse(JSON.stringify(calendarItem.moment));
         selectedCalendar.moment = selectedMoment._id;
         selectedMoment.calendar = selectedCalendar;
-        if (this.conversation) {
-            selectedMoment.conversations = [this.conversation];
-        }
         selectedMoment.cloned = false;
         selectedMoment.joinAs = this.joinAs;
         this.selectedMoments.push(selectedMoment);
@@ -136,9 +120,6 @@ export class PickfeaturePopoverPage implements OnInit {
     }
 
     selectSample(sample) {
-        if (this.conversation) {
-            sample.conversations = [this.conversation];
-        }
         sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
         sample.joinAs = this.joinAs;
         this.selectedMoments.push(sample);
@@ -220,7 +201,7 @@ export class PickfeaturePopoverPage implements OnInit {
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
         } else { // create other Activities
             this.close(); // close the Picker, then open up the create view.
-            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, conversationId: this.conversation ? this.conversation._id : null, modalPage: true });
+            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
         }
     }
 

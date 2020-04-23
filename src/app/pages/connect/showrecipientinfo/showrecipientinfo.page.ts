@@ -244,14 +244,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 serverData.matrix_number = [[state]];
                 const createdMoment: any = await this.momentService.create(serverData); //create feature
                 createdMoment.resource = result[0]; // repopulate resource
-                const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.conversation._id);
-                if (index > -1) {
-                    createdMoment.conversations = [this.chatService.conversations[index]];
-                } else {
-                    let conversationObj = {conversation: this.conversation, type: 'connect'};
-                    createdMoment.conversations.push(conversationObj);
-                }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.conversation._id);
             });
         } catch (err){
             const networkAlert = await this.alertCtrl.create({

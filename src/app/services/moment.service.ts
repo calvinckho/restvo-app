@@ -220,15 +220,16 @@ export class Moment {
         return promise;
     }
 
-    async share(moment) {
-        if (moment.conversations && moment.conversations.length) { // moment.conversations are chat rooms to be associated with this moment. this is to be distinguished from moment.conversation, which is moment's own chat room. consult models/moment.js for detail
+    async share(moment, conversationId) {
+        const conversation = this.chatService.conversations.find((c) => c.conversation._id === conversationId).conversation;
+        if (moment && conversation) { // conversation is the share destination
             let result = '';
             if (moment.calendar && moment.calendar._id) {
                 const data = { // add all user in chat to the moment's calendar
                     operation: 'add to calendar',
                     user_lists: [],
                     momentId: moment._id,
-                    conversations: moment.conversations.map((obj) => obj.conversation._id),
+                    conversations: [conversation._id],
                     calendarId: moment.calendar._id
                 };
                 if (moment.resource && moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Goal' || moment.resource['en-US'].value[0] === 'Meetup'){
@@ -241,46 +242,43 @@ export class Moment {
             }
             if (result === 'success') {
                 try {
-                    const promises = moment.conversations.map( async (obj) => {
-                        if (obj.conversation.group) {
-                            await this.chatService.sendReply(obj.conversation._id, {
-                                moment: moment._id,
-                                page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
-                                groupId: obj.conversation.type === 'connect' ? null : obj.conversation.group._id,
-                                groupName: obj.conversation.type === 'connect' ? null : obj.conversation.group.name
-                            }, {
-                                conversationId: obj.conversation._id,
-                                moment: moment,
-                                createdAt: new Date(),
-                                author: {
-                                    _id: this.userData.user._id,
-                                    first_name: this.userData.user.first_name,
-                                    last_name: this.userData.user.last_name,
-                                    avatar: this.userData.user.avatar
-                                },
-                                status: "pending",
-                                confirmId: Math.random()
-                            });
-                        } else {
-                            await this.chatService.sendReply(obj.conversation._id, {
-                                moment: moment._id,
-                                page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage"
-                            }, {
-                                conversationId: obj.conversation._id,
-                                moment: moment,
-                                createdAt: new Date(),
-                                author: {
-                                    _id: this.userData.user._id,
-                                    first_name: this.userData.user.first_name,
-                                    last_name: this.userData.user.last_name,
-                                    avatar: this.userData.user.avatar
-                                },
-                                status: "pending",
-                                confirmId: Math.random()
-                            });
-                        }
-                    });
-                    await Promise.all(promises);
+                    if (conversation.group) {
+                        await this.chatService.sendReply(conversation._id, {
+                            moment: moment._id,
+                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
+                            groupId: conversation.type === 'connect' ? null : conversation.group._id,
+                            groupName: conversation.type === 'connect' ? null : conversation.group.name
+                        }, {
+                            conversationId: conversation._id,
+                            moment: moment,
+                            createdAt: new Date(),
+                            author: {
+                                _id: this.userData.user._id,
+                                first_name: this.userData.user.first_name,
+                                last_name: this.userData.user.last_name,
+                                avatar: this.userData.user.avatar
+                            },
+                            status: "pending",
+                            confirmId: Math.random()
+                        });
+                    } else {
+                        await this.chatService.sendReply(conversation._id, {
+                            moment: moment._id,
+                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage"
+                        }, {
+                            conversationId: conversation._id,
+                            moment: moment,
+                            createdAt: new Date(),
+                            author: {
+                                _id: this.userData.user._id,
+                                first_name: this.userData.user.first_name,
+                                last_name: this.userData.user.last_name,
+                                avatar: this.userData.user.avatar
+                            },
+                            status: "pending",
+                            confirmId: Math.random()
+                        });
+                    }
                 } catch (err) {
                     console.log(err);
                 }
