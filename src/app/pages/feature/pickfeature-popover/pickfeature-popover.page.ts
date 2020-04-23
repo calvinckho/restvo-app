@@ -191,7 +191,7 @@ export class PickfeaturePopoverPage implements OnInit {
             } else {
                 selectedProgram = this.selectedMoments[0];
             }
-            if (selectedProgram.cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
+            if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
             let hasOrganizerAccess: any;
