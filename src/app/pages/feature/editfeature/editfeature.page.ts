@@ -1339,8 +1339,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.momentService.delete(moment);
       });
       await Promise.all(promises);*/
-      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
-      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       if (this.modalPage) {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {
@@ -1348,7 +1346,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.userData.refreshUserStatus({});
       }
       this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
-      //this.events.unsubscribe('refreshMoment', this.refreshMomentHandler);
   }
 
   ngOnDestroy(): void {
