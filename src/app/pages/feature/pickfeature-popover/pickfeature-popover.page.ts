@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {AlertController, LoadingController, ModalController} from '@ionic/angular';
 import {Location} from "@angular/common";
 import {CacheService} from 'ionic-cache';
@@ -15,7 +15,7 @@ import {UserData} from "../../../services/user.service";
   styleUrls: ['./pickfeature-popover.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PickfeaturePopoverPage implements OnInit {
+export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     @Input() title: any;
     @Input() modalPage: any;
@@ -217,8 +217,14 @@ export class PickfeaturePopoverPage implements OnInit {
             if (this.step === 1) {
                 await this.loadSamples();
             }
-        } else if (this.step >= 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program
+        } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program
             if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned) {
+                this.step++;
+            } else {
+                this.done();
+            }
+        } else if (this.step > 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community)
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915475e172e4e64590e348') {
                 this.step++;
             } else {
                 this.done();
@@ -241,6 +247,17 @@ export class PickfeaturePopoverPage implements OnInit {
         } else {
             this.location.back();
         }
+        this.searchKeyword = '';
+        this.currentView = 'new';
+        this.samples = [];
+        this.ionSpinner = false;
+        this.pageNum = 0;
+        this.reachedEnd = false;
+        this.selectedMoments = [];
+        this.step = 0;
+    }
+
+    ngOnDestroy(): void {
         this.subscriptions['refresh'].unsubscribe(this.refreshAfterCreateMomentHandler);
     }
 }
