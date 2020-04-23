@@ -60,7 +60,7 @@ export class PickfeaturePopoverPage implements OnInit {
     ) {}
 
     async ngOnInit() {
-        this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Getting Started'; // the title
+        this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('id');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;

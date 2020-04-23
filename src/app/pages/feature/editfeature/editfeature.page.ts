@@ -791,7 +791,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     this.addressURL = '';
   }
 
-    async addReferences() {
+    async addReference() {
         let categoryId: any;
         let allowSwitchCategory = true;
         // if the current Activity is a Community, the references can only be Programs
@@ -845,7 +845,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-    removeReferences(event, index) {
+    removeReference(event, index) {
         event.stopPropagation();
         if (this.referenceActivities[index] && this.referenceActivities[index]._id && this.referenceActivities[index].cloned === 'new') {
             console.log("remove cloned Activity");
@@ -854,7 +854,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         this.referenceActivities.splice(index, 1);
     }
 
-    async openPlanModule(index) {
+    async openReference(index) {
         const moment = this.referenceActivities[index];
         if (moment) {
             // first check if user has organizer's access
