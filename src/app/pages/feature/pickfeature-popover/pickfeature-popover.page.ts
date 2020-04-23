@@ -4,7 +4,6 @@ import {Location} from "@angular/common";
 import {CacheService} from 'ionic-cache';
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {Chat} from "../../../services/chat.service";
 import { CalendarService } from '../../../services/calendar.service';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
@@ -55,7 +54,6 @@ export class PickfeaturePopoverPage implements OnInit {
         private loadingCtrl: LoadingController,
         private momentService: Moment,
         private userData: UserData,
-        private chatService: Chat,
         public calendarService: CalendarService
     ) {}
 
