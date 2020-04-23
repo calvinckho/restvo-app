@@ -627,3 +627,142 @@ app-dashboard {
     color: var(--ion-color-dark);
   }
 }
+.profile-name {
+    font-size: 30px;
+    color: black;
+
+}
+
+.profile-pic {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    display: block;
+}
+
+.imageCenter{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.profile-user-role {
+    font-size: medium;
+    margin-top:20px;
+    margin-bottom:20px;
+    width: 420px;
+    height: 50px;
+    line-height: 14px;
+    overflow: hidden;
+    margin: 8px 0 16px;
+    color: var(--ion-color-darkgrey);
+}
+
+.profile-data {
+    margin: 25px;
+}
+
+.editProfileButton {
+    font-size: larger;
+    color: red;
+    background-color: white;
+    border-color: red;
+    border: 1px solid;
+    border-radius: 20px;
+    padding: 15px;
+    width: 200px;
+}
+
+.borderEdge{
+    border-radius:0px;
+}
+.cardSpace{
+    padding: 20px
+}
+
+.profilePicture{
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 2% auto 0 auto;
+}
+
+@media only screen and (max-width: 700px) {
+    .profile-name {
+        font-size: 16px;
+     }
+}
+
+@media only screen and (max-width: 700px) {
+    .profile-user-role {
+        font-size: medium;
+        height: 25px;
+
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .editProfileButton {
+        font-size: medium;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .image-cropper {
+        width: auto;
+    }
+}
+
+@media only screen and (min-width: 100px) and (max-width: 320px) {
+    .profile-pic {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media only screen and (min-width: 321px) and (max-width: 440px) {
+    .profile-pic {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media only screen and (min-width: 441px) and (max-width: 900px) {
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media only screen and (min-width: 100px) and (max-width: 330px) {
+    .profile-user-role {
+        width: 70px;
+    }
+}
+
+@media only screen and (min-width: 331px) and (max-width: 375px) {
+    .profile-user-role {
+        width: 100px;
+    }
+}
+
+@media only screen and (min-width: 376px) and (max-width: 440px) {
+    .profile-user-role {
+        width: 200px;
+    }
+}
+
+@media only screen and (min-width: 441px) and (max-width: 900px) {
+    .profile-user-role {
+        width: 350px;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .editProfileButton {
+        width: 150px;
+    }
+}
+
+.containerProfile{
+    margin: 5px auto;
+    max-width: 1050px;
+}
