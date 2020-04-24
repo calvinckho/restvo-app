@@ -8,7 +8,7 @@
         {{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>Settings</ion-title>
-    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end"
+    <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end"
       mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
