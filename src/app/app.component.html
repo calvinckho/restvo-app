@@ -3,11 +3,9 @@
     <ion-menu menuId="main" side="start" contentId="main-app" mode="md" type="overlay">
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
-          <ion-item>
-            <ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
-            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
-            <!--<ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
-            <ion-label *ngIf="userData.defaultProgram">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>-->
+          <ion-item (click)="openSelectHomePage()">
+            <ion-label *ngIf="!userData.defaultProgram">Restvo <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
+            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}} <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
           </ion-item>
         </ion-toolbar>
         <ion-list>

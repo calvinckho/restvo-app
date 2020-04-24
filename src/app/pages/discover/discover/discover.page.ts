@@ -31,8 +31,8 @@ export class DiscoverPage  {
         if (this.platform.width() >= 768) {
             this.router.navigate(['/app/user/programs']);
         } else {
-            const manageModal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
-            await manageModal.present();
+            const modal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
+            await modal.present();
         }
     }
 }

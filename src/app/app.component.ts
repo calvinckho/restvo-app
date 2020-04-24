@@ -19,6 +19,7 @@ import {ShowrecipientinfoPage} from "./pages/connect/showrecipientinfo/showrecip
 import {Capacitor, Plugins} from "@capacitor/core";
 import {PickfeaturePopoverPage} from "./pages/feature/pickfeature-popover/pickfeature-popover.page";
 import {Moment} from "./services/moment.service";
+import {ProgramsPage} from "./pages/user/programs/programs.page";
 const { App } = Plugins;
 
 @Component({
@@ -116,6 +117,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     async settings() {
         this.router.navigateByUrl('/app/user/profile');
         this.menuCtrl.close();
+    }
+
+    async openSelectHomePage() {
+        if (this.platform.width() >= 768) {
+            this.router.navigate(['/app/user/programs']);
+        } else {
+            this.menuCtrl.close();
+            const modal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
+            await modal.present();
+        }
     }
 
     async saveToLocalStorage() {

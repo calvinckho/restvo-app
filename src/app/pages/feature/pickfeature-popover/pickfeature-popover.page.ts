@@ -223,8 +223,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else {
                 this.done();
             }
-        } else if (this.step > 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community)
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915475e172e4e64590e348') {
+        } else if (this.step >= 2) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.categoryId)) {
                 this.step++;
             } else {
                 this.done();
