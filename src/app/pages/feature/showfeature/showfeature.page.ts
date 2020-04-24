@@ -105,7 +105,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     scheduleIds: any = [];
     customSchedule: any;
     toDosPrivate = false;
-    adminAccessContentCalendars = [];
+    adminOrPublicAccessContentCalendars = [];
     newCalendarItem = { // create the calendar object
         moment: '5e3e5743364afa55e52ce785', // the default is the To Do content moment ID
         schedule: '',
@@ -372,7 +372,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                   if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
                       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
-                      this.adminAccessContentCalendars = results || [];
+                      this.adminOrPublicAccessContentCalendars = results || [];
                   }
                   this.refreshCalendarDisplay();
                   this.checkAndLoadNotes();
@@ -396,7 +396,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                           }
                       }
                       // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                      for (const calendarItem of this.adminAccessContentCalendars) {
+                      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
                           if (calendarItem._id === data.calendarId) { // interactable[0] is a String
                               if (data.hasOwnProperty('state')) {
                                   calendarItem.completed = data.state;
@@ -474,7 +474,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   refreshCalendarDisplay() {
       // calendarService.calendarItems display has already been refreshed
       // refresh the admin accessed calendars if it has any element (if one has admin access)
-      for (const calendarItem of this.adminAccessContentCalendars) {
+      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
           // check to see if there are upcoming events
           if (new Date(calendarItem.startDate).getTime() < new Date().getTime() - 2 * 24 * 60 * 60 * 1000) {
               calendarItem.status = 'Past';
@@ -498,7 +498,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       }
                   }
                   // super admin's calendar items list
-                  for (const calendarItem of this.adminAccessContentCalendars) {
+                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
                       if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
                           calendarItem.completed = interactable[5]; // check-in state
                       }
@@ -519,13 +519,18 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async loadMoment() {
-    if (this.authService.token) {
-      this.moment = await this.momentService.load(this.moment._id);
-    } else {
-      this.moment = await this.momentService.loadPublicMoment(this.moment._id);
-    }
+      try {
+          this.moment = await this.momentService.load(this.moment._id);
+          console.log('loaded moment', this.moment)
+      } catch (err) {
+          // if the Activity is deleted and it is trying to refresh the page
+          if (this.authService.token) {
+              this.router.navigate(['/app/me']);
+          } else {
+              this.router.navigate(['/activity/5d5785b462489003817fee18']);
+          }
+      }
     if (this.moment) {
-        console.log("loaded moment", this.moment);
         if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
             this.mapURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
             this.addressURL = "http://maps.google.com/?q=" + this.moment.location.geo.coordinates[1] + "+%2C" + this.moment.location.geo.coordinates[0];
@@ -562,20 +567,20 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
                 this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
                 const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
-                this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
-                this.scheduleIds = schedules.map((c) => c._id);
-                if (!this.hasOrganizerAccess) { // adminAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
-                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                if (schedules) {
+                    this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
+                    this.scheduleIds = schedules.map((c) => c._id);
                 }
-                this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                if (!this.hasOrganizerAccess) { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                    this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                }
                 if (this.authService.token && this.userData.user) {
                     await this.setupPermission(); // TODO: investigate if this is required
                 }
-                if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                    if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                        const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
-                        this.adminAccessContentCalendars = results || [];
-                    }
+                if (this.hasOrganizerAccess || !this.authService.token) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
+                    this.adminOrPublicAccessContentCalendars = results || [];
                 }
                 this.refreshCalendarDisplay();
             }
@@ -676,7 +681,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
                             this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
                         }
-                        console.log("list of dis", this.listOfDisplayGoals)
+                        if (!this.listOfDisplayGoals.length) {
+                            this.progressView = 'Current';
+                        }
                     }
                 }
                 // set up map display
@@ -1101,7 +1108,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
             // update the super admin calendar items list (ad hoc) before the async operation
-            for (const calendarItem of this.adminAccessContentCalendars) {
+            for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
                 if (calendarItem._id === selectedCalendarItem._id) { // interactable[0] is a String
                     calendarItem.completed = newState;
                 }
@@ -1140,11 +1147,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async createQuillEditor(event, interactableDisplay) {
         interactableDisplay.editor = event;
         interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
-        console.log("display", interactableDisplay);
     }
 
     async checkAndLoadNotes() {
-        console.log("check and load notes", this.moment);
         // if there is the tab component
         if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab

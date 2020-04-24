@@ -137,7 +137,7 @@
         <ion-item-group *ngIf="item === 20000">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="search"></ion-icon></div>
+            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="eye"></ion-icon></div>
             <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
               <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
@@ -150,6 +150,10 @@
               <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" multiple="true" [(ngModel)]="moment.categories">
                 <ion-select-option *ngFor="let category of categories" [value]="category._id">{{category['en-US'].value}}</ion-select-option>
               </ion-select>
+            </ion-item>
+            <ion-item lines="none" *ngIf="moment.categories.includes('5e1bbda67b00ea76b75e5a73')"> <!--If Content, whether to disable Edit Content (true)-->
+              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]}}</ion-label>
+              <ion-toggle [(ngModel)]="moment.array_boolean[9]"></ion-toggle>
             </ion-item>
             <ion-item lines="none"> <!--List in Discover-->
               <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(i)"></ion-icon></ion-label>
@@ -335,6 +339,10 @@
           <ion-item lines="none"> <!--To-Do Moment Id-->
             <ion-label class="ion-margin-left">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][16]}}</ion-label>
             <ion-input class="ion-text-end" type="text" maxlength="24" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][17]" [(ngModel)]="moment.matrix_string[i][3]"></ion-input>
+          </ion-item>
+          <ion-item lines="none"> <!--Allow unauthenticated access to To-Do's Content-->
+            <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][23]}}</ion-label>
+            <ion-toggle [(ngModel)]="moment.array_boolean[10]"></ion-toggle>
           </ion-item>
           <ion-item lines="none"> <!--Response Type-->
             <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][20]}}</ion-label>

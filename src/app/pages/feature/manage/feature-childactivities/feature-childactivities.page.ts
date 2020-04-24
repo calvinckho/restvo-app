@@ -148,7 +148,11 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   async openActivity(event, activity) {
     event.stopPropagation();
-    this.momentService.openMoment({ moment: activity, modalPage: true });
+    if (this.platform.width() < 768) {
+      this.momentService.editMoment({ moment: activity, modalPage: true });
+    } else {
+      this.router.navigate(['/app/edit/' + activity._id]);
+    }
   }
 
   async removeActivity(event, activity) {

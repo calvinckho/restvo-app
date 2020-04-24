@@ -124,8 +124,14 @@ export class Moment {
         });
     }
 
-    load(id) {
-        return this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions).toPromise();
+    async load(id) {
+        let promise: any;
+        if (this.authService.token) {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions).toPromise();
+        } else {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions).toPromise();
+        }
+        return promise;
     }
 
     loadUserPreferences(pageNum, programId, type) {
@@ -158,10 +164,6 @@ export class Moment {
 
     loadOnboardingFlow(momentId, searchKeyword, pageNum) { // admin only - Manage Development page
         return this.http.get(this.networkService.domain + '/api/moment/onboarding?momentId=' + (momentId || '') + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
-    }
-
-    loadPublicMoment(id) {
-        return this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions).toPromise();
     }
 
     loadPublicActivityByCategory(categoryId, pageNum){

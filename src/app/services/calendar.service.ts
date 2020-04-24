@@ -33,9 +33,16 @@ export class CalendarService {
         }, 3600000); // calculate the currentDate and currentViewDate every hour
     }
 
-    loadRelationshipContentCalendars(relationshipId) {
-        return this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
-            .toPromise();
+    async loadRelationshipContentCalendars(relationshipId) {
+        let promise: any;
+        if (this.authService.token) {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
+                .toPromise();
+        } else {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/publiccontentcalendars/' + relationshipId, this.authService.httpOptions)
+                .toPromise();
+        }
+        return promise;
     }
 
     getAllUserCalendarItemIds(){
