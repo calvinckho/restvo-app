@@ -34,7 +34,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
+<!-- <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
   <ion-grid class="full-height">
     <ion-row class="full-height">
       <ion-col class="full-height" size-xs="12" size-sm="12" size-md="3" size-lg="3">
@@ -56,31 +56,27 @@
             <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'people')}">People</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346') && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915475e172e4e64590e348')))">
+          <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')">
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'programs')}">Programs</ion-label>
           </ion-item>
-          &lt;!&ndash;show this for everything except Plan, and when Plan is in child_categories&ndash;&gt;
-          <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915476e172e4e64590e349'))">
+          <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plans')}">Plans</ion-label>
           </ion-item>
-          &lt;!&ndash;Journey, only Show in Community or Program, and if they enabled this Children Category&ndash;&gt;
-          <ion-item (click)="clickManageMenu('journey', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))"> &lt;!&ndash;Journey&ndash;&gt;
-            <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'journey')}">Journey</ion-label>
-          </ion-item>
-          &lt;!&ndash;Mentoring, only Show in Community or Program, and if they enabled this Children Category&ndash;&gt;
-          <ion-item (click)="clickManageMenu('mentoring', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))"> &lt;!&ndash;Mentoring&ndash;&gt;
+            <ion-item (click)="clickManageMenu('journey', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))">
+                <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+                <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'journey')}">Journey</ion-label>
+            </ion-item>
+          <ion-item (click)="clickManageMenu('mentoring', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))">
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'mentoring')}">Mentoring</ion-label>
           </ion-item>
-          &lt;!&ndash;Groups, only Show in Community or Program, and if they enabled this Children Category&ndash;&gt;
-          <ion-item (click)="clickManageMenu('groups', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))"> &lt;!&ndash;Group&ndash;&gt;
+          <ion-item (click)="clickManageMenu('groups', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))">
             <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
           </ion-item>
-          <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> &lt;!&ndash;if Schedule is enabled&ndash;&gt;
+          <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)">
             <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'schedule' && selectedSchedule._id === schedule._id)}">Schedule {{i + 1}}</ion-label>
@@ -94,7 +90,7 @@
             <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'onboarding')}">Onboarding</ion-label>
           </ion-item>
-          <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> &lt;!&ndash;Community Only Feature&ndash;&gt;
+          <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')">
             <ion-item (click)="clickManageMenu('billing', null)" [hidden]="!this.stripeCustomer">
               <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
@@ -119,6 +115,10 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+</ion-content> -->
+
+<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
+  <ion-router-outlet></ion-router-outlet>
 </ion-content>
 -->
 
