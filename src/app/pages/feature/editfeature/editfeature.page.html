@@ -137,44 +137,54 @@
         <ion-item-group *ngIf="item === 20000">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="search"></ion-icon></div>
+            <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="eye"></ion-icon></div>
             <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
               <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
             </ion-buttons>
           </ion-item>
-          <ion-item lines="none" *ngIf="['owner','admin','staff'].includes(userData.user.role)"> <!--List in Discover-->
-            <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(i)"></ion-icon></ion-label>
-            <ion-toggle [(ngModel)]="moment.array_boolean[0]"></ion-toggle>
-          </ion-item>
+          <!--Categories-->
+          <ion-item-group *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+            <ion-item *ngIf="categories && categories.length" class="padding-start" lines="none">
+              <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}} *</ion-label>
+              <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" multiple="true" [(ngModel)]="moment.categories">
+                <ion-select-option *ngFor="let category of categories" [value]="category._id">{{category['en-US'].value}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item lines="none" *ngIf="moment.categories.includes('5e1bbda67b00ea76b75e5a73')"> <!--If Content, whether to disable Edit Content (true)-->
+              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]}}</ion-label>
+              <ion-toggle [(ngModel)]="moment.array_boolean[9]"></ion-toggle>
+            </ion-item>
+            <ion-item lines="none"> <!--List in Discover-->
+              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(i)"></ion-icon></ion-label>
+              <ion-toggle [(ngModel)]="moment.array_boolean[0]"></ion-toggle>
+            </ion-item>
+          </ion-item-group>
           <ion-item lines="none"> <!--Share in Marketplace-->
             <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-label>
             <ion-toggle [(ngModel)]="moment.array_boolean[1]"></ion-toggle>
           </ion-item>
-          <ion-item *ngIf="moment.array_boolean[0]" class="padding-start" lines="none"> <!--Community-->
-            <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}</ion-label>
-            <ion-select multiple="true" [interfaceOptions]="{cssClass: 'level-15'}" [(ngModel)]="moment.array_community">
-              <ion-select-option *ngFor="let church of churches" [value]="church._id" [class.selected]="church.selected" [disabled]="church._id === '5ab62be8f83e2c1a8d41f894'">{{church.name}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <!--Display Community in List View-->
-          <ion-item lines="none" class="ion-margin-start">
-            <ion-icon name="eye" class="moment-label"></ion-icon>
-            <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-label>
-            <ion-toggle [(ngModel)]="moment.matrix_number[i][0]"></ion-toggle>
-          </ion-item>
-          <ion-item *ngIf="moment.array_boolean[0] && categories && categories.length" class="padding-start" lines="none">
-            <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}} *</ion-label>
-            <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" multiple="true" [(ngModel)]="moment.categories">
-              <ion-select-option *ngFor="let category of categories" [value]="category._id">{{category['en-US'].value}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <!--Display Category in List View-->
-          <ion-item lines="none" class="ion-margin-start">
-            <ion-icon name="eye" class="moment-label"></ion-icon>
-            <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
-            <ion-toggle [(ngModel)]="moment.matrix_number[i][1]"></ion-toggle>
-          </ion-item>
+          <!--Platform-->
+          <ion-item-group *ngIf="moment.array_boolean[0]">
+            <ion-item class="padding-start" lines="none">
+              <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}</ion-label>
+              <ion-select multiple="true" [interfaceOptions]="{cssClass: 'level-15'}" [(ngModel)]="moment.array_community">
+                <ion-select-option *ngFor="let church of churches" [value]="church._id" [class.selected]="church.selected" [disabled]="church._id === '5ab62be8f83e2c1a8d41f894'">{{church.name}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <!--Display Platform in List View-->
+            <ion-item lines="none" class="ion-margin-start">
+              <ion-icon name="eye" class="moment-label"></ion-icon>
+              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-label>
+              <ion-toggle [(ngModel)]="moment.matrix_number[i][0]"></ion-toggle>
+            </ion-item>
+            <!--Display Category in List View-->
+            <ion-item lines="none" class="ion-margin-start">
+              <ion-icon name="eye" class="moment-label"></ion-icon>
+              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
+              <ion-toggle [(ngModel)]="moment.matrix_number[i][1]"></ion-toggle>
+            </ion-item>
+          </ion-item-group>
         </ion-item-group>
         <ion-item-group *ngIf="item === 20010"> <!--Slider-->
           <ion-item lines="none">
@@ -329,6 +339,17 @@
           <ion-item lines="none"> <!--To-Do Moment Id-->
             <ion-label class="ion-margin-left">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][16]}}</ion-label>
             <ion-input class="ion-text-end" type="text" maxlength="24" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][17]" [(ngModel)]="moment.matrix_string[i][3]"></ion-input>
+          </ion-item>
+          <ion-item lines="none"> <!--Allow unauthenticated access to To-Do's Content-->
+            <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][23]}}</ion-label>
+            <ion-toggle [(ngModel)]="moment.array_boolean[10]"></ion-toggle>
+          </ion-item>
+          <ion-item lines="none"> <!--Response Type-->
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][20]}}</ion-label>
+            <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="popover" [(ngModel)]="moment.matrix_number[i][5]" slot="end" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][21]">
+              <ion-select-option [value]=0>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][21]}}</ion-select-option> <!--Default: Collaborative-->
+              <ion-select-option [value]=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][22]}}</ion-select-option> <!--Private-->
+            </ion-select>
           </ion-item>
           <ion-item lines="none"> <!--Enable Goal-->
             <ion-label class="ion-margin-left">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
@@ -535,7 +556,7 @@
         <div *ngIf="item === 10370"> <!--References-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-            <div class="moment-label"> <ion-icon class="side-icon" color="grey" name="jet"></ion-icon></div>
+            <div class="moment-label"> <ion-icon class="side-icon" color="grey" name="link"></ion-icon></div>
             <div class="moment-input">{{childActivityLabel}}</div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
               <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
@@ -550,13 +571,13 @@
               <span class="moment-input" *ngIf="referenceActivity._id">{{referenceActivity.matrix_string[0][0]}}</span>
               <ion-note style="max-width: 20%" class="ion-no-margin" class="ion-text-wrap" slot="end" *ngIf="referenceActivity.calendar && referenceActivity.calendar.startDate">{{referenceActivity.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
               <ion-buttons slot="end" class="ion-no-margin">
-                <ion-button fill="clear" color="grey" (click)="openPlanModule(j)"><ion-icon name="cog"></ion-icon></ion-button>
-                <ion-button fill="clear" (click)="removePlanItem($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+                <ion-button fill="clear" color="grey" (click)="openReference(j)"><ion-icon name="cog"></ion-icon></ion-button>
+                <ion-button fill="clear" (click)="removeReference($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-buttons>
             </ion-item>
           </ion-reorder-group>
           <ion-item lines="none">
-            <ion-button (click)="addPlanItem()">
+            <ion-button (click)="addReference()">
               <div class="addRemoveText">+ Choose from Library</div>
             </ion-button>
           </ion-item>
@@ -669,27 +690,27 @@
             </ion-buttons>
           </ion-item>
           <ion-item> <!--Question-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="moment.matrix_string[i][0]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item> <!--Label-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][1]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item> <!--Placeholder-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
+            <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][4]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]" autocorrect="on" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
           </ion-item>
           <ion-item lines="none"> <!--number of lines-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-label>
-            <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="10" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-input>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-label>
+            <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="10" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-input>
           </ion-item>
           <ion-item lines="none"> <!--show text editor-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][11]}}</ion-label>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][11]}}</ion-label>
             <ion-checkbox [(ngModel)]="moment.matrix_number[i][2]" slot="end"></ion-checkbox>
           </ion-item>
           <ion-item lines="none"> <!--Response Type-->
-            <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-label>
+            <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][6]}}</ion-label>
             <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="popover" [(ngModel)]="moment.matrix_number[i][1]" slot="end">
               <ion-select-option [value]=0>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-select-option> <!--Private-->
               <ion-select-option [value]=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option> <!--Collaborative-->

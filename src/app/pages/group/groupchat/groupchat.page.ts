@@ -239,7 +239,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.chatAPIBusy = true;
                 const result: Conversation = await this.chatService.getConversationById(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatPageNum);
                 this.chatAPIBusy = false;
-                if (this.chatPageNum === 1){
+                if (this.chatPageNum === 1) {
                     this.messages = []; // if this is the first page load, empty the view first
                 }
                 const momentIds = [];
@@ -394,12 +394,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
         // next process Moments
+        console.log("send moment", this.selectedMoments);
         if (this.selectedMoments.length) {
             let promises = this.selectedMoments.map( async (moment) => {
                 if (moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Poll') {
                     this.momentService.socket.emit('join moment', moment._id); // join the moment socket.io to receive real-time update for voting
                 }
-                await this.momentService.share(moment);
+                await this.momentService.share(moment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
             await Promise.all(promises);
             this.selectedMoments = []; // empty the selected moments array
@@ -709,11 +710,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async openPickFeature() {
         try {
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId}});
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, allowSwitchCategory: true, modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {
-                const sampleMoments = moments.filter((c) => c.type === 'new');
+                const sampleMoments = moments.filter((c) => c.cloned === 'new');
                 if (sampleMoments && sampleMoments.length) {
                     for (const sampleMoment of sampleMoments) {
                         sampleMoment.calendar = { // reset the calendar
@@ -732,7 +733,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     const clonedMoments: any = await this.momentService.clone(sampleMoments, null); // user will be participanting in the Activity
                     if (clonedMoments) {
                         for (const clonedMoment of clonedMoments) {
-                            clonedMoment.type = 'new';
+                            clonedMoment.cloned = 'new';
                             const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
                             if (index > -1) {
                                 clonedMoment.resource = moments[index].resource; // clone the populated resource
@@ -741,14 +742,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         }
                     }
                 }
-                for (const moment of moments) {
-                    const index = this.calendarService.calendarItems.map((c) => c.moment && c.moment._id).indexOf(moment._id);
-                    if (index > -1) {
-                        this.selectedMoments.push(this.calendarService.calendarItems[index].moment);
-                    } else {
-                        console.log("Cannot find Activity in Calendar")
-                    }
-                }
+                this.selectedMoments.push(...moments);
                 this.moreMediaOptions = false;
                 await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
             }
@@ -881,11 +875,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 serverData.resource = result[0]._id;
                 const createdMoment: any = await this.momentService.create(serverData); //create feature
                 createdMoment.resource = result[0]; // repopulate resource
-                const index = this.chatService.conversations.map((c) => {return c.conversation._id;}).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
-                if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
-                }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
 
         }).catch(async (err) => {
@@ -941,9 +931,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 createdMoment.resource = result[0]; // repopulate resource
                 const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
                 if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
+                    createdMoment.conversations = [this.chatService.conversations[index].conversation];
                 }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
         } catch (err) {
             const networkAlert = await this.alertCtrl.create({
@@ -1020,7 +1010,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async removeMoment(i) {
-        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].type === 'new') {
+        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].cloned === 'new') {
             console.log("remove cloned Activity");
             this.removedMoments.push(this.selectedMoments[i]);
         }

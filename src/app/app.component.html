@@ -3,11 +3,9 @@
     <ion-menu menuId="main" side="start" contentId="main-app" mode="md" type="overlay">
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
-          <ion-item>
-            <ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
-            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>
-            <!--<ion-label *ngIf="!userData.defaultProgram">Restvo</ion-label>
-            <ion-label *ngIf="userData.defaultProgram">{{userData.defaultProgram.matrix_string[0][0]}}</ion-label>-->
+          <ion-item (click)="openSelectHomePage()">
+            <ion-label *ngIf="!userData.defaultProgram">Restvo <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
+            <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}} <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
           </ion-item>
         </ion-toolbar>
         <ion-list>
@@ -54,9 +52,13 @@
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/user/profile']">
               <ion-icon slot="start" name="cog"></ion-icon>
-              <ion-label>
-                Settings
-              </ion-label>
+              <ion-label>Settings</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="['/app/invite']">
+              <ion-icon slot="start" name="share"></ion-icon>
+              <ion-label>Invite</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">

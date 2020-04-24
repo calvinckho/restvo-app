@@ -32,7 +32,7 @@
     <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
       <!--<ion-searchbar class="header-searchbar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" *ngIf="platform.width() >= 768 && !platform.is('ios')" slot="start"></ion-searchbar>-->
-    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
+    <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -104,11 +104,51 @@
 
     <ion-grid class="content-grid" *ngIf="view === 'profile'">
       <ion-row>
+        <!--List My Journey-->
+        <ion-col *ngIf="journeys && journeys.length" [size]="(platform.width() >= 768) && (journeys.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9f46e1c8bf1a622fec69d5']" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+                <ion-card class="program-card" (click)="openProgram($event, journey)">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="(journey.assets && journey.assets.length && journey.assets[0]) | background: journey._id" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">{{journey.matrix_string[0][0]}}</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center grid-col" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
+                  <ion-card class="grid-program-card" (click)="openProgram($event, journey)">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="(journey.assets && journey.assets.length && journey.assets[0]) | background: journey._id" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">{{journey.matrix_string[0][0]}}</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
         <!--List My Mentors-->
         <ion-col *ngIf="myMentors && myMentors.length" [size]="(platform.width() >= 768) && (myMentors.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_1' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -175,6 +215,9 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_3' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -236,11 +279,51 @@
             </ion-grid>
           </ion-card>
         </ion-col>
+        <!--List My Groups-->
+        <ion-col *ngIf="groups && groups.length" [size]="(platform.width() >= 768) && (groups.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">My Groups</ion-label>
+              <ion-button slot="end" [routerLink]="['../choose/5e9fe35cc8bf1a622fec69d7']" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+              <ion-slide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+                <ion-card class="program-card" (click)="openProgram($event, group)">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="(group.assets && group.assets.length && group.assets[0]) | background: group._id" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">{{group.matrix_string[0][0]}}</div>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center grid-col" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
+                  <ion-card class="grid-program-card" (click)="openProgram($event, group)">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="(group.assets && group.assets.length && group.assets[0]) | background: group._id" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">{{group.matrix_string[0][0]}}</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
         <!--List My Community-->
         <ion-col *ngIf="programs && programs.length" [size]="(platform.width() >= 768) && (programs.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Community</ion-label>
+              <ion-button slot="end" [routerLink]="['/app/create/community', { categoryId: '5c915324e172e4e64590e346' }]" fill="clear">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
             </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
@@ -271,6 +354,7 @@
           </ion-card>
         </ion-col>
 
+        <!--System Notifications-->
         <ion-col *ngIf="!noSystemMessage" size-xs="12" size-sm="12" size-md="6" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none" *ngIf="platform.width() >= 768"> <!--section header-->

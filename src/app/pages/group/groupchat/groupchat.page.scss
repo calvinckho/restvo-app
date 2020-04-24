@@ -1,7 +1,7 @@
 app-groupchat {
 
   ion-infinite-scroll {
-    height: 0;
+    //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
   }
 
   .titles {

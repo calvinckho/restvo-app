@@ -122,7 +122,6 @@ export class DevelopmentPage implements OnInit, OnDestroy {
     this.ionSpinner = false;
     const {data: moment} = await editActivity.onDidDismiss();
     if (moment) {
-      this.momentService.share(moment);
       this.setupManageActivities();
     }
   }

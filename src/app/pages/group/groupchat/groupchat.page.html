@@ -141,15 +141,15 @@
           <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Contact'">
             <div *ngIf="message.moment.matrix_number[0][0] === 0" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
               <ion-icon name="book" large></ion-icon>
-              <ion-label color="dark" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][6]"></ion-label>
+              <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][6]"></div>
             </div>
             <div *ngIf="message.moment.matrix_number[0][0] === 1" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
               <ion-icon name="book" large></ion-icon>
-              <ion-label color="dark" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][4]"></ion-label>
+              <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][4]"></div>
             </div>
             <div *ngIf="message.moment.matrix_number[0][0] === 2" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
               <ion-icon name="book" large></ion-icon>
-              <ion-label color="dark" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][8]"></ion-label>
+              <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][8]"></div>
             </div>
           </div>
           <!-- Others: Including All Future Features Displaying Basic Info -->
@@ -308,15 +308,15 @@
         <div class="moment right" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Contact'" >
           <div *ngIf="message.moment.matrix_number[0][0] === 0" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
             <ion-icon name="book" large></ion-icon>
-            <ion-label color="dark" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][7] + ' ' + chatService.currentChatProps[propIndex].name"></ion-label>
+            <div color="dark" class="message" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][7] + ' ' + chatService.currentChatProps[propIndex].name"></div>
           </div>
           <div *ngIf="message.moment.matrix_number[0][0] === 1" (click)="prepareToShareContactInfo($event)" class="ion-text-wrap">
             <ion-icon name="book" large></ion-icon>
-            <ion-label color="dark" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][5] + ' ' + chatService.currentChatProps[propIndex].name"></ion-label>
+            <div color="dark" class="message" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][5] + ' ' + chatService.currentChatProps[propIndex].name"></div>
           </div>
           <div *ngIf="message.moment.matrix_number[0][0] === 2" (click)="seeUserInfo($event, chatService.currentChatProps[propIndex].recipient)" class="ion-text-wrap">
             <ion-icon name="book" large></ion-icon>
-            <ion-label color="dark" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][9] + ' ' + chatService.currentChatProps[propIndex].name"></ion-label>
+            <div color="dark" class="message" [innerHTML]="message.moment.resource['en-US'].matrix_string[0][9] + ' ' + chatService.currentChatProps[propIndex].name"></div>
           </div>
         </div>
         <!-- Others: Including All Future Features Displaying Basic Info -->
@@ -475,7 +475,7 @@
                   </div>
                 </ion-card-header>
                 <div class="program-type"><ion-badge color="button1">{{moment.resource['en-US'].value[0]}}</ion-badge></div>
-                <div class="program-name light">{{moment.calendar.title}}</div>
+                <div class="program-name light">{{moment.matrix_string[0][0]}}</div>
                 <ion-button class="remove-moment ion-no-padding ion-no-margin" (click)="removeMoment(i)" fill="clear" size="small">
                   <ion-icon name="close" color="secondary"></ion-icon>
                 </ion-button>

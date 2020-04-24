@@ -1,5 +1,9 @@
 app-root {
 
+  ion-item {
+    cursor: pointer;
+  }
+
   .title-container {
     padding-top: var(--ion-safe-area-top);
   }

@@ -76,7 +76,6 @@ export class PicknotePopoverPage implements OnInit {
         this.reachedEnd = true;
       } else {
         this.relationships_notes = relationships_notes;
-        console.log("show", this.relationships_notes);
       }
     } else {
       this.ionSpinner = false;
@@ -103,7 +102,7 @@ export class PicknotePopoverPage implements OnInit {
     if (this.conversation) {
       sample.conversations = [this.conversation];
     }
-    sample.type = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
+    sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
     this.selectedNotes.push(sample);
     if (this.selectedNotes.length > this.maxCount) {
       this.selectedNotes.splice(0, 1);

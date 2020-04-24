@@ -97,6 +97,7 @@ export class Moment {
     }
 
     manageMoment(data) {
+        this.userData.currentManageActivityId = data.moment._id;
         this._manageMoment.next(data);
     }
 
@@ -123,8 +124,14 @@ export class Moment {
         });
     }
 
-    load(id) {
-        return this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions).toPromise();
+    async load(id) {
+        let promise: any;
+        if (this.authService.token) {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions).toPromise();
+        } else {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions).toPromise();
+        }
+        return promise;
     }
 
     loadUserPreferences(pageNum, programId, type) {
@@ -157,10 +164,6 @@ export class Moment {
 
     loadOnboardingFlow(momentId, searchKeyword, pageNum) { // admin only - Manage Development page
         return this.http.get(this.networkService.domain + '/api/moment/onboarding?momentId=' + (momentId || '') + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
-    }
-
-    loadPublicMoment(id) {
-        return this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions).toPromise();
     }
 
     loadPublicActivityByCategory(categoryId, pageNum){
@@ -220,15 +223,16 @@ export class Moment {
         return promise;
     }
 
-    async share(moment) {
-        if (moment.conversations && moment.conversations.length) { // moment.conversations are chat rooms to be associated with this moment. this is to be distinguished from moment.conversation, which is moment's own chat room. consult models/moment.js for detail
+    async share(moment, conversationId) {
+        const conversation = this.chatService.conversations.find((c) => c.conversation._id === conversationId).conversation;
+        if (moment && conversation) { // conversation is the share destination
             let result = '';
             if (moment.calendar && moment.calendar._id) {
                 const data = { // add all user in chat to the moment's calendar
                     operation: 'add to calendar',
                     user_lists: [],
                     momentId: moment._id,
-                    conversations: moment.conversations.map((obj) => obj.conversation._id),
+                    conversations: [conversation._id],
                     calendarId: moment.calendar._id
                 };
                 if (moment.resource && moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Goal' || moment.resource['en-US'].value[0] === 'Meetup'){
@@ -241,46 +245,43 @@ export class Moment {
             }
             if (result === 'success') {
                 try {
-                    const promises = moment.conversations.map( async (obj) => {
-                        if (obj.conversation.group) {
-                            await this.chatService.sendReply(obj.conversation._id, {
-                                moment: moment._id,
-                                page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
-                                groupId: obj.conversation.type === 'connect' ? null : obj.conversation.group._id,
-                                groupName: obj.conversation.type === 'connect' ? null : obj.conversation.group.name
-                            }, {
-                                conversationId: obj.conversation._id,
-                                moment: moment,
-                                createdAt: new Date(),
-                                author: {
-                                    _id: this.userData.user._id,
-                                    first_name: this.userData.user.first_name,
-                                    last_name: this.userData.user.last_name,
-                                    avatar: this.userData.user.avatar
-                                },
-                                status: "pending",
-                                confirmId: Math.random()
-                            });
-                        } else {
-                            await this.chatService.sendReply(obj.conversation._id, {
-                                moment: moment._id,
-                                page: obj.conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage"
-                            }, {
-                                conversationId: obj.conversation._id,
-                                moment: moment,
-                                createdAt: new Date(),
-                                author: {
-                                    _id: this.userData.user._id,
-                                    first_name: this.userData.user.first_name,
-                                    last_name: this.userData.user.last_name,
-                                    avatar: this.userData.user.avatar
-                                },
-                                status: "pending",
-                                confirmId: Math.random()
-                            });
-                        }
-                    });
-                    await Promise.all(promises);
+                    if (conversation.group) {
+                        await this.chatService.sendReply(conversation._id, {
+                            moment: moment._id,
+                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
+                            groupId: conversation.type === 'connect' ? null : conversation.group._id,
+                            groupName: conversation.type === 'connect' ? null : conversation.group.name
+                        }, {
+                            conversationId: conversation._id,
+                            moment: moment,
+                            createdAt: new Date(),
+                            author: {
+                                _id: this.userData.user._id,
+                                first_name: this.userData.user.first_name,
+                                last_name: this.userData.user.last_name,
+                                avatar: this.userData.user.avatar
+                            },
+                            status: "pending",
+                            confirmId: Math.random()
+                        });
+                    } else {
+                        await this.chatService.sendReply(conversation._id, {
+                            moment: moment._id,
+                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage"
+                        }, {
+                            conversationId: conversation._id,
+                            moment: moment,
+                            createdAt: new Date(),
+                            author: {
+                                _id: this.userData.user._id,
+                                first_name: this.userData.user.first_name,
+                                last_name: this.userData.user.last_name,
+                                avatar: this.userData.user.avatar
+                            },
+                            status: "pending",
+                            confirmId: Math.random()
+                        });
+                    }
                 } catch (err) {
                     console.log(err);
                 }
@@ -349,9 +350,12 @@ export class Moment {
         }
     }
 
-    // user actively joins an Activity
-    async addUserToProgramUserList(momentId, user_list, type, token, notifyUser) {
-        const moment: any = await this.load(momentId);
+    // user actively joins an Activity (from Onboarding Slideshow)
+    async addUserToProgramUserList(moment, user_list, token, notifyUser) {
+        if (moment && moment._id && !moment.resource) {
+            const result: any = await this.load(moment._id);
+            moment = JSON.parse(JSON.stringify(result));
+        }
         if (this.userData.user) {
             try {
                 const result: any = await this.updateMomentUserLists({
@@ -363,7 +367,7 @@ export class Moment {
                 }, token);
                 if (notifyUser) { // open modal box to notify user of status of joining the program
                     if (result === 'success') {
-                        if (type <= 2) { // participant
+                        if (user_list === 'user_list_1') { // participant
                             const alert = await this.alertCtrl.create({
                                 header: 'Success',
                                 message: 'You have successfully joined ' + moment.matrix_string[0][0],
@@ -431,7 +435,7 @@ export class Moment {
             }
         }
     }
-    
+
     // decide whether to open the participants edit mode (for organizer) or select from the PeoplePicker and add as participant to an Activity
     async initiateParticipantsView(moment, loading) {
         await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
@@ -447,11 +451,6 @@ export class Moment {
         if (hasOrganizerAccess) {
             this.editParticipants( { moment: moment, title: this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], modalPage: true });
         } else {
-            const peopleComponentId = moment.resource.matrix_number[0].indexOf(10500);
-            let participantsLabel = 'Participants';
-            if (peopleComponentId > -1) {
-                participantsLabel = moment.matrix_string[peopleComponentId].length && moment.matrix_string[peopleComponentId].length > 3 && moment.matrix_string[peopleComponentId][3] ? moment.matrix_string[peopleComponentId][3] : moment.resource['en-US'].matrix_string[peopleComponentId][5];
-            }
             this.addParticipants(moment, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + moment.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
         }
     }
@@ -560,6 +559,7 @@ export class Moment {
     async delete(moment) {
         const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id, this.authService.httpAuthOptions)
             .toPromise();
+        await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
         await this.calendarService.getUserCalendar();
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
