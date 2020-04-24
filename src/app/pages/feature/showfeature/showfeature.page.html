@@ -40,7 +40,7 @@
 </ion-header>
 
 <ion-content class="ion-padding-bottom">
-  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && !(router.url.includes('discover/home') || router.url.includes('manage/activity'))">
+  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
     <!--Invitation Section-->
     <ion-item-sliding side="end" *ngIf="(participant_type === 2) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">

@@ -40,7 +40,7 @@
         <ion-list>
           <ion-item>
             <ion-badge>{{moment.resource['en-US'].value[0]}}</ion-badge>
-            <ion-badge style="margin-left: 5px" color="button1" *ngIf="moment.parent_programs && moment.parent_programs.length" [routerLink]="['/app/manage/activity/' + moment.parent_programs[0]._id + '/profile/' + moment.parent_programs[0]._id]" (click)="userData.currentManageActivityId = moment.parent_programs[0]._id">Up one level</ion-badge>
+            <ion-badge style="margin-left: 5px" color="button1" *ngIf="moment.parent_programs && moment.parent_programs.length" (click)="upOneLevel(moment.parent_programs[0]._id)">Up one level</ion-badge>
           </ion-item>
           <ion-item (click)="clickManageMenu('insight', null)">
             <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>

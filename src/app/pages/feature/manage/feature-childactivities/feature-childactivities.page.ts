@@ -73,11 +73,11 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   async openChildActivity(event, moment) {
     event.stopPropagation();
     if (this.modalPage || this.platform.width() < 768) {
-      // for community or program, manage mode
-      if ((moment.categories.map((c) => c._id).includes('5c915324e172e4e64590e346') || moment.categories.map((c) => c._id).includes('5c915475e172e4e64590e348'))) {
-        this.momentService.manageMoment({ moment: moment, modalPage: true });
-      } else { // for relationship and other Activities, open Moment
+      // for journey and relationship, open
+      if ((moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
         this.momentService.openMoment( { moment: moment, modalPage: true });
+      } else { // the rest are manage
+        this.momentService.manageMoment({ moment: moment, modalPage: true });
       }
     } else {
       if (this.router.url.includes('app/manage')) { // if opened from Manage mode

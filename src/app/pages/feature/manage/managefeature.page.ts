@@ -257,6 +257,15 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     this.userData.currentManageActivityId = event.detail.value;
     if (!this.modalPage) {
       this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
-    } // modal view cannot change Activity
+    }
+  }
+
+  async upOneLevel(momentId) {
+    this.userData.currentManageActivityId = momentId;
+    if (this.modalPage) {
+      this.modalCtrl.dismiss();
+    } else {
+      this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
+    }
   }
 }
