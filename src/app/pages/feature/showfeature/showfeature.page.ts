@@ -457,7 +457,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   };
 
   async loadCalendarItem() {
-      if (this.authService.token && this.calendarId) {
+      if (this.authService.token && this.calendarId && this.relationshipId) {
           this.calendarItem = await this.momentService.touchContentCalendarItems(null, {operation: 'load calendar item', calendarId: this.calendarId});
           if (this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) { // if calendar context is provided and if it is an unique answer per calendar, also assign it to the responseObj property
               this.responseObj.calendar = this.calendarId;
