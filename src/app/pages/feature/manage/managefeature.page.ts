@@ -406,8 +406,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     this.userData.currentManageActivityId = momentId;
     if (this.modalPage) {
       this.modalCtrl.dismiss();
-    } else {
+    } else if (this.userData.activitiesWithAdminAccess.find((c) => c._id === momentId)) {
       this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
+    } else {
+      this.router.navigate(['/app/activity/' + momentId]);
     }
   }
 }
