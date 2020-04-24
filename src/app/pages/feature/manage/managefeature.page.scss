@@ -61,4 +61,8 @@ app-managefeature {
   .bold-font {
     font-weight: bold;
   }
+
+  .selected {
+    --ion-background-color: red !important;
+  }
 }
