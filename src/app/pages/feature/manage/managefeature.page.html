@@ -1,5 +1,4 @@
-<!--
-<ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+<!-- <ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field">
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="!modalPage && platform.width() < 768" slot="start" fill="clear">
       <ion-button fill="clear" color="grey">
@@ -12,8 +11,6 @@
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    &lt;!&ndash;<ion-title *ngIf="!modalPage && userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
-    </ion-title>&ndash;&gt;
     <ion-title (click)="select.open($event)" *ngIf="!modalPage">{{moment.matrix_string[0][0]}} <ion-note><ion-icon name="create-outline"></ion-icon></ion-note>
       <ion-select [(ngModel)]="userData.currentManageActivityId" (ionChange)="changeManageActivity($event)" [interface]="platform.width() < 768 ? 'alert' : 'popover'" [interfaceOptions]="{header: 'Manage'}" hidden>
         <div *ngFor="let activity of userData.activitiesWithAdminAccess">
@@ -29,10 +26,10 @@
     </ion-title>
     <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="edit()">{{resource['en-US'].value[18]}}</ion-button> &lt;!&ndash;Edit&ndash;&gt;
+      <ion-button (click)="edit()">{{resource['en-US'].value[18]}}</ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <!-- <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
   <ion-grid class="full-height">
@@ -117,8 +114,40 @@
   </ion-grid>
 </ion-content> -->
 
+<ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item (click)="clickManageMenu('insight', null)" [ngClass]="{ 'selected': (selectedMenuOption === 'insight')}">
+          <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
+          <ion-label>Insight</ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item (click)="clickManageMenu('profile', null)" [ngClass]="{ 'selected': (selectedMenuOption === 'profile')}">
+          <ion-icon slot="start" name="clipboard" *ngIf="platform.width() < 768"></ion-icon>
+          <ion-label *ngIf="moment && moment.categories && !moment.categories.includes('5c915476e172e4e64590e349')">Profile</ion-label>
+          <ion-label [ngClass]="{ 'selected': (selectedMenuOption === 'profile')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">Plan</ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item (click)="clickManageMenu('people', null)" [ngClass]="{ 'selected': (selectedMenuOption === 'people')}">
+          <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
+          <ion-label>People</ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')" [ngClass]="{ 'selected': (selectedMenuOption === 'plans')}">
+          <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+          <ion-label>Plans</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
+
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
-  <ion-router-outlet></ion-router-outlet>
+  <ion-router-outlet style="transform: translateY(20px);"></ion-router-outlet>
 </ion-content>
 -->
 
