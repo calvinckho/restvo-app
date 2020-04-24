@@ -33,9 +33,9 @@ export class CalendarService {
         }, 3600000); // calculate the currentDate and currentViewDate every hour
     }
 
-    async loadRelationshipContentCalendars(relationshipId) {
+    async loadRelationshipContentCalendars(relationshipId, authenticationStrategy) {
         let promise: any;
-        if (this.authService.token) {
+        if (authenticationStrategy && this.authService.token) {
             promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
                 .toPromise();
         } else {

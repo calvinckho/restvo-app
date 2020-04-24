@@ -368,11 +368,18 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   // 3. to momentId - relationshipId room, but also include a calendarId tag. use case is for a specific Content that is being repeated by a schedule, and the response is different for each Content calendar item.
                   // { delta: Delta object }, interactableId: Number, author: { _id: String }, collaborate: Boolean }
               } else if (data.type === 'refresh calendar items') {
-                  await this.calendarService.getUserCalendar();
-                  this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
-                  if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
+                  // load content calendars from backend.
+                  // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
+                  // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                  if (this.hasOrganizerAccess) {
+                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
                       this.adminOrPublicAccessContentCalendars = results || [];
+                  } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                      this.adminOrPublicAccessContentCalendars = results || [];
+                  } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                      await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                      this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                   }
                   this.refreshCalendarDisplay();
                   this.checkAndLoadNotes();
@@ -571,16 +578,21 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
                     this.scheduleIds = schedules.map((c) => c._id);
                 }
-                if (!this.hasOrganizerAccess) { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                // load content calendars from backend.
+                // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
+                // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                if (this.hasOrganizerAccess) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
                     await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
                 if (this.authService.token && this.userData.user) {
                     await this.setupPermission(); // TODO: investigate if this is required
-                }
-                if (this.hasOrganizerAccess || !this.authService.token) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
-                    this.adminOrPublicAccessContentCalendars = results || [];
                 }
                 this.refreshCalendarDisplay();
             }

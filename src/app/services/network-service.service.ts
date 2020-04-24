@@ -12,9 +12,9 @@ import {ElectronService} from 'ngx-electron';
 export class NetworkService {
 
     //  prod endpoint
-    //domain = 'https://server.restvo.com';
+    domain = 'https://server.restvo.com';
     //  dev endpoint
-    domain = 'https://server.dev.restvo.com';
+    //domain = 'https://server.dev.restvo.com';
     webapp_domain = 'https://app.restvo.com';
     assets = 'https://wee.nyc3.digitaloceanspaces.com/';
     networkSuccess = false;
