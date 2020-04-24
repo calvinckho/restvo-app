@@ -159,6 +159,13 @@
               <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(i)"></ion-icon></ion-label>
               <ion-toggle [(ngModel)]="moment.array_boolean[0]"></ion-toggle>
             </ion-item>
+            <!--Allowed Children Categories-->
+            <ion-item *ngIf="categories && categories.length" class="padding-start" lines="none">
+              <ion-label position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][11]}} *</ion-label>
+              <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" multiple="true" [(ngModel)]="moment.child_categories">
+                <ion-select-option *ngFor="let category of categories" [value]="category._id">{{category['en-US'].value}}</ion-select-option>
+              </ion-select>
+            </ion-item>
           </ion-item-group>
           <ion-item lines="none"> <!--Share in Marketplace-->
             <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-label>

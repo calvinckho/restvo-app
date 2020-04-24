@@ -96,6 +96,12 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
       this.ionSpinner = true;
       this.moment.array_boolean[5] = true; // turn on chat for participants
       await this.saveActivity(false);
+      // update reference Activities with the newly created Community Id
+      const promises = this.referenceActivities.map( async (referenceActivity) => {
+          referenceActivity.parent_programs.push(this.moment._id);
+          await this.momentService.update(referenceActivity);
+      });
+      await Promise.all(promises);
       console.log("after save", this.moment);
       this.participantsView = 'leaders'; //switch to leaders view as default
       this.view = 'tutorial';
