@@ -1152,13 +1152,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
 
       if (this.moment.resource.matrix_number[0].indexOf(10370) > -1) { // processing references
-          this.moment.array_moment = []; // clear the array
-          let promises = this.referenceActivities.map( async (referenceActivity) => {
-              if (referenceActivity && referenceActivity._id) {
-                  this.moment.array_moment.push(referenceActivity._id);
-              }
-          });
-          await Promise.all(promises);
+          this.moment.array_moment = this.referenceActivities.map((c) => c._id);
       }
 
       // clean up DO of unlinked media URLs in this.moment.assets before it is overwritten by sessionAssets
@@ -1166,7 +1160,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
       this.moment.assets = this.awsService.sessionAssets[this.moment._id];
-      console.log("assets", this.awsService.sessionAssets[this.moment._id])
       if (this.moment._id) { // sending moment object with fully populated resource object to server
           try {
               await this.momentService.update(this.moment);
@@ -1174,6 +1167,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               return this.closeModal(this.anyChangeMade);
           }
       } else { // if create new, create moment in the backend
+          console.log("check", this.moment)
           const createdMoment: any = await this.momentService.create(this.moment); // create feature
           this.moment._id = createdMoment._id;
           this.moment.access_tokens = createdMoment.access_tokens;
