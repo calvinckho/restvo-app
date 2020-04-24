@@ -1,4 +1,4 @@
-<ion-header no-border id="createfeature-header">
+<ion-header id="createfeature-header">
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
@@ -211,7 +211,7 @@
       <ion-button *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="saveActivity(true)">
+      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="closeModal(true)">
         {{resource['en-US'].value[40]}}
       </ion-button>
     </ion-row>
