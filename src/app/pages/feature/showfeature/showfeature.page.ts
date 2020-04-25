@@ -1243,18 +1243,21 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.timeoutHandle = setTimeout(async () => {
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-            if (response) {
-                const index = this.responses.map((c) => c._id).indexOf(response._id);
+            if (response && response._id) {
+                const responseToBeStored = JSON.parse(JSON.stringify(this.responseObj));
+                responseToBeStored._id = response._id;
+                const index = this.responses.map((c) => c._id).indexOf(responseToBeStored._id);
                 if (index < 0) { // if the response hasn't been added to the response list
-                    this.responses.push(response);
+                    this.responses.push(responseToBeStored);
                 } else { // if it has been added, replace with the incoming one
-                    this.responses.splice(index, 1, response);
+                    this.responses.splice(index, 1, responseToBeStored);
                 }
                 if (this.moment.program) {
                     this.userData.refreshUserStatus({});
                 }
-                // Showing the user that the content has been saved at the end of the timeout
-                this.currentSaveState = 'Saved';
+            } else {
+                this.currentSaveState = 'Failed';
+            }
 
                 setTimeout(() => {
                     this.currentSaveState = '';
