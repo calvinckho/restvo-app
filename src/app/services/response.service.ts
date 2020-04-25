@@ -24,11 +24,11 @@ export class Response {
     }
 
     submit(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     };
 
     submitDependentResponse(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     };
 
     deleteResponse(responseId) {

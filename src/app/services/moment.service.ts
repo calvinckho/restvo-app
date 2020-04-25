@@ -328,23 +328,31 @@ export class Moment {
     async submitResponse(moment, serverData, enableSocketIO) { // need to keep this as a moment service to utilize the moment's socket.io object
         try {
             const response = await this.responseService.submit(serverData);
-            const socketData = {
-                moment: moment,
-                createdAt: new Date(),
-                response: response,
-                author: {
+            console.log("from server", response)
+            if (response && response.status === 'success' && response._id) { // response example: { _id: xxx, status: 'success' }
+                const responseToBeReturned = JSON.parse(JSON.stringify(serverData));
+                responseToBeReturned._id = response._id;
+                responseToBeReturned.user = {
                     _id: this.userData.user._id,
                     first_name: this.userData.user.first_name,
                     last_name: this.userData.user.last_name,
                     avatar: this.userData.user.avatar
-                },
-                status: 'pending',
-                confirmId: Math.random()
-            };
-            if (enableSocketIO) {
-                this.socket.emit('refresh moment', moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
+                };
+                const socketData = {
+                    moment: moment,
+                    createdAt: new Date(),
+                    response: responseToBeReturned,
+                    author: responseToBeReturned.user,
+                    status: 'pending',
+                    confirmId: Math.random()
+                };
+                if (enableSocketIO) {
+                    this.socket.emit('refresh moment', moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
+                }
+                return responseToBeReturned;
+            } else {
+                throw new Error('Failed to Submit Response');
             }
-            return response;
         } catch (err) {
             this.networkService.showNoNetworkAlert();
         }
