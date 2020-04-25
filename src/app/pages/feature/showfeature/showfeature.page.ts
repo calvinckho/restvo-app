@@ -1060,12 +1060,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         if (!updatedExistingResponse) { // add a new entry to array
           this.responseObj.matrix_number.push([interactableId, null, null, null, null, interactableOption]);
         }
-        let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
+        const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
         const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list
-          this.responses.push(response);
+            this.responses.push(response);
         } else { // if it has been added, replace with the incoming one
-          this.responses.splice(index, 1, response);
+            this.responses.splice(index, 1, response);
         }
         // reset MC selection
         if (this.moment.resource.matrix_number[0][componentIndex] === 40020) {
@@ -1221,9 +1221,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
 
         for (const interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+            if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -1234,29 +1234,29 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
         this.timeoutHandle = setTimeout(async () => {
+            console.log("sending responsObj", this.responseObj);
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-            if (response && response._id) {
-                const responseToBeStored = JSON.parse(JSON.stringify(this.responseObj));
-                responseToBeStored._id = response._id;
-                const index = this.responses.map((c) => c._id).indexOf(responseToBeStored._id);
+            if (response) {
+                const index = this.responses.map((c) => c._id).indexOf(response._id);
                 if (index < 0) { // if the response hasn't been added to the response list
-                    this.responses.push(responseToBeStored);
+                    this.responses.push(response);
                 } else { // if it has been added, replace with the incoming one
-                    this.responses.splice(index, 1, responseToBeStored);
+                    this.responses.splice(index, 1, response);
                 }
                 if (this.moment.program) {
                     this.userData.refreshUserStatus({});
                 }
+                // Showing the user that the content has been saved at the end of the timeout
+                this.currentSaveState = 'Saved';
+                console.log("done submiting response", this.currentSaveState)
+
+                setTimeout(() => {
+                    this.currentSaveState = '';
+                }, 3000);
             } else {
                 this.currentSaveState = 'Failed';
             }
-
-            // Showing the user that the content has been saved at the end of the timeout
-            this.currentSaveState = 'Saved';
-            setTimeout(() => {
-                this.currentSaveState = '';
-            }, 3000);
         }, 1500);
     }
 
