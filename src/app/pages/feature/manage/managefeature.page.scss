@@ -21,6 +21,30 @@ app-managefeature {
     height: 100%;
   }
 
+  ion-header {
+    padding: 30px 0;
+    background-color: transparent !important;
+    box-shadow: none !important;
+
+    --background: transparent !important;
+  }
+
+  ion-slide {
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    padding: 10px;
+    margin: 15px;
+    border-radius: 10px;
+  }
+
+  .selected {
+    background-color: red !important;
+  }
+
+  .selected * {
+    color: white;
+    background-color: red !important;
+  }
+
   ion-router-outlet {
     border-left: 1px solid var(--ion-color-lightgrey);
   }
@@ -32,9 +56,5 @@ app-managefeature {
 
   .bold-font {
     font-weight: bold;
-  }
-
-  .selected {
-    --ion-background-color: red !important;
   }
 }
