@@ -13,8 +13,9 @@ import {
     AboutPage,
     PreferencesPage
 } from './app.po';
-import { browser } from 'protractor';
+import { browser, element, by } from 'protractor';
 import {disc} from "ionicons/icons";
+import { async } from '@angular/core/testing';
 
 describe('navigate around the maintab', () => {
     let app: AppPage;
@@ -49,27 +50,51 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
-        await showfeature.navigateTo();
-        await browser.sleep(500); // wait
-        showfeature.clickSigninButton('#signin');
-        await browser.sleep(1500); // wait
+        await browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
+         showfeature.navigateTo();
+         browser.sleep(5000); // wait
+        // showfeature.clickSigninButton('#signin');
+        console.log("clicking sign in button")
+        let el = element(by.id('signin'))
+        el.click()
+        browser.sleep(1500); // wait
+        console.log("filling out email")
         await register.fillEmail();
-        //await register.fillPhoneNumber();
+         
+         browser.sleep(5000); // wait
+        //  register.fillPhoneNumber();
+        console.log("filling out password")
         await register.fillPassword();
-        await browser.sleep(500); // wait
+         browser.sleep(500); // wait
+        console.log("signed in")
         register.submitLoginForm();
+        
     });
 
-    beforeEach(() => {
-        browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
+    beforeEach(async () => {
+        await browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
     });
-
+    // it('should login', function(){
+    //     showfeature.navigateTo()
+    //     showfeature.clickSigninButton('#signin')
+    //     register.fillEmail();
+    //     register.fillPassword();
+    //     register.submitLoginForm();
+    //     browser.sleep(5000)
+    //     expect(app.currentUrl()).toContain('app/activity');
+    // })
     it('should load the discover page', async () => {
-            await browser.sleep(6000); // wait 1 second
+            await browser.sleep(6000); // wait 6 second
             expect(discover.headerIsPresent()).toBeTruthy();
     });
+    
 
+    // test cases for checking if the default group changes after user joins the second group
+    // it('change default group to users second program after joining.', async () => {
+    //     await browser.sleep(20000); //wait 7 seconds
+    //     await discover.firstFeaturedCommunity().click()
+    //     await browser.sleep(60000);
+    // })
     /*it('should load the news page', async () => {
         maintab.clickTabButton('#tab-button-news');
         await browser.sleep(2000); // wait
@@ -82,30 +107,33 @@ describe('navigate around the maintab', () => {
         expect(await app.currentUrl()).toContain('app/myconversations');
     });*/
 
-    it('should load the Me page', async () => {
-        maintab.clickTabButton('#tab-button-me');
-        await browser.sleep(2000); // wait 2 sec
-        expect(await app.currentUrl()).toContain('app/me');
-    });
 
-    it('should open about page', async () => {
-        await me.clickPersonProfileCard();
-        await browser.sleep(1000); // wait 1 sec
-        expect(about.headerIsPresent('#about-me-header')).toBeTruthy();
-    });
 
-    it('should go back to Me page', async () => {
-        await about.clickBack();
-        await browser.sleep(1000); // wait 1 sec
-        expect(await app.currentUrl()).toContain('app/me');
-    });
+    //*** */
+    // it('should load the Me page', async () => {
+    //     maintab.clickTabButton('#tab-button-me');
+    //     await browser.sleep(2000); // wait 2 sec
+    //     expect(await app.currentUrl()).toContain('app/me');
+    // });
 
-    it('should open main menu', async () => {
-        me.clickMenuToggle('#menuToggle');
-        await browser.sleep(1000); // wait 1 sec
-        expect(app.headerIsPresent('#main-menu-toolbar')).toBeTruthy();
-    });
+    // it('should open about page', async () => {
+    //     await me.clickPersonProfileCard();
+    //     await browser.sleep(1000); // wait 1 sec
+    //     expect(about.headerIsPresent('#about-me-header')).toBeTruthy();
+    // });
 
+    // it('should go back to Me page', async () => {
+    //     await about.clickBack();
+    //     await browser.sleep(1000); // wait 1 sec
+    //     expect(await app.currentUrl()).toContain('app/me');
+    // });
+
+    // it('should open main menu', async () => {
+    //     me.clickMenuToggle('#menuToggle');
+    //     await browser.sleep(1000); // wait 1 sec
+    //     expect(app.headerIsPresent('#main-menu-toolbar')).toBeTruthy();
+    // });
+//** */
     /*it('should open settings', async () => {
         app.clickSettings('#settings');
         await browser.sleep(1000); // wait 1 sec

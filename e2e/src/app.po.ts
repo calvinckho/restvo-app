@@ -40,10 +40,10 @@ class PageObjectBase {
         return element(by.css(`${this.tag} ion-title`)).getText();
     }
 
-    protected enterInputText(sel: string, text: string) {
+    protected async enterInputText(sel: string, text: string) {
         const el = element(by.css(`${this.tag} ${sel}`));
         const inp = el.element(by.css('input'));
-        inp.sendKeys(text);
+        await inp.sendKeys(text);
     }
 
     protected enterTextareaText(sel: string, text: string) {
@@ -175,6 +175,10 @@ export class DiscoverPage extends PageObjectBase {
 
     clickMenuToggle(el) {
         this.clickElement(el);
+    }
+
+    firstFeaturedCommunity(){
+        return element.all(by.css('.program-card')).get(0)
     }
 }
 
