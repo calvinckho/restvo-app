@@ -328,6 +328,7 @@ export class Moment {
     async submitResponse(moment, serverData, enableSocketIO) { // need to keep this as a moment service to utilize the moment's socket.io object
         try {
             const response = await this.responseService.submit(serverData);
+            console.log("from server", response)
             if (response && response.status === 'success' && response._id) { // response example: { _id: xxx, status: 'success' }
                 const responseToBeReturned = JSON.parse(JSON.stringify(serverData));
                 responseToBeReturned._id = response._id;
