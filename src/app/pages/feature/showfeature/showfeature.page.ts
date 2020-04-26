@@ -252,13 +252,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      console.log("refresh user handler", data)
-      this.setup(data);
+      console.log("refresh user handler", this.loadStatus)
+      if (this.loadStatus !== 'loading') {
+          this.setup(data);
+      }
   };
 
   async setup(data) {
       this.loadStatus = 'loading';
-      await this.loadCalendarItem();
+      if (this.calendarId) {
+          await this.loadCalendarItem();
+      }
       if (this.moment._id) { // if called by modalCtrl.create()
           await this.loadMoment();
       } else { // if called by router outlet

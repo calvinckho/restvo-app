@@ -29,8 +29,6 @@
           Save
         </ion-button>
       </div>
-      <!--show Share button if user is authenticated, has finished set up permission, and loadStatus is loading or completed.
-      hide when it is a content calendar and allow unauthenticated access to To-Do Content is not defined or is true-->
       <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadStatus" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
         <ion-icon name="person-add"></ion-icon>
       </ion-button>
@@ -156,7 +154,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadStatus === 'completed' && mode === 'list' && moment.resource" class="ion-no-padding">
+  <ion-list *ngIf="loadStatus && mode === 'list' && moment.resource" class="ion-no-padding">
     <!--Content Calendar Item-->
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
@@ -852,7 +850,7 @@
       </div>
     </div>
   </ion-list>
-  <ion-slides pager [options]="slideOpts" *ngIf="loadStatus === 'completed' && mode === 'slider'">
+  <ion-slides pager [options]="slideOpts" *ngIf="loadStatus && mode === 'slider'">
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
