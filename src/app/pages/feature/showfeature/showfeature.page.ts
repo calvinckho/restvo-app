@@ -65,7 +65,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   resource: any = {};
   description = '';
   setupPermissionCompleted = false;
-  loadCompleted = false;
+  loadStatus: any;
   anyChangeMade = false;
   currentSaveState = '';
   hasAddedToCalendar = false;
@@ -243,10 +243,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // for current user refreshing the app
   loadAndProcessMomentHandler = async (data) => {
-      this.setup(data);
+      console.log("refresh user handler", this.loadStatus)
+      if (this.loadStatus !== 'loading') {
+          this.setup(data);
+      }
   };
 
   async setup(data) {
+      this.loadStatus = 'loading';
       if (this.calendarId) {
           await this.loadCalendarItem();
       }
@@ -286,9 +290,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (res && res.momentId && res.data) {
           const momentId = res.momentId;
           const data = res.data;
-          console.log('closing');
           if (momentId === this.moment._id && data.operation === 'deleted moment') {
-              console.log('closing 2');
               this.closeModal();
           // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
           } else if (momentId === this.relationshipId) {
@@ -634,7 +636,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
                         this.interactableDisplay[interactableId] = { editor: null };
                         // first determine if it is collaborative or private
-                        const isCollaborative = this.moment.matrix_number[componentIndex].length > 1 && this.moment.matrix_number[componentIndex][1];
+                        const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
                         // if collaborative, find the latest Response
                         let latestResponse: any;
@@ -707,7 +709,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     });
                 }
             });
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
 
             // set up for matching users
             if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
@@ -727,7 +729,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         } else {
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
         }
     }
   }
@@ -1307,7 +1309,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.loadAPIBusy = false;
       }, 10000);
       const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', this.searchKeyword, this.pageNum);
-      console.log("matching", results);
+      console.log("matched", results);
       this.loadAPIBusy = false;
       this.ionSpinner = false;
       if (!results.length) {
@@ -1317,7 +1319,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         for (const result of results) {
           this.matchedPeople.push(result);
         }
-        console.log("matched", this.matchedPeople);
       }
     }
   }

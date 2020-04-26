@@ -17,7 +17,7 @@
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
           <ion-icon name="list"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="loadCompleted && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
+        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
           <ion-icon name="albums"></ion-icon>
         </ion-button>
       </div>
@@ -29,7 +29,7 @@
           Save
         </ion-button>
       </div>
-      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
+      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadStatus" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
         <ion-icon name="person-add"></ion-icon>
       </ion-button>
       <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
@@ -40,7 +40,7 @@
 </ion-header>
 
 <ion-content class="ion-padding-bottom">
-  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
+  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadStatus && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
     <!--Invitation Section-->
     <ion-item-sliding side="end" *ngIf="(participant_type === 2) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
@@ -149,12 +149,12 @@
       </ion-item-group>
     </div>
   </ion-toolbar>
-  <ion-grid style="height: 100%" *ngIf="!loadCompleted">
+  <ion-grid style="height: 100%" *ngIf="loadStatus !== 'completed'">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadCompleted && mode === 'list'" class="ion-no-padding">
+  <ion-list *ngIf="loadStatus && mode === 'list' && moment.resource" class="ion-no-padding">
     <!--Content Calendar Item-->
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
@@ -615,7 +615,7 @@
         </ion-list>
       </div>
       <!-- Text Answer in List View -->
-      <div class="component" *ngIf="item === 40010">
+      <div class="component" *ngIf="item === 40010 && loadStatus === 'completed'">
         <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
@@ -850,7 +850,7 @@
       </div>
     </div>
   </ion-list>
-  <ion-slides pager [options]="slideOpts" *ngIf="loadCompleted && mode === 'slider'">
+  <ion-slides pager [options]="slideOpts" *ngIf="loadStatus && mode === 'slider'">
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
@@ -1415,10 +1415,10 @@
     </ion-slides>
   </div>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

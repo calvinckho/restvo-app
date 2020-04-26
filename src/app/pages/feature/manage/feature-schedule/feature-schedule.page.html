@@ -91,10 +91,14 @@
     </ion-row>
     <ion-item-divider></ion-item-divider>
     <ion-row *ngIf="this.schedule._id && !timeline.length" class="ion-justify-content-center">
-      <p>Your timeline is empty. Use the 'Content' tab to add content.</p>
+      <ion-col class="ion-margin-horizontal">
+        <ion-note>Your timeline is empty. Use the 'Content' tab to add content.</ion-note>
+      </ion-col>
     </ion-row>
     <ion-row *ngIf="!this.schedule._id" class="ion-justify-content-center">
-      <p>Click 'Create Schedule' to begin.</p>
+      <ion-col class="ion-margin-horizontal">
+        <ion-note>Click 'Create Schedule' to begin.</ion-note>
+      </ion-col>
     </ion-row>
     <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
       <ion-item *virtualItem="let calendaritem; let j = index;">
