@@ -77,7 +77,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
       // PWA fast load is executed after an event sent from app.component.ts's checkAuthenticationWithToken()
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshPage);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshPage);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
@@ -732,6 +732,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshPage);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshPage);
+        this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }
 }

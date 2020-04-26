@@ -94,7 +94,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
           await networkAlert.present();
       });
       this.loadCompleted = true;
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
   }
 
 
@@ -420,6 +420,6 @@ export class EditboardpostPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
     }
 }
