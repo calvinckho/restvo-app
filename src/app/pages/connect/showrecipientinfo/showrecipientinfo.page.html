@@ -24,9 +24,9 @@
         <!--<ion-item lines="none">
           <p class="name ion-text-center ion-text-md-uppercase">{{recipient.first_name}} {{recipient.last_name}} <span *ngIf="recipient.role === 'Contact' || recipient.role === 'Pending'">{{recipient.name}}</span></p>
         </ion-item>-->
-        <ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
+        <!--<ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
           <ion-badge shape="round">{{recipient.role}}</ion-badge>
-        </ion-row>
+        </ion-row>-->
         <div *ngFor="let program of result.programs">
           <div *ngIf="program._id === '5d5785b462489003817fee18'">
             <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
