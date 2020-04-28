@@ -174,21 +174,22 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
             let hasOrganizerAccess: any;
+            // check hasOrganizerAccess
             if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
                 hasOrganizerAccess = selectedProgram.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
             } else if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
                 hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
             }
-            if (hasOrganizerAccess) {
+            if (hasOrganizerAccess) { // if hasOrganizerAccess
                 this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
                 await this.loading.dismiss();
-            } else {
+            } else { //if do not have organizer access
                 this.router.navigate(['/app/activity/' + selectedProgram._id]);
                 setTimeout(async () => {
                     await this.loading.dismiss();
                     await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
                     this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
-                }, 1000);
+                }, 2000);
             }
         }
     }
