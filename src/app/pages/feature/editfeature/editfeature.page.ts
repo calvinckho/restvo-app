@@ -189,14 +189,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   ionViewWillEnter() {
       // re-entering edit on Desktop only
       if (this.userData.user && this.moment && this.moment._id && !this.modalPage) {
-          console.log("reload 1")
           this.setup();
       }
   }
 
     reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
       if (this.userData.user && !this.initialSetupCompleted) {
-          console.log("reload 2")
           this.setup();
       }
     };
