@@ -241,19 +241,24 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.processVerificationToken();
   }
 
-  // for current user refreshing the app
+    /** load and process Moment Handler
+     *
+     * @param data - data being passed by the refreshUser observable
+     *
+     * @example OnInit, when the component is intiated, this will get fired
+     * @example PWA fast load, this function gets called 2 times. The first time was when user is not yet authenticated
+     * the second time, the user is authenticated, and it sends a userRefresh observable signal and activate this handler
+     * @example On normal user fresh broadcast
+     */
+
   loadAndProcessMomentHandler = async (data) => {
-      console.log("refresh user handler", this.loadStatus)
-      if (this.loadStatus !== 'loading') {
-          this.setup(data);
-      }
+      console.log("refresh user handler", data)
+      this.setup(data);
   };
 
   async setup(data) {
       this.loadStatus = 'loading';
-      if (this.calendarId) {
-          await this.loadCalendarItem();
-      }
+      await this.loadCalendarItem();
       if (this.moment._id) { // if called by modalCtrl.create()
           await this.loadMoment();
       } else { // if called by router outlet
@@ -1279,7 +1284,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipePeopleSlide() {
-    if (this.peopleSlides) {
+    if (this.peopleSlides && this.loadStatus !== 'loading') {
       const currentSlideIndex = await this.peopleSlides.getActiveIndex();
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePeople(null);
@@ -1288,17 +1293,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async loadPeople() {
-    setTimeout(() => {
-      if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
-        this.infiniteScroll.disabled = false;
-      }
-      this.reachedEnd = false;
-      this.matchedPeople = [];
-      this.pageNum = 0;
-      if (this.moment._id) {
-          this.loadMorePeople({target: this.infiniteScroll});
-      }
-    }, 50);
+    if (this.loadStatus !== 'loading') {
+        setTimeout(() => {
+            if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
+                this.infiniteScroll.disabled = false;
+            }
+            this.reachedEnd = false;
+            this.matchedPeople = [];
+            this.pageNum = 0;
+            if (this.moment._id) {
+                this.loadMorePeople({target: this.infiniteScroll});
+            }
+        }, 50);
+    }
   }
 
   async loadMorePeople(event) {

@@ -424,7 +424,7 @@ export class RegisterPage implements OnInit {
                 setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
                     this.userData.refreshAppPages();
                 }, 4000);
-                if (this.platform.is('cordova')){
+                if (this.platform.is('cordova')) {
                     StatusBar.show();
                 }
                 loading.dismiss();
