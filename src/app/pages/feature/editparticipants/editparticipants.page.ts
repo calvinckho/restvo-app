@@ -32,6 +32,7 @@ import {EditfeaturePage} from "../editfeature/editfeature.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
 
   @Input() title = '';
+  uniqueParticipantList = [];
 
   constructor(
               public route: ActivatedRoute,
@@ -63,5 +64,31 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
         momentService, resourceService, responseService, calendarService);
   }
 
+  // for Desktop routing, it is possible for user to jump between page views without properly using the back button (closeModal and ngOnDestroy).
+  // assumption: leaving the page improperly will lose all unsaved changes. Re-entering will refresh the edit page to its initial state.
+  // in such case, ionViewWillEnter listener is used to detect re-entering a page view and reloading the page
+  async ionViewWillEnter() {
+    // re-entering edit on Desktop only
+    if (this.userData.user && this.moment && this.moment._id && !this.modalPage) {
+      await this.setup();
+      this.mergeParticipantsIntoUniqueParticipantList();
+    }
+  }
 
+  reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
+    if (this.userData.user && !this.initialSetupCompleted) {
+      await this.setup();
+      this.mergeParticipantsIntoUniqueParticipantList();
+    }
+  };
+
+  mergeParticipantsIntoUniqueParticipantList() {
+    console.log('check participants', this.moment, this.moment.user_list_1);
+    // this.moment is ready to go
+    // this.moment.user_list_1 - participant
+    // this.moment.user_list_2 - organizer
+    // this.moment.user_list_3 - leader
+
+    //this.uniqueParticipantList =
+  }
 }
