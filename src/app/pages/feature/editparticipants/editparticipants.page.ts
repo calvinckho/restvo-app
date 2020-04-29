@@ -83,12 +83,15 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   };
 
   mergeParticipantsIntoUniqueParticipantList() {
-    console.log('check participants', this.moment, this.moment.user_list_1);
+    // console.log('check participants', this.moment, this.moment.user_list_1);
     // this.moment is ready to go
     // this.moment.user_list_1 - participant
     // this.moment.user_list_2 - organizer
     // this.moment.user_list_3 - leader
-
+    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_1)
+    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_2)
+    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_3)
+    console.log('unique List', this.uniqueParticipantList)
     //this.uniqueParticipantList =
   }
 }
