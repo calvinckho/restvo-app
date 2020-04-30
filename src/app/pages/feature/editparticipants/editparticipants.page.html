@@ -20,14 +20,20 @@
     </ion-row>
   </ion-grid>
   <div>
-    <ion-list>
-      <ion-item>
-        <ion-label>
-          Test
-        </ion-label>
-      </ion-item>
-    </ion-list>
-
+    <ion-content *ngIf="uniqueParticipantList">
+      <ion-list>
+        <ion-item *ngFor="let user of uniqueParticipantList; index as j">
+          <div class="participant-centered">
+            <ion-avatar class="participant-avatar" slot="start">
+              <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+              <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+            </ion-avatar>
+            <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'participant', j)"></ion-icon>
+            <ion-label color="light" class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-content>
 
 
 
