@@ -83,15 +83,30 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   };
 
   mergeParticipantsIntoUniqueParticipantList() {
-    // console.log('check participants', this.moment, this.moment.user_list_1);
+    console.log('moment', this.moment)
+    console.log('check participants user list 1', this.moment.user_list_1);
+    console.log('check participants user list 2', this.moment.user_list_2);
+    console.log('check participants user list 3', this.moment.user_list_3);
+
+
     // this.moment is ready to go
     // this.moment.user_list_1 - participant
     // this.moment.user_list_2 - organizer
     // this.moment.user_list_3 - leader
-    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_1)
-    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_2)
-    this.uniqueParticipantList = this.uniqueParticipantList.concat(this.moment.user_list_3)
+    let tempList1 = this.moment.user_list_1.map(user => {
+      user.role = this.participantLabel
+      return user
+    })
+    let tempList2 = this.moment.user_list_2.map(user => {
+      user.role = this.organizerLabel
+      return user
+    })
+    let tempList3 = this.moment.user_list_3.map(user => {
+      user.role = this.leaderLabel
+      return user
+    })
+    this.uniqueParticipantList = tempList1.concat(tempList2, tempList3)
+
     console.log('unique List', this.uniqueParticipantList)
-    //this.uniqueParticipantList =
   }
 }
