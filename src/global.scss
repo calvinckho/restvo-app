@@ -184,3 +184,13 @@ ion-spinner {
   --ion-color-tint: var(--ion-color-button3-tint);
 }
 
+.modal-fullscreen {
+  .modal-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+  }
+}
