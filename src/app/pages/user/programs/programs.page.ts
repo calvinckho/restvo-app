@@ -69,7 +69,15 @@ export class ProgramsPage implements OnInit, OnDestroy {
   }
 
     async toggleAdminMode(event) {
-          await this.storage.set('UIAdminMode', event.detail.checked);
+        await this.storage.set('UIAdminMode', event.detail.checked);
+        let activityURL;
+        const program = this.userData.defaultProgram;
+        if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
+            activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
+        } else {
+            activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
+        }
+        this.router.navigate([activityURL]);
       }
 
     selectDefault(event, program) {
