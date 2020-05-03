@@ -69,7 +69,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
   }
 
     async toggleAdminMode(event) {
-          await this.storage.set('UIAdminMode', event.detail.value);
+          await this.storage.set('UIAdminMode', event.detail.checked);
       }
 
     selectDefault(event, program) {
