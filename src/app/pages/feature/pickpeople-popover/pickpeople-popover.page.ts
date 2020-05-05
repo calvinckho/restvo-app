@@ -122,6 +122,7 @@ export class PickpeoplePopoverPage implements OnInit {
       if (index > -1) {
           this.selfConversationObj = this.selectedConversations[index];
       }
+      console.log("organizer status", this.hasOrganizerAccess);
   }
 
     setupLoadAppUsers() {
