@@ -8,6 +8,25 @@ const routes: Routes = [
         component: ManagefeaturePage,
         children: [
             {
+                path: 'chat',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
+                    }
+                ]
+            },
+            {
+                path: 'myconversations',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: '../../connect/myconversations/myconversations.module#MyconversationsPageModule'
+
+                    }
+                ]
+            },
+            {
                 path: 'insight',
                 children: [
                     {
