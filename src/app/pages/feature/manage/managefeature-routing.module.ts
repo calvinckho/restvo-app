@@ -8,9 +8,32 @@ const routes: Routes = [
         component: ManagefeaturePage,
         children: [
             {
-                path: 'insight/:id',
-                loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule',
-                //outlet: 'main'
+                path: 'chat',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
+                    }
+                ]
+            },
+            {
+                path: 'myconversations',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: '../../connect/myconversations/myconversations.module#MyconversationsPageModule'
+
+                    }
+                ]
+            },
+            {
+                path: 'insight',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule'
+                    },
+                ]
             },
             {
                 path: 'profile/:id',
