@@ -117,27 +117,27 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   };
 
   mergeParticipantsIntoUniqueParticipantList() {
-    console.log("moment", this.moment);
+    // console.log("moment", this.moment);
 
     // this.moment is ready to go
     // this.moment.user_list_1 - participant
     // this.moment.user_list_2 - organizer
     // this.moment.user_list_3 - leader
-    // let tempList1 = this.moment.user_list_1.slice();
-    // tempList1.forEach((user) => {
-    //   user.role = this.participantLabel;
-    // });
-    // let tempList2 = this.moment.user_list_2.slice();
-    // tempList2.forEach((user) => {
-    //   user.role = this.organizerLabel;
-    // });
-    // let tempList3 = this.moment.user_list_3.slice();
-    // tempList3.forEach((user) => {
-    //   user.role = this.leaderLabel;
-    // });
+    let tempList1 = this.moment.user_list_1.slice();
+    tempList1.forEach((user) => {
+      user.role = this.participantLabel;
+    });
+    let tempList2 = this.moment.user_list_2.slice();
+    tempList2.forEach((user) => {
+      user.role = this.organizerLabel;
+    });
+    let tempList3 = this.moment.user_list_3.slice();
+    tempList3.forEach((user) => {
+      user.role = this.leaderLabel;
+    });
 
-    // this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
+    this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
 
-    // console.log("unique List", this.uniqueParticipantList);
+    console.log("unique List", this.uniqueParticipantList);
   }
 }
