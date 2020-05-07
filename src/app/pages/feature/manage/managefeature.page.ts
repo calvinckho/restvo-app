@@ -88,6 +88,9 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     super.ngOnInit();
     if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
       this.selectedMenuOption = 'profile';
+    } else if (this.router.url.includes('chat')) {
+      console.log("boi")
+      this.renderConversations();
     }
   }
 
@@ -111,6 +114,71 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   async loadSchedules(momentId) {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
+  }
+
+  sortConversations(datas) {
+      datas.forEach((obj, index) => { // to do a stable sort, first remember the order
+          obj.order = index;
+      });
+      datas.sort((a, b) => {
+          let badge_diff = b.data.badge - a.data.badge;
+          if (badge_diff !== 0) {
+              return badge_diff; // only sort when there is an actual difference
+          } else {
+              return a.order - b.order; // preserve the order
+          }
+      });
+  }
+
+  async renderConversations() {
+      this.datas = [];
+      const listOfChurchIds = this.userData.user.churches.map((c) => c._id );
+      this.chatService.conversations.forEach((obj: any) => {
+          // Friends
+          if (obj.conversation.type === 'connect') {
+              this.noConversationLoaded = false;
+              if(obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1){
+                  this.datas.push(obj); //push the conversation object into an array
+              }
+          }
+          // Community Groups
+          else if (obj.conversation.group && obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === obj.conversation.group.churchId || this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+              this.noConversationLoaded = false;
+              if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
+                  this.datas.push(obj); //push the conversation object into an array
+              }
+          }
+          // Personal Groups
+          else if (obj.conversation.group && !obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+              this.noConversationLoaded = false;
+              if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
+                  this.datas.push(obj); //push the conversation object into an array
+              }
+          }
+          // Outside Groups
+          else if (obj.conversation.group && listOfChurchIds.indexOf(obj.conversation.group.churchId) === -1 && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+              this.noConversationLoaded = false;
+              if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
+                  this.datas.push(obj); //push the conversation object into an array
+              }
+          }
+          // Moment (Program, Plan, etc)
+          else if (obj.conversation.moment && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
+              this.noConversationLoaded = false;
+              if (obj.data.name && obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
+                  this.datas.push(obj); //push the conversation object into an array
+              }
+          }
+          if (obj.message && Object.keys(obj.message).length > 0) {
+              obj.message.preview = ((obj.message.author === this.userData.user._id) ? "You: " : '') + (obj.message.body || '') + ((obj.message.moment && obj.message.moment.resource) ? obj.message.moment.resource['en-US'].value[0] : '') + (obj.message.attachments && obj.message.attachments.length ? '📁' : '');
+          }
+      });
+      this.sortConversations(this.datas);
+      // load the chat room when initiating in wide screen view
+      if (!this.chatService.currentChatProps.length && this.platform.width() >= 768 && this.datas.length) {
+          this.pushToMessagePage(null, this.datas[0]);
+      }
+      this.finishedLoading = true;
   }
 
   async pushToMessagePage(event, object) {
