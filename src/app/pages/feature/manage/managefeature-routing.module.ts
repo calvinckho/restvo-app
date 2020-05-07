@@ -11,7 +11,7 @@ const routes: Routes = [
                 path: 'chat',
                 children: [
                     {
-                        path: "",
+                        path: ":id",
                         loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
                     }
                 ]
