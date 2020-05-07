@@ -29,6 +29,7 @@ import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
 import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
+import {GroupchatPage} from '../../group/groupchat/groupchat.page';
 import {Storage} from "@ionic/storage";
 
 @Component({
@@ -106,6 +107,67 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
   }
+
+  async pushToMessagePage(event, object) {
+      if (event) event.stopPropagation();
+      let chatObj;
+      if (object.conversation.type === 'connect') {
+          chatObj = {
+              conversationId: object.conversation._id,
+              name: object.data.name,
+              recipient: object.data.participant,
+              page: 'chat',
+              badge: object.data.badge,
+              modalPage: this.platform.width() < 768
+          };
+      } else if (object.conversation.type === 'group') {
+          chatObj = {
+              conversationId: object.conversation.group.conversation,
+              name: object.conversation.group.name,
+              group: object.conversation.group,
+              page: 'chat',
+              badge: object.data.badge,
+              modalPage: this.platform.width() < 768
+          };
+      } else if (object.conversation.type === 'moment') {
+          chatObj = {
+              conversationId: object.conversation._id,
+              name: object.data.name,
+              moment: object.conversation.moment,
+              page: 'chat',
+              badge: object.data.badge,
+              modalPage: this.platform.width() < 768
+          };
+      }
+      if (this.platform.width() >= 768) {
+          this.chatService.currentChatProps.push(chatObj);
+          // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+          this.router.navigate(['/app/myconversations/chat'], { skipLocationChange: true });
+          // if it is displaying the chat view, it will reload the chat data
+          this.userData.refreshMyConversations({action: 'reload chat view'});
+      } else {
+          this.chatService.currentChatProps.push(chatObj);
+          const groupPage = await this.modalCtrl.create({
+              component: GroupchatPage,
+              componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+          });
+          await groupPage.present();
+      }
+      if (this.electronService.isElectronApp) { // since electron doesn't detect appStateChange, manually refreshTabBadges at every pushToMessage()
+          this.chatService.refreshTabBadges();
+      }
+      // reorder the list
+      this.searchKeyword = '';
+      object.data.badge = 0;
+  }
+
+  // async createChatConversation() {
+  //   await this.userData.checkPushNotification();
+  //   const newConversationId = await this.chatService.newConversation(this.recipient._id, { composedMessage : welcomeMessage, type: "connect" });
+  //   this.chatService.refreshTabBadges();
+  //   this.isConnected = true;
+  //   this.chatService.openChat({conversationId: newConversationId, author: this.recipient});
+  // }
 
   async clickManageMenu(menuOption, selectedSchedule) {
     this.menu = [
