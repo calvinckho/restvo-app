@@ -1,49 +1,74 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)"
+        ><ion-icon name="chevron-back-outline"></ion-icon
+      ></ion-button>
     </ion-buttons>
     <ion-grid>
       <ion-row>
-        <ion-col> <!--css is defined in editfeature.page.scss-->
-          <div class="title" [ngClass]="{'ios': platform.is('ios')}">{{title}}</div>
+        <ion-col>
+          <!--css is defined in editfeature.page.scss-->
+          <div class="title" [ngClass]="{'ios': platform.is('ios')}">
+            {{moment.program}}
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
-  <ion-grid style="height: 100%; position: absolute" *ngIf="momentService.ionSpinner">
-    <ion-row class="ion-align-items-center" style="height: 100%">
+<ion-content
+  *ngIf="resource && resource._id && moment.resource && moment.resource.field"
+>
+  <ion-grid
+    style="height: 100%; position: absolute;"
+    *ngIf="momentService.ionSpinner"
+  >
+    <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
   <div>
-      <ion-list>
-        <ion-item>
-          <ion-label color="light" slot="start">
-            <h3>Current Participants</h3>
-          </ion-label>
-          <ion-label color='light' slot='start'>
-            <h3>Role</h3>
-          </ion-label>
-        </ion-item>
-        <ion-item *ngFor="let user of uniqueParticipantList; index as j">
-            <ion-avatar class="participant-avatar" slot="start">
-              <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-              <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-            </ion-avatar>
-            <ion-label color="light" slot="start" >{{user.first_name}} {{user.last_name}}</ion-label>
-            <ion-label color="light" slot="start" >{{user.role}}</ion-label>
-            <ion-button slot="end">Chat</ion-button>
-        </ion-item>
-      </ion-list>
-
-
-
-
-
+    <ion-list>
+      <ion-list-header>
+        <h1>Participants for {{moment.matrix_string[0]}}</h1>
+        <ion-select
+          placeholder="Invite"
+          interface="popover"
+          [interfaceOptions]="{header: 'Invite'}"
+        >
+          <ion-select-option>{{participantLabel}}</ion-select-option>
+          <ion-select-option>{{organizerLabel}}</ion-select-option>
+          <ion-select-option>{{leaderLabel}}</ion-select-option>
+        </ion-select>
+      </ion-list-header>
+      <ion-item lines="none">
+        <ion-label slot="start">
+          <h3>Current Participants</h3>
+        </ion-label>
+        <ion-label slot="start">
+          <h3>Role</h3>
+        </ion-label>
+      </ion-item>
+      <ion-item
+        *ngFor="let user of uniqueParticipantList; index as j"
+        lines="full"
+      >
+        <ion-avatar class="participant-avatar" slot="start">
+          <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+          <ion-img
+            *ngIf="!user.avatar"
+            src="assets/img/avatar-default.jpg"
+          ></ion-img>
+        </ion-avatar>
+        <ion-label slot="start"
+          >{{user.first_name}} {{user.last_name}}</ion-label
+        >
+        <ion-label slot="start">{{user.role}}</ion-label>
+        <ion-button slot="end">Chat</ion-button>
+      </ion-item>
+    </ion-list>
 
     <!-- <ion-item lines="none">
       <ion-label>{{participantsLabel}}</ion-label>
