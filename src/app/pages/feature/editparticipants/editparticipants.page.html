@@ -38,9 +38,9 @@
           interface="popover"
           [interfaceOptions]="{header: 'Invite'}"
         >
-          <ion-select-option>{{participantLabel}}</ion-select-option>
-          <ion-select-option>{{organizerLabel}}</ion-select-option>
-          <ion-select-option>{{leaderLabel}}</ion-select-option>
+          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">{{participantLabel}}</ion-select-option>
+          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">{{organizerLabel}}</ion-select-option>
+          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">{{leaderLabel}}</ion-select-option>
         </ion-select>
       </ion-list-header>
       <ion-item lines="none">
@@ -54,6 +54,7 @@
       <ion-item
         *ngFor="let user of uniqueParticipantList; index as j"
         lines="full"
+        (click)="seeUserInfo($event, user)"
       >
         <ion-avatar class="participant-avatar" slot="start">
           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
