@@ -123,6 +123,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
+
+    if (this.router.url.includes('chat')) {
+      this.pushToMessagePage(null, this.chatService.conversations[0]);
+    }
   };
 
   async loadSchedules(momentId) {
@@ -161,10 +165,11 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
               modalPage: this.platform.width() < 768
           };
       }
+
       if (this.platform.width() >= 768) {
           this.chatService.currentChatProps.push(chatObj);
           // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-          this.router.navigate(['/app/myconversations/chat'], { skipLocationChange: true });
+          this.router.navigate(['/app/manage/activity/' + this.moment._id + '/chat'], { skipLocationChange: true });
           // if it is displaying the chat view, it will reload the chat data
           this.userData.refreshMyConversations({action: 'reload chat view'});
       } else {
@@ -175,6 +180,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
           });
           await groupPage.present();
       }
+
       if (this.electronService.isElectronApp) { // since electron doesn't detect appStateChange, manually refreshTabBadges at every pushToMessage()
           this.chatService.refreshTabBadges();
       }
