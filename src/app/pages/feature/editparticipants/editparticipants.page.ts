@@ -39,7 +39,6 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @Input() title = "";
   uniqueParticipantList = [];
-  uniqueLabelList = []
 
   constructor(
     public route: ActivatedRoute,
@@ -137,8 +136,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     tempList3.forEach((user) => {
       user.role = this.leaderLabel;
     });
-    this.uniqueLabelList.push(this.participantLabel, this.organizerLabel, this.leaderLabel)
-    console.log(this.uniqueLabelList)
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
 
     console.log("unique List", this.uniqueParticipantList);
