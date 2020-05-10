@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.7.12",
+  "version": "1.7.13",
   "description": "Connect with Mentors",
   "main": "index.js",
   "private": true,
@@ -14,7 +14,7 @@
     "appId": "com.restvo.electron",
     "productName": "Restvo",
     "buildVersion": "1",
-    "copyright": "Copyright © 2019 Restvo Inc.",
+    "copyright": "Copyright © 2020 Restvo Inc.",
     "mac": {
       "category": "Social Networking",
       "darkModeSupport": true
