@@ -18,14 +18,14 @@ export class Systemlog {
     }
 
     async logAppUsage(time) {
-        const data: any = {topic: 'Mobile App Usage', time: time, appPlatforms: this.platform.platforms()};
+        const data: any = {topic: 'Mobile App Usage', numberField_1: time, appPlatforms: this.platform.platforms()};
         if (this.userData && this.userData.defaultProgram && this.userData.defaultProgram._id) {
             data.defaultProgram = this.userData.defaultProgram._id;
         }
         if (this.platform.is('cordova')) {
             data.appVersionNumber = await this.appVersion.getVersionNumber();
         }
-        return this.http.post(this.networkService.domain + '/api/systemlog/appusage', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     }
 }
 
