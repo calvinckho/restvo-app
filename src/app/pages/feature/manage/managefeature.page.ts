@@ -93,8 +93,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user && this.router.url.includes('manage')) {
-      this.pushToMessagePage(null, this.chatService.conversations[0]);
-
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;
@@ -106,6 +104,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
+
+      this.pushToMessagePage(null, this.chatService.conversations[0]);
     }
   };
 
@@ -214,6 +214,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.platform.width() >= 768) {
           this.chatService.currentChatProps.push(chatObj);
           // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+          console.log(this.moment)
           this.router.navigate(['/app/manage/activity/' + this.moment._id + '/chat'], { skipLocationChange: true });
           // if it is displaying the chat view, it will reload the chat data
           this.userData.refreshMyConversations({action: 'reload chat view'});
