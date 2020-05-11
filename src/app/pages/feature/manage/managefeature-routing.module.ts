@@ -12,8 +12,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: "",
-                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
-                        outlet: "chat"
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
                     }
                 ]
             },
