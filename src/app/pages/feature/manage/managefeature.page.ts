@@ -124,7 +124,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       }
     }
 
-    if (this.router.url.includes('chat')) {
+    if (this.router.url.includes('insight')) {
       this.pushToMessagePage(null, this.chatService.conversations[0]);
     }
   };
