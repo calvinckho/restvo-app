@@ -106,10 +106,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
-
-    if (this.router.url.includes('insight')) {
-      this.pushToMessagePage(null, this.chatService.conversations[0]);
-    }
   };
 
   async loadSchedules(momentId) {
