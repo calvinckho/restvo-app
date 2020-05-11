@@ -93,6 +93,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user && this.router.url.includes('manage')) {
+      this.pushToMessagePage(null, this.chatService.conversations[0]);
+
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;
@@ -104,10 +106,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
-    }
-
-    if (this.router.url.includes('insight')) {
-      this.pushToMessagePage(null, this.chatService.conversations[0]);
     }
   };
 
