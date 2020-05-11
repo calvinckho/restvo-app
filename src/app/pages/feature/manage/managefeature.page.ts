@@ -98,7 +98,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.userData.currentManageActivityId = momentId;
         this.storage.set('currentManageActivityId', momentId);
       }
-      this.loadSchedules(momentId);
+      await this.loadSchedules(momentId);
 
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
