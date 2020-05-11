@@ -12,7 +12,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: "",
-                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
+                        outlet: "chat"
                     }
                 ]
             },
@@ -23,6 +24,11 @@ const routes: Routes = [
                         path: ':id',
                         loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule'
                     },
+                    {
+                        path: ":id",
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
+                        outlet: "chat"
+                    }
                 ]
             },
             {
