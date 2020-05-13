@@ -1,15 +1,18 @@
 app-root {
 
-  .split-pane-narrow {
-    width: 70%;
-    border-right: var(--border);
+  #split-pane {
+    width: 80%;
   }
 
   #sub-panel {
-    width: 30%;
+    width: 20%;
     position: absolute;
     top: 0;
-    left: 70%;
+    left: 80%;
+  }
+
+  ion-router-outlet {
+    height: 100%;
   }
 
   ion-item {
