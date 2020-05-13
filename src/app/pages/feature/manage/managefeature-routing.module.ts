@@ -11,8 +11,9 @@ const routes: Routes = [
                 path: 'chat',
                 children: [
                     {
-                        path: "",
-                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule'
+                        path: '',
+                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
+                        outlet: 'sub'
                     }
                 ]
             },
@@ -23,11 +24,6 @@ const routes: Routes = [
                         path: ':id',
                         loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule'
                     },
-                    {
-                        path: ":id",
-                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
-                        outlet: "chat"
-                    }
                 ]
             },
             {
@@ -53,7 +49,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -62,7 +59,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -71,7 +69,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -89,7 +88,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -98,7 +98,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -107,7 +108,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                        
                     },
                 ]
             },
@@ -116,7 +118,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule'
+                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                        
                     },
                 ]
             },
@@ -125,7 +128,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule'
+                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                        
                     },
                 ]
             },
@@ -134,7 +138,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule'
+                        loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule',
+                        
                     },
                 ]
             },
@@ -144,7 +149,8 @@ const routes: Routes = [
                     {
                         path: ':id',
                         loadChildren: () => import('./feature-subscription/feature-subscription.module')
-                            .then( m => m.FeatureSubscriptionPageModule)
+                            .then( m => m.FeatureSubscriptionPageModule),
+                        
                     },
                 ]
             },
@@ -154,7 +160,8 @@ const routes: Routes = [
                     {
                         path: ':id',
                         loadChildren: () => import('./feature-billing/feature-billing.module')
-                            .then( m => m.FeatureBillingPageModule)
+                            .then( m => m.FeatureBillingPageModule),
+                        
 
                     },
                 ]
