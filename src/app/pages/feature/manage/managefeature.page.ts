@@ -91,8 +91,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     }
   }
 
-  reloadEditPage = async () => { // refresh the Edit Page if desktop is in Manage view, or if opened by modalPage
-    if (this.userData.user && (this.router.url.includes('manage') || this.modalPage)) {
+  reloadEditPage = async () => { // refresh the Edit Page
+    if (this.userData.user && this.router.url.includes('manage')) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;
@@ -105,10 +105,13 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
-    }
 
-    if (this.router.url.includes('insight')) {
-      this.pushToMessagePage(null, this.chatService.conversations[0]);
+      if (this.moment) {
+        console.log("there is a moment")
+        this.pushToMessagePage(null, this.chatService.conversations[0]);
+      } else {
+        console.log("no moment")
+      }
     }
   };
 
@@ -217,6 +220,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.platform.width() >= 768) {
           this.chatService.currentChatProps.push(chatObj);
           // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+          console.log("moment ID " + this.moment._id)
           this.router.navigate(['/app/manage/activity/' + this.moment._id + '/chat'], { skipLocationChange: true });
           // if it is displaying the chat view, it will reload the chat data
           this.userData.refreshMyConversations({action: 'reload chat view'});
@@ -402,10 +406,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     this.userData.currentManageActivityId = momentId;
     if (this.modalPage) {
       this.modalCtrl.dismiss();
-    } else if (this.userData.activitiesWithAdminAccess.find((c) => c._id === momentId)) {
-      this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
     } else {
-      this.router.navigate(['/app/activity/' + momentId]);
+      this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
     }
   }
 }
