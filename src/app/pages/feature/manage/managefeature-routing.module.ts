@@ -19,7 +19,7 @@ const routes: Routes = [
             },
             {
                 path: 'people/:id',
-                loadChildren: '../editparticipants/editparticipants.module#EditparticipantsPageModule'
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
                 //outlet: 'main'
             },
             {
