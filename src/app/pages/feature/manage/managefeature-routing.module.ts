@@ -8,23 +8,9 @@ const routes: Routes = [
         component: ManagefeaturePage,
         children: [
             {
-                path: 'chat',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
-                        outlet: 'sub'
-                    }
-                ]
-            },
-            {
-                path: 'insight',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule'
-                    },
-                ]
+                path: 'insight/:id',
+                loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule',
+                //outlet: 'main'
             },
             {
                 path: 'profile/:id',
@@ -37,34 +23,19 @@ const routes: Routes = [
                 //outlet: 'main'
             },
             {
-                path: 'programs',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+                path: 'programs/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
-                path: 'relationships',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+                path: 'relationships/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
-                path: 'groups',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+                path: 'groups/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
                 path: 'journey/:id',
@@ -72,87 +43,50 @@ const routes: Routes = [
                 //outlet: 'main'
             },
             {
-                path: 'mentoring',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+<<<<<<< HEAD
+                path: 'journey/:id',
+=======
+                path: 'mentoring/:id',
+>>>>>>> improving calix's code
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
-                path: 'plans',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+                path: 'plans/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
-                path: 'contents',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                        
-                    },
-                ]
+                path: 'contents/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                //outlet: 'main'
             },
             {
                 path: 'schedule',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
-                        
-                    },
-                ]
+                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                //outlet: 'main'
             },
             {
                 path: 'new-schedule',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
-                        
-                    },
-                ]
+                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                //outlet: 'main'
             },
             {
                 path: 'onboarding',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule',
-                        
-                    },
-                ]
+                loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule',
+                //outlet: 'main'
             },
             {
-                path: 'subscription',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: () => import('./feature-subscription/feature-subscription.module')
-                            .then( m => m.FeatureSubscriptionPageModule),
-                        
-                    },
-                ]
+                path: 'subscription/:id',
+                loadChildren: () => import('./feature-subscription/feature-subscription.module')
+                    .then( m => m.FeatureSubscriptionPageModule),
+                //outlet: 'main'
             },
             {
-                path: 'billing',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: () => import('./feature-billing/feature-billing.module')
-                            .then( m => m.FeatureBillingPageModule),
-                        
-
-                    },
-                ]
+                path: 'billing/:id',
+                loadChildren: () => import('./feature-billing/feature-billing.module')
+                    .then( m => m.FeatureBillingPageModule),
+                //outlet: 'main'
             },
         ]
     },
