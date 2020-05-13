@@ -106,7 +106,12 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
 
-      this.pushToMessagePage(null, this.chatService.conversations[0]);
+      if (this.moment) {
+        console.log("there is a moment")
+        this.pushToMessagePage(null, this.chatService.conversations[0]);
+      } else {
+        console.log("no moment")
+      }
     }
   };
 
@@ -215,6 +220,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       if (this.platform.width() >= 768) {
           this.chatService.currentChatProps.push(chatObj);
           // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+          console.log("moment ID " + this.moment._id)
           this.router.navigate(['/app/manage/activity/' + this.moment._id + '/chat'], { skipLocationChange: true });
           // if it is displaying the chat view, it will reload the chat data
           this.userData.refreshMyConversations({action: 'reload chat view'});
