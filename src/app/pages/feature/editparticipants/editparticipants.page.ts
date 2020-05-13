@@ -138,6 +138,8 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     });
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
 
-    console.log("unique List", this.uniqueParticipantList);
+    // console.log("unique List", this.uniqueParticipantList);
   }
+
+  
 }
