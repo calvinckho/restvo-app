@@ -41,10 +41,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         private actionSheetCtrl: ActionSheetController,
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
-        private loadingCtrl: LoadingController,
         public platform: Platform,
         public networkService: NetworkService,
-        private momentService: Moment,
         public userData: UserData,
         public chatService: Chat
   ) {}
