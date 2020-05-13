@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import {GroupchatPageModule} from "./pages/group/groupchat/groupchat.module";
+import {DashboardPageModule} from "./pages/user/dashboard/dashboard.module";
 
 const routes: Routes = [
     {
@@ -30,6 +32,18 @@ const routes: Routes = [
     {
         path: 'designsystem',
         loadChildren: () => import('./pages/manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
+    },
+    {
+        path: 'sub_chat',
+        //component: GroupchatPageModule,
+        loadChildren: () => import('./pages/group/groupchat/groupchat.module').then( m => m.GroupchatPageModule),
+        outlet: 'sub'
+    },
+    {
+        path: 'sub_me',
+        //component: DashboardPageModule,
+        loadChildren: () => import('./pages/user/dashboard/dashboard.module').then( m => m.DashboardPageModule),
+        outlet: 'sub'
     },
     {
         path: '**',
