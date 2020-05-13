@@ -179,7 +179,7 @@ export class Auth {
             if (this.cachedRouteParams) {
                 this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve'});
             } else {
-                this.router.navigate([activityURL]);
+                this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
             }
         } else if (this.router.url.includes('discover/home') || this.router.url.includes('dashboard')) { // if loading landing page /discover/home or /dashboard
             const defaultProgram: any = await this.storage.get('defaultProgram');
@@ -190,7 +190,7 @@ export class Auth {
             if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
                 activityURL = '/app/dashboard/insight/' + defaultProgram._id;
             }
-            this.router.navigate([activityURL]);
+            this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
         }
         this.checkIncompleteOnboarding(false);
     }

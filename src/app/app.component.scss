@@ -1,5 +1,20 @@
 app-root {
 
+  #split-pane {
+    width: 80%;
+  }
+
+  #sub-panel {
+    width: 20%;
+    position: absolute;
+    top: 0;
+    left: 80%;
+  }
+
+  ion-router-outlet {
+    height: 100%;
+  }
+
   ion-item {
     cursor: pointer;
   }
