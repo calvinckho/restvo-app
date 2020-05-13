@@ -1241,7 +1241,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
         this.timeoutHandle = setTimeout(async () => {
-            console.log("sending responsObj", this.responseObj);
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
             if (response) {
@@ -1256,7 +1255,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 // Showing the user that the content has been saved at the end of the timeout
                 this.currentSaveState = 'Saved';
-                console.log("done submiting response", this.currentSaveState)
 
                 setTimeout(() => {
                     this.currentSaveState = '';
