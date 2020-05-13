@@ -1,5 +1,4 @@
 <ion-tabs [hidden]="!userData || !userData.user">
-  <div id="videoSpace"></div>
   <ion-tab-bar slot="bottom" *ngIf="platform.width() < 768">
     <ion-tab-button tab="discover" *ngIf="!userData.defaultProgram" [ngClass]="{'tab-selected': router.url.includes('discover')}">
       <ion-icon ios="people-sharp" md="people-sharp"></ion-icon>

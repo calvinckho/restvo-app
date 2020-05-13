@@ -38,6 +38,7 @@ import {ShowfeaturePageModule} from "./pages/feature/showfeature/showfeature.mod
 import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pickpeople-popover.module";
 import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/pickfeature-popover.module";
 import {ProgramsPageModule} from "./pages/user/programs/programs.module";
+import {DashboardPageModule} from "./pages/user/dashboard/dashboard.module";
 
 @NgModule({
   declarations: [
