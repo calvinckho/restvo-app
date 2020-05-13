@@ -118,8 +118,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   };
 
   mergeParticipantsIntoUniqueParticipantList = async () => {
-    // console.log("moment", this.moment);
-
     // this.moment is ready to go
     // this.moment.user_list_1 - participant
     // this.moment.user_list_2 - organizer
@@ -142,8 +140,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       user.role = this.leaderLabel;
     });
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
-
-    // console.log("unique List", this.uniqueParticipantList);
   }
 
 
