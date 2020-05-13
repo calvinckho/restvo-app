@@ -12,6 +12,12 @@ const routes: Routes = [
   {
     path: '',
     component: FeatureChildActivitiesPage,
+    children: [
+      {
+        path: 'chat',
+        loadChildren: '../../group/groupchat/groupchat.module#GroupchatPageModule',
+      },
+    ]
   },
 ];
 
