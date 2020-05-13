@@ -37,8 +37,9 @@
           placeholder="Invite"
           interface="popover"
           [interfaceOptions]="{header: 'Invite'}"
+          (ionChange)="$event"
         >
-          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantsLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">{{organizerLabel}}</ion-select-option>
           <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">{{leaderLabel}}</ion-select-option>
         </ion-select>
