@@ -221,7 +221,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
           this.chatService.currentChatProps.push(chatObj);
           // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
           console.log("moment ID " + this.moment._id)
-          this.router.navigate(['/app/manage/activity/' + this.moment._id + '/chat'], { skipLocationChange: true });
+          this.router.navigate(['/app/manage/activity/' + this.moment._id + '/relationships/' + this.moment._id + '/chat'], { skipLocationChange: true });
           // if it is displaying the chat view, it will reload the chat data
           this.userData.refreshMyConversations({action: 'reload chat view'});
       } else {
