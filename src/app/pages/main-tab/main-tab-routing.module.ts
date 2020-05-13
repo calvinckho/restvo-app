@@ -212,14 +212,14 @@ const routes: Routes = [
             },
             {
                 path: '',
-                redirectTo: '/app/discover',
+                redirectTo: '/app/me',
                 pathMatch: 'full'
             }
         ]
     },
     {
         path: '',
-        redirectTo: '/app/discover',
+        redirectTo: '/app/me',
         pathMatch: 'full'
     }
 ];
