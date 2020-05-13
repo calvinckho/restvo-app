@@ -49,7 +49,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   searchKeyword = '';
   noConversationLoaded: boolean = true;
   finishedLoading: boolean = false;
-  slideOpts: any;
 
   constructor(
       public cache: CacheService,
@@ -83,22 +82,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
         chatService, churchService, groupService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
-
-    this.slideOpts = {
-      slidesPerView: 6,
-      grabCursor: true,
-      updateOnWindowResize: true,
-      spaceBetween: 30,
-      breakpoints: {
-        600: {
-          slidesPerView: 3,
-          spaceBetween: 15
-        },
-        1000: {
-          slidesPerView: 4,
-        }
-      }
-    }
   }
 
   async ngOnInit() {
@@ -129,70 +112,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(momentId);
   }
-
-  async pushToMessagePage(event, object) {
-      if (event) event.stopPropagation();
-      let chatObj;
-      if (object.conversation.type === 'connect') {
-          chatObj = {
-              conversationId: object.conversation._id,
-              name: object.data.name,
-              recipient: object.data.participant,
-              page: 'chat',
-              badge: object.data.badge,
-              modalPage: this.platform.width() < 768
-          };
-      } else if (object.conversation.type === 'group') {
-          chatObj = {
-              conversationId: object.conversation.group.conversation,
-              name: object.conversation.group.name,
-              group: object.conversation.group,
-              page: 'chat',
-              badge: object.data.badge,
-              modalPage: this.platform.width() < 768
-          };
-      } else if (object.conversation.type === 'moment') {
-          chatObj = {
-              conversationId: object.conversation._id,
-              name: object.data.name,
-              moment: object.conversation.moment,
-              page: 'chat',
-              badge: object.data.badge,
-              modalPage: this.platform.width() < 768
-          };
-      }
-
-      if (this.platform.width() >= 768) {
-          this.chatService.currentChatProps.push(chatObj);
-          // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-          console.log("moment ID " + this.moment._id)
-          this.router.navigate(['/app/manage/activity/' + this.moment._id + '/relationships/' + this.moment._id + '/chat'], { skipLocationChange: true });
-          // if it is displaying the chat view, it will reload the chat data
-          this.userData.refreshMyConversations({action: 'reload chat view'});
-      } else {
-          this.chatService.currentChatProps.push(chatObj);
-          const groupPage = await this.modalCtrl.create({
-              component: GroupchatPage,
-              componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-          });
-          await groupPage.present();
-      }
-
-      if (this.electronService.isElectronApp) { // since electron doesn't detect appStateChange, manually refreshTabBadges at every pushToMessage()
-          this.chatService.refreshTabBadges();
-      }
-      // reorder the list
-      this.searchKeyword = '';
-      object.data.badge = 0;
-  }
-
-  // async createChatConversation() {
-  //   await this.userData.checkPushNotification();
-  //   const newConversationId = await this.chatService.newConversation(this.recipient._id, { composedMessage : welcomeMessage, type: "connect" });
-  //   this.chatService.refreshTabBadges();
-  //   this.isConnected = true;
-  //   this.chatService.openChat({conversationId: newConversationId, author: this.recipient});
-  // }
 
   async clickManageMenu(menuOption, selectedSchedule) {
     this.menu = [

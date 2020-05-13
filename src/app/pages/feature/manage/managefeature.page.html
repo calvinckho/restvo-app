@@ -135,6 +135,18 @@
         <ion-label>People</ion-label>
       </ion-card>
     </ion-slide>
+    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))">
+      <ion-card (click)="clickManageMenu('groups', null)">
+        <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+        <ion-label>Groups</ion-label>
+      </ion-card>
+    </ion-slide>
+    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))">
+      <ion-card (click)="clickManageMenu('mentoring', null)">
+        <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+        <ion-label>Mentoring</ion-label>
+      </ion-card>
+    </ion-slide>
     <ion-slide *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"  [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}">
       <ion-card (click)="clickManageMenu('programs', null)">
         <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
@@ -152,5 +164,4 @@
 
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field" forceOverscroll="false">
   <ion-router-outlet></ion-router-outlet>
-  <ion-router-outlet name="sub"></ion-router-outlet>
 </ion-content>
