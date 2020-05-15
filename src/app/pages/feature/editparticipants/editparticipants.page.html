@@ -37,10 +37,11 @@
           placeholder="Invite"
           interface="popover"
           [interfaceOptions]="{header: 'Invite'}"
+          (ionChange) = "openPopUpModalAddParticipants($event)"
         >
-          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">{{participantLabel}}</ion-select-option>
-          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">{{organizerLabel}}</ion-select-option>
-          <ion-select-option (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">{{leaderLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
         </ion-select>
       </ion-list-header>
       <ion-item lines="none">
