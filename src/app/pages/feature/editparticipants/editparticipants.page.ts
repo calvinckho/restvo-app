@@ -144,5 +144,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
 
   async openPopUpModalAddParticipants(event){
     console.log("testing event!", event)
+    this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label)
   }
 }
