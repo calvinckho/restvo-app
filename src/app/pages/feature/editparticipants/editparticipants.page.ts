@@ -122,11 +122,11 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     // this.moment.user_list_1 - participant
     // this.moment.user_list_2 - organizer
     // this.moment.user_list_3 - leader
-    const loading = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      duration: 2000
-    })
-    await loading.present();
+    // const loading = await this.loadingCtrl.create({
+    //   message: 'Please wait...',
+    //   duration: 2000
+    // })
+    // await loading.present();
     let tempList1 = this.moment.user_list_1.slice();
     tempList1.forEach((user) => {
       user.role = this.participantLabel;
@@ -142,5 +142,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
   }
 
-
+  async openPopUpModalAddParticipants(event){
+    console.log("testing event!", event)
+  }
 }
