@@ -31,19 +31,31 @@
   </ion-grid>
   <div>
     <ion-list>
-      <ion-list-header>
-        <h1>Participants for {{moment.matrix_string[0]}}</h1>
+      <ion-item>
+        <ion-label>
+          Participants for {{moment.matrix_string[0]}}
+        </ion-label>
         <ion-select
+          slot="end"
           placeholder="Invite"
           interface="popover"
           [interfaceOptions]="{header: 'Invite'}"
-          (ionChange) = "openPopUpModalAddParticipants($event)"
+          (ionChange)="openPopUpModalAddParticipants($event)"
         >
-          <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
-          <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
-          <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
+          <ion-select-option
+            [value]="{user_list: ['user_list_1'], label: this.participantLabel}"
+            >{{participantLabel}}</ion-select-option
+          >
+          <ion-select-option
+            [value]="{user_list: ['user_list_2'], label: this.organizerLabel}"
+            >{{organizerLabel}}</ion-select-option
+          >
+          <ion-select-option
+            [value]="{user_list: ['user_list_3'], label: this.leaderLabel}"
+            >{{leaderLabel}}</ion-select-option
+          >
         </ion-select>
-      </ion-list-header>
+      </ion-item>
       <ion-item lines="none">
         <ion-label slot="start">
           <h3>Current Participants</h3>
