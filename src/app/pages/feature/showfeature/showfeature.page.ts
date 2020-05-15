@@ -1170,7 +1170,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async checkAndLoadNotes() {
         // if there is the tab component
-        if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
+        if (this.moment && this.moment.resource && this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab
             const index = this.moment.resource.matrix_number[0].indexOf(12000);
             if (index >= 0 && this.moment.resource.matrix_number[3][index] === this.tabSelection) {
