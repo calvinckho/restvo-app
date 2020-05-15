@@ -166,7 +166,6 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   }
 
   async pushToMessagePage(event, activity) {
-    console.log("check", activity)
     if (event) event.stopPropagation();
     let chatObj = {
       conversationId: activity.conversation,
@@ -180,7 +179,6 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     if (this.platform.width() >= 768) {
       this.chatService.currentChatProps.push(chatObj);
       // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-      console.log("moment ID " + this.moment._id)
       this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
       // if it is displaying the chat view, it will reload the chat data
       this.userData.refreshMyConversations({action: 'reload chat view'});
