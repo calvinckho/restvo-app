@@ -134,6 +134,32 @@ export class Moment {
         return promise;
     }
 
+    async cloneMoment(moment) {
+        const momentToBeCloned = JSON.parse(JSON.stringify(moment));
+        momentToBeCloned.calendar = { // reset the calendar
+            title: momentToBeCloned.matrix_string[0][0],
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+                firstReminderMinutes: 0,
+                secondReminderMinutes: 0,
+                reminders: []
+            }
+        };
+        const clonedMoments: any = await this.clone([momentToBeCloned], 'staff');
+        if (clonedMoments && clonedMoments.length) {
+            const networkAlert = await this.alertCtrl.create({
+                header: 'Success',
+                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It is now available in the Platform Manage Activities page.',
+                buttons: ['Dismiss'],
+                cssClass: 'level-15'
+            });
+            await networkAlert.present();
+        }
+    }
+
     loadUserPreferences(pageNum, programId, type) {
         return this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=' + pageNum + '&programId=' + (programId || '') + '&type=' + (type || ''), this.authService.httpAuthOptions).toPromise();
     }

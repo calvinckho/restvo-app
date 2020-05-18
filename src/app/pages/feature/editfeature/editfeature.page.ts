@@ -593,7 +593,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   changeSelectedDate( inputDate ) {
     if (inputDate === ' ') return;
-    this.calendarService.calendar.selectedDate = inputDate;
+      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.startDate = inputDate;
       this.dateType = 'end';

@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-    subscriptions: any = {};
+  subscriptions: any = {};
   mode = 'list';
   slideOpts = {
       updateOnWindowResize: true,
@@ -1560,7 +1560,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
                             this.expandedPrivilegesView = false;
-                            this.cloneMoment();
+                            this.momentService.cloneMoment(this.moment);
                         });
                     }
                 }]);
@@ -1714,32 +1714,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         await actionSheet.present();
-    }
-
-    async cloneMoment() {
-        const momentToBeCloned = JSON.parse(JSON.stringify(this.moment));
-        momentToBeCloned.calendar = { // reset the calendar
-            title: momentToBeCloned.matrix_string[0][0],
-            location: '',
-            notes: '',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
-            options: {
-                firstReminderMinutes: 0,
-                secondReminderMinutes: 0,
-                reminders: []
-            }
-        };
-        const clonedMoments: any = await this.momentService.clone([momentToBeCloned], 'staff');
-        if (clonedMoments && clonedMoments.length) {
-            const networkAlert = await this.alertCtrl.create({
-                header: 'Success',
-                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It will be available in the Manage Activities page in a moment.',
-                buttons: ['Dismiss'],
-                cssClass: 'level-15'
-            });
-            await networkAlert.present();
-        }
     }
 
     initPlyr(event, mediaId) {
@@ -2142,7 +2116,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     changeCalendarItemSelectedDate(inputDate) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarItem.startDate = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate(), new Date(this.calendarItem.startDate).getHours(), new Date(this.calendarItem.startDate).getMinutes()).toISOString();
         this.anyChangeMade = true;
     }
@@ -2286,7 +2260,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
+    if (this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }

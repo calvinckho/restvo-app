@@ -242,15 +242,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     }
   }
 
-  async edit() {
-    if (this.modalPage) {
-      const editModal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: { moment: this.moment, modalPage: true }});
-      await editModal.present();
-    } else {
-      this.router.navigate(['/app/edit/' + this.moment._id]);
-    }
-  }
-
   async changeManageActivity(event) {
     event.stopPropagation();
     this.storage.set('currentManageActivityId', event.detail.value);
@@ -269,5 +260,126 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     } else {
       this.router.navigate(['/app/activity/' + momentId]);
     }
+  }
+
+  async moreOrganizerActions() {
+    let actionSheet: any;
+    let buttons = [];
+    buttons = buttons.concat([
+      {
+        text: this.resource['en-US'].value[18], // Edit
+        icon: 'code-working',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            if (this.modalPage) {
+              const editModal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: { moment: this.moment, modalPage: true }});
+              await editModal.present();
+            } else {
+              this.router.navigate(['/app/edit/' + this.moment._id]);
+            }
+          });
+        }
+      }]);
+    if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+      buttons = buttons.concat([
+        {
+          text: 'Clone', // Clone
+          icon: 'copy',
+          handler: () => {
+            const navTransition = actionSheet.dismiss();
+            navTransition.then( async () => {
+              this.momentService.cloneMoment(this.moment);
+            });
+          }
+        }]);
+    }
+    buttons = buttons.concat([
+      {
+        text: this.resource['en-US'].value[19], // Delete
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.deleteMoment();
+          });
+        }
+      }
+    ]);
+    if (this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 6 && this.moment.array_boolean[6]) {
+      buttons.push({
+        text: this.resource['en-US'].value[41], // View Chat
+        icon: 'chatbubbles',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            if (this.modalPage) {
+              const moment = this.moment;
+              moment.name = this.moment.matrix_string[0][0] + ' (' + this.organizersLabel + ')';
+              this.chatService.openChat({conversationId: this.moment.conversation_2, moment: moment});
+            } else {
+              this.chatService.currentChatProps.push({
+                conversationId: this.moment.conversation_2,
+                name: this.moment.matrix_string[0][0] + ' (' + this.organizersLabel + ')',
+                moment: this.moment,
+                page: 'chat',
+                badge: true,
+                modalPage: true,
+                cssClass: 'level-10'
+              });
+              this.router.navigate(['/app/myconversations/chat']);
+              this.userData.refreshMyConversations({action: 'reload chat view'});
+            }
+          });
+        }
+      });
+    }
+    buttons = buttons.concat([/*{
+      text: 'Leave as ' + this.organizerLabel,
+      icon: 'log-out',
+      handler: () => {
+        const navTransition = actionSheet.dismiss();
+        navTransition.then( async () => {
+          this.leaveProgramWithPrivileges('user_list_2');
+        });
+      }
+    },*/
+      {
+        text: this.resource['en-US'].value[33], // Cancel
+        icon: 'close-circle',
+        role: 'cancel',
+      }]);
+    actionSheet = await this.actionSheetCtrl.create({
+      header: this.moment.matrix_string[0][0],
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
+  }
+
+  async deleteMoment() {
+    const alert = await this.alertCtrl.create({
+      header: this.resource['en-US'].value[19] + ' ' + this.moment.resource['en-US'].value[0],
+      message: this.resource['en-US'].value[22] + ' ' + this.moment.matrix_string[0][0] + '? ' + (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && (this.moment.resource.matrix_number[0].indexOf(10370) > -1) ? this.resource['en-US'].value[23] : ''),
+      buttons: [{ text: 'Ok',
+        handler: () => {
+          const navTransition = alert.dismiss();
+          navTransition.then( async () => {
+            // Remove the Moment
+            await this.momentService.delete(this.moment);
+            this.anyChangeMade = true;
+            if (this.modalPage) {
+              this.closeModal(true);
+            } else {
+              this.router.navigate(['/app/me'], { replaceUrl: true });
+              //this.location.back();
+            }
+          });
+        }},
+        { text: 'Cancel' }],
+      cssClass: 'level-15'
+    });
+    alert.present();
   }
 }
