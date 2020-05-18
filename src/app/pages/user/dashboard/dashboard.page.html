@@ -29,10 +29,10 @@
     <ion-buttons slot="start" *ngIf="modalPage">
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
+    <ion-title text-center slot="start" *ngIf="view === 'profile'">My Dashboard</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
       <!--<ion-searchbar class="header-searchbar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" *ngIf="platform.width() >= 768 && !platform.is('ios')" slot="start"></ion-searchbar>-->
-    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
+    <ion-item text-center lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -80,14 +80,14 @@
 
     <!-- Complete your Profile Banner -->
     <ion-row class="profile-row">
-      <ion-card [routerLink]="['/app/completeprofile']" class="profile-card" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
+      <ion-card [routerLink]="['/app/completeprofile']" class="profile-card-complete-steps" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
         <ion-item-sliding>
           <ion-item lines="none">
-            <div class="completed_percentage">
-              {{(userData.user.avatar ? 50 : 0) + (authService.incompleteOnboardProcess ? 0 : 50)}}%
+            <div class="ribbon-icon">
+                <ion-icon size="large" name="ribbon-outline"></ion-icon>
             </div>
             <div class="ion-text-wrap message-container">
-              <ion-label style="font-size: 14px">Complete the Setup</ion-label>
+              <ion-label style="font-size: 14px">New User App Guide</ion-label>
               <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
             </div>
             <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -239,7 +239,7 @@
         <ion-col *ngIf="programs && programs.length" [size]="(platform.width() >= 768) && (programs.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
-              <ion-label class="section-label" color="darkgrey">My Community</ion-label>
+              <ion-label class="section-label" color="darkgrey">My Communities</ion-label>
             </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">

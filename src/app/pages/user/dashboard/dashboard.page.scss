@@ -505,6 +505,13 @@ app-dashboard {
   }
 
   .profile-card {
+    height: 180px;
+    width: 100%;
+    margin: 0 5px;
+    padding: 10px 0;
+  }
+
+  .profile-card-complete-steps {
     width: 100%;
     margin: 0 5px;
     padding: 10px 0;
@@ -529,6 +536,8 @@ app-dashboard {
   .section {
     --min-height: 26px;
     --background: transparent;
+    background-color: #f1f1f1;
+    height: 30px;
 
     .section-label {
       font-size: 15px;
@@ -665,7 +674,7 @@ app-dashboard {
     padding: 0;
   }
 
-  .completed_percentage {
+  .ribbon-icon {
     //width: 40px;
     font-weight: 500;
     font-size: 18px;
