@@ -18,9 +18,13 @@ const routes: Routes = [
                 //outlet: 'main'
             },
             {
-                path: 'people/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                //outlet: 'main'
+                path: 'people',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: '../editparticipants/editparticipants.module#EditparticipantsPageModule'
+                    },
+                ]
             },
             {
                 path: 'programs/:id',
