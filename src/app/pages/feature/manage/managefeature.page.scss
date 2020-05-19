@@ -37,12 +37,12 @@ app-managefeature {
   }
 
   .selected {
-    background-color: red !important;
+    background-color: #e2666a !important;
   }
 
   .selected * {
     color: white;
-    background-color: red !important;
+    background-color: #e2666a !important;
   }
 
   ion-router-outlet {
