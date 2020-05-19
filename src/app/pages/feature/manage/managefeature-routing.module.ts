@@ -47,9 +47,13 @@ const routes: Routes = [
                 //outlet: 'main'
             },
             {
-                path: 'mentoring/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
-                //outlet: 'main'
+                path: 'mentoring',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                    },
+                ]
             },
             {
                 path: 'plans/:id',
