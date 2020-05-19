@@ -1,5 +1,9 @@
 app-root {
 
+  app-groupchat .message-footer {
+    transform: translateY(-115px);
+  }
+
   .split-pane-narrow {
     width: 70%;
     border-right: var(--border);
