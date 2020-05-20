@@ -99,6 +99,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       const results: any = await this.momentService.loadProgramInsight(this.moment._id);
       if (results && results.relationship_completion) {
         this.relationshipCompletion = results.relationship_completion;
+        console.log(this.relationshipCompletion)
         let objects = {};
         this.listOfPrograms = this.relationshipCompletion.map((c) => c.program).filter((program) => {
           if (objects[program._id]) {
