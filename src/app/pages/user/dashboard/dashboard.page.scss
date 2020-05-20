@@ -71,23 +71,6 @@ app-dashboard {
   .image-cropper {
     width: 120px;
     height: 120px;
-    overflow: hidden;
-    border-radius: 50%;
-    margin: 2% auto 0 auto;
-  }
-
-  .custom-avatar {
-    object-fit: cover;
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-  }
-
-  .user-name {
-    display: inline-block;
-    font-size: large;
-    font-weight: bold;
-    color: var(--ion-color-secondary);
   }
 
   .current-date-display {
@@ -96,15 +79,6 @@ app-dashboard {
     font-weight: normal;
     color: var(--ion-color-secondary);
     margin-top: 3%;
-  }
-
-  .user-info {
-    width: 100%;
-  }
-
-  .user-info-buttons {
-    min-width: 40%;
-    margin: 0 auto;
   }
 
   .profile-tag {
