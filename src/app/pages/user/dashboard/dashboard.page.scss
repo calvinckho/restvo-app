@@ -38,8 +38,12 @@ app-dashboard {
     width: 100%;
   }
 
+  .ribbon {
+    padding-right: 20px;
+  }
+
   .message-detail {
-    width: 85%;
+    width: 90%;
     color: grey;
     margin: 8px 0 16px 0;
     max-height: 36px;
@@ -122,6 +126,14 @@ app-dashboard {
 
   .calendar-label {
     text-align: center;
+  }
+
+  .complete-profile {
+    padding-bottom: 10px;
+  }
+
+  .profile-card {
+    margin: 0 5px;
   }
 
   .moment-icon {
@@ -440,6 +452,14 @@ app-dashboard {
     background-color: red;
   }
 
+  .edit-profile {
+    width: 170px;
+    height: 20px;
+    font-size: 13px;
+    
+    
+    }
+
   .person-card {
     max-width: 300px;
     width: 80%;
@@ -448,36 +468,43 @@ app-dashboard {
     object-fit: contain;
     margin: 0 12px;
 
-    // Added the slant pattern!
-    .top-pattern {
-      position: absolute;
-      top: 0;
-      height: 15%;
-      width: 100%;
-      background-color: #62bebf;
-      z-index: -1;
-    }
+    // // Added the slant pattern!
+    // .top-pattern {
+    //   position: absolute;
+    //   top: 0;
+    //   height: 15%;
+    //   width: 100%;
+    //   background-color: #62bebf;
+    //   z-index: -1;
+    // }
 
-    .middle-pattern {
-      position: absolute;
-      top: 15%;
-      height: 50%;
-      width: 100%;
-      border-style: solid;
-      border-width: 0 1300px 500px 0;
-      border-color: transparent #62bebf transparent transparent;
-      z-index: -1;
-    }
+    // .middle-pattern {
+    //   position: absolute;
+    //   top: 15%;
+    //   height: 50%;
+    //   width: 100%;
+    //   border-style: solid;
+    //   border-width: 0 1300px 500px 0;
+    //   border-color: transparent #62bebf transparent transparent;
+    //   z-index: -1;
+    // }
 
-    .bottom-pattern {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 100%;
-      background-color: var(--ion-color-light);
-      z-index: -2;
-    }
+    // .bottom-pattern {
+    //   position: absolute;
+    //   top: 0;
+    //   height: 100%;
+    //   width: 100%;
+    //   background-color: var(--ion-color-light);
+    //   z-index: -2;
+    // }
   }
+
+  .person-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
 
   .person-content {
     height: 75px;
@@ -494,6 +521,7 @@ app-dashboard {
     width: 40%;
     height: 44px;
     line-height: 100%;
+    padding-left: 25px;
   }
 
   .person-name {
@@ -509,6 +537,7 @@ app-dashboard {
   .content-border {
     border-left: 0.5px solid #979797;
   }
+
 
   .person-content-right {
     padding-left: 12.5px;

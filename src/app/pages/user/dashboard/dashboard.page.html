@@ -29,9 +29,8 @@
     <ion-buttons slot="start" *ngIf="modalPage">
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
+    <ion-title slot="start" *ngIf="view === 'profile'">My Dashboard</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
-      <ion-searchbar class="header-searchbar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" *ngIf="platform.width() >= 768 && !platform.is('ios')" slot="start"></ion-searchbar>
     <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
@@ -41,33 +40,14 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
+    <ion-button fill="clear" slot="end" color="grey" routerLink="">
+      <ion-icon name="settings-outline" ></ion-icon>
+    </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
       <ion-button routerLink="/createCommunityregister" color="grey">
         Sign In
       </ion-button>
     </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="platform.width() < 768 || platform.is('ios')">
-    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="userData.user && authService.incompleteOnboardProcess">
-    <ion-item-sliding side="end">
-      <ion-item (click)="finishOnboarding($event)" lines="none">
-        <ion-avatar slot="start">
-          <ion-img src="assets/img/finish.png"></ion-img>
-        </ion-avatar>
-        <div class="ion-text-wrap message-container">
-          <ion-label class="ion-margin-top">Complete Your Profile</ion-label>
-          <p class="message-detail">Answer a few questions to complete your profile.</p>
-        </div>
-        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-      </ion-item>
-      <ion-item-options>
-        <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
-          Dismiss
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
   </ion-toolbar>
 </ion-header>
 
@@ -77,30 +57,47 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
+  
   <ion-row class="ion-justify-content-center ion-margin-vertical" *ngIf="view === 'profile'">
-    <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-      <ion-card-header>
+    <ion-card id="person-profile-card" class="person-card" (click)="openMyProfile()" >   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
         <div class="person-photo-container">
-          <ion-img class="person-photo" *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
-          <ion-img class="person-photo" *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+          <img class="person-photo" [src]="userData.user.avatar"><img>
         </div>
-      </ion-card-header>
-      <div class="top-pattern"></div>
-      <div class="middle-pattern"></div>
-      <div class="bottom-pattern"></div>
-      <ion-card-content class="person-content ion-no-padding">
-        <ion-item lines="none" class="person-content-item ion-no-margin">
+      <ion-item lines="none">
           <div class="person-content-left">
             <div class="person-name ion-text-md-uppercase">
               {{userData.user.first_name}} {{userData.user.last_name}}
             </div>
             <div class="person-title" [innerHTML]="userData.user.title"></div>
           </div>
-          <div class="person-content-right" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div> <!--Short Biography-->
-        </ion-item>
-      </ion-card-content>
+          <ion-button shape="round" class="edit-profile" fill="outline">Edit Profile</ion-button>
+       </ion-item>
     </ion-card>
   </ion-row>
+
+
+  <ion-toolbar>
+  <ion-row class="complete-profile">
+  <ion-card class="profile-card" *ngIf="userData.user && authService.incompleteOnboardProcess" >
+    <ion-item-sliding>
+      <ion-item (click)="finishOnboarding($event)" lines="none">
+          <ion-icon class="ribbon" name="ribbon-outline"></ion-icon>
+        <div class="ion-text-wrap message-container">
+          <ion-label style="font-size: 15px" class="ion-margin-top">New User App Guide</ion-label>
+          <p class="message-detail">Complete these steps to help you get the most out of Restvo.</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
+          Dismiss
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-card>
+</ion-row>
+</ion-toolbar>
+
   <!--List My Mentors-->
   <div *ngIf="myMentors && myMentors.length && view === 'profile'">
     <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
