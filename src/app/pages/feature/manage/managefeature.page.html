@@ -137,7 +137,7 @@
     </ion-slide>
     <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))" (click)="clickManageMenu('groups', null)">
       <ion-item [color]="(selectedMenuOption === 'groups') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+        <ion-icon slot="start" name="people-circle-outline" *ngIf="platform.width() < 768"></ion-icon>
         <ion-label *ngIf="platform.width() >= 768">Groups</ion-label>
       </ion-item>
     </ion-slide>
