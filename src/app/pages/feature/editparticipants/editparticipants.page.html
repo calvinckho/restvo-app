@@ -57,12 +57,15 @@
         </ion-select>
       </ion-item>
       <ion-item lines="none">
-        <ion-label slot="start">
+        <div class="column column-label" (click)="sortDisplay('participant')">Participants</div>
+        <div class="column column-label" (click)="sortDisplay('role')">Role</div>
+
+        <!-- <ion-label slot="start">
           <h3>Current Participants</h3>
         </ion-label>
         <ion-label slot="start">
           <h3>Role</h3>
-        </ion-label>
+        </ion-label> -->
       </ion-item>
       <ion-item
         *ngFor="let user of uniqueParticipantList; index as j"
