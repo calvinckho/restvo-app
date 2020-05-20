@@ -39,6 +39,9 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @Input() title = "";
   uniqueParticipantList = [];
+  // relationshipCompletion: any;
+  participantAscending = true;
+  roleAscending = true;
 
   constructor(
     public route: ActivatedRoute,
@@ -143,7 +146,32 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   }
 
   async openPopUpModalAddParticipants(event){
-    console.log("testing event!", event)
     this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label)
   }
+  sortDisplay(type) {
+    if (type === 'participant') {
+      this.participantAscending = !this.participantAscending;
+      const reverseOrder = this.participantAscending;
+      console.log(this.uniqueParticipantList)
+      this.uniqueParticipantList.sort(function(a, b) {
+        if (a.first_name < b.first_name) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.first_name > b.first_name) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    } else if (type === 'role') {
+      this.roleAscending = !this.roleAscending;
+      const reverseOrder = this.roleAscending;
+      this.uniqueParticipantList.sort(function(a, b) {
+          if (a.role < b.role) {
+            return reverseOrder ? -1 : 1;
+          }
+          if (a.role > b.role) {
+            return reverseOrder ? 1 : -1;
+          }
+        });
+    }
+}
 }
