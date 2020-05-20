@@ -89,15 +89,20 @@
       <div class="middle-pattern"></div>
       <div class="bottom-pattern"></div>
       <ion-card-content class="person-content ion-no-padding">
-        <ion-item lines="none" class="person-content-item ion-no-margin">
-          <div class="person-content-left">
+        <!-- <ion-item lines="none" class="person-content-item ion-no-margin"> -->
+          <div class=person-content-box>
+          <div class="person-content-top">
             <div class="person-name ion-text-md-uppercase">
               {{userData.user.first_name}} {{userData.user.last_name}}
             </div>
             <div class="person-title" [innerHTML]="userData.user.title"></div>
           </div>
-          <div class="person-content-right" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div> <!--Short Biography-->
-        </ion-item>
+        <!-- Short Biography -->
+          <div class="person-content-mid" [ngClass]="{'content-border': bio }" [innerHTML]="userData.user.bio"></div> 
+        <!-- </ion-item> -->
+        
+          <ion-button class="person-content-edit" fill="clear" shape="round" size="small">Edit Profile</ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   </ion-row>
