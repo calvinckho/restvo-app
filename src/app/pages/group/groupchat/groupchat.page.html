@@ -185,7 +185,7 @@
               <div class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
             </div>
             <!-- Attachments inside a quote -->
-            <ion-grid *ngIf="message.quote.attachments && message.quote.attachments.length">
+            <ion-grid *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
               <ion-row class="ion-no-padding">
                 <ion-col class="ion-align-self-center ion-no-padding" size="auto" *ngFor="let attachment of message.quote.attachments" [ngClass]="{'ion-padding-start' : message.quote.attachments.length > 1, 'ion-padding-top' : message.quote.attachments.length > 2 }">
                   <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
@@ -348,7 +348,7 @@
             <div color="dark" class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
           </div>
           <!--Quoted Attachments-->
-          <ion-grid class="multiple-photos" *ngIf="message.quote.attachments && message.quote.attachments.length">
+          <ion-grid class="multiple-photos" *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
             <ion-row class="ion-no-padding">
               <ion-col class="ion-align-self-center ion-no-padding" size="auto" *ngFor="let attachment of message.quote.attachments" [ngClass]="{'ion-padding-start' : message.quote.attachments.length > 1, 'ion-padding-top' : message.quote.attachments.length > 2 }">
                 <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
