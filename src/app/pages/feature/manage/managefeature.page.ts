@@ -49,6 +49,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   searchKeyword = '';
   noConversationLoaded: boolean = true;
   finishedLoading: boolean = false;
+  slideOpts: any;
 
   constructor(
       public cache: CacheService,
@@ -82,6 +83,22 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
         chatService, churchService, groupService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
+
+    this.slideOpts = {
+      slidesPerView: 6,
+      grabCursor: true,
+      updateOnWindowResize: true,
+      spaceBetween: 30,
+      breakpoints: {
+        600: {
+          slidesPerView: 3,
+          spaceBetween: 15
+        },
+        1000: {
+          slidesPerView: 4,
+        }
+      }
+    }
   }
 
   async ngOnInit() {
