@@ -68,8 +68,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     public momentService: Moment,
     public resourceService: Resource,
     public responseService: Response,
-    public calendarService: CalendarService,
-    // public devWidth = platform.width()
+    public calendarService: CalendarService
   ) {
     super(
       route,
