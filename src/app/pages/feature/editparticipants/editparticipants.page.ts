@@ -42,6 +42,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   // relationshipCompletion: any;
   participantAscending = true;
   roleAscending = true;
+  conversations: any = [];
 
   constructor(
     public route: ActivatedRoute,
@@ -143,11 +144,47 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       user.role = this.leaderLabel;
     });
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
+
+    console.log("unique particants")
+    console.log(this.uniqueParticipantList)
   }
 
   async openPopUpModalAddParticipants(event){
     this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label)
   }
+
+  async pushToMessagePage(event, activity) {
+    if (event) event.stopPropagation();
+
+    activity = this.chatService.conversations[0];
+    console.log("activity");
+    console.log(activity);
+
+    let chatObj = {
+      conversationId: activity.conversation,
+      name: activity.data.name,
+      moment: activity,
+      page: 'chat',
+      badge: 0,
+      modalPage: this.platform.width() < 768
+    };
+
+    if (this.platform.width() >= 768) {
+      this.chatService.currentChatProps.push(chatObj);
+      // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+      this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
+      // if it is displaying the chat view, it will reload the chat data
+      this.userData.refreshMyConversations({action: 'reload chat view'});
+    } else {
+      this.chatService.currentChatProps.push(chatObj);
+      const groupPage = await this.modalCtrl.create({
+        component: GroupchatPage,
+        componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+      });
+      await groupPage.present();
+    }
+  }
+
   sortDisplay(type) {
     if (type === 'participant') {
       this.participantAscending = !this.participantAscending;

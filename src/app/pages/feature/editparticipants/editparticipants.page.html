@@ -83,7 +83,7 @@
           >{{user.first_name}} {{user.last_name}}</ion-label
         >
         <ion-label slot="start">{{user.role}}</ion-label>
-        <ion-button slot="end">Chat</ion-button>
+        <ion-button slot="end" (click)="pushToMessagePage($event, sample)">Chat</ion-button>
       </ion-item>
     </ion-list>
 
