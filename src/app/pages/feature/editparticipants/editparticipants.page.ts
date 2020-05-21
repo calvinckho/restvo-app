@@ -29,7 +29,6 @@ import { Resource } from "../../../services/resource.service";
 import { Response } from "../../../services/response.service";
 import { CalendarService } from "../../../services/calendar.service";
 import { EditfeaturePage } from "../editfeature/editfeature.page";
-import { GroupchatPage } from "../../group/groupchat/groupchat.page";
 
 @Component({
   selector: "app-editfeature",
@@ -40,7 +39,6 @@ import { GroupchatPage } from "../../group/groupchat/groupchat.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @Input() title = "";
   uniqueParticipantList = [];
-  tempArray = []
   // relationshipCompletion: any;
   participantAscending = true;
   roleAscending = true;
@@ -111,6 +109,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     ) {
       await this.setup();
       this.mergeParticipantsIntoUniqueParticipantList();
+      console.log("moment", this.moment)
     }
   }
 
@@ -134,70 +133,56 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     // await loading.present();
     let tempList1 = this.moment.user_list_1.slice();
     tempList1.forEach((user) => {
-      user.role = [this.participantLabel];
+      user.role = this.participantLabel;
     });
     let tempList2 = this.moment.user_list_2.slice();
     tempList2.forEach((user) => {
-      user.role = [this.organizerLabel];
+      user.role = this.organizerLabel;
     });
     let tempList3 = this.moment.user_list_3.slice();
     tempList3.forEach((user) => {
-      user.role = [this.leaderLabel];
+      user.role = this.leaderLabel;
     });
-    this.tempArray = tempList1.concat(tempList2, tempList3);
-    //tempArray => lists an array of user objects with each users role
+    this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
 
-
-    //this logic below checks the user._id to see if it exists in the array uniqueParticipantList
-    //If it exists, we only need to concat the roles,
-    //Else, we need to push the whole user object into uniqueParticipantList
-    this.tempArray.forEach(el => {
-      let exists = this.uniqueParticipantList.filter(function(value){
-        return value._id === el._id
-      })
-      if(exists.length){
-        let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
-        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.concat(" " + el.role)
-      }
-      else {
-        this.uniqueParticipantList.push(el)
-      }
-    })
-
+    console.log("unique particants")
+    console.log(this.uniqueParticipantList)
   }
 
   async openPopUpModalAddParticipants(event){
     this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label)
   }
 
-  async pushToMessagePage(event, user) {
+  async pushToMessagePage(event, activity) {
     if (event) event.stopPropagation();
 
-    this.chatService.newConversation(user._id, { composedMessage : 'Administrator ' + this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.', type: "connect" }).then(async (id) => {
-      let chatObj = {
-          conversationId: id,
-          name: user.first_name + " " + user.last_name,
-          recipient: user,
-          page: 'chat',
-          badge: 0,
-          modalPage: this.platform.width() < 768
-      };
+    activity = this.chatService.conversations[0];
+    console.log("activity");
+    console.log(activity);
 
-      if (this.platform.width() >= 768) {
-        this.chatService.currentChatProps.push(chatObj);
-        // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-        this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
-        // if it is displaying the chat view, it will reload the chat data
-        this.userData.refreshMyConversations({action: 'reload chat view'});
-      } else {
-        this.chatService.currentChatProps.push(chatObj);
-        const groupPage = await this.modalCtrl.create({
-          component: GroupchatPage,
-          componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-        });
-        await groupPage.present();
-      }
-    });
+    let chatObj = {
+      conversationId: activity.conversation,
+      name: activity.data.name,
+      moment: activity,
+      page: 'chat',
+      badge: 0,
+      modalPage: this.platform.width() < 768
+    };
+
+    if (this.platform.width() >= 768) {
+      this.chatService.currentChatProps.push(chatObj);
+      // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+      this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
+      // if it is displaying the chat view, it will reload the chat data
+      this.userData.refreshMyConversations({action: 'reload chat view'});
+    } else {
+      this.chatService.currentChatProps.push(chatObj);
+      const groupPage = await this.modalCtrl.create({
+        component: GroupchatPage,
+        componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+      });
+      await groupPage.present();
+    }
   }
 
   sortDisplay(type) {
