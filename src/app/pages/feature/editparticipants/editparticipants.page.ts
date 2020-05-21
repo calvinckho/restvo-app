@@ -144,9 +144,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       user.role = this.leaderLabel;
     });
     this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
-
-    console.log("unique particants")
-    console.log(this.uniqueParticipantList)
   }
 
   async openPopUpModalAddParticipants(event){
