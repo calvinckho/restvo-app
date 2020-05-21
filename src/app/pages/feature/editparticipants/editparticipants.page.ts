@@ -110,7 +110,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     ) {
       await this.setup();
       this.mergeParticipantsIntoUniqueParticipantList();
-      console.log("moment", this.moment)
     }
   }
 
