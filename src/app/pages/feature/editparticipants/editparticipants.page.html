@@ -57,32 +57,27 @@
         </ion-select>
       </ion-item>
       <ion-item lines="none">
-        <div class="column column-label" (click)="sortDisplay('participant')">Participants</div>
-        <div class="column column-label" (click)="sortDisplay('role')">Role</div>
-
-        <!-- <ion-label slot="start">
-          <h3>Current Participants</h3>
-        </ion-label>
         <ion-label slot="start">
-          <h3>Role</h3>
-        </ion-label> -->
+          Current Participants
+        </ion-label>
+        <ion-label>
+          Role
+        </ion-label>
       </ion-item>
       <ion-item
         *ngFor="let user of uniqueParticipantList; index as j"
         lines="full"
         (click)="seeUserInfo($event, user)"
       >
-        <ion-avatar class="participant-avatar" slot="start">
+        <ion-avatar slot="start">
           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
           <ion-img
             *ngIf="!user.avatar"
             src="assets/img/avatar-default.jpg"
           ></ion-img>
         </ion-avatar>
-        <ion-label slot="start"
-          >{{user.first_name}} {{user.last_name}}</ion-label
-        >
-        <ion-label slot="start">{{user.role}}</ion-label>
+        <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
+        <ion-label>{{user.role}}</ion-label>
         <ion-button slot="end">Chat</ion-button>
       </ion-item>
     </ion-list>
