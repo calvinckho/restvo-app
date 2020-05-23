@@ -359,7 +359,7 @@ export class RegisterPage implements OnInit {
     }
 
     async nextSlide() {
-        if(this.nameForm.get('first_name').value && this.nameForm.get('last_name').value && this.nameForm.get('last_name').value.length > 2){
+        if (!this.nameForm.get('first_name').errors && !this.nameForm.get('last_name').errors) { // ensure first name and last name have no error
             await this.slides.lockSwipes(false);
             await this.slides.slideNext();
             await this.slides.lockSwipes(true);

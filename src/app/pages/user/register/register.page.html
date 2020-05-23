@@ -147,7 +147,7 @@
                 </div>
               </div>
               <ion-item lines="full">
-                <ion-input type="text" formControlName="last_name" (keyup.enter)="nextSlide()"  placeholder="Last Name" autocapitalize="true" id="last-name"></ion-input>
+                <ion-input type="text" formControlName="last_name" (keyup.enter)="nextSlide()" placeholder="Last Name" autocapitalize="true" id="last-name"></ion-input>
               </ion-item>
               <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
                 <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
