@@ -61,9 +61,26 @@ app-dashboard {
     width: 50%;
   }
 
+  .about-me {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    justify-items: center;
+  }
+  
   .image-cropper {
     width: 120px;
     height: 120px;
+    border-radius: 50%;
+  }
+  
+  .user-data {
+    display: grid;
+    align-content: space-around;
+  }
+  
+  .edit-profile-button {
+    justify-self: center;
+    border-radius: 20% / 50%;
   }
 
   .current-date-display {

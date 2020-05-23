@@ -59,16 +59,18 @@
     </ion-row>
   </ion-grid>
   <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
-    <div>
+    <div class="about-me">
       <ion-item lines="none">
         <div class="image-cropper">
           <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
           <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
         </div>
       </ion-item>
-      <div>{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
-      <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
-      <ion-button (click)="openAboutMe()" >Edit Profile</ion-button>
+      <div class="user-data">
+        <div>Phuc Tran <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
+        <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
+        <ion-button (click)="openAboutMe()" class="edit-profile-button">Edit Profile</ion-button>
+      </div>
     </div>
       <!-- Complete your Profile Banner -->
     <ion-row class="profile-row" *ngIf="view === 'profile'">
