@@ -1,5 +1,5 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {CacheService} from "ionic-cache";

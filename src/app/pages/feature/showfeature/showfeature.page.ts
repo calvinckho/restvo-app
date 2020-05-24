@@ -4,7 +4,7 @@ import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
 import {Router, ActivatedRoute} from "@angular/router";
 import {CacheService} from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {get} from "scriptjs";
 import {

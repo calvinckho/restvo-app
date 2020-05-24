@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation, OnDestroy} from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute, Router} from "@angular/router";
 import {

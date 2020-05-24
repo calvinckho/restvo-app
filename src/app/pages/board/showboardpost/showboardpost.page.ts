@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     IonContent,

@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular';
 import { CacheService } from 'ionic-cache';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import { Moment } from "../../../services/moment.service";
 import { Board } from "../../../services/board.service";

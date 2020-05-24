@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChil
 import {Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 //const { Keyboard } = Plugins;

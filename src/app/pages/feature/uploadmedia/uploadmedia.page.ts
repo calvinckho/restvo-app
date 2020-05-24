@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {Aws} from "../../../services/aws.service";
 import {Resource} from "../../../services/resource.service";

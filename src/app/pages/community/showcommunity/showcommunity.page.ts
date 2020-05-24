@@ -2,7 +2,7 @@ import {Component, OnInit, Input, ViewEncapsulation, OnDestroy} from '@angular/c
 import { CacheService } from 'ionic-cache';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { UserData } from '../../../services/user.service';
