@@ -119,13 +119,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       await this.setup();
       this.mergeParticipantsIntoUniqueParticipantList();
     }
-
-    console.log("conversations");
-    console.log(this.chatService.conversations);
-
-    this.chatService.newConversation(this.chatService.conversations[0].conversation._id, this.chatService.conversations[0].message).then((id) => {
-      console.log(id)
-    })
   };
 
   mergeParticipantsIntoUniqueParticipantList = async () => {
@@ -178,6 +171,13 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
 
   async pushToMessagePage(event, activity) {
     if (event) event.stopPropagation();
+
+    console.log(activity);
+
+    this.chatService.newConversation(activity._id, "test").then((id) => {
+      console.log("yay")
+      console.log(id)
+    });
 
     // let chatObj = {
     //   conversationId: activity.conversation,
