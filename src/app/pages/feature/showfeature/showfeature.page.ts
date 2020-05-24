@@ -252,8 +252,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      console.log("refresh user handler", data)
-      this.setup(data);
+      console.log("refresh user handler", data);
+      // only refresh if no media player has been loaded in the view, or if there are players loaded, they are not playing or being paused
+      if (!this.mediaList.length || this.mediaList.find((c) => !c.player.playing || !c.player.paused)) {
+          this.setup(data);
+      }
   };
 
   async setup(data) {
