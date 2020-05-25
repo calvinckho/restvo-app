@@ -254,7 +254,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   loadAndProcessMomentHandler = async (data) => {
       console.log("refresh user handler", data, this.mediaList);
       // if there are players loaded and one of them is playing or is being paused
-      if (this.mediaList.find((c) => c && c.player && (c.player.playing || c.player.paused))) {
+      if (this.mediaList.find((c) => c && c.player && (c.player.playing || c.player.currentTime))) {
           // do nothing
       } else { // otherwise refresh
           this.setup(data);
