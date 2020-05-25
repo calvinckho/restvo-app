@@ -10,7 +10,7 @@
           <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-        <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
+        <!-- <ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button> -->
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
@@ -65,10 +65,12 @@
           <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
           <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
         </div>
+        <div class="profile">
+          <div class="name">Calvin Pena<span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
+          <div class="description">Pastor, entrepreneur, and father of two daughters.</div>
+          <ion-button class="ion-text-capitalize" fill="clear" (click)="openAboutMe()">Edit Profile</ion-button>
+        </div>
       </ion-item>
-      <div>{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
-      <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
-      <ion-button (click)="openAboutMe()" >Edit Profile</ion-button>
     </div>
       <!-- Complete your Profile Banner -->
     <ion-row class="profile-row" *ngIf="view === 'profile'">

@@ -62,8 +62,66 @@ app-dashboard {
   }
 
   .image-cropper {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
+
+    img {
+      border-radius: 90px;
+    }
+  }
+
+  .profile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 180px;
+    width: 200px;
+
+    .name {
+      position: absolute;
+      width: 183px;
+      height: 23px;
+      top: 30px;
+      left: 20px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 23px;
+      color: #000000;
+      white-space: nowrap;
+    }
+
+    .description {
+      position: absolute;
+      width: 183px;
+      height: 28px;
+      left: 20px;
+      top: 55px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 14px;
+      color: rgba(0, 0, 0, 0.6);
+    }
+    ion-button {
+      position: absolute;
+      top: 90px;
+      left: 20px;
+      width: 165px;
+      height:26px;
+      background: #FFFFFF;
+      border: 1px solid #E2666A;
+      box-sizing: border-box;
+      border-radius: 20px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 14px;
+      align-items: center;
+    }
   }
 
   .current-date-display {
@@ -118,7 +176,7 @@ app-dashboard {
       right: 0.1rem;
 
       & ~ ion-icon {
-        outline-color: whitesmoke;
+        outline-color: rgb(119, 56, 56);
       }
     }
   }
