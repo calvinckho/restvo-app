@@ -172,9 +172,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   async pushToMessagePage(event, user) {
     if (event) event.stopPropagation();
 
-    console.log(user);
-
-    this.chatService.newConversation(user._id, { composedMessage : "test", type: "connect" }).then(async (id) => {
+    this.chatService.newConversation(user._id, { composedMessage : 'Administrator ' + this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.', type: "connect" }).then(async (id) => {
       let chatObj = {
           conversationId: id,
           name: user.first_name + " " + user.last_name,
