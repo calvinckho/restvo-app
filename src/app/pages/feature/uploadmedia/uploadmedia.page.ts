@@ -32,6 +32,7 @@ export class UploadmediaPage implements OnInit {
 
   ngOnInit() {
     this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
+    this.sessionId = this.sessionId || Math.floor((Math.random() + new Date().getTime()) * 1000).toString();
   }
 
   async selectStockPhoto(photo) {

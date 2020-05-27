@@ -682,7 +682,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.author.first_name + ' ' + data.author.last_name,
-                    page:   'chat',
+                    page: 'chat',
                     badge: true,
                     modalPage: true,
                     recipient: data.author,
