@@ -831,7 +831,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                             reminders: []
                         }
                     };
-                    moment.parent_programs = [this.moment._id];
+                    moment.parent_programs = (this.moment && this.moment._id) ? [this.moment._id] : []; // if creating new Activity (Create Community), parent_programs is empty because Community has not been created yet
                     this.referenceActivities.push(moment);
                 } else {
                     this.referenceActivities.push(moment);
