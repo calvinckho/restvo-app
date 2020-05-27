@@ -1,6 +1,6 @@
 {
   "name": "restvo-app",
-  "version": "1.8.12",
+  "version": "1.8.13",
   "author": "Restvo Inc.",
   "homepage": "https://app.restvo.com",
   "scripts": {
@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.803.20",
-    "@angular-devkit/build-angular": "~0.803.20",
+    "@angular-devkit/build-angular": "^0.803.24",
     "@angular-devkit/core": "8.3.25",
     "@angular-devkit/schematics": "8.3.25",
     "@angular/cli": "8.3.25",

@@ -817,7 +817,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
         if (moments && moments.length) {
-            const samples = [];
             for (const moment of moments) {
                 if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar
                     moment.calendar = { // reset the calendar
@@ -832,7 +831,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                             reminders: []
                         }
                     };
-                    samples.push(moment);
+                    moment.parent_programs = [this.moment._id];
                     this.referenceActivities.push(moment);
                 } else {
                     this.referenceActivities.push(moment);

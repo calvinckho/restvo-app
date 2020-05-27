@@ -785,7 +785,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         return count;
     }
 
-
     async seeMoreInfo() {
         if (this.chatService.currentChatProps[this.propIndex].group) {
             if (this.modalPage) {
