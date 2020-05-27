@@ -818,7 +818,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         const {data: moments} = await modal.onDidDismiss();
         if (moments && moments.length) {
             for (const moment of moments) {
-                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar
+                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar and add Activity ID to parent_programs property
                     moment.calendar = { // reset the calendar
                         title: moment.matrix_string[0][0],
                         location: '',
