@@ -953,7 +953,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (recipient._id) {
           if (!this.modalPage && this.platform.width() >= 768) {
               if (this.router.url.includes("sub")) {
-                this.router.navigate(['/app/person/' + recipient._id, { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route, replaceUrl: false });
+                this.router.navigate(['/app/person/' + recipient._id, { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
               } else {
                 this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
               }
