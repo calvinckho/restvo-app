@@ -29,6 +29,7 @@ import { Resource } from "../../../services/resource.service";
 import { Response } from "../../../services/response.service";
 import { CalendarService } from "../../../services/calendar.service";
 import { EditfeaturePage } from "../editfeature/editfeature.page";
+import { GroupchatPage } from "../../group/groupchat/groupchat.page";
 
 @Component({
   selector: "app-editfeature",
