@@ -146,15 +146,19 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       user.role = [this.leaderLabel];
     });
     this.tempArray = tempList1.concat(tempList2, tempList3);
-    console.log("tempArray list", this.tempArray)
+    //tempArray => lists an array of user objects with each users role
+
+
+    //this logic below checks the user._id to see if it exists in the array uniqueParticipantList
+    //If it exists, we only need to concat the roles,
+    //Else, we need to push the whole user object into uniqueParticipantList
     this.tempArray.forEach(el => {
       let exists = this.uniqueParticipantList.filter(function(value){
         return value._id === el._id
       })
-      console.log(exists)
       if(exists.length){
         let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
-        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.concat(el.role)
+        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.concat(" " + el.role)
       }
       else {
         this.uniqueParticipantList.push(el)
