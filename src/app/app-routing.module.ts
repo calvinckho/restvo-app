@@ -40,6 +40,12 @@ const routes: Routes = [
         outlet: 'sub'
     },
     {
+        path: 'sub_profile',
+        //component: GroupchatPageModule,
+        loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoPage),
+        outlet: 'sub'
+    },
+    {
         path: 'sub_me',
         //component: DashboardPageModule,
         loadChildren: () => import('./pages/user/dashboard/dashboard.module').then( m => m.DashboardPageModule),
