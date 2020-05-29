@@ -88,7 +88,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       slidesPerView: 6,
       grabCursor: true,
       updateOnWindowResize: true,
-      spaceBetween: 30,
+      spaceBetween: 10,
       breakpoints: {
         600: {
           slidesPerView: 3,

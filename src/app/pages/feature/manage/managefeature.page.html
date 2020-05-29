@@ -19,16 +19,22 @@
         <ion-label *ngIf="platform.width() >= 768">People</ion-label>
       </ion-item>
     </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))" (click)="clickManageMenu('groups', null)">
-      <ion-item [color]="(selectedMenuOption === 'groups') ? 'primary' : 'secondary'" lines="none">
+    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
+      <ion-item [color]="(selectedMenuOption === 'journey') ? 'primary' : 'secondary'" lines="none">
         <ion-icon slot="start" name="people-circle-outline" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Groups</ion-label>
+        <ion-label *ngIf="platform.width() >= 768">Journeys</ion-label>
       </ion-item>
     </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))" (click)="clickManageMenu('mentoring', null)">
+    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))" (click)="clickManageMenu('mentoring', null)"> <!--Mentoring-->
       <ion-item [color]="(selectedMenuOption === 'mentoring') ? 'primary' : 'secondary'" lines="none">
         <ion-icon slot="start" name="grid" *ngIf="platform.width() < 768"></ion-icon>
         <ion-label *ngIf="platform.width() >= 768">Mentoring</ion-label>
+      </ion-item>
+    </ion-slide>
+    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))" (click)="clickManageMenu('groups', null)"> <!--Groups-->
+      <ion-item [color]="(selectedMenuOption === 'groups') ? 'primary' : 'secondary'" lines="none">
+        <ion-icon slot="start" name="people-circle-outline" *ngIf="platform.width() < 768"></ion-icon>
+        <ion-label *ngIf="platform.width() >= 768">Groups</ion-label>
       </ion-item>
     </ion-slide>
     <ion-slide *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"  [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}" (click)="clickManageMenu('programs', null)">
