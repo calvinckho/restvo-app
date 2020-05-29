@@ -40,7 +40,7 @@ const routes: Routes = [
         outlet: 'sub'
     },
     {
-        path: 'sub_profile',
+        path: 'sub_profile/:id',
         //component: GroupchatPageModule,
         loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoPage),
         outlet: 'sub'
