@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     loading: any;
 
     constructor(
-        private router: Router,
+        public router: Router,
         private storage: Storage,
         private zone: NgZone,
         private stripeService: StripeService,
