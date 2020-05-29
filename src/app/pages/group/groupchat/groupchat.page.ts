@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild, ElementRef} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
 import * as Plyr from "plyr";
@@ -78,6 +78,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     constructor(
         private zone: NgZone,
+        private route: ActivatedRoute,
         public router: Router,
         private electronService: ElectronService,
         private cache: CacheService,
