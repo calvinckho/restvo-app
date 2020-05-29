@@ -69,14 +69,24 @@
         lines="full"
         (click)="seeUserInfo($event, user)"
       >
-        <ion-avatar slot="start">
-          <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-          <ion-img
+      <!-- <div style="display: inline-block">
+        <ion-avatar style="display: block">
+          <ion-img  style="display: block" *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+          <ion-img style="display: block"
             *ngIf="!user.avatar"
             src="assets/img/avatar-default.jpg"
           ></ion-img>
         </ion-avatar>
         <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
+      </div> -->
+      <ion-avatar slot="start">
+        <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+        <ion-img
+          *ngIf="!user.avatar"
+          src="assets/img/avatar-default.jpg"
+        ></ion-img>
+      </ion-avatar>
+      <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
         <ion-label>{{user.role}}</ion-label>
         <ion-button>Chat</ion-button>
       </ion-item>
