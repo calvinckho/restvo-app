@@ -64,6 +64,14 @@ app-dashboard {
   .image-cropper {
     width: 120px;
     height: 120px;
+    border-radius: 50%;
+    
+  }
+
+  .image-cropper img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
   }
 
   .current-date-display {
@@ -642,4 +650,67 @@ app-dashboard {
     line-height: 21px;
     color: var(--ion-color-button1);
   }
+}
+
+.find-me{
+  display: flex;
+  background-color: white;
+}
+
+
+
+.basic-info-holder{
+  display:flex;
+  flex-direction: column;
+  height: inherit;
+  width: 183px;
+}
+
+.name{
+  // font-family: Roboto;
+  color: #000000;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
+  padding-bottom:7px;
+}
+
+.mini-bio{
+  /* Body/Small/Active */
+
+  // font-family: Roboto;
+  color: rgba(0, 0, 0, 0.6);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
+  padding-bottom:12px;
+
+}
+
+
+#edit-profile-btn{
+  width: 183px;
+  height: 26px;
+
+  background: #FFFFFF;
+  border: 1px solid #E2666A;
+  box-sizing: border-box;
+  border-radius: 20px;
+
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+
+  color: #E2666A;
+
 }
