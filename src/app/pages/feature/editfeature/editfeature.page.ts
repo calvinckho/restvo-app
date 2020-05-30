@@ -636,10 +636,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   async removeMedia(i, j) {
+      const sessionId = this.moment._id || 'blank';
       const url = this.moment.matrix_string[i][j];
-      const index = this.awsService.sessionAssets[this.moment._id].indexOf(url);
+      const index = this.awsService.sessionAssets[sessionId].indexOf(url);
       if (index > -1) {
-          this.awsService.sessionAssets[this.moment._id].splice(index, 1);
+          this.awsService.sessionAssets[sessionId].splice(index, 1);
       }
       this.moment.matrix_string[i].splice(j, 1);
   }

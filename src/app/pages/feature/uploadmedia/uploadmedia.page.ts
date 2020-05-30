@@ -32,7 +32,7 @@ export class UploadmediaPage implements OnInit {
 
   ngOnInit() {
     this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
-    this.sessionId = this.sessionId || Math.floor((Math.random() + new Date().getTime()) * 1000).toString();
+    this.sessionId = this.sessionId || 'blank';
   }
 
   async selectStockPhoto(photo) {
@@ -103,7 +103,7 @@ export class UploadmediaPage implements OnInit {
           handler: data => {
             this.urls.push(data.src);
             if ((['jpg', 'jpeg', 'gif', 'png']).includes(data.src.substring(data.src.lastIndexOf('.') + 1).toLowerCase())) { // only add to the the asset array if an image
-              this.awsService.sessionAssets[this.sessionId].push(data.src);
+              this.awsService.addToSessionAssets(this.sessionId, data.src);
             }
           }
         }
