@@ -42,7 +42,7 @@ const routes: Routes = [
     {
         path: 'sub_profile/:id',
         //component: GroupchatPageModule,
-        loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoPage),
+        loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoModule),
         outlet: 'sub'
     },
     {
