@@ -21,23 +21,19 @@ app-managefeature {
     height: 100%;
   }
 
-  ion-header {
+  .desktop-header {
     padding: 30px 0;
     background-color: transparent !important;
     box-shadow: none !important;
 
     --background: transparent !important;
-  }
 
-  .slides-md {
-    padding: 0 30px !important;
-  }
-
-  ion-slide {
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    padding: 10px;
-    margin: 15px 0;
-    border-radius: 10px;
+    ion-slide {
+      box-shadow: 0 5px 10px rgba(0,0,0,.2);
+      padding: 10px;
+      margin: 15px;
+      border-radius: 10px;
+    }
   }
 
   .selected {

@@ -37,7 +37,7 @@
                 <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input>
               </ion-item>
               <ion-item [hidden]="recovery_mode" lines="full">
-                <ion-input id="password" class="password" placeholder="Password" formControlName="password" [type]="passwordType"></ion-input>
+                <ion-input id="password" class="password" (key.enter) = "login()" placeholder="Password" formControlName="password" [type]="passwordType"></ion-input>
                 <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
               </ion-item>
             </ion-list>
@@ -147,7 +147,7 @@
                 </div>
               </div>
               <ion-item lines="full">
-                <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="true" id="last-name"></ion-input>
+                <ion-input type="text" formControlName="last_name" (keyup.enter)="nextSlide()" placeholder="Last Name" autocapitalize="true" id="last-name"></ion-input>
               </ion-item>
               <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
                 <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
@@ -204,7 +204,7 @@
                 </div>
               </div>
               <ion-item lines="full">
-                <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
+                <ion-input type="password" formControlName="passwordConfirmation" (keyup.enter)="registerEmail()" placeholder="Confirm Password"></ion-input>
               </ion-item>
               <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
                 <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation.hasError('required')">

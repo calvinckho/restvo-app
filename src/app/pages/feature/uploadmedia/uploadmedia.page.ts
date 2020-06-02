@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {Aws} from "../../../services/aws.service";
 import {Resource} from "../../../services/resource.service";
@@ -32,6 +32,7 @@ export class UploadmediaPage implements OnInit {
 
   ngOnInit() {
     this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
+    this.sessionId = this.sessionId || Math.floor((Math.random() + new Date().getTime()) * 1000).toString();
   }
 
   async selectStockPhoto(photo) {

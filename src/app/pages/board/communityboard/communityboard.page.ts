@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation} from '@angul
 import {CacheService} from 'ionic-cache';
 import {Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     ActionSheetController,

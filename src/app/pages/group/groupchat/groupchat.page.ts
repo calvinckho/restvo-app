@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild, ElementRef} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 //const { Keyboard } = Plugins;
@@ -78,6 +78,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     constructor(
         private zone: NgZone,
+        private route: ActivatedRoute,
         public router: Router,
         private electronService: ElectronService,
         private cache: CacheService,
@@ -784,7 +785,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
         return count;
     }
-
 
     async seeMoreInfo() {
         if (this.chatService.currentChatProps[this.propIndex].group) {

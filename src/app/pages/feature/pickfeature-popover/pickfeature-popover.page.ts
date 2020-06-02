@@ -195,11 +195,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     async createMoment() {
-        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
+        if (this.modalPage) {
             this.close();
+        }
+        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
         } else { // create other Activities
-            this.close(); // close the Picker, then open up the create view.
             this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
         }
     }
@@ -234,7 +235,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     back() {
-        console.log("allow", this.allowSwitchCategory);
         if (this.step === -2 || this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
             this.close();
         } else {

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation, OnDestroy} from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
@@ -22,7 +22,6 @@ import {Resource} from "../../../services/resource.service";
 import {Response} from "../../../services/response.service";
 import {CalendarService} from "../../../services/calendar.service";
 import {Plugins} from "@capacitor/core";
-import {PickpeoplePopoverPage} from "../pickpeople-popover/pickpeople-popover.page";
 import {NetworkService} from "../../../services/network-service.service";
 import {Location} from "@angular/common";
 import {UploadmediaPage} from "../uploadmedia/uploadmedia.page";
@@ -593,7 +592,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   changeSelectedDate( inputDate ) {
     if (inputDate === ' ') return;
-    this.calendarService.calendar.selectedDate = inputDate;
+      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.startDate = inputDate;
       this.dateType = 'end';
@@ -818,9 +817,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
         if (moments && moments.length) {
-            const samples = [];
             for (const moment of moments) {
-                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar
+                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar and add Activity ID to parent_programs property
                     moment.calendar = { // reset the calendar
                         title: moment.matrix_string[0][0],
                         location: '',
@@ -833,7 +831,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                             reminders: []
                         }
                     };
-                    samples.push(moment);
+                    moment.parent_programs = (this.moment && this.moment._id) ? [this.moment._id] : []; // if creating new Activity (Create Community), parent_programs is empty because Community has not been created yet
                     this.referenceActivities.push(moment);
                 } else {
                     this.referenceActivities.push(moment);

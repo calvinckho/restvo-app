@@ -40,6 +40,7 @@ import { GroupchatPage } from "../../group/groupchat/groupchat.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @Input() title = "";
   uniqueParticipantList = [];
+  tempArray = []
   // relationshipCompletion: any;
   participantAscending = true;
   roleAscending = true;
@@ -133,17 +134,36 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     // await loading.present();
     let tempList1 = this.moment.user_list_1.slice();
     tempList1.forEach((user) => {
-      user.role = this.participantLabel;
+      user.role = [this.participantLabel];
     });
     let tempList2 = this.moment.user_list_2.slice();
     tempList2.forEach((user) => {
-      user.role = this.organizerLabel;
+      user.role = [this.organizerLabel];
     });
     let tempList3 = this.moment.user_list_3.slice();
     tempList3.forEach((user) => {
-      user.role = this.leaderLabel;
+      user.role = [this.leaderLabel];
     });
-    this.uniqueParticipantList = tempList1.concat(tempList2, tempList3);
+    this.tempArray = tempList1.concat(tempList2, tempList3);
+    //tempArray => lists an array of user objects with each users role
+
+
+    //this logic below checks the user._id to see if it exists in the array uniqueParticipantList
+    //If it exists, we only need to concat the roles,
+    //Else, we need to push the whole user object into uniqueParticipantList
+    this.tempArray.forEach(el => {
+      let exists = this.uniqueParticipantList.filter(function(value){
+        return value._id === el._id
+      })
+      if(exists.length){
+        let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
+        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.concat(" " + el.role)
+      }
+      else {
+        this.uniqueParticipantList.push(el)
+      }
+    })
+
   }
 
   async openPopUpModalAddParticipants(event){

@@ -170,7 +170,12 @@
                       <ion-select-option value="GB">United Kingdom</ion-select-option>
                     </ion-select>
                   </ion-item>
+                  <ion-item class="ion-margin-top">
+                    <ion-label position="stacked">Discount Code</ion-label>
+                    <ion-input type="text" formControlName="coupon"></ion-input>
+                  </ion-item>
                 </form>
+                <div class="ion-margin">* I authorise Restvo to send instructions to the financial institution that issued my card to take payments from my card account in accordance with the terms of my agreement with you.</div>
                 <ion-row>
                   <ion-col>
                     <ion-button color="primary" shape="round" fill="solid" expand="block" (click)="submitBillingForm()">Submit</ion-button>

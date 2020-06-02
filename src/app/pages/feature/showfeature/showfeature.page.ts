@@ -4,7 +4,7 @@ import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
 import {Router, ActivatedRoute} from "@angular/router";
 import {CacheService} from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {get} from "scriptjs";
 import {
@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-    subscriptions: any = {};
+  subscriptions: any = {};
   mode = 'list';
   slideOpts = {
       updateOnWindowResize: true,
@@ -252,9 +252,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      console.log("refresh user handler", data)
-      this.setup(data);
-  };
+      console.log("refresh user handler", data, this.mediaList);
+      // if there are players loaded and one of them is playing or is being paused
+      if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
+          // do nothing
+      } else { // otherwise refresh
+          this.setup(data);
+      }
+  }
 
   async setup(data) {
       this.loadStatus = 'loading';
@@ -1170,7 +1175,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async checkAndLoadNotes() {
         // if there is the tab component
-        if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
+        if (this.moment && this.moment.resource && this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab
             const index = this.moment.resource.matrix_number[0].indexOf(12000);
             if (index >= 0 && this.moment.resource.matrix_number[3][index] === this.tabSelection) {
@@ -1241,6 +1246,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
         this.timeoutHandle = setTimeout(async () => {
+            console.log("sending responsObj", this.responseObj);
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
             if (response) {
@@ -1255,6 +1261,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 // Showing the user that the content has been saved at the end of the timeout
                 this.currentSaveState = 'Saved';
+                console.log("done submiting response", this.currentSaveState)
 
                 setTimeout(() => {
                     this.currentSaveState = '';
@@ -1560,7 +1567,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
                             this.expandedPrivilegesView = false;
-                            this.cloneMoment();
+                            this.momentService.cloneMoment(this.moment);
                         });
                     }
                 }]);
@@ -1714,32 +1721,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         await actionSheet.present();
-    }
-
-    async cloneMoment() {
-        const momentToBeCloned = JSON.parse(JSON.stringify(this.moment));
-        momentToBeCloned.calendar = { // reset the calendar
-            title: momentToBeCloned.matrix_string[0][0],
-            location: '',
-            notes: '',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
-            options: {
-                firstReminderMinutes: 0,
-                secondReminderMinutes: 0,
-                reminders: []
-            }
-        };
-        const clonedMoments: any = await this.momentService.clone([momentToBeCloned], 'staff');
-        if (clonedMoments && clonedMoments.length) {
-            const networkAlert = await this.alertCtrl.create({
-                header: 'Success',
-                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It will be available in the Manage Activities page in a moment.',
-                buttons: ['Dismiss'],
-                cssClass: 'level-15'
-            });
-            await networkAlert.present();
-        }
     }
 
     initPlyr(event, mediaId) {
@@ -2142,7 +2123,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     changeCalendarItemSelectedDate(inputDate) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarItem.startDate = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate(), new Date(this.calendarItem.startDate).getHours(), new Date(this.calendarItem.startDate).getMinutes()).toISOString();
         this.anyChangeMade = true;
     }
@@ -2286,7 +2267,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
+    if (this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }

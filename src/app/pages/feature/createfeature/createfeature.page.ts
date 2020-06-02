@@ -102,7 +102,6 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
           await this.momentService.update(referenceActivity);
       });
       await Promise.all(promises);
-      console.log("after save", this.moment);
       this.participantsView = 'leaders'; //switch to leaders view as default
       this.view = 'tutorial';
     }

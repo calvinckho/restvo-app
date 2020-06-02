@@ -340,7 +340,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     changeSelectedDate( inputDate ) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarService.calendar.daysInViewWeek = this.calendarService.getDaysInWeek( inputDate.getDate() , inputDate.getMonth() , inputDate.getFullYear() );
     }
 

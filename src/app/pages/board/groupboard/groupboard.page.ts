@@ -3,7 +3,7 @@ import {CacheService} from 'ionic-cache';
 import { Router } from '@angular/router';
 import {Storage} from '@ionic/storage';
 import { CallNumber } from "@ionic-native/call-number/ngx";
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     AlertController,
