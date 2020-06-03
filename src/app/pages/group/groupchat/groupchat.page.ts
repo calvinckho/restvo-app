@@ -787,44 +787,44 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async seeMoreInfo() {
-        if (this.chatService.currentChatProps[this.propIndex].group) {
-            if (this.modalPage) {
-                const groupinfoModal = await this.modalCtrl.create({component: GroupinfoPage, componentProps: {modalPage: true}} );
-                await groupinfoModal.present();
-                const {data: refreshNeeded} = await groupinfoModal.onDidDismiss();
-                if (refreshNeeded) {
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/group'], { skipLocationChange: true });
-            }
-        } else if (this.chatService.currentChatProps[this.propIndex].moment) {
-            if (this.modalPage) {
-                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: { _id: this.chatService.currentChatProps[this.propIndex].moment._id}, modalPage: true}} );
-                await modal.present();
-                const {data: refreshNeeded} = await modal.onDidDismiss();
-                if (refreshNeeded) {
-                    this.closeModal(true);
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
-            }
-        } else {
-            if (this.modalPage) {
-                const recipientModal = await this.modalCtrl.create({
-                    component: ShowrecipientinfoPage,
-                    componentProps: {recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true}} );
-                await recipientModal.present();
-                const {data: closeMessage} = await recipientModal.onDidDismiss();
-                if (closeMessage) {
-                    console.log("close modal");
-                    setTimeout(() => {
-                        this.closeModal(true);
-                    }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
-            }
-        }
+      if (this.chatService.currentChatProps[this.propIndex].group) {
+          if (this.modalPage) {
+              const groupinfoModal = await this.modalCtrl.create({component: GroupinfoPage, componentProps: {modalPage: true}} );
+              await groupinfoModal.present();
+              const {data: refreshNeeded} = await groupinfoModal.onDidDismiss();
+              if (refreshNeeded) {
+              }
+          } else {
+              this.router.navigate(['/app/myconversations/group'], { skipLocationChange: true });
+          }
+      } else if (this.chatService.currentChatProps[this.propIndex].moment) {
+          if (this.modalPage) {
+              const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: { _id: this.chatService.currentChatProps[this.propIndex].moment._id}, modalPage: true}} );
+              await modal.present();
+              const {data: refreshNeeded} = await modal.onDidDismiss();
+              if (refreshNeeded) {
+                  this.closeModal(true);
+              }
+          } else {
+              this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
+          }
+      } else {
+          if (this.modalPage) {
+              const recipientModal = await this.modalCtrl.create({
+                  component: ShowrecipientinfoPage,
+                  componentProps: {recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true}} );
+              await recipientModal.present();
+              const {data: closeMessage} = await recipientModal.onDidDismiss();
+              if (closeMessage) {
+                  console.log("close modal");
+                  setTimeout(() => {
+                      this.closeModal(true);
+                  }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
+              }
+          } else {
+              this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
+          }
+      }
     }
 
 
