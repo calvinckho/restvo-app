@@ -1013,6 +1013,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
           }
         }
+      }
     }
 
     startVideoChat() {
