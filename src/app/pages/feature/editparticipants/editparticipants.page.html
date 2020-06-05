@@ -87,7 +87,7 @@
         ></ion-img>
       </ion-avatar>
       <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
-        <ion-label>{{user.role}}</ion-label>
+        <ion-label>{{user.role.join(" / ")}}</ion-label>
         <ion-button (click)="pushToMessagePage($event, user)" disabled="true">Chat</ion-button>
       </ion-item>
     </ion-list>

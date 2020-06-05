@@ -162,7 +162,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       if(exists.length){
         let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
         this.uniqueParticipantList[existingIndex].role.push(el.role[0])
-        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.join(" / ")
         console.log(this.uniqueParticipantList)
       }
       else {
