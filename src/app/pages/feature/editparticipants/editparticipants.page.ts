@@ -155,11 +155,15 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     //Else, we need to push the whole user object into uniqueParticipantList
     this.tempArray.forEach(el => {
       let exists = this.uniqueParticipantList.filter(function(value){
+        //checks each user from the temp array to see if that user exists in the uniqueParticipantList array
         return value._id === el._id
       })
+      //if user existed already in uniqueParticipantArray, the "exists" variable will have a length
       if(exists.length){
         let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
-        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.concat(" " + el.role)
+        this.uniqueParticipantList[existingIndex].role.push(el.role[0])
+        this.uniqueParticipantList[existingIndex].role = this.uniqueParticipantList[existingIndex].role.join(" / ")
+        console.log(this.uniqueParticipantList)
       }
       else {
         this.uniqueParticipantList.push(el)
