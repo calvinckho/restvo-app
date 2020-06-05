@@ -971,6 +971,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
               }
             }
         }
+      }
     }
 
     startVideoChat() {
