@@ -59,10 +59,13 @@
       <ion-item lines="none">
         <ion-label (click)="sortDisplay('participant')">
           Current Participants
+          <ion-icon [name]="participantAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
         </ion-label>
         <ion-label (click)="sortDisplay('role')">
           Role
+          <ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
         </ion-label>
+        
       </ion-item>
       <ion-item
         *ngFor="let user of uniqueParticipantList; index as j"
