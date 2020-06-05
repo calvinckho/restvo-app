@@ -145,6 +145,8 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       user.role = [this.leaderLabel];
     });
     this.tempArray = tempList1.concat(tempList2, tempList3);
+    console.log("templist", this.tempArray)
+    console.log("userData", this.userData.user)
     //tempArray => lists an array of user objects with each users role
 
 
