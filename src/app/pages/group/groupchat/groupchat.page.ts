@@ -949,25 +949,25 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async seeUserInfo(event, recipient) {
-        event.stopPropagation();
-        if (recipient._id) {
-          if (!this.modalPage && this.platform.width() >= 768) {
-              if (this.router.url.includes("sub")) {
-                this.router.navigate(["", { outlets: { sub: ['sub_profile', recipient._id ] }}], { relativeTo: this.route });
-              } else {
-                this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
-              }
+      event.stopPropagation();
+      if (recipient._id) {
+        if (!this.modalPage && this.platform.width() >= 768) {
+          if (this.router.url.includes("sub")) {
+            this.router.navigate(["", { outlets: { sub: ['sub_profile', recipient._id ] }}], { relativeTo: this.route });
           } else {
-              const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: recipient, modalPage: true}} );
-              await recipientModal.present();
-              const {data: closeMessage} = await recipientModal.onDidDismiss();
-              if (closeMessage) {
-                  setTimeout(()=>{
-                      this.closeModal(true);
-                  }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
-              }
+            this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
+          }
+        } else {
+          const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: recipient, modalPage: true}} );
+          await recipientModal.present();
+          const {data: closeMessage} = await recipientModal.onDidDismiss();
+          if (closeMessage) {
+              setTimeout(()=>{
+                  this.closeModal(true);
+              }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
           }
         }
+      }
     }
 
     startVideoChat() {
