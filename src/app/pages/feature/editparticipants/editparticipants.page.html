@@ -67,7 +67,6 @@
       <ion-item
         *ngFor="let user of uniqueParticipantList; index as j"
         lines="full"
-        (click)="seeUserInfo($event, user)"
       >
       <!-- <div style="display: inline-block">
         <ion-avatar style="display: block">
@@ -79,16 +78,16 @@
         </ion-avatar>
         <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
       </div> -->
-      <ion-avatar slot="start">
+      <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
         <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
         <ion-img
           *ngIf="!user.avatar"
           src="assets/img/avatar-default.jpg"
         ></ion-img>
       </ion-avatar>
-      <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
+      <ion-label (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label>
         <ion-label>{{user.role.join(" / ")}}</ion-label>
-        <ion-button (click)="pushToMessagePage($event, user)">Chat</ion-button>
+        <ion-button (click)="pushToMessagePage($event, user)" [disabled]="userData.user._id === user._id">Chat</ion-button>
       </ion-item>
     </ion-list>
 
