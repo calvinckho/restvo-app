@@ -699,11 +699,17 @@ export class MainTabPage implements OnInit, OnDestroy {
                     cssClass: 'level-10'
                 });
             }
-            const messagePage = await this.modalCtrl.create({
-                component: GroupchatPage,
-                componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-            });
-            await messagePage.present();
+            if (data.relativeTo) {
+                this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: data.relativeTo });
+                // if it is displaying the chat view, it will reload the chat data
+                this.userData.refreshMyConversations({action: 'reload chat view'});
+            } else {
+                const messagePage = await this.modalCtrl.create({
+                    component: GroupchatPage,
+                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+                });
+                await messagePage.present();
+            }
         }
     }
 

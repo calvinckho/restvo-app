@@ -173,31 +173,35 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   async pushToMessagePage(event, user) {
     if (event) event.stopPropagation();
 
-    this.chatService.newConversation(user._id, { composedMessage : 'Administrator ' + this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.', type: "connect" }).then(async (id) => {
-      let chatObj = {
-          conversationId: id,
-          name: user.first_name + " " + user.last_name,
-          recipient: user,
-          page: 'chat',
-          badge: 0,
-          modalPage: this.platform.width() < 768
-      };
-
-      if (this.platform.width() >= 768) {
-        this.chatService.currentChatProps.push(chatObj);
-        // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-        this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
-        // if it is displaying the chat view, it will reload the chat data
-        this.userData.refreshMyConversations({action: 'reload chat view'});
-      } else {
-        this.chatService.currentChatProps.push(chatObj);
-        const groupPage = await this.modalCtrl.create({
-          component: GroupchatPage,
-          componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-        });
-        await groupPage.present();
-      }
+    const conversationId = await this.chatService.newConversation(user._id, { composedMessage : 'Administrator ' + this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.', type: 'connect' });
+    this.chatService.openChat({
+      conversationId: conversationId,
+      author: user,
+      relativeTo: this.platform.width() >= 768 ? this.route : null
     });
+    /*let chatObj = {
+        conversationId: id,
+        name: user.first_name + ' ' + user.last_name,
+        recipient: user,
+        page: 'chat',
+        badge: 0,
+        modalPage: this.platform.width() < 768
+    };
+
+    if (this.platform.width() >= 768) {
+      this.chatService.currentChatProps.push(chatObj);
+      // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+      this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
+      // if it is displaying the chat view, it will reload the chat data
+      this.userData.refreshMyConversations({action: 'reload chat view'});
+    } else {
+      this.chatService.currentChatProps.push(chatObj);
+      const groupPage = await this.modalCtrl.create({
+        component: GroupchatPage,
+        componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+      });
+      await groupPage.present();
+    }*/
   }
 
   sortDisplay(type) {
