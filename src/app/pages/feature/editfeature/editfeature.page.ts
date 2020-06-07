@@ -688,7 +688,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   async seeUserInfo(event, user) {
     event.stopPropagation();
     user.name = user.first_name + ' ' + user.last_name;
-      this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
+      if (!this.modalPage && this.platform.width() >= 768) {
+          this.router.navigate([{ outlets: { sub: ['user', user._id, { subpanel: true } ] }}]);
+      } else {
+          this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
+      }
   }
 
     async reloadMomentUserLists() {

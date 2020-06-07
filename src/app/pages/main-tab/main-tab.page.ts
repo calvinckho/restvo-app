@@ -700,7 +700,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 });
             }
             if (data.relativeTo) {
-                this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: data.relativeTo });
+                this.router.navigate(['', { outlets: { sub: ['chat', { subpanel: true }] }}], { relativeTo: data.relativeTo });
                 // if it is displaying the chat view, it will reload the chat data
                 this.userData.refreshMyConversations({action: 'reload chat view'});
             } else {

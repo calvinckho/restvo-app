@@ -41,6 +41,7 @@ import {ProfilePage} from "../../user/profile/profile.page";
 import {GroupinfoPage} from "../groupinfo/groupinfo.page";
 import {CalendarService} from "../../../services/calendar.service";
 import {Auth} from "../../../services/auth.service";
+import {Location} from "@angular/common";
 
 @Component({
     selector: 'app-groupchat',
@@ -54,6 +55,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any; //optionally sent if it is a modal page
 
+    subPanel = false;
     subscriptions: any = {};
     propIndex: any;
     // chat
@@ -80,6 +82,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         private zone: NgZone,
         private route: ActivatedRoute,
         public router: Router,
+        private location: Location,
         private electronService: ElectronService,
         private cache: CacheService,
         private storage: Storage,
@@ -105,6 +108,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);
@@ -909,18 +913,16 @@ export class GroupchatPage implements OnInit, OnDestroy {
     async seeUserInfo(event, recipient) {
       event.stopPropagation();
       if (recipient._id) {
-        if (!this.modalPage && this.platform.width() >= 768) {
-          if (this.router.url.includes('sub')) {
-            this.router.navigate(['', { outlets: { sub: ['sub_profile', recipient._id ] }}], { relativeTo: this.route });
-          } else {
+        if (!this.modalPage && this.platform.width() >= 992) {
+            this.router.navigate([{ outlets: { sub: ['user', recipient._id, { subpanel: true } ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
             this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
-          }
         } else {
           const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: recipient, modalPage: true}} );
           await recipientModal.present();
           const {data: closeMessage} = await recipientModal.onDidDismiss();
           if (closeMessage) {
-              setTimeout(()=>{
+              setTimeout(() => {
                   this.closeModal(true);
               }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
           }
@@ -963,12 +965,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
                 }
             } else {
-              if (this.router.url.includes('sub')) {
-                this.router.navigate(['', { outlets: { sub: ['sub_profile', this.chatService.currentChatProps[this.propIndex].recipient._id ] }}], { relativeTo: this.route });
-              } else {
-                // this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
+                if (this.platform.width() >= 992) {
+                    this.router.navigate([{ outlets: { sub: ['user', this.chatService.currentChatProps[this.propIndex].recipient._id, { subpanel: true } ] }}]);
+                } else if (this.platform.width() >= 768) {
+                    this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id], { replaceUrl: false });
+                } else {
                 this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
-              }
+                }
             }
         }
     }
@@ -1171,11 +1174,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
                 this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});
-            } else {
+            } else if (!this.subPanel) {
                 setTimeout(() => {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});
                 }, 500);
+            } else {
+                this.location.back();
             }
         } catch (err) {
             console.log(err);

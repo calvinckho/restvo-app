@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-  isSubpanel = false;
+  subPanel = false;
   subscriptions: any = {};
   mode = 'list';
   slideOpts = {
@@ -224,12 +224,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       public calendarService: CalendarService) {}
 
   async ngOnInit() {
-      /*this.router.events.subscribe(event => {
-          if (event instanceof ActivationEnd) {
-              this.isSubpanel = (event && event.snapshot && event.snapshot.outlet === 'sub');
-              console.log("outlet 2", event, this.isSubpanel);
-          };
-      });*/
+      this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
@@ -1003,6 +998,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     user.name = user.first_name + ' ' + user.last_name;
     if (!this.authService.token) {
       this.openRegister(0, 'To see more about ' + user.name + ', sign in or create an account first.');
+    } else if (!this.modalPage && this.platform.width() >= 992) {
+        this.router.navigate([{ outlets: { sub: ['user', user._id, { subpanel: true } ] }}]);
     } else if (!this.modalPage && this.platform.width() >= 768) {
       this.router.navigate(['/app/person/' + user._id], { replaceUrl: false });
     } else {
@@ -1799,7 +1796,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     if (this.platform.width() >= 768) {
       if (this.authService.token) {
           if (this.router.url.includes('/app/manage')) {
-              this.router.navigate(['', { outlets: { sub: ['sub_activity', moment._id ] }}], { relativeTo: this.route });
+              this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
           } else {
               this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
           }

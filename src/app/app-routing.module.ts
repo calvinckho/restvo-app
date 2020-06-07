@@ -34,17 +34,17 @@ const routes: Routes = [
         loadChildren: () => import('./pages/manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
     },
     {
-        path: 'sub_chat',
+        path: 'chat',
         loadChildren: () => import('./pages/group/groupchat/groupchat.module').then( m => m.GroupchatPageModule),
         outlet: 'sub'
     },
     {
-        path: 'sub_profile/:id',
+        path: 'user/:id',
         loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoModule),
         outlet: 'sub'
     },
     {
-        path: 'sub_activity/:id',
+        path: 'details/:id',
         loadChildren: () => import('./pages/feature/showfeature/showfeature.module').then( m => m.ShowfeaturePageModule),
         outlet: 'sub'
     },

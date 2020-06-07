@@ -82,7 +82,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       }
     } else {
       if (viewType === 'view') { // view
-        this.router.navigate(['', { outlets: { sub: ['sub_activity', moment._id ] }}], { relativeTo: this.route });
+        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
       } else {
         this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
@@ -179,7 +179,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     if (this.platform.width() >= 768) {
       this.chatService.currentChatProps.push(chatObj);
       // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
-      this.router.navigate(['', { outlets: { sub: 'sub_chat' }}], { relativeTo: this.route });
+      this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
       // if it is displaying the chat view, it will reload the chat data
       this.userData.refreshMyConversations({action: 'reload chat view'});
     } else {

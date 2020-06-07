@@ -4,6 +4,11 @@
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{recipient.first_name}} {{recipient.last_name}}</ion-title>
+    <ion-buttons class="header-buttons" slot="end">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subPanel">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>

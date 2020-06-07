@@ -25,6 +25,7 @@ export class ShowrecipientinfoPage implements OnInit {
     @Input() recipient: any = { _id: '', first_name: '', last_name: '', role: '', avatar: '' };
     @Input() programId: any; // optional, if a program context is provided
 
+    subPanel = false;
     subscriptions: any = {};
     loading: any;
     result: any = [];
@@ -60,6 +61,7 @@ export class ShowrecipientinfoPage implements OnInit {
     }
 
     ngOnInit() {
+        this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
         if (this.userData.hasPlatformAdminAccess){
             this.setToggle();
         }
@@ -142,18 +144,20 @@ export class ShowrecipientinfoPage implements OnInit {
         if (this.result.conversation) { //if the recipient has been connected
             const conversation = this.result.conversation;
             if (conversation.type === 'connect') {
-                if (this.modalPage) {
-                    this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
-                } else {
-                    this.chatService.currentChatProps.push({
-                        conversationId: conversation._id,
-                        name: this.recipient.first_name + ' ' + this.recipient.last_name,
-                        recipient: this.recipient,
-                        page: 'chat',
-                        modalPage: false
-                    });
+                this.chatService.currentChatProps.push({
+                    conversationId: conversation._id,
+                    name: this.recipient.first_name + ' ' + this.recipient.last_name,
+                    recipient: this.recipient,
+                    page: 'chat',
+                    modalPage: false
+                });
+                if (!this.modalPage && this.subPanel) {
+                    this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+                } else if (!this.modalPage && !this.subPanel) {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});
+                } else {
+                    this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
                 }
             } else if (conversation.type === 'request') {
                 if (conversation.blockedBy) {
@@ -473,7 +477,7 @@ export class ShowrecipientinfoPage implements OnInit {
         if (this.modalPage) {
             this.modalCtrl.dismiss(this.anyChangeMade);
         } else {
-            if (this.router.url.includes('myconversations')) { // the special case when viewing in the myconversations context
+            if (this.router.url.includes('myconversations') && !this.subPanel) { // the special case when viewing in the myconversations context and not in a subpanel
                 this.router.navigate(['/app/myconversations/chat'], { replaceUrl: true });
             } else {
                 this.location.back();

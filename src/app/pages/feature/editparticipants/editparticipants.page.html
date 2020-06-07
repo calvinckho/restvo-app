@@ -33,60 +33,22 @@
     <ion-list>
       <ion-item>
         <ion-label>
-          Participants for {{moment.matrix_string[0]}}
+          All Participants in {{moment.matrix_string[0]}}
         </ion-label>
-        <ion-select
-          slot="end"
-          placeholder="Invite"
-          interface="popover"
-          [interfaceOptions]="{header: 'Invite'}"
-          (ionChange)="openPopUpModalAddParticipants($event)"
-        >
-          <ion-select-option
-            [value]="{user_list: ['user_list_1'], label: this.participantLabel}"
-            >{{participantLabel}}</ion-select-option
-          >
-          <ion-select-option
-            [value]="{user_list: ['user_list_2'], label: this.organizerLabel}"
-            >{{organizerLabel}}</ion-select-option
-          >
-          <ion-select-option
-            [value]="{user_list: ['user_list_3'], label: this.leaderLabel}"
-            >{{leaderLabel}}</ion-select-option
-          >
+        <ion-select slot="end" placeholder="Invite" interface="popover" [interfaceOptions]="{header: 'Invite'}" (ionChange)="openPopUpModalAddParticipants($event)">
+          <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item lines="none">
-        <ion-label (click)="sortDisplay('participant')">
-          Current Participants
-          <ion-icon [name]="participantAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
-        </ion-label>
-        <ion-label (click)="sortDisplay('role')">
-          Role
-          <ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
-        </ion-label>
-        
+        <ion-label (click)="sortDisplay('participant')">People<ion-icon [name]="participantAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
+        <ion-label (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
       </ion-item>
-      <ion-item
-        *ngFor="let user of uniqueParticipantList; index as j"
-        lines="full"
-      >
-      <!-- <div style="display: inline-block">
-        <ion-avatar style="display: block">
-          <ion-img  style="display: block" *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-          <ion-img style="display: block"
-            *ngIf="!user.avatar"
-            src="assets/img/avatar-default.jpg"
-          ></ion-img>
-        </ion-avatar>
-        <ion-label>{{user.first_name}} {{user.last_name}}</ion-label>
-      </div> -->
+      <ion-item *ngFor="let user of uniqueParticipantList; index as j" lines="full">
       <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
         <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-        <ion-img
-          *ngIf="!user.avatar"
-          src="assets/img/avatar-default.jpg"
-        ></ion-img>
+        <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
       </ion-avatar>
       <ion-label (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label>
         <ion-label>{{user.role.join(" / ")}}</ion-label>
