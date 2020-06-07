@@ -1425,7 +1425,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               params.responseId = note.response_id;
               componentProps.responseId = note.response_id;
           }
-          if (this.platform.width() >= 768) {
+          if (this.platform.width() >= 992) {
+              if (this.authService.token) {
+                  params.subpanel = true;
+                  this.router.navigate([{ outlets: { sub: ['details', momentId, params ] }}]);
+              } else { // for unauthenticated user and in landing page view, which is not a common case
+                  this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
+              }
+          } else if (this.platform.width() >= 768) {
               if (this.authService.token) {
                   this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
               } else { // for unauthenticated user and in landing page view, which is not a common case
