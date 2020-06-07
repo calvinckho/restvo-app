@@ -89,16 +89,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       grabCursor: true,
       updateOnWindowResize: true,
       spaceBetween: 10,
-      /*breakpoints: {
-        600: {
-          slidesPerView: 8,
-          spaceBetween: 15
-        },
-        1000: {
-          slidesPerView: 10,
-        }
-      }*/
-    }
+    };
   }
 
   async ngOnInit() {
