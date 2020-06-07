@@ -85,19 +85,19 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         momentService, resourceService, responseService, calendarService);
 
     this.slideOpts = {
-      slidesPerView: 6,
+      slidesPerView: 8,
       grabCursor: true,
       updateOnWindowResize: true,
       spaceBetween: 10,
-      breakpoints: {
+      /*breakpoints: {
         600: {
-          slidesPerView: 3,
+          slidesPerView: 8,
           spaceBetween: 15
         },
         1000: {
-          slidesPerView: 4,
+          slidesPerView: 10,
         }
-      }
+      }*/
     }
   }
 

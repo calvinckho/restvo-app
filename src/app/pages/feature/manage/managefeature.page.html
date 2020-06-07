@@ -1,6 +1,4 @@
-<!--Mobile View-->
-
-<ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() < 768">
+<ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field">
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="!modalPage && platform.width() < 768" slot="start" fill="clear">
       <ion-button fill="clear" color="grey">
@@ -33,7 +31,78 @@
       <ion-button (click)="edit()">{{resource['en-US'].value[18]}}</ion-button> <!--Edit-->
     </ion-buttons>
   </ion-toolbar>
+
+  <!--Menu Items-->
+  <ion-toolbar>
+    <ion-slides [options]="slideOpts" class="desktop-header">
+      <ion-slide [ngClass]="{'selected': (selectedMenuOption === 'insight')}" (click)="clickManageMenu('insight', null)">
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'insight') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="person"></ion-icon>
+          <ion-label class="menu-label">Insight</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{'selected': (selectedMenuOption === 'profile')}" (click)="clickManageMenu('profile', null)">
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'profile') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="clipboard"></ion-icon>
+          <ion-label class="menu-label" *ngIf="moment && moment.categories && !moment.categories.includes('5c915476e172e4e64590e349')">Profile</ion-label>
+          <ion-label class="menu-label" *ngIf="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">Plan</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'people')}" (click)="clickManageMenu('people', null)">
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'people') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="people"></ion-icon>
+          <ion-label class="menu-label">People</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'journey') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="people-circle-outline"></ion-icon>
+          <ion-label class="menu-label">Journeys</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))" (click)="clickManageMenu('mentoring', null)"> <!--Mentoring-->
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'mentoring') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="grid"></ion-icon>
+          <ion-label class="menu-label">Mentoring</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))" (click)="clickManageMenu('groups', null)"> <!--Groups-->
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'groups') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="people-circle-outline"></ion-icon>
+          <ion-label class="menu-label">Groups</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"  [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}" (click)="clickManageMenu('programs', null)">
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'programs') ? 'primary' : 'secondary'" lines="none">
+          <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
+          <ion-label class="menu-label">Programs</ion-label>
+        </ion-item>
+      </ion-slide>
+      <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'plans')}" (click)="clickManageMenu('plans', null)">
+        <ion-item class="ion-no-padding" [color]="(selectedMenuOption === 'plans') ? 'primary' : 'secondary'" lines="none" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">
+          <ion-icon class="ion-no-margin" slot="start" name="paper-plane"></ion-icon>
+          <ion-label class="menu-label">Plans</ion-label>
+        </ion-item>
+      </ion-slide>
+      <div *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)">
+        <ion-slide [ngClass]="{ 'bold-font': (selectedMenuOption === 'schedule' && selectedSchedule._id === schedule._id)}" *ngFor="let schedule of schedules; index as i"> <!--if Schedule is enabled-->
+          <ion-item class="ion-no-padding" (click)="clickManageMenu('schedule', schedule)">
+            <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
+            <ion-label class="menu-label">Schedule {{i + 1}}</ion-label>
+          </ion-item>
+        </ion-slide>
+        <ion-slide [ngClass]="{ 'bold-font': (selectedMenuOption === 'new-schedule')}">
+          <ion-item class="ion-no-padding" (click)="clickManageMenu('new-schedule', null)">
+            <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
+            <ion-label class="menu-label">+ Schedule</ion-label>
+          </ion-item>
+        </ion-slide>
+      </div>
+    </ion-slides>
+  </ion-toolbar>
 </ion-header>
+
+<!--Mobile View-->
 
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() < 768" forceOverscroll="false">
   <ion-grid class="full-height">
@@ -123,60 +192,6 @@
 </ion-content>
 
 <!--Desktop View-->
-
-<ion-header class="desktop-header" *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() >= 768" no-border>
-  <ion-slides [options]="slideOpts">
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'insight')}" (click)="clickManageMenu('insight', null)">
-      <ion-item [color]="(selectedMenuOption === 'insight') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Insight</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'profile')}" (click)="clickManageMenu('profile', null)">
-      <ion-item [color]="(selectedMenuOption === 'profile') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="clipboard" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="moment && moment.categories && !moment.categories.includes('5c915476e172e4e64590e349') && platform.width() >= 768">Profile</ion-label>
-        <ion-label [ngClass]="{ 'selected': (selectedMenuOption === 'profile')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349') && platform.width() >= 768">Plan</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'people')}" (click)="clickManageMenu('people', null)">
-      <ion-item [color]="(selectedMenuOption === 'people') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">People</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
-      <ion-item [color]="(selectedMenuOption === 'journey') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="people-circle-outline" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Journeys</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))" (click)="clickManageMenu('mentoring', null)"> <!--Mentoring-->
-      <ion-item [color]="(selectedMenuOption === 'mentoring') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="grid" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Mentoring</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))" (click)="clickManageMenu('groups', null)"> <!--Groups-->
-      <ion-item [color]="(selectedMenuOption === 'groups') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="people-circle-outline" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Groups</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"  [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}" (click)="clickManageMenu('programs', null)">
-      <ion-item [color]="(selectedMenuOption === 'programs') ? 'primary' : 'secondary'" lines="none">
-        <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Programs</ion-label>
-      </ion-item>
-    </ion-slide>
-    <ion-slide [ngClass]="{ 'selected': (selectedMenuOption === 'plans')}" (click)="clickManageMenu('plans', null)">
-      <ion-item [color]="(selectedMenuOption === 'plans') ? 'primary' : 'secondary'" lines="none" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">
-        <ion-icon slot="start" name="paper-plane" *ngIf="platform.width() < 768"></ion-icon>
-        <ion-label *ngIf="platform.width() >= 768">Plans</ion-label>
-      </ion-item>
-    </ion-slide>
-  </ion-slides>
-</ion-header>
 
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() >= 768" forceOverscroll="false">
   <ion-router-outlet></ion-router-outlet>

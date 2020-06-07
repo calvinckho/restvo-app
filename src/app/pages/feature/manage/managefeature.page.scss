@@ -22,7 +22,7 @@ app-managefeature {
   }
 
   .desktop-header {
-    padding: 30px 0;
+    //padding: 30px 0;
     background-color: transparent !important;
     box-shadow: none !important;
 
@@ -30,8 +30,8 @@ app-managefeature {
 
     ion-slide {
       box-shadow: 0 5px 10px rgba(0,0,0,.2);
-      padding: 10px;
-      margin: 15px;
+      //padding: 10px;
+      margin: 5px;
       border-radius: 10px;
     }
   }
@@ -43,6 +43,14 @@ app-managefeature {
   .selected * {
     color: white;
     background-color: #e2666a !important;
+  }
+
+  ion-item {
+    .menu-label {
+      font-size: 10px !important;
+      margin-left: 4px;
+    }
+    --inner-padding-end: 0;
   }
 
   ion-router-outlet {
