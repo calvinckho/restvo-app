@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="closeModal(false)" *ngIf="modalPage"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title (click)="seeUserInfo($event, messages[0].author)">{{chatService.currentChatProps[propIndex].name}}</ion-title>
+    <ion-title (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
     <ion-buttons slot="end">
       <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)">
         <ion-icon name="open"></ion-icon>
@@ -11,7 +11,7 @@
       <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}">
         <ion-icon name="videocam" color="dark"></ion-icon>
       </ion-button>
-      <ion-button (click)="seeUserInfo($event, messages[0].author)">
+      <ion-button (click)="seeMoreInfo()">
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>
