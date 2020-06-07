@@ -910,8 +910,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
       event.stopPropagation();
       if (recipient._id) {
         if (!this.modalPage && this.platform.width() >= 768) {
-          if (this.router.url.includes("sub")) {
-            this.router.navigate(["", { outlets: { sub: ['sub_profile', recipient._id ] }}], { relativeTo: this.route });
+          if (this.router.url.includes('sub')) {
+            this.router.navigate(['', { outlets: { sub: ['sub_profile', recipient._id ] }}], { relativeTo: this.route });
           } else {
             this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
           }

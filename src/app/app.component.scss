@@ -1,9 +1,5 @@
 app-root {
 
-  /*app-groupchat .message-footer {
-    transform: translateY(-115px);
-  }*/
-
   .split-pane-narrow {
     width: 70%;
     border-right: var(--border);
@@ -13,13 +9,7 @@ app-root {
     width: 30%;
     position: absolute;
     left: 70%;
-/*    .ion-page {
-      app-groupchat {
-        height: 100%;
-      }
-    }*/
   }
-
 
   ion-item {
     cursor: pointer;

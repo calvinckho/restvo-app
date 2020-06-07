@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CacheService} from "ionic-cache";
 import {
   ActionSheetController,
-  AlertController, IonContent, IonSelect,
+  AlertController, IonSelect,
   LoadingController,
   ModalController,
   Platform, PopoverController, ToastController
@@ -29,7 +29,6 @@ import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
 import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
-import {GroupchatPage} from '../../group/groupchat/groupchat.page';
 import {Storage} from "@ionic/storage";
 
 @Component({

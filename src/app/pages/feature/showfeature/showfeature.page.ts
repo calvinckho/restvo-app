@@ -2,7 +2,7 @@ import {Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulatio
 import {Location} from '@angular/common';
 import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router, ActivatedRoute, ActivationEnd} from "@angular/router";
 import {CacheService} from 'ionic-cache';
 import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
@@ -55,6 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
+  isSubpanel = false;
   subscriptions: any = {};
   mode = 'list';
   slideOpts = {
@@ -223,6 +224,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       public calendarService: CalendarService) {}
 
   async ngOnInit() {
+      /*this.router.events.subscribe(event => {
+          if (event instanceof ActivationEnd) {
+              this.isSubpanel = (event && event.snapshot && event.snapshot.outlet === 'sub');
+              console.log("outlet 2", event, this.isSubpanel);
+          };
+      });*/
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
@@ -1791,7 +1798,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     event.stopPropagation();
     if (this.platform.width() >= 768) {
       if (this.authService.token) {
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+          if (this.router.url.includes('/app/manage')) {
+              this.router.navigate(['', { outlets: { sub: ['sub_activity', moment._id ] }}], { relativeTo: this.route });
+          } else {
+              this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+          }
       } else {
         this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
       }

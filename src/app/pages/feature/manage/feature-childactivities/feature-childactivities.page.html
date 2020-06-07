@@ -31,7 +31,7 @@
           </ion-card>
         </ion-col>
         <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity($event, sample)">
+          <ion-card class="program-card" (click)="openChildActivity($event, sample, 'view')">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
                 <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
@@ -55,7 +55,7 @@
     <ion-grid class="program-grid">
       <ion-row class="program-row">
         <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && !sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity($event, sample)">
+          <ion-card class="program-card" (click)="openChildActivity($event, sample, 'view')">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
                 <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
@@ -63,6 +63,9 @@
             </ion-card-header>
             <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
             <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
+            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, sample, 'manage')" fill="clear" size="small">
+              <ion-icon name="cog" color="primary"></ion-icon>
+            </ion-button>
           </ion-card>
         </ion-col>
       </ion-row>

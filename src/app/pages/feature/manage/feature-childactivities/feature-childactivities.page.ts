@@ -71,21 +71,21 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       this.samples = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
   }
 
-  async openChildActivity(event, moment) {
+  async openChildActivity(event, moment, viewType) {
     event.stopPropagation();
     if (this.modalPage || this.platform.width() < 768) {
-      // for journey and relationship, open
-      if ((moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
+      // view
+      if (viewType === 'view') { //for journey and relationship, (moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
         this.momentService.openMoment( { moment: moment, modalPage: true });
-      } else { // the rest are manage
+      } else { // manage
         this.momentService.manageMoment({ moment: moment, modalPage: true });
       }
     } else {
-      if (this.router.url.includes('app/manage')) { // if opened from Manage mode
+      if (viewType === 'view') { // view
+        this.router.navigate(['', { outlets: { sub: ['sub_activity', moment._id ] }}], { relativeTo: this.route });
+      } else {
         this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
-      } else { // such case does not exist yet. User should always open from the User -> About Me
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
       }
     }
   }

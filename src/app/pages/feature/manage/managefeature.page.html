@@ -48,8 +48,8 @@
             <ion-label class="menu-label">Insight</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': router.url.includes('profile')}" (click)="clickManageMenu('profile', null)">
-          <ion-item class="ion-no-padding" [color]="router.url.includes('profile') ? 'primary' : 'secondary'" lines="none">
+        <ion-col [ngClass]="{'selected': router.url.includes('/profile')}" (click)="clickManageMenu('profile', null)">
+          <ion-item class="ion-no-padding" [color]="router.url.includes('/profile') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="clipboard"></ion-icon>
             <ion-label class="menu-label" *ngIf="moment && moment.categories && !moment.categories.includes('5c915476e172e4e64590e349')">Profile</ion-label>
             <ion-label class="menu-label" *ngIf="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">Plan</ion-label>

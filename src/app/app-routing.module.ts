@@ -35,19 +35,21 @@ const routes: Routes = [
     },
     {
         path: 'sub_chat',
-        //component: GroupchatPageModule,
         loadChildren: () => import('./pages/group/groupchat/groupchat.module').then( m => m.GroupchatPageModule),
         outlet: 'sub'
     },
     {
         path: 'sub_profile/:id',
-        //component: GroupchatPageModule,
         loadChildren: () => import('./pages/connect/showrecipientinfo/showrecipientinfo.module').then( m => m.ShowrecipientinfoModule),
         outlet: 'sub'
     },
     {
+        path: 'sub_activity/:id',
+        loadChildren: () => import('./pages/feature/showfeature/showfeature.module').then( m => m.ShowfeaturePageModule),
+        outlet: 'sub'
+    },
+    {
         path: 'sub_me',
-        //component: DashboardPageModule,
         loadChildren: () => import('./pages/user/dashboard/dashboard.module').then( m => m.DashboardPageModule),
         outlet: 'sub'
     },
