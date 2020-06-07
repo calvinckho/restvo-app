@@ -181,7 +181,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     this.chatService.openChat({
       conversationId: conversationId,
       author: user,
-      relativeTo: this.platform.width() >= 768 ? this.route : null
+      subPanel: this.platform.width() >= 768
     });
   }
 

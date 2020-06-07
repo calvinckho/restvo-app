@@ -32,13 +32,21 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <!--Desktop Menu Items-->
+  <!--Activity Hierarchy-->
   <ion-buttons *ngIf="platform.width() >= 768" style="padding-left: 10px">
-    <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)">
+    <ion-button (click)="upOneLevel(moment.parent_programs[0].parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id">
+      <ion-badge color="button1">{{moment.parent_programs[0].parent_programs[0].matrix_string[0][0]}}</ion-badge>
+    </ion-button>
+    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id"></ion-icon>
+    <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length">
+      <ion-badge color="button2">{{moment.parent_programs[0].matrix_string[0][0]}}</ion-badge>
+    </ion-button>
+    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
+    <ion-button>
       <ion-badge>{{moment.resource['en-US'].value[0]}}</ion-badge>
-      <ion-badge style="margin-left: 5px" color="button1" *ngIf="moment.parent_programs && moment.parent_programs.length">Up one level</ion-badge>
     </ion-button>
   </ion-buttons>
+  <!--Desktop Menu Items-->
   <ion-toolbar *ngIf="platform.width() >= 768">
     <ion-grid class="desktop-header">
       <ion-row class="ion-justify-content-start">
@@ -91,8 +99,8 @@
             <ion-label class="menu-label">Plans</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{ 'selected': (router.url.includes('schedule') && selectedSchedule._id === schedule._id)}" *ngFor="let schedule of schedules; index as i" [hidden]="!(moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210))"> <!--if Schedule is enabled-->
-          <ion-item class="ion-no-padding" [color]="(router.url.includes('schedule') && selectedSchedule._id === schedule._id) ? 'primary' : 'secondary'" (click)="clickManageMenu('schedule', schedule)" lines="none">
+        <ion-col [ngClass]="{ 'selected': (router.url.includes('schedule') && selectedSchedule && selectedSchedule._id === schedule._id)}" *ngFor="let schedule of schedules; index as i" [hidden]="!(moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210))"> <!--if Schedule is enabled-->
+          <ion-item class="ion-no-padding" [color]="(router.url.includes('schedule') && selectedSchedule && selectedSchedule._id === schedule._id) ? 'primary' : 'secondary'" (click)="clickManageMenu('schedule', schedule)" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
             <ion-label class="menu-label">Schedule {{i + 1}}</ion-label>
           </ion-item>

@@ -568,8 +568,12 @@ export class MainTabPage implements OnInit, OnDestroy {
             if (data && data.modalPage) {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
                 await modal.present();
+            } else if (data && data.momentId && data.subPanel) {
+                this.router.navigate([{ outlets: { sub: ['details', data.momentId, { subpanel: true, relationshipId: data.relationshipId, calendarId: data.calendarId } ]}}]);
+            } else if (data && data.momentId && data.relationshipId && data.calendarId) {
+                this.router.navigate(['/app/activity/' + data.momentId, { relationshipId: data.relationshipId, calendarId: data.calendarId }]);
             } else if (data && data.momentId) {
-                this.router.navigate(['/app/activity/' + data.momentId]);
+                this.router.navigate(['/app/activity/' + data.momentId ]);
             }
         });
         this.subscriptions['openUserPrograms'] = this.userData.openUserPrograms$.subscribe(async (data) => {
@@ -699,8 +703,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                     cssClass: 'level-10'
                 });
             }
-            if (data.relativeTo) {
-                this.router.navigate(['', { outlets: { sub: ['chat', { subpanel: true }] }}], { relativeTo: data.relativeTo });
+            if (data.subPanel) {
+                this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
                 // if it is displaying the chat view, it will reload the chat data
                 this.userData.refreshMyConversations({action: 'reload chat view'});
             } else {

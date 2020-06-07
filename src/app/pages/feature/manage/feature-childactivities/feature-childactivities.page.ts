@@ -7,7 +7,6 @@ import {Chat} from "../../../../services/chat.service";
 import {UserData} from "../../../../services/user.service";
 import {Moment} from "../../../../services/moment.service";
 import {Resource} from "../../../../services/resource.service";
-import {ManagefeaturePage} from "../managefeature.page";
 import {GroupchatPage} from "../../../group/groupchat/groupchat.page";
 
 @Component({
@@ -147,7 +146,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     }
   }
 
-  async openActivity(event, activity) {
+  async editContent(event, activity) {
     event.stopPropagation();
     if (this.platform.width() < 768) {
       this.momentService.editMoment({ moment: activity, modalPage: true });
