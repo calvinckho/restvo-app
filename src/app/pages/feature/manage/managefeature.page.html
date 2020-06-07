@@ -28,7 +28,7 @@
     </ion-title>
     <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="edit()">{{resource['en-US'].value[18]}}</ion-button> <!--Edit-->
+      <ion-button (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon></ion-button> <!--More-->
     </ion-buttons>
   </ion-toolbar>
 
@@ -44,7 +44,7 @@
       <ion-row class="ion-justify-content-start">
         <ion-col [ngClass]="{'selected': router.url.includes('insight')}" (click)="clickManageMenu('insight', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('insight') ? 'primary' : 'secondary'" lines="none">
-            <ion-icon class="ion-no-margin" slot="start" name="person"></ion-icon>
+            <ion-icon class="ion-no-margin" slot="start" name="stats-chart"></ion-icon>
             <ion-label class="menu-label">Insight</ion-label>
           </ion-item>
         </ion-col>
@@ -63,7 +63,7 @@
         </ion-col>
         <ion-col [ngClass]="{ 'selected': router.url.includes('journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('journey') ? 'primary' : 'secondary'" lines="none">
-            <ion-icon class="ion-no-margin" slot="start" name="people-circle-outline"></ion-icon>
+            <ion-icon class="ion-no-margin" slot="start" name="walk-outline"></ion-icon>
             <ion-label class="menu-label">Journeys</ion-label>
           </ion-item>
         </ion-col>
