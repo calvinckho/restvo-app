@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation, OnDestroy} from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
@@ -22,7 +22,6 @@ import {Resource} from "../../../services/resource.service";
 import {Response} from "../../../services/response.service";
 import {CalendarService} from "../../../services/calendar.service";
 import {Plugins} from "@capacitor/core";
-import {PickpeoplePopoverPage} from "../pickpeople-popover/pickpeople-popover.page";
 import {NetworkService} from "../../../services/network-service.service";
 import {Location} from "@angular/common";
 import {UploadmediaPage} from "../uploadmedia/uploadmedia.page";
@@ -104,6 +103,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   momentObj = { // default Activity object
       resource: {}, // template
       categories: [], // do not need to pre-define it because it is optional
+      child_categories: [], // do not need to pre-define it because it is optional
       matrix_number: [],
       matrix_string: [],
       conversations: [],
@@ -186,14 +186,16 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // assumption: leaving the page improperly will lose all unsaved changes. Re-entering will refresh the edit page to its initial state.
     // in such case, ionViewWillEnter listener is used to detect re-entering a page view and reloading the page
   ionViewWillEnter() {
-      if (this.moment && this.moment._id) {
-          console.log("re-entering edit feature");
+      // re-entering edit on Desktop only
+      if (this.userData.user && this.moment && this.moment._id && !this.modalPage) {
+          console.log("reload 1")
           this.setup();
       }
   }
 
-    reloadEditPage = async () => { // refresh the Edit Page
-      if (this.userData.user) {
+    reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
+      if (this.userData.user && !this.initialSetupCompleted) {
+          console.log("reload 2")
           this.setup();
       }
     };
@@ -233,8 +235,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
           // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
 
-          // 1. if creating a new Activity
-          if (!this.moment) {
+          // 1. if creating a new Activity, only run this once
+          if (!this.moment && !this.initialSetupCompleted) {
               this.editTemplate = true;
               this.moment = JSON.parse(JSON.stringify(this.momentObj));
 
@@ -262,74 +264,77 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
           // 2. create a new activity with a predefined template
 
-          // hard code the components to be added by calling addComponents with the component IDs (consult Restvo Feature Schematic.txt file)
-          if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Onboarding Process
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // Onboarding Process
-              this.addComponent(10000); // add the "Activity Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(20010); // add the slider to enable the walkthrough
-              this.addComponent(40010); // add text answer
-              this.editTemplate = true;
-          } else if (this.categoryId === '5c915324e172e4e64590e346') { // Community
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Community';
-              this.moment.categories = ['5c915324e172e4e64590e346'];
-              this.addComponent(10000); // add the "Community Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(10300); // Upload Media
-              this.addComponent(10050); // section header
-              this.addComponent(10010); // Description
-              // assign default Community description
-              this.moment.matrix_string[this.moment.resource.matrix_number[0].indexOf(10010)][0] = this.resource['en-US'].value[34];
-              this.addComponent(10370); // Plan
-              this.addComponent(10500); // People
-              this.addComponent(11000); // Chat
-              this.editTemplate = true;
-          } else if (this.categoryId === '5c915475e172e4e64590e348') { // Program
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Program';
-              this.moment.categories = ['5c915475e172e4e64590e348'];
-              this.addComponent(10000); // add the "Program Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(50000); // Directory
-              this.addComponent(10050); // section header
-              this.addComponent(10010); // Description
-              this.addComponent(10500); // People
-              this.addComponent(11000); // Chat
-              this.editTemplate = true;
-          } else if (this.categoryId === '5dfdbb547b00ea76b75e5a70') { // Relationship
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Relationship';
-              this.moment.categories = ['5dfdbb547b00ea76b75e5a70'];
-              this.addComponent(10000); // add the "Relationship Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(10300); // Upload Media
-              this.addComponent(10050); // section header
-              this.addComponent(10010); // Description
-              this.addComponent(10370); // Plan
-              this.addComponent(10500); // People
-              this.addComponent(11000); // Chat
-              this.editTemplate = true;
-          } else if (this.categoryId === '5c915476e172e4e64590e349') { // Plan
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Plan';
-              this.moment.categories = ['5c915476e172e4e64590e349'];
-              this.addComponent(10000); // add the "Plan Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(10300); // Upload Media
-              this.addComponent(10050); // section header
-              this.addComponent(10010); // Description
-              this.addComponent(10210); // Schedule
-              this.editTemplate = true;
-          } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
-              this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
-              this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
-              this.addComponent(10000); // add the "Relationship Name"
-              this.addComponent(20000); // Visibility
-              this.addComponent(10300); // Upload Media
-              this.addComponent(10050); // section header
-              this.addComponent(10010); // Description
-              this.editTemplate = true;
-          } else if (this.categoryId) {
-              this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
-              this.addComponent(10000); // add the "Activity Name"
-              this.editTemplate = true;
+          if (!this.initialSetupCompleted) {
+              // hard code the components to be added by calling addComponents with the component IDs (consult Restvo Feature Schematic.txt file)
+              if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Onboarding Process
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // Onboarding Process
+                  this.addComponent(10000); // add the "Activity Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(20010); // add the slider to enable the walkthrough
+                  this.addComponent(40010); // add text answer
+                  this.editTemplate = true;
+              } else if (this.categoryId === '5c915324e172e4e64590e346') { // Community
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Community';
+                  this.moment.categories = ['5c915324e172e4e64590e346'];
+                  this.moment.child_categories = ['5c915475e172e4e64590e348', '5e17acd47b00ea76b75e5a71']; // program, onboarding
+                  this.addComponent(10000); // add the "Community Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(10300); // Upload Media
+                  this.addComponent(10050); // section header
+                  this.addComponent(10010); // Description
+                  // assign default Community description
+                  this.moment.matrix_string[this.moment.resource.matrix_number[0].indexOf(10010)][0] = this.resource['en-US'].value[34];
+                  this.addComponent(10370); // References
+                  this.addComponent(10500); // People
+                  this.addComponent(11000); // Chat
+                  this.editTemplate = true;
+              } else if (this.categoryId === '5c915475e172e4e64590e348') { // Program
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Program';
+                  this.moment.categories = ['5c915475e172e4e64590e348'];
+                  this.addComponent(10000); // add the "Program Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(50000); // Directory
+                  this.addComponent(10050); // section header
+                  this.addComponent(10010); // Description
+                  this.addComponent(10500); // People
+                  this.addComponent(11000); // Chat
+                  this.editTemplate = true;
+              } else if (this.categoryId === '5dfdbb547b00ea76b75e5a70') { // Relationship
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Relationship';
+                  this.moment.categories = ['5dfdbb547b00ea76b75e5a70'];
+                  this.addComponent(10000); // add the "Relationship Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(10300); // Upload Media
+                  this.addComponent(10050); // section header
+                  this.addComponent(10010); // Description
+                  this.addComponent(10370); // Plan
+                  this.addComponent(10500); // People
+                  this.addComponent(11000); // Chat
+                  this.editTemplate = true;
+              } else if (this.categoryId === '5c915476e172e4e64590e349') { // Plan
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Plan';
+                  this.moment.categories = ['5c915476e172e4e64590e349'];
+                  this.addComponent(10000); // add the "Plan Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(10300); // Upload Media
+                  this.addComponent(10050); // section header
+                  this.addComponent(10010); // Description
+                  this.addComponent(10210); // Schedule
+                  this.editTemplate = true;
+              } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
+                  this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
+                  this.addComponent(10000); // add the "Relationship Name"
+                  this.addComponent(20000); // Visibility
+                  this.addComponent(10300); // Upload Media
+                  this.addComponent(10050); // section header
+                  this.addComponent(10010); // Description
+                  this.editTemplate = true;
+              } else if (this.categoryId) {
+                  this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
+                  this.addComponent(10000); // add the "Activity Name"
+                  this.editTemplate = true;
+              }
           }
 
           // 3. if loading an existing Activity
@@ -587,7 +592,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
   changeSelectedDate( inputDate ) {
     if (inputDate === ' ') return;
-    this.calendarService.calendar.selectedDate = inputDate;
+      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.startDate = inputDate;
       this.dateType = 'end';
@@ -632,10 +637,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   async removeMedia(i, j) {
+      const sessionId = this.moment._id || 'blank';
       const url = this.moment.matrix_string[i][j];
-      const index = this.awsService.sessionAssets[this.moment._id].indexOf(url);
+      const index = this.awsService.sessionAssets[sessionId].indexOf(url);
       if (index > -1) {
-          this.awsService.sessionAssets[this.moment._id].splice(index, 1);
+          this.awsService.sessionAssets[sessionId].splice(index, 1);
       }
       this.moment.matrix_string[i].splice(j, 1);
   }
@@ -812,9 +818,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
         if (moments && moments.length) {
-            const samples = [];
             for (const moment of moments) {
-                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar
+                if (moment && moment.cloned === 'new') { // cloning a sample. copy everything except calendar and add Activity ID to parent_programs property
                     moment.calendar = { // reset the calendar
                         title: moment.matrix_string[0][0],
                         location: '',
@@ -827,7 +832,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                             reminders: []
                         }
                     };
-                    samples.push(moment);
+                    moment.parent_programs = (this.moment && this.moment._id) ? [this.moment._id] : []; // if creating new Activity (Create Community), parent_programs is empty because Community has not been created yet
                     this.referenceActivities.push(moment);
                 } else {
                     this.referenceActivities.push(moment);
@@ -835,7 +840,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             }
             const selectedMoments = moments.filter((c) => c.cloned === 'new');
             if (selectedMoments && selectedMoments.length) {
-                const clonedMoments: any = await this.momentService.clone(selectedMoments, null);
+                const clonedMoments: any = await this.momentService.clone(selectedMoments, 'admin');
                 if (clonedMoments) {
                     for (const clonedMoment of clonedMoments) {
                         clonedMoment.cloned = 'new';
@@ -1146,13 +1151,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
 
       if (this.moment.resource.matrix_number[0].indexOf(10370) > -1) { // processing references
-          this.moment.array_moment = []; // clear the array
-          let promises = this.referenceActivities.map( async (referenceActivity) => {
-              if (referenceActivity && referenceActivity._id) {
-                  this.moment.array_moment.push(referenceActivity._id);
-              }
-          });
-          await Promise.all(promises);
+          this.moment.array_moment = this.referenceActivities.map((c) => c._id);
       }
 
       // clean up DO of unlinked media URLs in this.moment.assets before it is overwritten by sessionAssets
@@ -1160,7 +1159,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
       this.moment.assets = this.awsService.sessionAssets[this.moment._id];
-      console.log("assets", this.awsService.sessionAssets[this.moment._id])
       if (this.moment._id) { // sending moment object with fully populated resource object to server
           try {
               await this.momentService.update(this.moment);
@@ -1168,6 +1166,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               return this.closeModal(this.anyChangeMade);
           }
       } else { // if create new, create moment in the backend
+          console.log("check", this.moment)
           const createdMoment: any = await this.momentService.create(this.moment); // create feature
           this.moment._id = createdMoment._id;
           this.moment.access_tokens = createdMoment.access_tokens;

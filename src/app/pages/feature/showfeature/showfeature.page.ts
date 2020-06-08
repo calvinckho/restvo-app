@@ -4,7 +4,7 @@ import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
 import {Router, ActivatedRoute} from "@angular/router";
 import {CacheService} from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {get} from "scriptjs";
 import {
@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-    subscriptions: any = {};
+  subscriptions: any = {};
   mode = 'list';
   slideOpts = {
       updateOnWindowResize: true,
@@ -65,7 +65,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   resource: any = {};
   description = '';
   setupPermissionCompleted = false;
-  loadCompleted = false;
+  loadStatus: any;
   anyChangeMade = false;
   currentSaveState = '';
   hasAddedToCalendar = false;
@@ -241,15 +241,29 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.processVerificationToken();
   }
 
-  // for current user refreshing the app
+    /** load and process Moment Handler
+     *
+     * @param data - data being passed by the refreshUser observable
+     *
+     * @example OnInit, when the component is intiated, this will get fired
+     * @example PWA fast load, this function gets called 2 times. The first time was when user is not yet authenticated
+     * the second time, the user is authenticated, and it sends a userRefresh observable signal and activate this handler
+     * @example On normal user fresh broadcast
+     */
+
   loadAndProcessMomentHandler = async (data) => {
-      this.setup(data);
-  };
+      console.log("refresh user handler", data, this.mediaList);
+      // if there are players loaded and one of them is playing or is being paused
+      if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
+          // do nothing
+      } else { // otherwise refresh
+          this.setup(data);
+      }
+  }
 
   async setup(data) {
-      if (this.calendarId) {
-          await this.loadCalendarItem();
-      }
+      this.loadStatus = 'loading';
+      await this.loadCalendarItem();
       if (this.moment._id) { // if called by modalCtrl.create()
           await this.loadMoment();
       } else { // if called by router outlet
@@ -286,9 +300,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (res && res.momentId && res.data) {
           const momentId = res.momentId;
           const data = res.data;
-          console.log('closing');
           if (momentId === this.moment._id && data.operation === 'deleted moment') {
-              console.log('closing 2');
               this.closeModal();
           // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
           } else if (momentId === this.relationshipId) {
@@ -634,7 +646,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
                         this.interactableDisplay[interactableId] = { editor: null };
                         // first determine if it is collaborative or private
-                        const isCollaborative = this.moment.matrix_number[componentIndex].length > 1 && this.moment.matrix_number[componentIndex][1];
+                        const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
                         // if collaborative, find the latest Response
                         let latestResponse: any;
@@ -707,7 +719,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     });
                 }
             });
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
 
             // set up for matching users
             if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
@@ -727,7 +739,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         } else {
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
         }
     }
   }
@@ -1060,12 +1072,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         if (!updatedExistingResponse) { // add a new entry to array
           this.responseObj.matrix_number.push([interactableId, null, null, null, null, interactableOption]);
         }
-        let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
+        const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
         const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list
-          this.responses.push(response);
+            this.responses.push(response);
         } else { // if it has been added, replace with the incoming one
-          this.responses.splice(index, 1, response);
+            this.responses.splice(index, 1, response);
         }
         // reset MC selection
         if (this.moment.resource.matrix_number[0][componentIndex] === 40020) {
@@ -1163,7 +1175,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async checkAndLoadNotes() {
         // if there is the tab component
-        if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
+        if (this.moment && this.moment.resource && this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab
             const index = this.moment.resource.matrix_number[0].indexOf(12000);
             if (index >= 0 && this.moment.resource.matrix_number[3][index] === this.tabSelection) {
@@ -1221,9 +1233,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
 
         for (const interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+            if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -1236,21 +1248,25 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.timeoutHandle = setTimeout(async () => {
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-            const index = this.responses.map((c) => c._id).indexOf(response._id);
-            if (index < 0) { // if the response hasn't been added to the response list
-                this.responses.push(response);
-            } else { // if it has been added, replace with the incoming one
-                this.responses.splice(index, 1, response);
-            }
-            if (this.moment.program) {
-                this.userData.refreshUserStatus({});
-            }
+            if (response) {
+                const index = this.responses.map((c) => c._id).indexOf(response._id);
+                if (index < 0) { // if the response hasn't been added to the response list
+                    this.responses.push(response);
+                } else { // if it has been added, replace with the incoming one
+                    this.responses.splice(index, 1, response);
+                }
+                if (this.moment.program) {
+                    this.userData.refreshUserStatus({});
+                }
+                // Showing the user that the content has been saved at the end of the timeout
+                this.currentSaveState = 'Saved';
 
-            // Showing the user that the content has been saved at the end of the timeout
-            this.currentSaveState = 'Saved';
-            setTimeout(() => {
-                this.currentSaveState = '';
-            }, 3000);
+                setTimeout(() => {
+                    this.currentSaveState = '';
+                }, 3000);
+            } else {
+                this.currentSaveState = 'Failed';
+            }
         }, 1500);
     }
 
@@ -1271,7 +1287,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipePeopleSlide() {
-    if (this.peopleSlides) {
+    if (this.peopleSlides && this.loadStatus !== 'loading') {
       const currentSlideIndex = await this.peopleSlides.getActiveIndex();
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePeople(null);
@@ -1280,17 +1296,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async loadPeople() {
-    setTimeout(() => {
-      if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
-        this.infiniteScroll.disabled = false;
-      }
-      this.reachedEnd = false;
-      this.matchedPeople = [];
-      this.pageNum = 0;
-      if (this.moment._id) {
-          this.loadMorePeople({target: this.infiniteScroll});
-      }
-    }, 50);
+    if (this.loadStatus !== 'loading') {
+        setTimeout(() => {
+            if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
+                this.infiniteScroll.disabled = false;
+            }
+            this.reachedEnd = false;
+            this.matchedPeople = [];
+            this.pageNum = 0;
+            if (this.moment._id) {
+                this.loadMorePeople({target: this.infiniteScroll});
+            }
+        }, 50);
+    }
   }
 
   async loadMorePeople(event) {
@@ -1301,7 +1319,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.loadAPIBusy = false;
       }, 10000);
       const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', this.searchKeyword, this.pageNum);
-      console.log("matching", results);
+      console.log("matched", results);
       this.loadAPIBusy = false;
       this.ionSpinner = false;
       if (!results.length) {
@@ -1311,7 +1329,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         for (const result of results) {
           this.matchedPeople.push(result);
         }
-        console.log("matched", this.matchedPeople);
       }
     }
   }
@@ -1548,7 +1565,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
                             this.expandedPrivilegesView = false;
-                            this.cloneMoment();
+                            this.momentService.cloneMoment(this.moment);
                         });
                     }
                 }]);
@@ -1702,32 +1719,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         await actionSheet.present();
-    }
-
-    async cloneMoment() {
-        const momentToBeCloned = JSON.parse(JSON.stringify(this.moment));
-        momentToBeCloned.calendar = { // reset the calendar
-            title: momentToBeCloned.matrix_string[0][0],
-            location: '',
-            notes: '',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
-            options: {
-                firstReminderMinutes: 0,
-                secondReminderMinutes: 0,
-                reminders: []
-            }
-        };
-        const clonedMoments: any = await this.momentService.clone([momentToBeCloned], 'staff');
-        if (clonedMoments && clonedMoments.length) {
-            const networkAlert = await this.alertCtrl.create({
-                header: 'Success',
-                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It will be available in the Manage Activities page in a moment.',
-                buttons: ['Dismiss'],
-                cssClass: 'level-15'
-            });
-            await networkAlert.present();
-        }
     }
 
     initPlyr(event, mediaId) {
@@ -2130,7 +2121,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     changeCalendarItemSelectedDate(inputDate) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarItem.startDate = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate(), new Date(this.calendarItem.startDate).getHours(), new Date(this.calendarItem.startDate).getMinutes()).toISOString();
         this.anyChangeMade = true;
     }
@@ -2274,7 +2265,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
+    if (this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }

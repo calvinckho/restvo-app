@@ -104,21 +104,6 @@ export class UserPage {
         }
     }
 
-    /*async addToCalendar(listOfConversations, listOfUsers) {
-        try {
-            const result: any = await this.momentService.updateMomentUserLists({
-                operation: 'add to calendar',
-                conversations: listOfConversations,
-                users: listOfUsers,
-                calendarId: this.selectedProgram.calendar._id
-            }, null); // a valid token is not required, but provided in case of future change of specs
-            return result;
-        } catch (err) {
-            console.log(err);
-            return false;
-        }
-    }*/
-
     async logout(event) {
         event.stopPropagation();
         await this.userData.logout();

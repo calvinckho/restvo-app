@@ -94,6 +94,7 @@
 	<string>Use voice to input text into the chat box.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>remote-notification</string>
 		<string>voip</string>
 	</array>

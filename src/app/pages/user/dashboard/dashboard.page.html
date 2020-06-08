@@ -80,7 +80,7 @@
     </ion-row>
 
     <!-- Complete your Profile Banner -->
-    <ion-row class="profile-row">
+    <ion-row class="profile-row" *ngIf="view === 'profile'">
       <ion-card [routerLink]="['/app/completeprofile']" class="profile-card" *ngIf="userData.user && (!userData.user.avatar || authService.incompleteOnboardProcess || (platform.is('cordova') && !userData.user.importContactList && !userData.delayImportContactListReminder) || (!userData.user.enablePushNotification && !userData.delayPushNotificationReminder))" [ngClass]="{'mobile-card': platform.width() < 768}">
         <ion-item-sliding>
           <ion-item lines="none">

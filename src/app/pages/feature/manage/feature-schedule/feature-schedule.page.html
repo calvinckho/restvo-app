@@ -91,20 +91,25 @@
     </ion-row>
     <ion-item-divider></ion-item-divider>
     <ion-row *ngIf="this.schedule._id && !timeline.length" class="ion-justify-content-center">
-      <p>Your timeline is empty. Use the 'Content' tab to add content.</p>
+      <ion-col class="ion-margin-horizontal">
+        <ion-note>Your timeline is empty. Use the 'Content' tab to add content.</ion-note>
+      </ion-col>
     </ion-row>
     <ion-row *ngIf="!this.schedule._id" class="ion-justify-content-center">
-      <p>Click 'Create Schedule' to begin.</p>
+      <ion-col class="ion-margin-horizontal">
+        <ion-note>Click 'Create Schedule' to begin.</ion-note>
+      </ion-col>
     </ion-row>
     <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
       <ion-item *virtualItem="let calendaritem; let j = index;">
         <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
         <span class="content-count">{{j+1}}.</span>
-        <span class="content-date">{{calendaritem.startDate | datetime: 'm:s,d:n,y:n'}}</span>
-        <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" [hidden]="calendaritem.moment._id"></ion-input>
-        <span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>
+        <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
+        <!--<span class="content-date">{{calendaritem.startDate | datetime: 'm:s,d:n,y:n'}}</span>-->
+        <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
+        <!--<span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>-->
         <ion-buttons slot="end" class="ion-no-margin">
-          <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
+          <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
           <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
@@ -139,7 +144,7 @@
               </ion-card-header>
               <div class="program-type"><ion-badge color="button1">{{content.resource['en-US'].value[0]}}</ion-badge></div>
               <div class="program-name light">{{content.matrix_string[0][0]}}</div>
-              <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openActivity($event, content)" fill="clear" size="small">
+              <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="editContent($event, content)" fill="clear" size="small">
                 <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
               </ion-button>
             </ion-card>
@@ -152,19 +157,17 @@
             <p>You have not selected any content yet.</p>
         </ion-row>
       <ion-reorder-group (ionItemReorder)="reorderContents($event)" disabled="false">
-        <ion-list>
-          <ion-item *ngFor="let content of schedule.child_moments; let j = index;">
-            <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-            <ion-badge slot="start" class="moment-type">{{content.resource['en-US'].value[0]}}</ion-badge>
-            <span class="content-count">{{j+1}}.</span>
-            <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
-            <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
-            <ion-buttons slot="end" class="ion-no-margin">
-              <ion-button fill="clear" color="grey" (click)="openActivity($event, content)"><ion-icon name="cog"></ion-icon></ion-button>
-              <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
-            </ion-buttons>
-          </ion-item>
-        </ion-list>
+        <ion-item *ngFor="let content of schedule.child_moments; let j = index;">
+          <ion-reorder slot="start" class="ion-no-margin"><ion-icon name="menu" color="grey"></ion-icon></ion-reorder>
+          <div class="content-count">{{j+1}}.</div>
+          <ion-badge class="ion-margin-end">{{content.resource['en-US'].value[0]}}</ion-badge>
+          <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
+          <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
+          <ion-buttons slot="end" class="ion-no-margin">
+            <ion-button fill="clear" color="grey" (click)="editContent($event, content)"><ion-icon name="cog"></ion-icon></ion-button>
+            <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-item>
       </ion-reorder-group>
     </ion-list>
   <ion-list *ngIf="view === 'settings'">

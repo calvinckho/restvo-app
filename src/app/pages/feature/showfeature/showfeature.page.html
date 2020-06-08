@@ -17,7 +17,7 @@
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
           <ion-icon name="list"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="loadCompleted && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
+        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
           <ion-icon name="albums"></ion-icon>
         </ion-button>
       </div>
@@ -29,7 +29,9 @@
           Save
         </ion-button>
       </div>
-      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
+      <!--show Share button if user is authenticated, has finished set up permission, and loadStatus is loading or completed.
+      hide when it is a content calendar and allow unauthenticated access to To-Do Content is not defined or is true-->
+      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadStatus" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
         <ion-icon name="person-add"></ion-icon>
       </ion-button>
       <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
@@ -40,7 +42,7 @@
 </ion-header>
 
 <ion-content class="ion-padding-bottom">
-  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
+  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadStatus && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
     <!--Invitation Section-->
     <ion-item-sliding side="end" *ngIf="(participant_type === 2) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
@@ -149,12 +151,12 @@
       </ion-item-group>
     </div>
   </ion-toolbar>
-  <ion-grid style="height: 100%" *ngIf="!loadCompleted">
+  <ion-grid style="height: 100%" *ngIf="loadStatus !== 'completed'">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadCompleted && mode === 'list'" class="ion-no-padding">
+  <ion-list *ngIf="loadStatus === 'completed' && mode === 'list' && moment.resource" class="ion-no-padding">
     <!--Content Calendar Item-->
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
@@ -424,9 +426,10 @@
               <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
               <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
               <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-              <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+              <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
             </div>
-            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+            <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
             <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
           </div>
         </ion-row>
@@ -615,7 +618,7 @@
         </ion-list>
       </div>
       <!-- Text Answer in List View -->
-      <div class="component" *ngIf="item === 40010">
+      <div class="component" *ngIf="item === 40010 && loadStatus === 'completed'">
         <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
@@ -732,7 +735,7 @@
       <div class="component" *ngIf="item === 50000">
         <!--Swiper-->
         <div *ngIf="!moment.matrix_number[i][3]">
-          <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy" class="ion-justify-content-center">
+          <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
           <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.1, grabCursor: true, updateOnWindowResize: true}">
@@ -850,7 +853,7 @@
       </div>
     </div>
   </ion-list>
-  <ion-slides pager [options]="slideOpts" *ngIf="loadCompleted && mode === 'slider'">
+  <ion-slides pager [options]="slideOpts" *ngIf="loadStatus === 'completed' && mode === 'slider'">
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
@@ -920,9 +923,10 @@
                   <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                   <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                   <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-                  <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                 </div>
-                <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+                <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
                 <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
               </div>
             </div>
@@ -1415,10 +1419,10 @@
     </ion-slides>
   </div>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

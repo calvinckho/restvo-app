@@ -161,7 +161,7 @@
             <ion-label color="dark" class="moment-name" >{{message.moment.resource['en-US'].value[0]}}: {{message.moment.matrix_string[0][0]}}</ion-label>
           </div>
           <!--Multiple attachments-->
-          <ion-grid *ngIf="message.attachments && message.attachments.length > 0">
+          <ion-grid *ngIf="message.attachments && message.attachments.length">
             <ion-row class="ion-justify-content-start ion-no-padding">
               <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto" *ngFor="let attachment of message.attachments" >
                 <ion-thumbnail [ngClass]="{'wide-thumbnail': message.attachments.length === 1}" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
@@ -170,7 +170,8 @@
                 <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
                 <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
               </ion-col>
             </ion-row>
@@ -181,24 +182,25 @@
             </ion-row>
           </ion-grid>
           <div class="chat-bubble left" *ngIf="!message.moment && message.body?.length > 0">
-            <div class="quote-bubble left ion-text-wrap" *ngIf="message.quote && (message.quote.body || (message.quote.attachments && message.quote.attachments.length > 0))">
+            <div class="quote-bubble left ion-text-wrap" *ngIf="message.quote && message.quote.body">
               <div class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
-              <!-- Attachments inside a quote -->
-              <ion-grid *ngIf="message.quote.attachments && message.quote.attachments.length > 0">
-                <ion-row class="ion-no-padding">
-                  <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto" *ngFor="let attachment of message.attachments">
-                    <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
-                      <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
-                    </ion-thumbnail>
-                    <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                    <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                    <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                    <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                    <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
             </div>
+            <!-- Attachments inside a quote -->
+            <ion-grid *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
+              <ion-row class="ion-no-padding">
+                <ion-col class="ion-align-self-center ion-no-padding" size="auto" *ngFor="let attachment of message.quote.attachments" [ngClass]="{'ion-padding-start' : message.quote.attachments.length > 1, 'ion-padding-top' : message.quote.attachments.length > 2 }">
+                  <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
+                    <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                  </ion-thumbnail>
+                  <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                  <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                  <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                  <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                  <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                  <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
             <!-- Message Text Body -->
             <p class="message" *ngIf="message.body" [innerHTML]="message.body | nl2br"></p>
             <!-- Detect if a video is embedded in the text -->
@@ -337,31 +339,33 @@
                 <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
+                <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+              <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+              <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
             </ion-col>
           </ion-row>
         </ion-grid>
         <div class="chat-bubble right" slot="end" *ngIf="!message.moment && message.body?.length > 0">
-          <!-- Attachments inside a quote -->
-          <div class="quote-bubble right ion-text-wrap" *ngIf="message.quote && (message.quote.body || (message.quote.attachments && message.quote.attachments.length > 0))">
+          <!-- Quoted Message -->
+          <div class="quote-bubble right ion-text-wrap" *ngIf="message.quote && message.quote.body">
             <div color="dark" class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
-            <!--Multiple attachments-->
-            <ion-grid *ngIf="message.quote.attachments && message.quote.attachments.length > 0">
-              <ion-row class="ion-no-padding">
-                <ion-col class="ion-align-self-center ion-no-padding ion-padding-start ion-padding-top" size="auto" *ngFor="let attachment of message.attachments" >
-                  <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
-                    <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
-                  </ion-thumbnail>
-                  <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                  <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                  <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                  <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                  <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
           </div>
+          <!--Quoted Attachments-->
+          <ion-grid class="multiple-photos" *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
+            <ion-row class="ion-no-padding">
+              <ion-col class="ion-align-self-center ion-no-padding" size="auto" *ngFor="let attachment of message.quote.attachments" [ngClass]="{'ion-padding-start' : message.quote.attachments.length > 1, 'ion-padding-top' : message.quote.attachments.length > 2 }">
+                <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
+                  <ion-img [src]="attachment" (click)="focusPhoto(attachment)"></ion-img>
+                </ion-thumbnail>
+                <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
           <!-- Text Body -->
           <p class="message" *ngIf="message.body" [innerHTML]="message.body | nl2br"></p>
           <!-- Detect if Video is attached -->
@@ -403,7 +407,8 @@
                 <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
                 <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
               </ion-col>
             </ion-row>
@@ -444,7 +449,7 @@
           <ion-icon name="chevron-forward-outline" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-textarea autosize rows="1" [minRows]="1" [maxRows]="5" [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
+      <ion-textarea autosize rows="1" [minRows]="1" [maxRows]="5" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
         <ion-grid *ngIf="awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId]?.length">
           <ion-row>
@@ -456,7 +461,8 @@
                 <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
                 <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
-                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail class="preview-thumbnail" ><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
                 <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
                 <ion-button class="remove-media ion-no-padding ion-no-margin" (click)="removeMedia(i)" fill="clear" size="small">
                   <ion-icon name="close" color="secondary"></ion-icon>

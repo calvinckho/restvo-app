@@ -1,5 +1,5 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {CacheService} from "ionic-cache";
@@ -340,9 +340,8 @@ export class OnboardfeaturePage {
         // this.responseObj.moment = this.moment._id;
         this.responseObj.array_number = this.moment.resource.matrix_number[0];
         this.responseObj.createdAt = new Date();
-        let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-        const listOfResponseIds = this.responses.map((c) => c._id);
-        const index = listOfResponseIds.indexOf(response._id);
+        const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
+        const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list
             this.responses.push(response);
         } else { // if it has been added, replace with the incoming one
@@ -369,9 +368,9 @@ export class OnboardfeaturePage {
         const interactableId = this.moment.resource.matrix_number[2][componentIndex];
 
         for (const interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+            if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -394,7 +393,7 @@ export class OnboardfeaturePage {
                 this.userData.refreshUserStatus({});
             }
             this.nextButtonReady = true;
-        }, 3000);
+        }, 1500);
     }
 
     async slideChanges() {

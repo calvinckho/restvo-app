@@ -156,7 +156,7 @@ export class ShowrecipientinfoPage implements OnInit {
                     this.userData.refreshMyConversations({action: 'reload chat view'});
                 }
             } else if (conversation.type === 'request') {
-                if (conversation.blockedBy){
+                if (conversation.blockedBy) {
                     if (conversation.blockedBy === this.userData.user._id) {
                         const alert = await this.alertCtrl.create({
                             header: 'User is Blocked',
@@ -210,7 +210,6 @@ export class ShowrecipientinfoPage implements OnInit {
                             this.chatService.refreshTabBadges();
                             this.isConnected = true;
                             this.chatService.openChat({conversationId: newConversationId, author: this.recipient});
-
                         });
                     }}, { text: 'Cancel' }],
                 cssClass: 'level-15'

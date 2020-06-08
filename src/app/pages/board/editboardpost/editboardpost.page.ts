@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular';
 import { CacheService } from 'ionic-cache';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import { Moment } from "../../../services/moment.service";
 import { Board } from "../../../services/board.service";
@@ -94,7 +94,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
           await networkAlert.present();
       });
       this.loadCompleted = true;
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
   }
 
 
@@ -420,6 +420,6 @@ export class EditboardpostPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
     }
 }

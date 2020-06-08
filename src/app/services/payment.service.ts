@@ -21,12 +21,17 @@ export class PaymentService {
     async checkSubscriptionAllowance(moment) {
         let orgId;
         if (moment && moment.parent_programs && moment.parent_programs.length) {
-            // grandparent community
+            // grandparent community, only if communities are populated
             if (moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0]) {
                 orgId = moment.parent_programs[0].parent_programs[0]._id;
             // parent community
-            } else {
-                orgId = moment.parent_programs[0]._id;
+            } else if (moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0]) {
+                // if communities are populated
+                if ((typeof moment.parent_programs[0]) === 'object') {
+                    orgId = moment.parent_programs[0]._id;
+                } else { // when communities are not populated
+                    orgId = moment.parent_programs[0];
+                }
             }
             // current community
         } else {

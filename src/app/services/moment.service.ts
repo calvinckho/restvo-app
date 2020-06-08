@@ -134,6 +134,32 @@ export class Moment {
         return promise;
     }
 
+    async cloneMoment(moment) {
+        const momentToBeCloned = JSON.parse(JSON.stringify(moment));
+        momentToBeCloned.calendar = { // reset the calendar
+            title: momentToBeCloned.matrix_string[0][0],
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+                firstReminderMinutes: 0,
+                secondReminderMinutes: 0,
+                reminders: []
+            }
+        };
+        const clonedMoments: any = await this.clone([momentToBeCloned], 'staff');
+        if (clonedMoments && clonedMoments.length) {
+            const networkAlert = await this.alertCtrl.create({
+                header: 'Success',
+                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It is now available in the Platform Manage Activities page.',
+                buttons: ['Dismiss'],
+                cssClass: 'level-15'
+            });
+            await networkAlert.present();
+        }
+    }
+
     loadUserPreferences(pageNum, programId, type) {
         return this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=' + pageNum + '&programId=' + (programId || '') + '&type=' + (type || ''), this.authService.httpAuthOptions).toPromise();
     }
@@ -328,23 +354,30 @@ export class Moment {
     async submitResponse(moment, serverData, enableSocketIO) { // need to keep this as a moment service to utilize the moment's socket.io object
         try {
             const response = await this.responseService.submit(serverData);
-            const socketData = {
-                moment: moment,
-                createdAt: new Date(),
-                response: response,
-                author: {
+            if (response && response.status === 'success' && response._id) { // response example: { _id: xxx, status: 'success' }
+                const responseToBeReturned = JSON.parse(JSON.stringify(serverData));
+                responseToBeReturned._id = response._id;
+                responseToBeReturned.user = {
                     _id: this.userData.user._id,
                     first_name: this.userData.user.first_name,
                     last_name: this.userData.user.last_name,
                     avatar: this.userData.user.avatar
-                },
-                status: 'pending',
-                confirmId: Math.random()
-            };
-            if (enableSocketIO) {
-                this.socket.emit('refresh moment', moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
+                };
+                const socketData = {
+                    moment: moment,
+                    createdAt: new Date(),
+                    response: responseToBeReturned,
+                    author: responseToBeReturned.user,
+                    status: 'pending',
+                    confirmId: Math.random()
+                };
+                if (enableSocketIO) {
+                    this.socket.emit('refresh moment', moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
+                }
+                return responseToBeReturned;
+            } else {
+                throw new Error('Failed to Submit Response');
             }
-            return response;
         } catch (err) {
             this.networkService.showNoNetworkAlert();
         }

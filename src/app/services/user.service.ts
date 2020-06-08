@@ -51,11 +51,13 @@ export class UserData {
     private _openUserPrograms: BehaviorSubject<any> = new BehaviorSubject(null);
     private _enablePushNotification: BehaviorSubject<boolean> = new BehaviorSubject(false);
     private _refreshMyConversations: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private _refreshBoards: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     public readonly refreshUserStatus$: Observable<any> = this._refreshUserStatus.asObservable();
     public readonly openUserPrograms$: Observable<any> = this._openUserPrograms.asObservable();
     public readonly enablePushNotification$: Observable<boolean> = this._enablePushNotification.asObservable();
     public readonly refreshMyConversations$: Observable<boolean> = this._refreshMyConversations.asObservable();
+    public readonly refreshBoards$: Observable<boolean> = this._refreshBoards.asObservable();
 
     constructor(private http: HttpClient,
                 private router: Router,
@@ -92,6 +94,10 @@ export class UserData {
         this._refreshMyConversations.next(data);
     }
 
+    refreshBoards(data) {
+        this._refreshBoards.next(data);
+    }
+
     async createUserSocket() {
         if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
             // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
@@ -126,16 +132,16 @@ export class UserData {
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshUserStatus({ type: 'refresh community board page' }); //when a user join a group with board
+                    //this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshBoards({ type: 'refresh community board page' }); //when a user join a group with board
                 } else if (data.type === 'leave group') {
                     //update user's group participation,
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
                     this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshUserStatus({ type: 'refresh community board page' }); // when a user leave a group with board
+                    //this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshBoards({ type: 'refresh community board page' }); // when a user leave a group with board
                     // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
                     const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
                     this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
@@ -162,7 +168,7 @@ export class UserData {
 
     refreshAppPages() {
         // broadcast signal to refresh main tab pages
-        this.refreshUserStatus({ type: 'refresh community board page' });
+        this.refreshBoards({ type: 'refresh community board page' });
         this.refreshMyConversations({action: 'render', data: null});
         this.refreshMyConversations({action: 'reload chat view'});
         this.refreshUserStatus({ type: 'change aux data' });
@@ -376,13 +382,12 @@ export class UserData {
         let data = await this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
-        if(group.conversation) {
+        if (group.conversation) {
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation._id, group: group});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation._id, data: {action: 'update group member list'}});
 
-        }
-        else if(group.board) {
-            this.refreshUserStatus({ type: 'load user community boards' });
+        } else if (group.board) {
+            //this.refreshUserStatus({ type: 'load user community boards' });
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
         }
         return data;
@@ -397,7 +402,7 @@ export class UserData {
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
 
             } else if (group.board) {
-                this.refreshUserStatus({ type: 'load user community boards' });
+                //this.refreshUserStatus({ type: 'load user community boards' });
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
             }
             return data;
@@ -733,7 +738,6 @@ export class UserData {
                 await this.resetUserData();
                 this.menuCtrl.enable(false);
                 this.router.navigate(['/activity/5d5785b462489003817fee18']);
-                //this.router.navigate(['/register', { slide : '0', exitType: 'slide' }]);
                 loading.dismiss();
             }, 500);
         } catch (err) {

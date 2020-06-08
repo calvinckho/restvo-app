@@ -3,7 +3,7 @@ import {CacheService} from 'ionic-cache';
 import { Router } from '@angular/router';
 import {Storage} from '@ionic/storage';
 import { CallNumber } from "@ionic-native/call-number/ngx";
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     AlertController,
@@ -91,7 +91,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                 public userData: UserData) { }
 
   ngOnInit() {
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
   }
@@ -469,7 +469,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
                                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group})
-                                this.userData.refreshUserStatus({ type: 'refresh community board page' });
+                                this.userData.refreshBoards({ type: 'refresh community board page' });
                             });
                         }
                     }],
@@ -736,6 +736,6 @@ export class GroupboardPage implements OnInit, OnDestroy {
     ngOnDestroy(){
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
     }
 }

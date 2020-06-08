@@ -174,31 +174,33 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
             let hasOrganizerAccess: any;
+            // check hasOrganizerAccess
             if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
                 hasOrganizerAccess = selectedProgram.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
             } else if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
                 hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
             }
-            if (hasOrganizerAccess) {
+            if (hasOrganizerAccess) { // if hasOrganizerAccess
                 this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
                 await this.loading.dismiss();
-            } else {
+            } else { //if do not have organizer access
                 this.router.navigate(['/app/activity/' + selectedProgram._id]);
                 setTimeout(async () => {
                     await this.loading.dismiss();
                     await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
                     this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
-                }, 1000);
+                }, 2000);
             }
         }
     }
 
     async createMoment() {
-        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
+        if (this.modalPage) {
             this.close();
+        }
+        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
         } else { // create other Activities
-            this.close(); // close the Picker, then open up the create view.
             this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
         }
     }
@@ -233,7 +235,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     back() {
-        console.log("allow", this.allowSwitchCategory);
         if (this.step === -2 || this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
             this.close();
         } else {

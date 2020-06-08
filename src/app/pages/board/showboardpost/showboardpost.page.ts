@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     IonContent,
@@ -86,7 +86,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
           });
           await networkAlert.present();
       });
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
@@ -702,7 +702,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }
 }

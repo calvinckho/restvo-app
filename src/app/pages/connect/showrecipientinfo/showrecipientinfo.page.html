@@ -1,4 +1,11 @@
-<ion-header style="height: 0"></ion-header>
+<ion-header>
+  <ion-toolbar class="header-toolbar" lines="none">
+    <ion-buttons class="header-buttons" slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{recipient.first_name}} {{recipient.last_name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
     <ion-row class="ion-align-items-center" style="height: 100%">
@@ -6,11 +13,6 @@
     </ion-row>
   </ion-grid>
   <ion-list class="ion-no-padding" *ngIf="loadCompleted">
-    <ion-toolbar class="header-toolbar" lines="none">
-      <ion-buttons class="header-buttons" slot="start">
-        <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
-      </ion-buttons>
-    </ion-toolbar>
     <div *ngIf="recipient">
       <div>
         <ion-item lines="none">
@@ -19,12 +21,12 @@
             <img *ngIf="!recipient.avatar" src="assets/img/avatar-default.jpg"/>
           </div>
         </ion-item>
-        <ion-item lines="none">
+        <!--<ion-item lines="none">
           <p class="name ion-text-center ion-text-md-uppercase">{{recipient.first_name}} {{recipient.last_name}} <span *ngIf="recipient.role === 'Contact' || recipient.role === 'Pending'">{{recipient.name}}</span></p>
-        </ion-item>
-        <ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
+        </ion-item>-->
+        <!--<ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
           <ion-badge shape="round">{{recipient.role}}</ion-badge>
-        </ion-row>
+        </ion-row>-->
         <div *ngFor="let program of result.programs">
           <div *ngIf="program._id === '5d5785b462489003817fee18'">
             <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->

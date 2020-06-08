@@ -340,7 +340,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     changeSelectedDate( inputDate ) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarService.calendar.daysInViewWeek = this.calendarService.getDaysInWeek( inputDate.getDate() , inputDate.getMonth() , inputDate.getFullYear() );
     }
 
@@ -428,7 +428,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     async openProgram(event, program) {
         event.stopPropagation();
         if (this.platform.width() >= 768) {
-            if (program.user_list_2.includes(this.userData.user._id)) { // admin access
+            if (program.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role)) { // admin access
                 this.router.navigate(['/app/manage/activity/' + program._id + '/profile/' + program._id]);
             } else {
                 this.router.navigate(['/app/activity/' + program._id]);

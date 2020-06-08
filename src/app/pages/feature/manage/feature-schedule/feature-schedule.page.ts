@@ -140,7 +140,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     //await this.touchSchedule('update schedule');
     const alert = await this.alertCtrl.create({
       header: 'Re-populate Timeline',
-      subHeader: 'You are about to delete your existing timeline and re-populate it. Are you sure you want to proceed?',
+      subHeader: 'You are about to delete your timeline items between the start and end dates and re-populate them. Are you sure you want to proceed?',
       cssClass: 'level-15',
       buttons: [{ text: 'Re-populate',
         handler: async () => {
@@ -161,6 +161,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.touchPlanTimeline();
         await this.momentService.touchSchedule(this.schedule);
       } else {
+        console.log("check", this.recurrenceStartDate, this.schedule.startDate);
         // for Activity, either create schedule or send to the backend to repopulate the timeline
         this.schedule.operation = operation;
         await this.momentService.touchSchedule(this.schedule);
@@ -171,7 +172,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     }
   }
 
-  // repopulate the Plan's Timeline
+  // repopulate the Timeline (Plan only)
   touchPlanTimeline() {
     if (this.parentCategoryId === '5c915476e172e4e64590e349' && this.schedule.child_moments && this.schedule.child_moments.length) {
       this.timeline = [];
@@ -221,17 +222,17 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     this.dateType = type;
   }
 
-  changeSelectedDate( inputDate ) {
+  changeSelectedDate(inputDate) {
     if (inputDate === ' ') return;
     if ( this.dateType === 'start' ) {
       this.recurrenceStartDate = inputDate;
-      this.calendarService.calendar.selectedDate = inputDate;
+      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
       this.calendarService.calendar.currentViewDate = this.recurrenceEndDate;
       this.dateType = 'end';
     } else if (this.dateType === 'end') {
       this.recurrenceEndDate = inputDate;
       this.dateType = '';
-      this.calendarService.calendar.selectedDate = inputDate;
+      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     }
     this.calendarService.updateViewCalendar();
     if (this.parentCategoryId === '5c915476e172e4e64590e349') { // only auto populate for Plans
