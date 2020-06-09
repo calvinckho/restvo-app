@@ -39,14 +39,16 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @ViewChild('InviteSelect', {static: false}) inviteSelect: IonSelect;
   @ViewChild('RolesSelect', {static: false}) rolesSelect: IonSelect;
+  @ViewChild('RemoveSelect', {static: false}) removeSelect: IonSelect;
   @Input() title = '';
   uniqueParticipantList = [];
   displayParticipantList = [];
+  selectedParticipants = [];
+  //totalSelected: any;
   rolesFilter: any = [];
   // relationshipCompletion: any;
   participantAscending = true;
   roleAscending = true;
-  conversations: any = [];
   searchKeyword = '';
 
   constructor(
@@ -115,7 +117,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
 
   reloadEditPage = async () => {
     // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
-    if (this.userData.user && !this.initialSetupCompleted) {
+    if (this.userData.user) {
       await this.setup();
       this.prepareParticipantsIntoUniqueParticipantList();
       this.renderUniqueParticipantList();
@@ -163,7 +165,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       for (let i = this.displayParticipantList.length - 1; i >= 0; i--) {
         let matchRolesFilter = true;
         this.rolesFilter.forEach((role) => {
-          if (!this.displayParticipantList[i].roles.includes(role.label)) {
+          if (!this.displayParticipantList[i].roles.includes(role)) {
             matchRolesFilter = false;
           }
         });
@@ -174,8 +176,8 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     }
   }
 
-  async openPopUpModalAddParticipants(event){
-    this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label)
+  async openPopUpModalAddParticipants(event) {
+    this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label);
   }
 
   async pushToMessagePage(event, user) {
@@ -193,7 +195,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     if (type === 'participant') {
       this.participantAscending = !this.participantAscending;
       const reverseOrder = this.participantAscending;
-      this.uniqueParticipantList.sort(function(a, b) {
+      this.displayParticipantList.sort(function(a, b) {
         if (a.first_name < b.first_name) {
           return reverseOrder ? -1 : 1;
         }
@@ -204,7 +206,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     } else if (type === 'role') {
       this.roleAscending = !this.roleAscending;
       const reverseOrder = this.roleAscending;
-      this.uniqueParticipantList.sort(function(a, b) {
+      this.displayParticipantList.sort(function(a, b) {
           if (a.roles < b.roles) {
             return reverseOrder ? -1 : 1;
           }
@@ -215,44 +217,42 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     }
   }
 
-  async removeParticipant(event, type, user_index) {
-    event.stopPropagation();
-    if (type === 'participant') {
-      const alert = await this.alertCtrl.create({
-        header: 'Remove Participant',
-        subHeader: 'You are about to remove ' + this.moment.user_list_1[user_index].first_name + ' ' + this.moment.user_list_1[user_index].last_name + ' as a participant. Are you sure you want to proceed?',
-        cssClass: 'level-15',
-        buttons: [{ text: 'Remove',
-          handler: async () => {
-            alert.dismiss();
-            this.removeFromUserLists(['user_list_1'], [this.moment.user_list_1[user_index]._id]);
-          }}, { text: 'Cancel' }]
-      });
-      await alert.present();
-    } else if (type === 'organizer') {
-      const alert = await this.alertCtrl.create({
-        header: 'Remove Organizer',
-        subHeader: 'You are about to remove ' + this.moment.user_list_2[user_index].first_name + ' ' + this.moment.user_list_2[user_index].last_name + ' as a organizer. Are you sure you want to proceed?',
-        cssClass: 'level-15',
-        buttons: [{ text: 'Remove',
-          handler: async () => {
-            alert.dismiss();
-            this.removeFromUserLists(['user_list_2'], [this.moment.user_list_2[user_index]._id]);
-          }}, { text: 'Cancel' }]
-      });
-      await alert.present();
-    } else if (type === 'leader') {
-      const alert = await this.alertCtrl.create({
-        header: 'Remove Leader',
-        subHeader: 'You are about to remove ' + this.moment.user_list_3[user_index].first_name + ' ' + this.moment.user_list_3[user_index].last_name + ' as a leader. Are you sure you want to proceed?',
-        cssClass: 'level-15',
-        buttons: [{ text: 'Remove',
-          handler: async () => {
-            alert.dismiss();
-            this.removeFromUserLists(['user_list_3'], [this.moment.user_list_3[user_index]._id]);
-          }}, { text: 'Cancel' }]
-      });
-      await alert.present();
+  selectParticipant(user) {
+    if (user.select) {
+      user.select = false;
+      const index = this.selectedParticipants.indexOf(user);
+      this.selectedParticipants.splice(index, 1);
+    } else {
+      user.select = true;
+      this.selectedParticipants.push(user);
+      //this.searchbar.setFocus();
     }
+  }
+
+  unselectParticipant(user) {
+    let index = this.selectedParticipants.indexOf(user);
+    if (index > -1) {
+      this.selectedParticipants[index].select = false;
+    }
+    index = this.selectedParticipants.indexOf(user);
+    if (index > -1) {
+      this.selectedParticipants.splice(index, 1);
+    }
+  }
+
+  async multiSelectAction(event) {
+    event.stopPropagation();
+    if (!this.selectedParticipants.length || !event.detail.value.length) return; // if no participant or remove type selected, exit
+    const alert = await this.alertCtrl.create({
+      header: 'Remove ' + (this.selectedParticipants.length === 1 ? event.detail.value[0].singularLabel : event.detail.value[0].pluralLabel),
+      subHeader: 'You are about to remove ' + (this.selectedParticipants.length === 1 ? (this.selectedParticipants[0].first_name + ' ' + this.selectedParticipants[0].last_name + ' as a ' + event.detail.value[0].singularLabel) : (this.selectedParticipants.length + ' ' + event.detail.value[0].pluralLabel)) + '. Are you sure you want to proceed?',
+      cssClass: 'level-15',
+      buttons: [{ text: 'Remove',
+        handler: async () => {
+          alert.dismiss();
+          this.removeFromUserLists(event.detail.value.map((c) => c.user_list), this.selectedParticipants.map((c) => c._id));
+        }}, { text: 'Cancel' }]
+    });
+    await alert.present();
   }
 }

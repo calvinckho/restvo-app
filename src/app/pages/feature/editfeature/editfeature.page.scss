@@ -455,4 +455,25 @@ app-editfeature {
       font-size: 12px;
     }
   }
+
+  /*editparticipant only css*/
+  .column-label {
+    text-align: center;
+  }
+
+  .avatar-name-label {
+    width: calc(25% + 40px);
+  }
+
+  .name-label {
+    width: 25%;
+  }
+
+  .role-label {
+    width: 30%;
+  }
+
+  .chat-label {
+    width: 50px;
+  }
 }
