@@ -69,6 +69,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                         obj.data.badge = 0;
                     }
                 });
+                await this.chatService.refreshTabBadges();
                 await this.renderConversations();
             } else if (data.action === 'render') { // e.g. socket.io event informing change in online status
                 await this.renderConversations();

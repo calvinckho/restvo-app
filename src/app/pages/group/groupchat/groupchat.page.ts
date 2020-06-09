@@ -771,8 +771,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     async resetBadge(conversationId, refreshMyConversations) {
         // set the badge count to 0
         let count = 0;
-        const badge = this.chatService.currentChatProps && this.chatService.currentChatProps.length > this.propIndex && this.chatService.currentChatProps[this.propIndex].badge;
-        if (this.networkService.hasNetwork && badge) {
+        const badge = this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && this.chatService.currentChatProps[this.propIndex].badge;
+        if (await this.networkService.hasNetwork && badge) {
             count = await this.chatService.resetBadgeCount(conversationId);
             this.chatService.currentChatProps[this.propIndex].badge = 0;
             if (refreshMyConversations) {
