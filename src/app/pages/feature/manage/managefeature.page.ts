@@ -335,16 +335,13 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         }
       });
     }
-    buttons = buttons.concat([/*{
-      text: 'Leave as ' + this.organizerLabel,
-      icon: 'log-out',
+    buttons = buttons.concat([{
+      text: 'View as User',
+      icon: 'eye',
       handler: () => {
-        const navTransition = actionSheet.dismiss();
-        navTransition.then( async () => {
-          this.leaveProgramWithPrivileges('user_list_2');
-        });
+        this.switchToUserView();
       }
-    },*/
+    },
       {
         text: this.resource['en-US'].value[33], // Cancel
         icon: 'close-circle',

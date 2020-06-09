@@ -1832,19 +1832,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             params.calendarId = calendarItem._id;
             componentProps.calendarId = calendarItem._id;
         }
-        if (this.platform.width() >= 768) {
-            if (this.authService.token) {
-                this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
-            } else { // for unauthenticated user and in landing page view, which is not a common case
-                this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
-            }
+        if (!this.authService.token) { // for authenticated user, use modalCtrl for in app experience
+            this.router.navigate(['/activity/' + momentId, params ], { replaceUrl: false });
+        } else if (!this.modalPage && this.platform.width() >= 992) {
+            params.subpanel = true;
+            this.router.navigate([{ outlets: { sub: ['details', momentId, params ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
+            this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
         } else {
-            if (this.authService.token) { // for authenticated user, use modalCtrl for in app experience
-                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
-                await modal.present();
-            } else { // for unauthenticated user and in landing page view, which is not a common case
-                this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
-            }
+            const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
+            await modal.present();
         }
     }
 
