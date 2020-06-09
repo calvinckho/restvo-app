@@ -44,7 +44,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   uniqueParticipantList = [];
   displayParticipantList = [];
   selectedParticipants = [];
-  //totalSelected: any;
   rolesFilter: any = [];
   // relationshipCompletion: any;
   participantAscending = true;
@@ -177,7 +176,9 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   }
 
   async openPopUpModalAddParticipants(event) {
-    this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label);
+    if (event.detail.value) {
+      this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label);
+    }
   }
 
   async pushToMessagePage(event, user) {

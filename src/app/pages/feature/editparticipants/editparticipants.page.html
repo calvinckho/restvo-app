@@ -29,8 +29,8 @@
           <ion-select-option [value]="this.organizerLabel">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="this.leaderLabel">{{leaderLabel}}</ion-select-option>
         </ion-select>
-        <ion-button slot="end" (click)="inviteSelect.open($event)" *ngIf="!modalPage">Invite</ion-button>
-        <ion-select #InviteSelect placeholder="Invite" interface="popover" [interfaceOptions]="{header: 'Invite'}" (ionChange)="openPopUpModalAddParticipants($event)" hidden>
+        <ion-button slot="end" (click)="inviteSelect.value = null; inviteSelect.open($event)" *ngIf="!modalPage">Add</ion-button>
+        <ion-select #InviteSelect placeholder="Add" interface="popover" (ionChange)="openPopUpModalAddParticipants($event)" mode="ios" hidden>
           <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
