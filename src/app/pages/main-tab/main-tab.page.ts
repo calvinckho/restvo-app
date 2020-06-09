@@ -196,7 +196,6 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
               this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
               const activityId = await this.storage.get('currentManageActivityId');
-              console.log("cached admin activity", activityId);
               if (activityId && this.userData.activitiesWithAdminAccess.length) {
                   if (this.userData.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
                       this.userData.currentManageActivityId = activityId;
@@ -568,7 +567,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             if (data && data.modalPage) {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
                 await modal.present();
-            } else if (data && data.momentId && data.subPanel) {
+            } else if (data && data.momentId && data.subpanel) {
                 this.router.navigate([{ outlets: { sub: ['details', data.momentId, { subpanel: true, relationshipId: data.relationshipId, calendarId: data.calendarId } ]}}]);
             } else if (data && data.momentId && data.relationshipId && data.calendarId) {
                 this.router.navigate(['/app/activity/' + data.momentId, { relationshipId: data.relationshipId, calendarId: data.calendarId }]);
@@ -703,7 +702,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                     cssClass: 'level-10'
                 });
             }
-            if (data.subPanel) {
+            if (data.subpanel) {
                 this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
                 // if it is displaying the chat view, it will reload the chat data
                 this.userData.refreshMyConversations({action: 'reload chat view'});

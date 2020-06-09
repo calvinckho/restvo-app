@@ -1,4 +1,4 @@
-<ion-header *ngIf="modalPage || subPanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
+<ion-header *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
@@ -30,10 +30,10 @@
         </ion-button>
       </div>
       <div *ngIf="authService.token && setupPermissionCompleted && loadStatus">
-        <ion-button (click)="inviteToJoin()" [hidden]="subPanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
+        <ion-button (click)="inviteToJoin()" [hidden]="subpanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
           <ion-icon name="person-add"></ion-icon>
         </ion-button>
-        <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" [hidden]="!subPanel"> <!--close subpanel-->
+        <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
           <ion-icon name="close"></ion-icon>
         </ion-button>
       </div>

@@ -2,7 +2,7 @@ import {Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulatio
 import {Location} from '@angular/common';
 import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
-import {Router, ActivatedRoute, ActivationEnd} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {CacheService} from 'ionic-cache';
 import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-  subPanel = false;
+  subpanel = false;
   subscriptions: any = {};
   mode = 'list';
   slideOpts = {
@@ -224,7 +224,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       public calendarService: CalendarService) {}
 
   async ngOnInit() {
-      this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
+      this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
@@ -261,7 +261,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       } else { // otherwise refresh
           this.setup(data);
       }
-  }
+  };
 
   async setup(data) {
       this.loadStatus = 'loading';

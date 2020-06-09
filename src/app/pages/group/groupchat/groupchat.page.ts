@@ -55,7 +55,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any; //optionally sent if it is a modal page
 
-    subPanel = false;
+    subpanel = false;
     subscriptions: any = {};
     propIndex: any;
     // chat
@@ -108,7 +108,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
-        this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
+        this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);
@@ -125,7 +125,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (res) {
             if (res.action === 'reload chat view') {
                 if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
-                    await this.cleanup(this.chatService.currentChatProps.badge);
+                    await this.cleanup(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].badge);
                     await this.setup();
                     this.reloadChatView();
                 }
@@ -1174,7 +1174,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
                 this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});
-            } else if (!this.subPanel) {
+            } else if (!this.subpanel) {
                 setTimeout(() => {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});

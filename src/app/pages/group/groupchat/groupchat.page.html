@@ -1,7 +1,7 @@
 <ion-header *ngIf="chatService.currentChatProps[propIndex]">
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)" *ngIf="modalPage || subPanel"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)" *ngIf="modalPage || subpanel"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
     <ion-buttons slot="end">
@@ -11,10 +11,10 @@
       <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}">
         <ion-icon name="videocam" color="dark"></ion-icon>
       </ion-button>
-      <ion-button (click)="seeMoreInfo()" *ngIf="!subPanel">
+      <ion-button (click)="seeMoreInfo()" *ngIf="!subpanel">
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="dark"></ion-icon>
       </ion-button>
-      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subPanel">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subpanel">
         <ion-icon name="close" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>

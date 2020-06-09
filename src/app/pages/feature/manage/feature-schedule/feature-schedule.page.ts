@@ -129,7 +129,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   async openContent(event, calendarItem) {
     event.stopPropagation();
     let componentProps: any;
-    componentProps = { moment: { _id: calendarItem.moment._id }, momentId: calendarItem.moment._id, relationshipId: this.programId, modalPage: this.platform.width() < 768, subPanel: true };
+    componentProps = { moment: { _id: calendarItem.moment._id }, momentId: calendarItem.moment._id, relationshipId: this.programId, modalPage: this.platform.width() < 768, subpanel: true };
     if (calendarItem.uniqueAnswersPerCalendar && calendarItem._id) {
       componentProps.calendarId = calendarItem._id;
     }

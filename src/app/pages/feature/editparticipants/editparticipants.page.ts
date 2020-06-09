@@ -3,7 +3,7 @@ import {
   Component,
   OnInit,
   Input,
-  ViewEncapsulation,
+  ViewEncapsulation, ViewChild,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
@@ -11,7 +11,7 @@ import { ElectronService } from "ngx-electron";
 import { SwUpdate } from "@angular/service-worker";
 import {
   ActionSheetController,
-  AlertController,
+  AlertController, IonSelect,
   LoadingController,
   ModalController,
   Platform,
@@ -37,13 +37,16 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
   encapsulation: ViewEncapsulation.None,
 })
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
-  @Input() title = "";
+  @ViewChild('InviteSelect', {static: false}) inviteSelect: IonSelect;
+  @ViewChild('RolesSelect', {static: false}) rolesSelect: IonSelect;
+  @Input() title = '';
   uniqueParticipantList = [];
-  tempArray = []
+  rolesFilter: any = [];
   // relationshipCompletion: any;
   participantAscending = true;
   roleAscending = true;
   conversations: any = [];
+  searchKeyword = '';
 
   constructor(
     public route: ActivatedRoute,
@@ -121,53 +124,51 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     }
   };
 
-  mergeParticipantsIntoUniqueParticipantList = async () => {
-    // this.moment is ready to go
-    // this.moment.user_list_1 - participant
-    // this.moment.user_list_2 - organizer
-    // this.moment.user_list_3 - leader
-    // const loading = await this.loadingCtrl.create({
-    //   message: 'Please wait...',
-    //   duration: 2000
-    // })
-    // await loading.present();
-    let tempList1 = this.moment.user_list_1.slice();
-    tempList1.forEach((user) => {
-      user.role = [this.participantLabel];
+  mergeParticipantsIntoUniqueParticipantList() {
+    this.uniqueParticipantList = [];
+    const user_list_1 = this.moment.user_list_1.slice();
+    user_list_1.forEach((user) => {
+      user.roles = [this.participantLabel];
     });
-    let tempList2 = this.moment.user_list_2.slice();
-    tempList2.forEach((user) => {
-      user.role = [this.organizerLabel];
+    const user_list_2 = this.moment.user_list_2.slice();
+    user_list_2.forEach((user) => {
+      user.roles = [this.organizerLabel];
     });
-    let tempList3 = this.moment.user_list_3.slice();
-    tempList3.forEach((user) => {
-      user.role = [this.leaderLabel];
+    const user_list_3 = this.moment.user_list_3.slice();
+    user_list_3.forEach((user) => {
+      user.roles = [this.leaderLabel];
     });
-    this.tempArray = tempList1.concat(tempList2, tempList3);
-    console.log("templist", this.tempArray)
-    console.log("userData", this.userData.user)
+    const user_list_123 = user_list_1.concat(user_list_2, user_list_3);
     //tempArray => lists an array of user objects with each users role
-
 
     //this logic below checks the user._id to see if it exists in the array uniqueParticipantList
     //If it exists, we only need to concat the roles,
     //Else, we need to push the whole user object into uniqueParticipantList
-    this.tempArray.forEach(el => {
-      let exists = this.uniqueParticipantList.filter(function(value){
-        //checks each user from the temp array to see if that user exists in the uniqueParticipantList array
-        return value._id === el._id
-      })
-      //if user existed already in uniqueParticipantArray, the "exists" variable will have a length
-      if(exists.length){
-        let existingIndex = this.uniqueParticipantList.indexOf(exists[0])
-        this.uniqueParticipantList[existingIndex].role.push(el.role[0])
-        console.log(this.uniqueParticipantList)
+    user_list_123.forEach(user => {
+      // checks each user from the temp array to see if that user exists in the uniqueParticipantList array
+      const uniqueParticipant = this.uniqueParticipantList.find((c) => c._id === user._id);
+      // if user existed already in uniqueParticipantArray, the "exists" variable will have a length
+      if (uniqueParticipant) {
+        const existingIndex = this.uniqueParticipantList.indexOf(uniqueParticipant);
+        this.uniqueParticipantList[existingIndex].roles.push(user.roles[0]);
+      } else if ((user.first_name + ' ' + user.last_name).toLowerCase().includes(this.searchKeyword.toLowerCase())) {
+        this.uniqueParticipantList.push(user);
       }
-      else {
-        this.uniqueParticipantList.push(el)
-      }
-    })
+    });
 
+    if (this.rolesFilter.length) { // only filter by role if at least one type is selected
+      for (let i = this.uniqueParticipantList.length - 1; i >= 0; i--) {
+        let matchRolesFilter = true;
+        this.rolesFilter.forEach((role) => {
+          if (!this.uniqueParticipantList[i].roles.includes(role.label)) {
+            matchRolesFilter = false;
+          }
+        });
+        if (!matchRolesFilter) { // if it does not match the filter selections, remove from list
+          this.uniqueParticipantList.splice(i, 1);
+        }
+      }
+    }
   }
 
   async openPopUpModalAddParticipants(event){
@@ -181,7 +182,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     this.chatService.openChat({
       conversationId: conversationId,
       author: user,
-      subPanel: this.platform.width() >= 768
+      subpanel: this.platform.width() >= 768
     });
   }
 
@@ -189,7 +190,6 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     if (type === 'participant') {
       this.participantAscending = !this.participantAscending;
       const reverseOrder = this.participantAscending;
-      console.log(this.uniqueParticipantList)
       this.uniqueParticipantList.sort(function(a, b) {
         if (a.first_name < b.first_name) {
           return reverseOrder ? -1 : 1;
@@ -202,10 +202,10 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
       this.roleAscending = !this.roleAscending;
       const reverseOrder = this.roleAscending;
       this.uniqueParticipantList.sort(function(a, b) {
-          if (a.role < b.role) {
+          if (a.roles < b.roles) {
             return reverseOrder ? -1 : 1;
           }
-          if (a.role > b.role) {
+          if (a.roles > b.roles) {
             return reverseOrder ? 1 : -1;
           }
         });

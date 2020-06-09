@@ -25,7 +25,7 @@ export class ShowrecipientinfoPage implements OnInit {
     @Input() recipient: any = { _id: '', first_name: '', last_name: '', role: '', avatar: '' };
     @Input() programId: any; // optional, if a program context is provided
 
-    subPanel = false;
+    subpanel = false;
     subscriptions: any = {};
     loading: any;
     result: any = [];
@@ -61,7 +61,7 @@ export class ShowrecipientinfoPage implements OnInit {
     }
 
     ngOnInit() {
-        this.subPanel = !!this.route.snapshot.paramMap.get('subpanel');
+        this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         if (this.userData.hasPlatformAdminAccess){
             this.setToggle();
         }
@@ -151,9 +151,9 @@ export class ShowrecipientinfoPage implements OnInit {
                     page: 'chat',
                     modalPage: false
                 });
-                if (!this.modalPage && this.subPanel) {
+                if (!this.modalPage && this.subpanel) {
                     this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
-                } else if (!this.modalPage && !this.subPanel) {
+                } else if (!this.modalPage && !this.subpanel) {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});
                 } else {
@@ -477,7 +477,7 @@ export class ShowrecipientinfoPage implements OnInit {
         if (this.modalPage) {
             this.modalCtrl.dismiss(this.anyChangeMade);
         } else {
-            if (this.router.url.includes('myconversations') && !this.subPanel) { // the special case when viewing in the myconversations context and not in a subpanel
+            if (this.router.url.includes('myconversations') && !this.subpanel) { // the special case when viewing in the myconversations context and not in a subpanel
                 this.router.navigate(['/app/myconversations/chat'], { replaceUrl: true });
             } else {
                 this.location.back();
