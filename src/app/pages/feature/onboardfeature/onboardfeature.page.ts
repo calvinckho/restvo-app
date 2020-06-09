@@ -1,5 +1,5 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {CacheService} from "ionic-cache";
@@ -45,7 +45,6 @@ export class OnboardfeaturePage {
     matchedPeople = [];
     planModules = [];
     mediaList: Array<{_id: string, player: Plyr}> = [];
-    currentMomentConversationId: string;
     interactableDisplay: any = {};     // an object of arrays of options to be listOfDisplayed
     responses = []; // an object of arrays of responses
     responseObj = {
@@ -341,9 +340,8 @@ export class OnboardfeaturePage {
         // this.responseObj.moment = this.moment._id;
         this.responseObj.array_number = this.moment.resource.matrix_number[0];
         this.responseObj.createdAt = new Date();
-        let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-        const listOfResponseIds = this.responses.map((c) => c._id);
-        const index = listOfResponseIds.indexOf(response._id);
+        const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
+        const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list
             this.responses.push(response);
         } else { // if it has been added, replace with the incoming one
@@ -370,9 +368,9 @@ export class OnboardfeaturePage {
         const interactableId = this.moment.resource.matrix_number[2][componentIndex];
 
         for (const interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+            if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -395,7 +393,7 @@ export class OnboardfeaturePage {
                 this.userData.refreshUserStatus({});
             }
             this.nextButtonReady = true;
-        }, 3000);
+        }, 1500);
     }
 
     async slideChanges() {
@@ -486,14 +484,14 @@ export class OnboardfeaturePage {
                 case 3: // organizers
                     user_list = 'user_list_2';
                     break;
-                case 4: //leaders
+                case 4: // leaders
                     user_list = 'user_list_3';
                     break;
                 default:
                     user_list = 'user_list_1';
                     type = 2;
             }
-            await this.momentService.addUserToProgramUserList(programId, user_list, type, token, this.completedDefaultOnboarding);
+            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding);
             if (this.completedDefaultOnboarding) {
                 if (this.modalPage) { // onboarding is a popover by default
                     this.router.navigate([this.authService.cachedRouteUrl]); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl

@@ -1,5 +1,9 @@
 app-managecommunities {
 
+  ion-item {
+    cursor: pointer;
+  }
+
   ion-menu-toggle {
     ion-badge {
       position: relative;
@@ -11,11 +15,6 @@ app-managecommunities {
       }*/
       z-index: 5;
     }
-  }
-
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
   }
 
   ion-grid {
@@ -73,54 +72,11 @@ app-managecommunities {
     background: none;
   }
 
-  //.discover-card-title {
-  //  position: absolute;
-  //  top: 36%;
-  //  font-size: 2.0em;
-  //  width: 100%;
-  //  font-weight: bold;
-  //  color: #fff;
-  //}
-
   .discover-card-subtitle {
     font-size: 1.0em;
     position: absolute;
     top: 52%;
     width: 100%;
     color: #fff;
-  }
-
-  .overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 9;
-    top: 0;
-    left: 0;
-    overflow:hidden;
-  }
-
-  .walkthrough {
-    color: white;
-    font-size: large;
-    position: absolute;
-  }
-
-  .walkthrough.people {
-    width: 70%;
-    top: 30%;
-    left: 15%;
-  }
-
-  .walkthrough.topics {
-    width: 70%;
-    top: 30%;
-    left: 15%;
-  }
-  .walkthrough.communities {
-    width: 70%;
-    top: 30%;
-    right: 5%;
   }
 }

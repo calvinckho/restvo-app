@@ -17,16 +17,21 @@
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
           <ion-icon name="list"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="loadCompleted && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
+        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
           <ion-icon name="albums"></ion-icon>
         </ion-button>
       </div>
-      <div *ngIf="relationshipId && calendarItem">
-        <ion-button *ngIf="calendarItem && calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
-          Done
+      <div *ngIf="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
+        <ion-button (click)="deleteCalendarItem($event)" class="ion-margin-end">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+         <ion-button *ngIf="calendarId" (click)="saveCalendarItem()" [disabled]="!anyChangeMade">
+          Save
         </ion-button>
       </div>
-      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadCompleted" [hidden]="relationshipId && calendarItem">
+      <!--show Share button if user is authenticated, has finished set up permission, and loadStatus is loading or completed.
+      hide when it is a content calendar and allow unauthenticated access to To-Do Content is not defined or is true-->
+      <ion-button (click)="inviteToJoin()" *ngIf="authService.token && setupPermissionCompleted && loadStatus" [hidden]="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
         <ion-icon name="person-add"></ion-icon>
       </ion-button>
       <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
@@ -37,7 +42,7 @@
 </ion-header>
 
 <ion-content class="ion-padding-bottom">
-  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadCompleted && setupPermissionCompleted && !(router.url.includes('discover/home') || router.url.includes('manage/activity'))">
+  <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadStatus && setupPermissionCompleted && (modalPage || !(router.url.includes('discover/home') || router.url.includes('manage/activity')))">
     <!--Invitation Section-->
     <ion-item-sliding side="end" *ngIf="(participant_type === 2) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
@@ -96,7 +101,7 @@
     </ion-item>
     <div *ngIf="!joinDisabled">
       <!--Already Joined-->
-      <ion-item *ngIf="hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
+      <ion-item *ngIf="hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap message-container">
           <ion-label class="ion-margin-top">You are a {{participantLabel}}</ion-label>
@@ -105,7 +110,7 @@
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <!--Not yet Joined - permission check-->
-      <ion-item *ngIf="authService.token && !token && !hasAddedToAttendEventList && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
+      <ion-item *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -146,14 +151,14 @@
       </ion-item-group>
     </div>
   </ion-toolbar>
-  <ion-grid style="height: 100%" *ngIf="!loadCompleted">
+  <ion-grid style="height: 100%" *ngIf="loadStatus !== 'completed'">
     <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadCompleted && mode === 'list'" class="ion-no-padding">
+  <ion-list *ngIf="loadStatus === 'completed' && mode === 'list' && moment.resource" class="ion-no-padding">
     <!--Content Calendar Item-->
-    <div *ngIf="calendarItem">
+    <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
         <ion-textarea class="moment-input" autocapitalize="true" [autofocus]="true" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
@@ -163,7 +168,7 @@
           <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
           <div class="moment-input">Due Date</div>
         </ion-item>
-        <ion-item lines="none" class="ion-margin-start">
+        <ion-item lines="none">
           <ion-label class="moment-label" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
           <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
         </ion-item>
@@ -286,21 +291,21 @@
           <ion-card-content class="goal-content overall ion-no-padding">
             <ion-badge color="grey" class="favorite-goal-type">Overall Progress</ion-badge>
             <div class="overall-progress">
-              <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
-              <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
-              <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
+              <progress-bar [progress]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
+              <!-- <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar> -->
+              <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"-->
             </div>
             <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container" >
               <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="progressView = (progressView === section ? null : section)" >
                 <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
-                  {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                  {{section}}<span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                 </div>
                 <ion-button slot="end" fill="clear">
                   <ion-icon [name]="progressView === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                 </ion-button>
               </ion-item>
-              <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && progressView === section" (click)="openContent($event, calendarItem)">
+              <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && progressView === section" (click)="openContent($event, calendarItem)">
                   <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                     <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                     <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -322,7 +327,7 @@
                 <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 3 && moment.matrix_number[i][3]) ? 'bold' : 'none'),'font-size': ((moment.matrix_number[i].length > 2) ? moment.matrix_number[i][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
               </ion-item>
               <div class="progress">
-                <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
+                <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
               </div>
               <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i)" fill="clear" size="small">
                 <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
@@ -339,7 +344,7 @@
                   <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                 </ion-item>
                 <!--<div class="progress">
-                  <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
+                  <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
                 </div>-->
                 <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
                   <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
@@ -348,15 +353,15 @@
                   <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
                     <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
                       {{section}}
-                      <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                      <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                     </div>
-                    <!--<ion-badge color="grey" [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }}</ion-badge>-->
+                    <!--<ion-badge color="grey" [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }}</ion-badge>-->
                     <ion-button slot="end" fill="clear">
                       <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                     </ion-button>
                   </ion-item>
-                  <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                    <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
+                  <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                    <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
                       <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                         <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                         <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -380,7 +385,7 @@
                 <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
               </ion-item>
               <!--<div class="progress">
-                <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
+                <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
               </div>-->
               <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
                 <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
@@ -389,14 +394,14 @@
                 <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
                   <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
                     {{section}}
-                    <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
+                    <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                   </div>
                   <ion-button slot="end" fill="clear">
                     <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                   </ion-button>
                 </ion-item>
-                <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                  <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
+                <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                  <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section" (click)="openContent($event, calendarItem)">
                     <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                       <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                       <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -421,9 +426,10 @@
               <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
               <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
               <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-              <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+              <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
             </div>
-            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+            <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+            <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
             <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
           </div>
         </ion-row>
@@ -612,10 +618,13 @@
         </ion-list>
       </div>
       <!-- Text Answer in List View -->
-      <div class="component" *ngIf="item === 40010">
+      <div class="component" *ngIf="item === 40010 && loadStatus === 'completed'">
         <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
+        <ion-row class="ion-padding-horizontal ion-justify-content-end ion-padding-top" style="height: 12px">
+          <ion-note style="font-size: 10px;">{{ currentSaveState }}</ion-note>
+        </ion-row>
         <ion-item lines="none" class="ion-margin-vertical">
           <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
                         (onContentChanged)="respondToTextArea($event, i)" [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
@@ -726,7 +735,7 @@
       <div class="component" *ngIf="item === 50000">
         <!--Swiper-->
         <div *ngIf="!moment.matrix_number[i][3]">
-          <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy" class="ion-justify-content-center">
+          <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
           <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.1, grabCursor: true, updateOnWindowResize: true}">
@@ -844,7 +853,7 @@
       </div>
     </div>
   </ion-list>
-  <ion-slides pager [options]="slideOpts" *ngIf="loadCompleted && mode === 'slider'">
+  <ion-slides pager [options]="slideOpts" *ngIf="loadStatus === 'completed' && mode === 'slider'">
     <ion-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
@@ -914,9 +923,10 @@
                   <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                   <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                   <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-                  <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                  <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                 </div>
-                <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()"></div>
+                <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
                 <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
               </div>
             </div>
@@ -1051,7 +1061,7 @@
             </div>
             <div class="component" *ngIf="item === 40010"> <!--text answer-->
               <ion-item lines="none" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]">
-                <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
+                <div style="font-size: 34px" class="ion-text-wrap">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
               </ion-item>
               <ion-item lines="none">
                 <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
@@ -1085,20 +1095,20 @@
                 <ion-card-content class="goal-content overall ion-no-padding">
                   <ion-badge color="grey" class="favorite-goal-type">Overall Progress</ion-badge>
                   <div class="overall-progress">
-                    <progress-bar [progress]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
-                    <!--<ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"&ndash;&gt;-->
+                    <progress-bar [progress]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }" [color]="'#488aff'"></progress-bar>
+                    <!--<ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overallcompleted' : { scheduleIds: scheduleIds }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'overalldue' : { scheduleIds:scheduleIds }"&ndash;&gt;-->
                   </div>
                   <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container" >
                     <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="progressView = (progressView === section ? null : section)" >
                       <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
-                        {{section}}<span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                        {{section}}<span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                       </div>
                       <ion-button slot="end" fill="clear">
                         <ion-icon [name]="progressView === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                       </ion-button>
                     </ion-item>
-                    <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                      <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && progressView === section">
+                    <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                      <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && progressView === section">
                         <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                           <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                           <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -1123,7 +1133,7 @@
                       <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none'), 'font-size': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2) ? moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) ? moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
                     </ion-item>
                     <div class="progress">
-                      <ion-progress-bar class="ion-margin-start" [value]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
+                      <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
                     </div>
                     <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
                       <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
@@ -1145,14 +1155,14 @@
                         <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
                           <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
                             {{section}}
-                            <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                            <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                           </div>
                           <ion-button slot="end" fill="clear">
                             <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                           </ion-button>
                         </ion-item>
-                        <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                          <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
+                        <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                          <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
                             <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                               <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                               <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -1185,14 +1195,14 @@
                       <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
                         <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
                           {{section}}
-                          <span [hidden]="!((adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
+                          <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] } }})</span>
                         </div>
                         <ion-button slot="end" fill="clear">
                           <ion-icon [name]="goal[2] === section ? 'chevron-up-outline' : 'chevron-down-outline'" color="darkgrey"></ion-icon>
                         </ion-button>
                       </ion-item>
-                      <div *ngFor="let calendarItem of (adminAccessContentCalendars.length ? adminAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
-                        <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && scheduleIds.includes(calendarItem.schedule) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
+                      <div *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                        <ion-item class="calendar-item ion-no-padding" *ngIf="((calendarItem.status === section && !calendarItem.completed) || (!moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && section === 'Current' && calendarItem.status === 'Upcoming' && !calendarItem.completed) || (section === 'Current' && calendarItem.status === 'Past' && !calendarItem.completed) || (section === 'Completed' && calendarItem.completed)) && (adminOrPublicAccessContentCalendars.length ? true : scheduleIds.includes(calendarItem.schedule)) && (calendarItem.goals && calendarItem.goals.includes(goal[0])) && goal[2] === section">
                           <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                             <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
                             <ion-icon class="calendar-item-checkbox" color="tertiary" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
@@ -1409,10 +1419,10 @@
     </ion-slides>
   </div>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasAddedToAttendEventList) && loadCompleted && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -1422,10 +1432,10 @@
       <!--create Goal-->
       <ion-fab-button (click)="promptNewGoalName($event)" color="primary" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8] && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">Goal</ion-fab-button>
       <!--create Note-->
-      <ion-fab-button (click)="createCalendarItem($event, '5e4b39cd76ffc96ae6aba323')" color="primary" *ngIf="moment.resource.matrix_number[0].includes(12000) && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(12000)])">Note</ion-fab-button>
+      <ion-fab-button (click)="createCalendarItem($event, '5e4b39cd76ffc96ae6aba323')" color="primary" *ngIf="customSchedule && moment.resource.matrix_number[0].includes(12000) && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(12000)])">Note</ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <ion-toolbar *ngIf="calendarItem">
+  <!-- <ion-toolbar *ngIf="calendarItem">
     <ion-button expand="block" shape="round" (click)="deleteCalendarItem($event)" color="primary">Delete</ion-button>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-footer>

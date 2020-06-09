@@ -79,7 +79,7 @@ export class Groups {
         }
         if (group.board) {
             this.userData.communitiesboards = await this.boardService.loadUserChurchBoards();
-            this.userData.refreshUserStatus({ type: 'refresh community board page' });
+            this.userData.refreshBoards({ type: 'refresh community board page' });
         }
         this.userData.refreshUserStatus({type: 'leave group', groupId: group._id});
         this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});

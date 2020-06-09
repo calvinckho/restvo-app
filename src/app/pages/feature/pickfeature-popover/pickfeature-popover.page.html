@@ -3,53 +3,78 @@
     <ion-buttons slot="start">
       <ion-button (click)="back()" id="back-button"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{title}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="done()" *ngIf="selectedMoments.length">Done</ion-button>
-    </ion-buttons>
+    <ion-title *ngIf="step < 1">{{title}}</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Type</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group Type</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5c915475e172e4e64590e348'">Choose a Program Type</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5c915324e172e4e64590e346'">Choose a Community</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5c915476e172e4e64590e349'">Choose a Plan</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5e1bbda67b00ea76b75e5a73'">Choose a Content</ion-title>
+    <ion-title *ngIf="step === 1 && categoryId === '5e17acd47b00ea76b75e5a71'">Choose an Onboarding Process</ion-title>
+
+    <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="step === 2">
+  <ion-toolbar *ngIf="step === 1">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid *ngIf="step === 1" class="full-height">
-    <ion-row class="full-height grid-row">
+  <ion-grid *ngIf="step === 0" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
       <ion-grid>
         <ion-row>
-          <ion-label class="ion-margin-start">Choose a Mentoring Type:</ion-label>
+          <ion-label class="ion-margin-start">Choose One:</ion-label>
         </ion-row>
-        <ion-row>
-          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
-            <ion-card id="personal" class="category-card" (click)="categoryId = '5dfdbb547b00ea76b75e5a70'" [ngClass]="{'selected': categoryId === '5dfdbb547b00ea76b75e5a70'}">
+        <ion-row class="ion-justify-content-start">
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="categoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': categoryId === '5e9f46e1c8bf1a622fec69d5'}">
               <ion-card-header>
-                <ion-card-title>Relationship</ion-card-title>
+                <ion-card-title>Journey</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <li>The base unit of any mentoring relationship</li>
-                <li>Directly match a mentee with a mentor</li>
+                <li>Embark on a Journey of Growth</li>
               </ion-card-content>
             </ion-card>
           </ion-col>
-          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
-            <ion-card id="program" class="category-card" (click)="categoryId = '5c915475e172e4e64590e348'" [ngClass]="{'selected': categoryId === '5c915475e172e4e64590e348'}">
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="categoryId = '5e9fe372c8bf1a622fec69d8'" [ngClass]="{'selected': categoryId === '5e9fe372c8bf1a622fec69d8'}">
+              <ion-card-header>
+                <ion-card-title>Mentoring</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Grow with the Guidance from a Mentor</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="categoryId = '5e9fe35cc8bf1a622fec69d7'" [ngClass]="{'selected': categoryId === '5e9fe35cc8bf1a622fec69d7'}">
+              <ion-card-header>
+                <ion-card-title>Group</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <li>Learn and Grow with a Group</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="categoryId = '5c915475e172e4e64590e348'" [ngClass]="{'selected': categoryId === '5c915475e172e4e64590e348'}">
               <ion-card-header>
                 <ion-card-title>Program</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <li>Contain multiple mentoring relationships</li>
-                <li>Display a directory to match mentors with mentees</li>
+                <li>Manages Journeys, Mentors, and Groups</li>
               </ion-card-content>
             </ion-card>
           </ion-col>
-          <ion-col size-xs="12" size-sm="4" class="ion-no-padding">
-            <ion-card id="community" class="category-card" (click)="categoryId = '5c915324e172e4e64590e346'" [ngClass]="{'selected': categoryId === '5c915324e172e4e64590e346'}">
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="categoryId = '5c915324e172e4e64590e346'" [ngClass]="{'selected': categoryId === '5c915324e172e4e64590e346'}">
               <ion-card-header>
                 <ion-card-title>Community</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <li>A Community can contain multiple mentoring programs</li>
+                <li>Manages Users, Account, and Billing</li>
               </ion-card-content>
             </ion-card>
           </ion-col>
@@ -57,7 +82,7 @@
       </ion-grid>
     </ion-row>
   </ion-grid>
-  <div *ngIf="step === 2">
+  <div *ngIf="step === 1">
     <ion-toolbar class="filter">
       <ion-segment [(ngModel)]="currentView">
         <ion-segment-button value="new">New</ion-segment-button>
@@ -116,19 +141,78 @@
       </ion-row>
     </ion-grid>
   </div>
+  <ion-grid *ngIf="step === 2" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-col>
+        <ion-item lines="none">
+          <div style="font-size: 14px" class="ion-text-wrap">Enter a Name for the {{selectedMoments[0].resource['en-US'].value[0]}}</div>
+        </ion-item>
+        <ion-item lines="none">
+          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
+          <ion-textarea [(ngModel)]="selectedMoments[0].matrix_string[0][0]" rows="1" [minRows]="1" [maxRows]="2" autosize></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="step === 3" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="ion-margin-start">What is your role in {{selectedMoments[0].matrix_string[0][0]}}?</ion-label>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="joinAs = 'user_list_1'" [ngClass]="{'selected': joinAs === 'user_list_1'}">
+              <ion-card-header>
+                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Learner</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentee</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Participant</ion-card-title>
+              </ion-card-header>
+              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+                <li>Restvo provides you with the resources along the way</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+                <li>A mentee learns from the guidance of a mentor</li>
+                <li>You can invite other mentors and mentors</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+                <li>You can invite one or multiple leaders to lead this group</li>
+                <li>You can invite other participants to join</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3">
+            <ion-card class="category-card" mode="md" (click)="joinAs = 'user_list_3'" [ngClass]="{'selected': joinAs === 'user_list_3'}">
+              <ion-card-header>
+                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Facilitator</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentor</ion-card-title>
+                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Leader</ion-card-title>
+              </ion-card-header>
+              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+                <li>You can guide someone along the journey. Restvo will assist you in the process</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+                <li>A mentor offers support and guidance</li>
+                <li>You can invite other mentors and mentees</li>
+              </ion-card-content>
+              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+                <li>You provide leadership to the group</li>
+                <li>You can invite other leaders and participants to join</li>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar *ngIf="step === 1">
-    <ion-row>
-      <ion-button (click)="selectCategory()" expand="full" shape="round" class="centered" id="next-button">Next</ion-button>
-    </ion-row>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="step === 2 && selectedMoments.length">
+  <ion-toolbar *ngIf="step === 1 && selectedMoments.length">
     <ion-grid class="selected-grid">
       <ion-row>
         <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">
-          <ion-card class="program-card" (click)="openFeature(moment)">
+          <ion-card class="program-card" (click)="openFeature($event, moment)">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
                 <ion-img class="program-photo" [src]="(moment.assets && moment.assets.length && moment.assets[0]) | background: moment._id"></ion-img>
@@ -143,5 +227,11 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-row>
+      <ion-button *ngIf="step < 3" (click)="next()" expand="full" shape="round" class="centered" id="next-button" [disabled]="step === 1 && !selectedMoments.length">Next</ion-button>
+      <ion-button *ngIf="step === 3" (click)="done()" expand="full" shape="round" class="centered" id="done-button">Done</ion-button>
+    </ion-row>
   </ion-toolbar>
 </ion-footer>

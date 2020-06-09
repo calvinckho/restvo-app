@@ -6,8 +6,8 @@
       </ion-button>
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
-    <ion-title>Manage</ion-title>
-    <ion-item lines="none" routerLink="/app/user/profile" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
+    <ion-title>Platform</ion-title>
+    <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -24,7 +24,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="userData && userData.currentCommunityAdminStatus" forceOverscroll="false">
+<ion-content *ngIf="userData && userData.hasPlatformAdminAccess" forceOverscroll="false">
   <ion-grid>
     <ion-row>
       <ion-col size-xs="12" size-sm="12" size-md="3" size-lg="3">

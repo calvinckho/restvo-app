@@ -10,8 +10,6 @@ import {MembersPageModule} from "../members/members.module";
 import {TopicsPageModule} from "../topics/topics.module";
 
 import {AdministratorsPageModule} from "../administrators/administrators.module";
-import {PlanPageModule} from "../plan/plan.module";
-import {BillingPageModule} from "../billing/billing.module";
 import {ManagecommunitiesRoutingModule} from "./managecommunities-routing.module";
 import {CommunitiesPageModule} from "../communities/communities.module";
 import {GroupsPageModule} from "../groups/groups.module";
@@ -29,8 +27,6 @@ import {DevelopmentPageModule} from "../development/development.module";
     TopicsPageModule,
     GroupsPageModule,
     AdministratorsPageModule,
-    PlanPageModule,
-    BillingPageModule,
     CommunitiesPageModule,
     ActivitiesPageModule,
     DevelopmentPageModule

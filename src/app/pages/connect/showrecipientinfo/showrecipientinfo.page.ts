@@ -8,7 +8,6 @@ import { NetworkService } from "../../../services/network-service.service";
 import { Resource } from '../../../services/resource.service';
 import { Moment } from '../../../services/moment.service';
 import { UserData } from "../../../services/user.service";
-import {InvitetoconnectPage} from "../invitetoconnect/invitetoconnect.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
@@ -61,7 +60,7 @@ export class ShowrecipientinfoPage implements OnInit {
     }
 
     ngOnInit() {
-        if (this.userData.currentCommunityAdminStatus){
+        if (this.userData.hasPlatformAdminAccess){
             this.setToggle();
         }
         this.manageMode = this.recipient.wee_user;
@@ -157,7 +156,7 @@ export class ShowrecipientinfoPage implements OnInit {
                     this.userData.refreshMyConversations({action: 'reload chat view'});
                 }
             } else if (conversation.type === 'request') {
-                if (conversation.blockedBy){
+                if (conversation.blockedBy) {
                     if (conversation.blockedBy === this.userData.user._id) {
                         const alert = await this.alertCtrl.create({
                             header: 'User is Blocked',
@@ -211,7 +210,6 @@ export class ShowrecipientinfoPage implements OnInit {
                             this.chatService.refreshTabBadges();
                             this.isConnected = true;
                             this.chatService.openChat({conversationId: newConversationId, author: this.recipient});
-
                         });
                     }}, { text: 'Cancel' }],
                 cssClass: 'level-15'
@@ -245,14 +243,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 serverData.matrix_number = [[state]];
                 const createdMoment: any = await this.momentService.create(serverData); //create feature
                 createdMoment.resource = result[0]; // repopulate resource
-                const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.conversation._id);
-                if (index > -1) {
-                    createdMoment.conversations = [this.chatService.conversations[index]];
-                } else {
-                    let conversationObj = {conversation: this.conversation, type: 'connect'};
-                    createdMoment.conversations.push(conversationObj);
-                }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.conversation._id);
             });
         } catch (err){
             const networkAlert = await this.alertCtrl.create({
@@ -334,7 +325,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 duration: 5000
             });
             await this.loading.present();
-            if (moments[0] && moments[0].type === 'new') { // cloning a sample. copy everything except calendar
+            if (moments[0] && moments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
                 moments[0].calendar = { // reset the calendar
                     title: moments[0].matrix_string[0][0],
                     location: '',
@@ -349,7 +340,7 @@ export class ShowrecipientinfoPage implements OnInit {
                 };
                 const clonedMoments: any = await this.momentService.clone(moments, null);
                 if (clonedMoments && clonedMoments.length) {
-                    clonedMoments[0].type = 'new';
+                    //clonedMoments[0].type = 'new';
                     clonedMoments[0].resource = moments[0].resource; // clone the populated resource
                     this.selectedProgram = clonedMoments[0];
                 }

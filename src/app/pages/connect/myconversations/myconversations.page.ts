@@ -65,7 +65,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 await this.loadMyConversations(true);
             } else if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
                 this.datas.forEach((obj: any) => {
-                    if (data.conversationId === obj.conversation._id){
+                    if (data.conversationId === obj.conversation._id) {
                         obj.data.badge = 0;
                     }
                 });
@@ -195,6 +195,9 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
             });
             await groupPage.present();
+        }
+        if (this.electronService.isElectronApp) { // since electron doesn't detect appStateChange, manually refreshTabBadges at every pushToMessage()
+            this.chatService.refreshTabBadges();
         }
         // reorder the list
         this.searchKeyword = '';

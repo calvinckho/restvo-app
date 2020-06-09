@@ -1,10 +1,4 @@
 app-feature-billing {
-
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
-  }
-
   .field {
     flex: 1;
     padding: 5% 15px;
@@ -15,8 +9,38 @@ app-feature-billing {
     cursor: text;
   }
 
-  table {
-    display: table;
-    overflow-x: scroll;
+  
+  .column-label {
+    text-align: center;
   }
+
+  .column {
+    width: 15%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0;
+  
+  }
+
+  .plan {
+    width: 100%;
+    text-align: center;
+  }
+
+  .small-font {
+    font-size: 11px;
+    color: grey
+  }
+
+
+  .money {
+    text-align: center;
+    width: 18%; 
+  }
+
+  .created {
+    text-align: center;
+    width: 20%;
+  }
+
 }

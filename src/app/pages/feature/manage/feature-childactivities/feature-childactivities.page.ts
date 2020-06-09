@@ -70,16 +70,18 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       this.samples = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
   }
 
-  async openChildActivity(moment) {
+  async openChildActivity(event, moment) {
+    event.stopPropagation();
     if (this.modalPage || this.platform.width() < 768) {
-      // for community or program, manage mode
-      if ((moment.categories.map((c) => c._id).includes('5c915324e172e4e64590e346') || moment.categories.map((c) => c._id).includes('5c915475e172e4e64590e348'))) {
-        this.momentService.manageMoment({ moment: moment, modalPage: true });
-      } else { // for relationship and other Activities, open Moment
+      // for journey and relationship, open
+      if ((moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
         this.momentService.openMoment( { moment: moment, modalPage: true });
+      } else { // the rest are manage
+        this.momentService.manageMoment({ moment: moment, modalPage: true });
       }
     } else {
       if (this.router.url.includes('app/manage')) { // if opened from Manage mode
+        this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
       } else { // such case does not exist yet. User should always open from the User -> About Me
         this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
@@ -107,7 +109,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     if (moments && moments.length) {
       // if choosing Plans as child activities
       if (this.categoryId === '5c915476e172e4e64590e349') {
-        // only if schedule is enabled (e.g. relationships)
+        // only if To-Do is enabled (e.g. relationships)
         if (this.moment.resource.matrix_number[0].includes(10210)) {
           await this.momentService.adoptPlan({
             operation: 'adopt plan',
@@ -144,9 +146,13 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     }
   }
 
-  async openActivity(event, activity) {
+  async editContent(event, activity) {
     event.stopPropagation();
-    this.momentService.openMoment({ moment: activity, modalPage: true });
+    if (this.platform.width() < 768) {
+      this.momentService.editMoment({ moment: activity, modalPage: true });
+    } else {
+      this.router.navigate(['/app/edit/' + activity._id]);
+    }
   }
 
   async removeActivity(event, activity) {

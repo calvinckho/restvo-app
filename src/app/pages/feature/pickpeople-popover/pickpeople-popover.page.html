@@ -10,24 +10,6 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
-    <!--<ion-card class="card-description" *ngIf="hasOrganizerAccess" >
-      <ion-card-content *ngIf="invitationType === 'user_list_1'">
-        <ion-card-title class="ion-text-wrap ion-margin-bottom">{{participantLabel}}'s Privileges</ion-card-title>
-        <li>Access {{participantLabel}}'s Onboarding Process</li>
-        <li>Update {{participantLabel}}'s Profile</li>
-      </ion-card-content>
-      <ion-card-content *ngIf="invitationType === 'user_list_3'">
-        <ion-card-title class="ion-text-wrap ion-margin-bottom">{{leaderLabel}}'s Privileges</ion-card-title>
-        <li>Access {{leaderLabel}}'s Onboarding Process</li>
-        <li>Update {{leaderLabel}}'s Profile</li>
-      </ion-card-content>
-      <ion-card-content *ngIf="invitationType === 'user_list_2'">
-        <ion-card-title class="ion-text-wrap ion-margin-bottom">{{organizerLabel}}'s Privileges</ion-card-title>
-        <li>Invite {{leadersLabel}} and {{organizersLabel}}</li>
-        <li>Modify Onboarding Processes</li>
-        <li>Edit and Delete {{moment.resource['en-US'].value[0]}}</li>
-      </ion-card-content>
-    </ion-card>-->
     <ion-searchbar #searchbar [(ngModel)]="searchKeyword" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" [placeholder]="action" debounce="500"></ion-searchbar>
     <!--Add Friends-->
     <div class="selected-buttons">
@@ -39,7 +21,7 @@
 <ion-content>
   <ion-list>
     <ion-list-header *ngIf="hasOrganizerAccess">Friends</ion-list-header>
-    <ion-item (click)="selectFriend(this.selfConversationObj)" *ngIf="selfConversationObj && includeSelf">
+    <ion-item (click)="selectFriend(this.selfConversationObj)" *ngIf="selfConversationObj && includeSelf && (userData.user.first_name + ' ' + userData.user.last_name).toLowerCase().includes(searchKeyword.toLowerCase())">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>

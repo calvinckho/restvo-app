@@ -53,6 +53,33 @@ const routes: Routes = [
                 ]
             },
             {
+                path: 'groups',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                    },
+                ]
+            },
+            {
+                path: 'journey',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                    },
+                ]
+            },
+            {
+                path: 'mentoring',
+                children: [
+                    {
+                        path: ':id',
+                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
+                    },
+                ]
+            },
+            {
                 path: 'plans',
                 children: [
                     {

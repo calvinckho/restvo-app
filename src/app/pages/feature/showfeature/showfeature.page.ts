@@ -4,7 +4,7 @@ import {Storage} from "@ionic/storage";
 import { ElectronService } from 'ngx-electron';
 import {Router, ActivatedRoute} from "@angular/router";
 import {CacheService} from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import {SwUpdate} from "@angular/service-worker";
 import {get} from "scriptjs";
 import {
@@ -55,7 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
-    subscriptions: any = {};
+  subscriptions: any = {};
   mode = 'list';
   slideOpts = {
       updateOnWindowResize: true,
@@ -63,14 +63,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   };
   loading: any;
   resource: any = {};
-  categories = [];
-  eventName: string = '';
-  description: string = '';
+  description = '';
   setupPermissionCompleted = false;
-  loadCompleted = false;
+  loadStatus: any;
   anyChangeMade = false;
+  currentSaveState = '';
   hasAddedToCalendar = false;
-  hasAddedToAttendEventList = false;
+  hasParticipantAccess = false;
   hasOrganizerAccess = false;
   hasLeaderAccess = false;
   mapURL = '';
@@ -105,7 +104,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     // 10210 Schedule
     scheduleIds: any = [];
     customSchedule: any;
-    adminAccessContentCalendars = [];
+    toDosPrivate = false;
+    adminOrPublicAccessContentCalendars = [];
     newCalendarItem = { // create the calendar object
         moment: '5e3e5743364afa55e52ce785', // the default is the To Do content moment ID
         schedule: '',
@@ -125,7 +125,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     progressView = '';
 
   // 10500 Manage Participants
-  participantsView = 'partcipants';
+  participantsView = 'participants';
 
   // 12000 Notes
     notes: any = [];
@@ -233,7 +233,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.calendarId = this.calendarId || this.route.snapshot.paramMap.get('calendarId');
       const result: any = await this.resourceService.loadSystemResources();
       this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
-      this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
+      //this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
 
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
@@ -241,12 +241,29 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.processVerificationToken();
   }
 
-  // for current user refreshing the app
+    /** load and process Moment Handler
+     *
+     * @param data - data being passed by the refreshUser observable
+     *
+     * @example OnInit, when the component is intiated, this will get fired
+     * @example PWA fast load, this function gets called 2 times. The first time was when user is not yet authenticated
+     * the second time, the user is authenticated, and it sends a userRefresh observable signal and activate this handler
+     * @example On normal user fresh broadcast
+     */
+
   loadAndProcessMomentHandler = async (data) => {
-      console.log("loadAndProcessMomentHandler");
-      if (this.calendarId) {
-          await this.loadCalendarItem();
+      console.log("refresh user handler", data, this.mediaList);
+      // if there are players loaded and one of them is playing or is being paused
+      if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
+          // do nothing
+      } else { // otherwise refresh
+          this.setup(data);
       }
+  }
+
+  async setup(data) {
+      this.loadStatus = 'loading';
+      await this.loadCalendarItem();
       if (this.moment._id) { // if called by modalCtrl.create()
           await this.loadMoment();
       } else { // if called by router outlet
@@ -267,7 +284,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.loadPrograms();
 
       // if user has not joined, or if token is provided
-      if ((this.authService.token && !this.token && !this.hasAddedToAttendEventList && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
+      if ((this.authService.token && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
           this.showSpecialAccess = true;
       } else {
@@ -276,15 +293,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (data && data.type === 'search map') {
           this.searchMap();
       }
-  };
+  }
 
   // for refreshing moment either because of real-time interactables, or for refreshing participation
   refreshMomentHandler = async (res) => {
       if (res && res.momentId && res.data) {
           const momentId = res.momentId;
           const data = res.data;
+          if (momentId === this.moment._id && data.operation === 'deleted moment') {
+              this.closeModal();
           // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
-          if (momentId === this.relationshipId) {
+          } else if (momentId === this.relationshipId) {
               if (data.calendarId) {
                   // keep the parentRelationshipResponseObj fresh
                   const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
@@ -361,11 +380,18 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   // 3. to momentId - relationshipId room, but also include a calendarId tag. use case is for a specific Content that is being repeated by a schedule, and the response is different for each Content calendar item.
                   // { delta: Delta object }, interactableId: Number, author: { _id: String }, collaborate: Boolean }
               } else if (data.type === 'refresh calendar items') {
-                  await this.calendarService.getUserCalendar();
-                  this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
-                  if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
-                      this.adminAccessContentCalendars = results || [];
+                  // load content calendars from backend.
+                  // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
+                  // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                  if (this.hasOrganizerAccess) {
+                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
+                      this.adminOrPublicAccessContentCalendars = results || [];
+                  } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                      this.adminOrPublicAccessContentCalendars = results || [];
+                  } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                      await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                      this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                   }
                   this.refreshCalendarDisplay();
                   this.checkAndLoadNotes();
@@ -377,32 +403,34 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                   }
               } else if (data.calendarId) {
-                  // update user's calendar items array
-                  for (const calendarItem of this.calendarService.calendarItems) {
-                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                          if (data.state) {
-                              calendarItem.completed = data.state;
-                          } else if (data.goals) {
-                              calendarItem.goals = data.goals;
+                  if (!this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id)) {
+                      // update user's calendar items array
+                      for (const calendarItem of this.calendarService.calendarItems) {
+                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                              if (data.state) {
+                                  calendarItem.completed = data.state;
+                              } else if (data.goals) {
+                                  calendarItem.goals = data.goals;
+                              }
                           }
                       }
-                  }
-                  // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                  for (const calendarItem of this.adminAccessContentCalendars) {
-                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                          if (data.hasOwnProperty('state')) {
-                              calendarItem.completed = data.state;
-                          } else if (data.goals) {
-                              calendarItem.goals = data.goals;
+                      // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
+                      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                              if (data.hasOwnProperty('state')) {
+                                  calendarItem.completed = data.state;
+                              } else if (data.goals) {
+                                  calendarItem.goals = data.goals;
+                              }
                           }
                       }
-                  }
-                  // keep the responseObj fresh
-                  let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
-                  if (index >= 0) {
-                      this.responseObj.matrix_string.splice(index, 1, data.interactable);
-                  } else {
-                      this.responseObj.matrix_string.push(data.interactable);
+                      // keep the responseObj fresh
+                      let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                      if (index >= 0) {
+                          this.responseObj.matrix_string.splice(index, 1, data.interactable);
+                      } else {
+                          this.responseObj.matrix_string.push(data.interactable);
+                      }
                   }
               } else if (data.goal) {
                   if (data.action === 'delete') {
@@ -441,16 +469,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   };
 
   async loadCalendarItem() {
-      if (this.authService.token && this.calendarId) {
+      if (this.authService.token && this.calendarId && this.relationshipId) {
           this.calendarItem = await this.momentService.touchContentCalendarItems(null, {operation: 'load calendar item', calendarId: this.calendarId});
           if (this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) { // if calendar context is provided and if it is an unique answer per calendar, also assign it to the responseObj property
               this.responseObj.calendar = this.calendarId;
           }
+          // prepare to respond to the parent relationship (i.e. Choose whether the Content Calendar belongs to a Goal, which requires submitting the parentRelationshipResponseObj via submitResponse API
           const results: any = await this.responseService.findResponsesByMomentId(this.relationshipId, null, null);
           if (results && results.responses && results.responses.length) {
+              // parentRelationshipResponseObj can only be correctly populated if there is at least 1 response returned
               this.parentRelationshipResponseObj = JSON.parse(JSON.stringify(results.responses[results.responses.length - 1]));
               delete this.parentRelationshipResponseObj._id; // the latest response id is erased, since it may be saved as a new doc
-              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals and not master goals
+              // parentRelationshipListOfGoals needs to have at least a length of 1 (at least 1 goal) in order to parentRelationshipResponseObj to be sent to the backend
+              this.parentRelationshipListOfGoals = results.responses[results.responses.length - 1].matrix_string.filter((c) => c[1] === 'goal'); // goals only. not master goals
               const parentRelationshipInteractable = results.responses[results.responses.length - 1].matrix_string.find((c) => c[0] === this.calendarId);
               if (parentRelationshipInteractable) {
                   this.parentRelationshipGoalAttributes = parentRelationshipInteractable.slice(10);
@@ -462,7 +493,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   refreshCalendarDisplay() {
       // calendarService.calendarItems display has already been refreshed
       // refresh the admin accessed calendars if it has any element (if one has admin access)
-      for (const calendarItem of this.adminAccessContentCalendars) {
+      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
           // check to see if there are upcoming events
           if (new Date(calendarItem.startDate).getTime() < new Date().getTime() - 2 * 24 * 60 * 60 * 1000) {
               calendarItem.status = 'Past';
@@ -474,44 +505,51 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           calendarItem.completed = false;
       }
       for (const response of this.responses) {
-          for (const interactable of response.matrix_string) { // process the interactable and schedule responses
-              // regular user calendar items list
-              for (const calendarItem of this.calendarService.calendarItems) {
-                  if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                      calendarItem.completed = interactable[5]; // check-in state
+          if (!this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id))  {
+              for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+                  // regular user calendar items list
+                  for (const calendarItem of this.calendarService.calendarItems) {
+                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                          calendarItem.completed = interactable[5]; // check-in state
+                      }
+                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                      }
                   }
-                  if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                  // super admin's calendar items list
+                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                          calendarItem.completed = interactable[5]; // check-in state
+                      }
+                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                      }
                   }
-              }
-              // super admin's calendar items list
-              for (const calendarItem of this.adminAccessContentCalendars) {
-                  if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                      calendarItem.completed = interactable[5]; // check-in state
+                  // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+                  const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+                  if (index >= 0) {
+                      this.responseObj.matrix_string.splice(index, 1, interactable);
+                  } else {
+                      this.responseObj.matrix_string.push(interactable);
                   }
-                  if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                  }
-              }
-              // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
-              const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
-              if (index >= 0) {
-                  this.responseObj.matrix_string.splice(index, 1, interactable);
-              } else {
-                  this.responseObj.matrix_string.push(interactable);
               }
           }
       }
   }
 
   async loadMoment() {
-    if (this.authService.token) {
-      this.moment = await this.momentService.load(this.moment._id);
-    } else {
-      this.moment = await this.momentService.loadPublicMoment(this.moment._id);
-    }
+      try {
+          this.moment = await this.momentService.load(this.moment._id);
+          console.log('loaded moment', this.moment)
+      } catch (err) {
+          // if the Activity is deleted and it is trying to refresh the page
+          if (this.authService.token) {
+              this.router.navigate(['/app/me']);
+          } else {
+              this.router.navigate(['/activity/5d5785b462489003817fee18']);
+          }
+      }
     if (this.moment) {
-        console.log("loaded moment", this.moment);
         if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
             this.mapURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
             this.addressURL = "http://maps.google.com/?q=" + this.moment.location.geo.coordinates[1] + "+%2C" + this.moment.location.geo.coordinates[0];
@@ -543,23 +581,30 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
-            // if Schedule is turned on
+            // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
+                const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
+                this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
                 const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
-                this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
-                this.scheduleIds = schedules.map((c) => c._id);
-                if (!this.hasOrganizerAccess) { // adminAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
-                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                if (schedules) {
+                    this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
+                    this.scheduleIds = schedules.map((c) => c._id);
                 }
-                this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                // load content calendars from backend.
+                // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
+                // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                if (this.hasOrganizerAccess) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                    this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                }
                 if (this.authService.token && this.userData.user) {
                     await this.setupPermission(); // TODO: investigate if this is required
-                }
-                if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                    if (this.hasOrganizerAccess) { // only if it has Organizer Access do we load all content calendars from backend. this is for the event when a Community/Program super admin needs to access the calendar contents
-                        const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id);
-                        this.adminAccessContentCalendars = results || [];
-                    }
                 }
                 this.refreshCalendarDisplay();
             }
@@ -601,7 +646,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
                         this.interactableDisplay[interactableId] = { editor: null };
                         // first determine if it is collaborative or private
-                        const isCollaborative = this.moment.matrix_number[componentIndex].length > 1 && this.moment.matrix_number[componentIndex][1];
+                        const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
                         // if collaborative, find the latest Response
                         let latestResponse: any;
@@ -660,7 +705,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
                             this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
                         }
-                        console.log("list of dis", this.listOfDisplayGoals)
+                        if (!this.listOfDisplayGoals.length) {
+                            this.progressView = 'Current';
+                        }
                     }
                 }
                 // set up map display
@@ -672,7 +719,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     });
                 }
             });
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
 
             // set up for matching users
             if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
@@ -692,7 +739,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         } else {
-            this.loadCompleted = true;
+            this.loadStatus = 'completed';
         }
     }
   }
@@ -725,7 +772,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
         this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
-      this.hasAddedToAttendEventList = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
+      this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
       // if Activity's organizer
         if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
           this.hasOrganizerAccess = true;
@@ -1025,12 +1072,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         if (!updatedExistingResponse) { // add a new entry to array
           this.responseObj.matrix_number.push([interactableId, null, null, null, null, interactableOption]);
         }
-        let response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
+        const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
         const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list
-          this.responses.push(response);
+            this.responses.push(response);
         } else { // if it has been added, replace with the incoming one
-          this.responses.splice(index, 1, response);
+            this.responses.splice(index, 1, response);
         }
         // reset MC selection
         if (this.moment.resource.matrix_number[0][componentIndex] === 40020) {
@@ -1085,7 +1132,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
             // update the super admin calendar items list (ad hoc) before the async operation
-            for (const calendarItem of this.adminAccessContentCalendars) {
+            for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
                 if (calendarItem._id === selectedCalendarItem._id) { // interactable[0] is a String
                     calendarItem.completed = newState;
                 }
@@ -1124,12 +1171,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async createQuillEditor(event, interactableDisplay) {
         interactableDisplay.editor = event;
         interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
-        console.log("display", interactableDisplay);
     }
 
     async checkAndLoadNotes() {
         // if there is the tab component
-        if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
+        if (this.moment && this.moment.resource && this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
             // if note is being selected in current Tab
             const index = this.moment.resource.matrix_number[0].indexOf(12000);
             if (index >= 0 && this.moment.resource.matrix_number[3][index] === this.tabSelection) {
@@ -1158,6 +1204,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async respondToTextArea(event, componentIndex) {
         this.anyChangeMade = true;
+        // Showing the user that the content is saving
+        this.currentSaveState = 'Saving...';
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1185,9 +1233,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
 
         for (const interactable of this.responseObj.matrix_string) {
-            if (interactable[0] === interactableId.toString() && this.interactableDisplay[interactableId].editor) { // InteractableId is in Number
+            if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(this.interactableDisplay[interactableId].editor.getContents());//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -1200,16 +1248,26 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.timeoutHandle = setTimeout(async () => {
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
-            const index = this.responses.map((c) => c._id).indexOf(response._id);
-            if (index < 0) { // if the response hasn't been added to the response list
-                this.responses.push(response);
-            } else { // if it has been added, replace with the incoming one
-                this.responses.splice(index, 1, response);
+            if (response) {
+                const index = this.responses.map((c) => c._id).indexOf(response._id);
+                if (index < 0) { // if the response hasn't been added to the response list
+                    this.responses.push(response);
+                } else { // if it has been added, replace with the incoming one
+                    this.responses.splice(index, 1, response);
+                }
+                if (this.moment.program) {
+                    this.userData.refreshUserStatus({});
+                }
+                // Showing the user that the content has been saved at the end of the timeout
+                this.currentSaveState = 'Saved';
+
+                setTimeout(() => {
+                    this.currentSaveState = '';
+                }, 3000);
+            } else {
+                this.currentSaveState = 'Failed';
             }
-            if (this.moment.program) {
-                this.userData.refreshUserStatus({});
-            }
-        }, 3000);
+        }, 1500);
     }
 
   async changeView(event) {
@@ -1229,7 +1287,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipePeopleSlide() {
-    if (this.peopleSlides) {
+    if (this.peopleSlides && this.loadStatus !== 'loading') {
       const currentSlideIndex = await this.peopleSlides.getActiveIndex();
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePeople(null);
@@ -1238,17 +1296,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async loadPeople() {
-    setTimeout(() => {
-      if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
-        this.infiniteScroll.disabled = false;
-      }
-      this.reachedEnd = false;
-      this.matchedPeople = [];
-      this.pageNum = 0;
-      if (this.moment._id) {
-          this.loadMorePeople({target: this.infiniteScroll});
-      }
-    }, 50);
+    if (this.loadStatus !== 'loading') {
+        setTimeout(() => {
+            if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
+                this.infiniteScroll.disabled = false;
+            }
+            this.reachedEnd = false;
+            this.matchedPeople = [];
+            this.pageNum = 0;
+            if (this.moment._id) {
+                this.loadMorePeople({target: this.infiniteScroll});
+            }
+        }, 50);
+    }
   }
 
   async loadMorePeople(event) {
@@ -1259,7 +1319,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.loadAPIBusy = false;
       }, 10000);
       const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', this.searchKeyword, this.pageNum);
-      console.log("matching", results);
+      console.log("matched", results);
       this.loadAPIBusy = false;
       this.ionSpinner = false;
       if (!results.length) {
@@ -1269,7 +1329,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         for (const result of results) {
           this.matchedPeople.push(result);
         }
-        console.log("matched", this.matchedPeople);
       }
     }
   }
@@ -1384,7 +1443,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async moreParticipantOptions() {
       let actionSheet: any;
       let buttons = [];
-      if (!this.hasAddedToAttendEventList) {
+      if (!this.hasParticipantAccess) {
         buttons.push({
           text: this.resource['en-US'].value[15], // Join X
           icon: 'log-in',
@@ -1421,7 +1480,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }]);
       }
       // if a participant or an organizer, and if participant chat is turned on
-      if ((this.hasAddedToAttendEventList || this.hasLeaderAccess || this.hasOrganizerAccess) && this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 5 && this.moment.array_boolean[5]) {
+      if ((this.hasParticipantAccess || this.hasLeaderAccess || this.hasOrganizerAccess) && this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 5 && this.moment.array_boolean[5]) {
           buttons.push({
               text: this.resource['en-US'].value[41], // View Chat
               icon: 'chatbubbles',
@@ -1506,7 +1565,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
                             this.expandedPrivilegesView = false;
-                            this.cloneMoment();
+                            this.momentService.cloneMoment(this.moment);
                         });
                     }
                 }]);
@@ -1660,32 +1719,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         await actionSheet.present();
-    }
-
-    async cloneMoment() {
-        const momentToBeCloned = JSON.parse(JSON.stringify(this.moment));
-        momentToBeCloned.calendar = { // reset the calendar
-            title: momentToBeCloned.matrix_string[0][0],
-            location: '',
-            notes: '',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
-            options: {
-                firstReminderMinutes: 0,
-                secondReminderMinutes: 0,
-                reminders: []
-            }
-        };
-        const clonedMoments: any = await this.momentService.clone([momentToBeCloned], 'staff');
-        if (clonedMoments && clonedMoments.length) {
-            const networkAlert = await this.alertCtrl.create({
-                header: 'Success',
-                message: 'You have successfully cloned ' + clonedMoments[0].matrix_string[0][0] + '. It will be available in the Manage Activities page in a moment.',
-                buttons: ['Dismiss'],
-                cssClass: 'level-15'
-            });
-            await networkAlert.present();
-        }
     }
 
     initPlyr(event, mediaId) {
@@ -2033,10 +2066,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         //this.progressView = 'Current';
     }
 
-    // Content Calendar Item
+    // saving the Content Calendar Item
     async saveCalendarItem() {
       this.calendarItem.endDate = this.calendarItem.startDate; // update the endDate as well
-      if (this.moment._id !== this.responseObj.moment) { // in the event that the this.moment._id has been changed to another object id
+      if (this.moment._id !== this.responseObj.moment) { // in the event that the this.moment._id has been changed to another object id TODO: find out what this scenario is. (e.g. deleting a To-Do would convert the To-Do to Note?)
           // create a new Content Calendar
           this.calendarItem.moment = this.moment._id;
           const calendarItem: any = await this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'create calendar item', calendaritem: this.calendarItem });
@@ -2049,45 +2082,46 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
           this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'delete calendar items', calendaritems: [this.calendarItem] });
       } else { // for all other Content Calendar item save
-          // just updating the calendar
+            // just updating the calendar
           await this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'update calendar item', calendaritem: this.calendarItem });
           // update the parent Relationship's Goal response entry
-          const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(this.calendarId);
-          if (index >= 0) {
-              this.parentRelationshipResponseObj.matrix_string[index].splice(10, this.parentRelationshipResponseObj.matrix_string[index].length - 10);
-              this.parentRelationshipResponseObj.matrix_string[index].push(...this.parentRelationshipGoalAttributes);
-          } else {
-              let interactableObj = new Array(10);
-              interactableObj[0] = this.calendarId;
-              if (this.parentRelationshipGoalAttributes) {
-                  interactableObj.push(...this.parentRelationshipGoalAttributes);
+          if (this.parentRelationshipListOfGoals && this.parentRelationshipListOfGoals.length) {
+              const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(this.calendarId);
+              if (index >= 0) {
+                  this.parentRelationshipResponseObj.matrix_string[index].splice(10, this.parentRelationshipResponseObj.matrix_string[index].length - 10);
+                  this.parentRelationshipResponseObj.matrix_string[index].push(...this.parentRelationshipGoalAttributes);
+              } else {
+                  let interactableObj = new Array(10);
+                  interactableObj[0] = this.calendarId;
+                  if (this.parentRelationshipGoalAttributes) {
+                      interactableObj.push(...this.parentRelationshipGoalAttributes);
+                  }
+                  this.parentRelationshipResponseObj.matrix_string.push(interactableObj);
               }
-              this.parentRelationshipResponseObj.matrix_string.push(interactableObj);
+              // save the Goal attributes via Response
+              await this.momentService.submitResponse({ _id: this.relationshipId }, this.parentRelationshipResponseObj, false);
+              let socketData: any;
+              socketData = {
+                  calendarId: this.calendarId,
+                  interactable: this.parentRelationshipResponseObj.matrix_string.find((c) => c[0] === this.calendarId),
+                  goals: this.parentRelationshipGoalAttributes,
+                  author: {
+                      _id: this.userData.user._id,
+                      first_name: this.userData.user.first_name,
+                      last_name: this.userData.user.last_name,
+                      avatar: this.userData.user.avatar
+                  }
+              };
+              // signal parent relationship to update data via socket.io
+              this.momentService.socket.emit('refresh moment', this.relationshipId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
           }
-          // save the Goal attributes via Response
-          await this.momentService.submitResponse({ _id: this.relationshipId }, this.parentRelationshipResponseObj, false);
-          let socketData: any;
-          socketData = {
-              calendarId: this.calendarId,
-              interactable: this.parentRelationshipResponseObj.matrix_string.find((c) => c[0] === this.calendarId),
-              goals: this.parentRelationshipGoalAttributes,
-              author: {
-                  _id: this.userData.user._id,
-                  first_name: this.userData.user.first_name,
-                  last_name: this.userData.user.last_name,
-                  avatar: this.userData.user.avatar
-              }
-          };
-          // signal parent relationship to update data via socket.io
-          this.momentService.socket.emit('refresh moment', this.relationshipId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-
       }
         this.closeModal();
     }
 
     changeCalendarItemSelectedDate(inputDate) {
         if (inputDate === ' ') return;
-        this.calendarService.calendar.selectedDate = inputDate;
+        this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarItem.startDate = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate(), new Date(this.calendarItem.startDate).getHours(), new Date(this.calendarItem.startDate).getMinutes()).toISOString();
         this.anyChangeMade = true;
     }
@@ -2231,7 +2265,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
+    if (this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 }

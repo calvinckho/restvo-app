@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { PickfeaturePopoverPage } from './pickfeature-popover.page';
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
+import {AutosizeModule} from "ngx-autosize";
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    AutosizeModule,
     ApplicationPipesModule,
     RouterModule.forChild(routes)
   ],

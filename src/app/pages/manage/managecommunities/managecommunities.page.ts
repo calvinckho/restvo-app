@@ -21,8 +21,6 @@ import {MembersPage} from "../members/members.page";
 import {TopicsPage} from "../topics/topics.page";
 import {GroupsPage} from "../groups/groups.page";
 import {AdministratorsPage} from "../administrators/administrators.page";
-import {PlanPage} from "../plan/plan.page";
-import {BillingPage} from "../billing/billing.page";
 import {CommunitiesPage} from "../communities/communities.page";
 import {PaymentService} from "../../../services/payment.service";
 import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
@@ -74,16 +72,6 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
             component: AdministratorsPage,
         },
         {
-            url: 'plan',
-            label: 'Plan',
-            component: PlanPage,
-        },
-        {
-            url: 'billing',
-            label: 'Billing',
-            component: BillingPage,
-        },
-        {
             url: 'platforms',
             label: 'Platforms',
             component: CommunitiesPage,
@@ -110,7 +98,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
                 private actionSheetCtrl: ActionSheetController) {}
 
     async ngOnInit() {
-        if (this.userData && this.userData.currentCommunityAdminStatus) {
+        if (this.userData && this.userData.hasPlatformAdminAccess) {
             this.setupManagePage();
             this.title = this.userData.user.churches[this.userData.currentCommunityIndex].name;
         }

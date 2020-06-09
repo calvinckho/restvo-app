@@ -3,7 +3,7 @@ import { CacheService } from 'ionic-cache';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     IonContent,
@@ -39,7 +39,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     @Input() boardId: any;
     @Input() isGroupLeader: boolean;
-    @Input() hasAdminAccess: boolean;
+    @Input() hasPlatformAdminAccess: boolean;
     @Input() post: any;
     resource = { "en-US": { matrix_string: [[''], [''], [''], ['']] }};
     moment: any;
@@ -86,7 +86,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
           });
           await networkAlert.present();
       });
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
   }
 
@@ -308,7 +308,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     async pickFeatureModalPage(event, typeOfMoment){
         try{
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library'}});
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {
@@ -630,7 +630,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
         event.stopPropagation();
         let buttons = [];
         if (this.post.status !== 'suspended') {
-            if (this.post.status === 'review' && (this.hasAdminAccess || this.isGroupLeader) && this.post.author._id !== this.userData.user._id){
+            if (this.post.status === 'review' && (this.hasPlatformAdminAccess || this.isGroupLeader) && this.post.author._id !== this.userData.user._id){
                 buttons.unshift({
                     text: 'Remove Abuse Report',
                     handler: () => {
@@ -646,7 +646,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
                 });
             }
         }
-        if (this.hasAdminAccess || this.isGroupLeader || this.post.author._id === this.userData.user._id) {
+        if (this.hasPlatformAdminAccess || this.isGroupLeader || this.post.author._id === this.userData.user._id) {
             buttons.unshift({
                 text: 'Delete Post',
                 handler: () => {
@@ -702,7 +702,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }
 }

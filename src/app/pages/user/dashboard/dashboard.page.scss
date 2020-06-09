@@ -13,11 +13,6 @@ app-dashboard {
     }
   }
 
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
-  }
-
 /*  ion-list-header, ion-item, ion-card {
     background: transparent !important;
   }*/
@@ -529,6 +524,7 @@ app-dashboard {
   .section {
     --min-height: 26px;
     --background: transparent;
+    --inner-padding-end: 0;
 
     .section-label {
       font-size: 15px;

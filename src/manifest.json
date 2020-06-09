@@ -1,7 +1,8 @@
 {
-  "name": "app",
-  "short_name": "app",
-  "theme_color": "#1976d2",
+  "name": "Restvo",
+  "short_name": "Restvo",
+  "description": "Restvo is designed for spiritual communities that wanted to build their own repository of processes, people, and tools to foster spiritual growth in their leaders and members.",
+  "theme_color": "#E2666A",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/",

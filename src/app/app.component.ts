@@ -7,7 +7,7 @@ import {StripeService} from "ngx-stripe";
 //import {OAuth2Client} from '@byteowls/capacitor-oauth2';
 
 import {
-    ActionSheetController,
+    ActionSheetController, LoadingController,
     MenuController,
     ModalController,
     Platform,
@@ -17,6 +17,9 @@ import { UserData } from './services/user.service';
 import {Chat} from "./services/chat.service";
 import {ShowrecipientinfoPage} from "./pages/connect/showrecipientinfo/showrecipientinfo.page";
 import {Capacitor, Plugins} from "@capacitor/core";
+import {PickfeaturePopoverPage} from "./pages/feature/pickfeature-popover/pickfeature-popover.page";
+import {Moment} from "./services/moment.service";
+import {ProgramsPage} from "./pages/user/programs/programs.page";
 const { App } = Plugins;
 
 @Component({
@@ -27,6 +30,9 @@ const { App } = Plugins;
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+    selectedProgram: any;
+    loading: any;
+
     constructor(
         private router: Router,
         private storage: Storage,
@@ -35,8 +41,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         private actionSheetCtrl: ActionSheetController,
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
+        private loadingCtrl: LoadingController,
         public platform: Platform,
         public networkService: NetworkService,
+        private momentService: Moment,
         public userData: UserData,
         public chatService: Chat
   ) {}
@@ -111,18 +119,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.menuCtrl.close();
     }
 
-    async toggleAdminMode() {
-        if (!this.userData.UIready) return;
-        await this.storage.set('UIAdminMode', this.userData.UIAdminMode);
-        if (this.userData.UIAdminMode) {
-            this.userData.openUserPrograms({ modalPage: this.platform.width() < 768 });
-            this.menuCtrl.close();
+    async openSelectHomePage() {
+        if (this.platform.width() >= 768) {
+            this.router.navigate(['/app/user/programs']);
         } else {
-            if (this.userData.defaultProgram) {
-                this.router.navigateByUrl('/app/discover/home/' + this.userData.defaultProgram._id);
-            } else {
-                this.router.navigateByUrl('/app/discover');
-            }
+            this.menuCtrl.close();
+            const modal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
+            await modal.present();
         }
     }
 

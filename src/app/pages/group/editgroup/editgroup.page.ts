@@ -204,7 +204,7 @@ export class EditgroupPage implements AfterViewInit {
             } else if (this.group.board) {
                 this.boardService.socket.emit('refresh board', this.group.board, {action: 'refresh board'}); // refresh the news feed page
                 this.userData.communitiesboards = await this.boardService.loadUserChurchBoards(); //in case of a board group
-                this.userData.refreshUserStatus({ type: 'refresh community board page' }); // refresh News Feed page
+                this.userData.refreshBoards({ type: 'refresh community board page' }); // refresh News Feed page
             }
             /*const alert = await this.alertCtrl.create({
                 header: 'Success',

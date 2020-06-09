@@ -347,9 +347,9 @@ export class Chat {
                     });
                 }
             });
-            churches.forEach((church)=>{
+            churches.forEach((church) => {
                 this.userData.user.churches.forEach((userChurch) => {
-                    if (userChurch._id === church._id){
+                    if (userChurch._id === church._id) {
                         userChurch.badge = church.badge;
                     }
                 });
@@ -369,7 +369,6 @@ export class Chat {
         return this.http.get<any>(this.networkService.domain + '/api/chat/check/' + recipientId + (returnRecipientData ? '?version=2' : '' + (programId ? '&programId=' + programId : '')), this.authService.httpAuthOptions)
             .toPromise();
     };
-
 
     getConversationById(conversationId, pageNum) {
         return this.http.get<Conversation>(this.networkService.domain + '/api/chat/' + conversationId + '?pageNum=' + pageNum, this.authService.httpAuthOptions)

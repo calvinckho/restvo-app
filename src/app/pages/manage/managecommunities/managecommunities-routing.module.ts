@@ -58,22 +58,6 @@ const routes: Routes = [
                     }
                 ]
             },
-            { path: 'plan',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: '../plan/plan.module#PlanPageModule'
-                    }
-                ]
-             },
-            { path: 'billing',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: '../billing/billing.module#BillingPageModule'
-                    }
-                ]
-             },
             {
                 path: 'platforms',
                 children: [

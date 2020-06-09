@@ -43,6 +43,10 @@ app-showfeature {
     z-index: 15;
   }
 
+  .ql-container.ql-snow {
+    border: none !important;
+  }
+
   .component {
     width: 100%;
   }
@@ -641,8 +645,13 @@ app-showfeature {
     margin-right: 8px;
   }
 
+  .ql-editor {
+    padding-left: 0;
+  }
+
   .ql-editor.ql-blank::before {
     color: var(--ion-color-dark);
+    left: 0;
   }
 
   .ql-container,.ql-editor, .ql-editor.ql-blank, .ql-editor.ql-blank::before, .ql-editor.ql-blank::after {

@@ -39,7 +39,7 @@ export class AdministratorsPage implements OnInit {
         await recipientModal.present();
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
         if (needsToRefresh) {
-            this.userData.refreshUserStatus({type: 'refresh manage pag'});
+            this.userData.refreshUserStatus({type: 'refresh manage page'});
         }
     }
 
@@ -48,7 +48,7 @@ export class AdministratorsPage implements OnInit {
         await recipientModal.present();
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
         if (needsToRefresh) {
-            this.userData.refreshUserStatus({type: 'refresh manage pag'});
+            this.userData.refreshUserStatus({type: 'refresh manage page'});
         }
     }
 

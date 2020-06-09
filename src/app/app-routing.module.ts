@@ -28,11 +28,14 @@ const routes: Routes = [
         loadChildren: () => import('./pages/connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
     },
     {
+        path: 'designsystem',
+        loadChildren: () => import('./pages/manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
+    },
+    {
         path: '**',
         redirectTo:  '/app/discover/home/5d5785b462489003817fee18',
         pathMatch: 'prefix'
     },
-
 ];
 
 @NgModule({

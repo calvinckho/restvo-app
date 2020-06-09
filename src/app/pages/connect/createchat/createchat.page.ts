@@ -34,7 +34,7 @@ export class CreatechatPage implements OnInit {
     group: any;
     totalSelected: number = 0;
     loading: any;
-    ionSpinner: boolean = true;
+    ionSpinner = true;
     page = 1;
     type: string;
     showOptional = false;

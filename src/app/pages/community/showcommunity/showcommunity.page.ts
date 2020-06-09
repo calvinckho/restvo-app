@@ -2,7 +2,7 @@ import {Component, OnInit, Input, ViewEncapsulation, OnDestroy} from '@angular/c
 import { CacheService } from 'ionic-cache';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Churches } from '../../../services/church.service';
 import { UserData } from '../../../services/user.service';
@@ -100,14 +100,14 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
         await this.churchService.editCommunityBoard({action: "create", board: {name: this.newBoardName, church: this.community._id}});
         await this.userData.load();
         this.newBoardName = '';
-        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshBoards({ type: 'refresh community board page' });
         this.loadChurch();
     }
 
     async editBoard(event, board) {
         event.stopPropagation();
         await this.churchService.editCommunityBoard({action: "edit", board: board});
-        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshBoards({ type: 'refresh community board page' });
     }
 
     async deleteBoard(event, board){
@@ -120,7 +120,7 @@ export class ShowcommunityPage implements OnInit, OnDestroy {
                     const navTransition = alert.dismiss();
                     navTransition.then(async () => {
                         await this.churchService.editCommunityBoard({action: "delete", board: board});
-                        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+                        this.userData.refreshBoards({ type: 'refresh community board page' });
                         this.loadChurch();
                     });
                 }},

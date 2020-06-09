@@ -57,7 +57,7 @@ describe('navigate around the maintab', () => {
         await register.fillEmail();
         //await register.fillPhoneNumber();
         await register.fillPassword();
-        await browser.sleep(500); // wait
+        await browser.sleep(1000); // wait
         register.submitLoginForm();
     });
 
@@ -66,11 +66,11 @@ describe('navigate around the maintab', () => {
     });
 
     it('should load the discover page', async () => {
-            await browser.sleep(6000); // wait 1 second
+            await browser.sleep(8000); // wait 1 second
             expect(discover.headerIsPresent()).toBeTruthy();
     });
 
-    /*it('should load the news page', async () => {
+    it('should load the news page', async () => {
         maintab.clickTabButton('#tab-button-news');
         await browser.sleep(2000); // wait
         expect(await app.currentUrl()).toContain('app/news');
@@ -80,7 +80,7 @@ describe('navigate around the maintab', () => {
         maintab.clickTabButton('#tab-button-myconversations');
         await browser.sleep(2000); // wait
         expect(await app.currentUrl()).toContain('app/myconversations');
-    });*/
+    });
 
     it('should load the Me page', async () => {
         maintab.clickTabButton('#tab-button-me');
