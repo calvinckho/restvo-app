@@ -3,21 +3,26 @@
     <ion-buttons slot="start">
       <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-grid>
+    <ion-title>{{title}}</ion-title>
+    <ion-grid *ngIf="title !== 'People'">
       <ion-row>
         <ion-col>
           <!--css is defined in editfeature.page.scss-->
           <div class="title" [ngClass]="{'ios': platform.is('ios')}">
-            {{moment.matrix_string[0][0]}}
+            {{title}}
           </div>
         </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-buttons slot="end">
+      <ion-button (click)="inviteSelect.open($event)">
+        <ion-icon name="person-add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
   <ion-grid style="height: 100%; position: absolute;" *ngIf="momentService.ionSpinner">
     <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-spinner name="dots"></ion-spinner>
@@ -26,13 +31,13 @@
   <div>
     <ion-list>
       <ion-item>
-        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="mergeParticipantsIntoUniqueParticipantList()" (ionCancel)="mergeParticipantsIntoUniqueParticipantList()" placeholder="Search"></ion-searchbar>
-        <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="mergeParticipantsIntoUniqueParticipantList()" placeholder="Role" interface="popover" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px">
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
+        <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="renderUniqueParticipantList()" placeholder="Role" interface="popover" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px" *ngIf="!modalPage">
           <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
         </ion-select>
-        <ion-button slot="end" (click)="inviteSelect.open($event)">Invite</ion-button>
+        <ion-button slot="end" (click)="inviteSelect.open($event)" *ngIf="!modalPage">Invite</ion-button>
         <ion-select #InviteSelect placeholder="Invite" interface="popover" [interfaceOptions]="{header: 'Invite'}" (ionChange)="openPopUpModalAddParticipants($event)" hidden>
           <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
@@ -43,13 +48,15 @@
         <ion-label (click)="sortDisplay('participant')">People<ion-icon [name]="participantAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
         <ion-label (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
       </ion-item>
-      <ion-item *ngFor="let user of uniqueParticipantList; index as j" lines="full">
+      <ion-item *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+        <ion-icon slot="start" color="tertiary" *ngIf="!user.select" name="radio-button-off" (click)="user.select = true"></ion-icon>
+        <ion-icon slot="start" color="tertiary" *ngIf="user.select" name="checkmark-circle" (click)="user.select = false"></ion-icon>
         <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
           <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
         </ion-avatar>
-        <ion-label (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label>
-        <ion-label>{{user.roles.join(" / ")}}</ion-label>
+        <ion-label (click)="seeUserInfo($event, user)" class="ion-text-wrap">{{user.first_name}} {{user.last_name}}</ion-label>
+        <ion-label class="ion-text-wrap">{{user.roles.join(" / ")}}</ion-label>
         <ion-button (click)="pushToMessagePage($event, user)" [disabled]="userData.user._id === user._id">Chat</ion-button>
       </ion-item>
     </ion-list>

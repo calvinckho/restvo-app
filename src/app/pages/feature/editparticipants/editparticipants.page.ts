@@ -41,6 +41,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @ViewChild('RolesSelect', {static: false}) rolesSelect: IonSelect;
   @Input() title = '';
   uniqueParticipantList = [];
+  displayParticipantList = [];
   rolesFilter: any = [];
   // relationshipCompletion: any;
   participantAscending = true;
@@ -105,14 +106,10 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   // in such case, ionViewWillEnter listener is used to detect re-entering a page view and reloading the page
   async ionViewWillEnter() {
     // re-entering edit on Desktop only
-    if (
-      this.userData.user &&
-      this.moment &&
-      this.moment._id &&
-      !this.modalPage
-    ) {
+    if (this.userData.user && this.moment && this.moment._id && !this.modalPage) {
       await this.setup();
-      this.mergeParticipantsIntoUniqueParticipantList();
+      this.prepareParticipantsIntoUniqueParticipantList();
+      this.renderUniqueParticipantList();
     }
   }
 
@@ -120,11 +117,12 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
     if (this.userData.user && !this.initialSetupCompleted) {
       await this.setup();
-      this.mergeParticipantsIntoUniqueParticipantList();
+      this.prepareParticipantsIntoUniqueParticipantList();
+      this.renderUniqueParticipantList();
     }
   };
 
-  mergeParticipantsIntoUniqueParticipantList() {
+  prepareParticipantsIntoUniqueParticipantList() {
     this.uniqueParticipantList = [];
     const user_list_1 = this.moment.user_list_1.slice();
     user_list_1.forEach((user) => {
@@ -145,27 +143,32 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     //If it exists, we only need to concat the roles,
     //Else, we need to push the whole user object into uniqueParticipantList
     user_list_123.forEach(user => {
+      user.select = false;
       // checks each user from the temp array to see if that user exists in the uniqueParticipantList array
       const uniqueParticipant = this.uniqueParticipantList.find((c) => c._id === user._id);
       // if user existed already in uniqueParticipantArray, the "exists" variable will have a length
       if (uniqueParticipant) {
         const existingIndex = this.uniqueParticipantList.indexOf(uniqueParticipant);
         this.uniqueParticipantList[existingIndex].roles.push(user.roles[0]);
-      } else if ((user.first_name + ' ' + user.last_name).toLowerCase().includes(this.searchKeyword.toLowerCase())) {
+      } else {
         this.uniqueParticipantList.push(user);
       }
     });
+  };
+
+  renderUniqueParticipantList() {
+    this.displayParticipantList = this.uniqueParticipantList.filter((c) => (c.first_name + ' ' + c.last_name).toLowerCase().includes(this.searchKeyword.toLowerCase()));
 
     if (this.rolesFilter.length) { // only filter by role if at least one type is selected
-      for (let i = this.uniqueParticipantList.length - 1; i >= 0; i--) {
+      for (let i = this.displayParticipantList.length - 1; i >= 0; i--) {
         let matchRolesFilter = true;
         this.rolesFilter.forEach((role) => {
-          if (!this.uniqueParticipantList[i].roles.includes(role.label)) {
+          if (!this.displayParticipantList[i].roles.includes(role.label)) {
             matchRolesFilter = false;
           }
         });
         if (!matchRolesFilter) { // if it does not match the filter selections, remove from list
-          this.uniqueParticipantList.splice(i, 1);
+          this.displayParticipantList.splice(i, 1);
         }
       }
     }
@@ -210,5 +213,46 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
           }
         });
     }
-}
+  }
+
+  async removeParticipant(event, type, user_index) {
+    event.stopPropagation();
+    if (type === 'participant') {
+      const alert = await this.alertCtrl.create({
+        header: 'Remove Participant',
+        subHeader: 'You are about to remove ' + this.moment.user_list_1[user_index].first_name + ' ' + this.moment.user_list_1[user_index].last_name + ' as a participant. Are you sure you want to proceed?',
+        cssClass: 'level-15',
+        buttons: [{ text: 'Remove',
+          handler: async () => {
+            alert.dismiss();
+            this.removeFromUserLists(['user_list_1'], [this.moment.user_list_1[user_index]._id]);
+          }}, { text: 'Cancel' }]
+      });
+      await alert.present();
+    } else if (type === 'organizer') {
+      const alert = await this.alertCtrl.create({
+        header: 'Remove Organizer',
+        subHeader: 'You are about to remove ' + this.moment.user_list_2[user_index].first_name + ' ' + this.moment.user_list_2[user_index].last_name + ' as a organizer. Are you sure you want to proceed?',
+        cssClass: 'level-15',
+        buttons: [{ text: 'Remove',
+          handler: async () => {
+            alert.dismiss();
+            this.removeFromUserLists(['user_list_2'], [this.moment.user_list_2[user_index]._id]);
+          }}, { text: 'Cancel' }]
+      });
+      await alert.present();
+    } else if (type === 'leader') {
+      const alert = await this.alertCtrl.create({
+        header: 'Remove Leader',
+        subHeader: 'You are about to remove ' + this.moment.user_list_3[user_index].first_name + ' ' + this.moment.user_list_3[user_index].last_name + ' as a leader. Are you sure you want to proceed?',
+        cssClass: 'level-15',
+        buttons: [{ text: 'Remove',
+          handler: async () => {
+            alert.dismiss();
+            this.removeFromUserLists(['user_list_3'], [this.moment.user_list_3[user_index]._id]);
+          }}, { text: 'Cancel' }]
+      });
+      await alert.present();
+    }
+  }
 }
