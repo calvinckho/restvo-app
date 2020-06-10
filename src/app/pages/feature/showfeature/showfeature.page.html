@@ -748,7 +748,7 @@
              </button> 
             </ion-col>
             <ion-col size-lg="11" size-md="10" size-sm="9" size-xs="9">
-              <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.1, grabCursor: true, updateOnWindowResize: true}">
+              <ion-slides class="person-slides" #peopleSlides (ionSlideWillChange)="doCheck()"  (ionSlideDidChange)="swipePeopleSlide()" [options]="{slidesPerView: 1.1, grabCursor: true, updateOnWindowResize: true}">
                 <ion-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
                   <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                     <ion-card-header>
