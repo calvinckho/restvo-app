@@ -43,8 +43,12 @@
     </ion-button>
     <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
     <ion-button>
-      <ion-badge>{{moment.resource['en-US'].value[0]}}</ion-badge>
+      <ion-badge>{{moment.matrix_string[0][0]}}</ion-badge>
     </ion-button>
+    <!--<ion-icon name="chevron-forward"></ion-icon>
+    <ion-button>
+      <ion-badge>{{moment.resource['en-US'].value[0]}}</ion-badge>
+    </ion-button>-->
   </ion-buttons>
   <!--Desktop Menu Items-->
   <ion-toolbar *ngIf="platform.width() >= 768">
