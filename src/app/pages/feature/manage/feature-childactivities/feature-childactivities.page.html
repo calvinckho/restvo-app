@@ -30,19 +30,19 @@
             <div class="program-name dark">Add</div>
           </ion-card>
         </ion-col>
-        <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity($event, sample, 'view')">
+        <ion-col class="ion-align-self-center" *ngFor="let activity of activities; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && activity.array_boolean[1])">
+          <ion-card class="program-card" (click)="openChildActivity($event, activity, 'view')">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
-                <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
+                <ion-img class="program-photo" [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
               </div>
             </ion-card-header>
-            <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
-            <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-            <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openActivity($event, sample)" fill="clear" size="small">
+            <div class="program-type"><ion-badge color="button1">{{activity.resource['en-US'].value[0]}}</ion-badge></div>
+            <div class="program-name light">{{activity.matrix_string[0][0]}}</div>
+            <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, activity, 'manage')" fill="clear" size="small">
               <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
             </ion-button>-->
-            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="removeActivity($event, sample)" fill="clear" size="small" *ngIf="categoryId === '5c915476e172e4e64590e349'">
+            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="removeActivity($event, activity)" fill="clear" size="small" *ngIf="categoryId === '5c915476e172e4e64590e349'">
               <ion-icon name="close" color="primary"></ion-icon>
             </ion-button>
           </ion-card>
@@ -52,23 +52,45 @@
     <ion-list-header *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--Only show for non-Plan child Activities-->
       <ion-label>All {{this.categoryLabel}}</ion-label>
     </ion-list-header>
-    <ion-grid class="program-grid">
-      <ion-row class="program-row">
-        <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && !sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity($event, sample, 'view')">
-            <ion-card-header class="ion-no-padding">
-              <div class="program-photo-container">
-                <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
-              </div>
-            </ion-card-header>
-            <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
-            <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, sample, 'manage')" fill="clear" size="small">
-              <ion-icon name="cog" color="primary"></ion-icon>
-            </ion-button>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+      <div class="select-col"></div>
+      <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+      <div class="type-col column-label" (click)="sortDisplay('type')">Type<ion-icon [name]="typeAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+      <div class="actions-col column-label">Actions</div>
+    </ion-item>
+    <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && !activity.array_boolean[1])">
+      <div class="select-col">
+        <ion-icon color="tertiary" *ngIf="!activity.select" name="radio-button-off" (click)="selectParticipant($event, activity)"></ion-icon>
+        <ion-icon color="tertiary" *ngIf="activity.select" name="checkmark-circle" (click)="unselectParticipant($event, activity)"></ion-icon>
+      </div>
+      <div class="user-col">
+        <ion-avatar class="user-avatar">
+          <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
+        </ion-avatar>
+        <ion-label class="name-label ion-text-center ion-text-wrap">
+          {{activity.matrix_string[0][0]}}
+        </ion-label>
+      </div>
+      <div class="ion-text-wrap type-col column-label">{{activity.resource['en-US'].value[0]}}</div>
+      <!--<ion-button class="action-label" (click)="openChildActivity($event, activity, 'view')" fill="clear"><ion-icon name="open-outline"></ion-icon></ion-button>-->
+      <ion-buttons class="actions-col ion-justify-content-evenly">
+        <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="cog-outline"></ion-icon></ion-button>
+        <ion-button (click)="pushToMessagePage($event, activity)" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
+      </ion-buttons>
+    </ion-item>
+    <!--<ion-item class="ion-align-self-center" *ngFor="let activity of activities; index as i" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && !activity.array_boolean[1])">
+      <ion-card class="program-card" (click)="openChildActivity($event, activity, 'view')">
+        <ion-card-header class="ion-no-padding">
+          <div class="program-photo-container">
+            <ion-img class="program-photo" [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
+          </div>
+        </ion-card-header>
+        <div class="program-type"><ion-badge color="button1">{{activity.resource['en-US'].value[0]}}</ion-badge></div>
+        <div class="program-name light">{{activity.matrix_string[0][0]}}</div>
+        <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, activity, 'manage')" fill="clear" size="small">
+          <ion-icon name="cog" color="primary"></ion-icon>
+        </ion-button>
+      </ion-card>
+    </ion-item>-->
   </ion-list>
 </ion-content>

@@ -78,7 +78,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public resourceService: Resource,
       public modalCtrl: ModalController
   ) {
-    super(route, router, platform, authService, chatService,
+    super(route, router, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl);
   }
 

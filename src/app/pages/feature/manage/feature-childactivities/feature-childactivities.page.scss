@@ -1,5 +1,37 @@
 app-feature-childactivities {
 
+  .column-label {
+    text-align: center;
+  }
+
+  .select-col {
+    width: 15%;
+  }
+
+  .user-col {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 30%;
+  }
+
+  .user-avatar {
+    margin: 0 auto;
+  }
+
+  .name-label {
+    margin: 5px auto 0 auto;
+    color: grey;
+    font-size: 12px;
+  }
+
+  .type-col {
+    width: 30%;
+  }
+
+  .actions-col {
+    width: 25%;
+  }
+
   .program-row {
     max-height: 70%;
     overflow: scroll;

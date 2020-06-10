@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {ModalController, Platform} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
@@ -24,14 +24,18 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   momentId: any;
   categoryLabel = '';
   ionSpinner = false;
-  samples: any;
+  activities: any;
+  selectedActivities = [];
   searchKeyword = '';
   refreshNeeded = false;
+  activityAscending = true;
+  typeAscending = true;
 
   constructor(
       public route: ActivatedRoute,
       public router: Router,
       public platform: Platform,
+      public alertCtrl: AlertController,
       public authService: Auth,
       public chatService: Chat,
       public userData: UserData,
@@ -67,7 +71,8 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   // load Program child activities
   async loadChildActivities() {
-      this.samples = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
+      this.activities = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
+      this.activities.map((c) => c.select = false);
   }
 
   async openChildActivity(event, moment, viewType) {
@@ -141,7 +146,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
             clonedMoment.resource = moments[index].resource; // clone the populated resource
           }
         }
-        this.samples.unshift(...clonedMoments);
+        this.activities.unshift(...clonedMoments);
       }
     }
   }
@@ -189,6 +194,73 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       });
       await groupPage.present();
     }
+  }
+
+  sortDisplay(type) {
+    if (type === 'participant') {
+      this.activityAscending = !this.activityAscending;
+      const reverseOrder = this.activityAscending;
+      this.activities.sort(function(a, b) {
+        if (a.first_name < b.first_name) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.first_name > b.first_name) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    } else if (type === 'role') {
+      this.typeAscending = !this.typeAscending;
+      const reverseOrder = this.typeAscending;
+      this.activities.sort(function(a, b) {
+        if (a.roles < b.roles) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.roles > b.roles) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    }
+  }
+
+  selectParticipant(event, user) {
+    event.stopPropagation();
+    if (user.select) {
+      user.select = false;
+      const index = this.selectedActivities.indexOf(user);
+      this.selectedActivities.splice(index, 1);
+    } else {
+      user.select = true;
+      this.selectedActivities.push(user);
+      //this.searchbar.setFocus();
+    }
+  }
+
+  unselectParticipant(event, user) {
+    event.stopPropagation();
+    let index = this.selectedActivities.indexOf(user);
+    if (index > -1) {
+      this.selectedActivities[index].select = false;
+    }
+    index = this.selectedActivities.indexOf(user);
+    if (index > -1) {
+      this.selectedActivities.splice(index, 1);
+    }
+  }
+
+  async multiSelectAction(event) {
+    event.stopPropagation();
+    if (!this.selectedActivities.length || !event.detail.value.length) return; // if no participant or remove type selected, exit
+    const alert = await this.alertCtrl.create({
+      header: 'Remove ' + (this.selectedActivities.length === 1 ? event.detail.value[0].singularLabel : event.detail.value[0].pluralLabel),
+      subHeader: 'You are about to remove ' + (this.selectedActivities.length === 1 ? (this.selectedActivities[0].first_name + ' ' + this.selectedActivities[0].last_name + ' as a ' + event.detail.value[0].singularLabel) : (this.selectedActivities.length + ' ' + event.detail.value[0].pluralLabel)) + '. Are you sure you want to proceed?',
+      cssClass: 'level-15',
+      buttons: [{ text: 'Remove',
+        handler: async () => {
+          alert.dismiss();
+          //this.removeFromUserLists(event.detail.value.map((c) => c.user_list), this.selectedActivities.map((c) => c._id));
+        }}, { text: 'Cancel' }]
+    });
+    await alert.present();
   }
 
   closeModal() {
