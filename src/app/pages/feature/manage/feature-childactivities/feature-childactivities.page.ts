@@ -30,6 +30,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   refreshNeeded = false;
   activityAscending = true;
   typeAscending = true;
+  shareAscending = false;
 
   constructor(
       public route: ActivatedRoute,
@@ -197,25 +198,36 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   }
 
   sortDisplay(type) {
-    if (type === 'participant') {
+    if (type === 'activity') {
       this.activityAscending = !this.activityAscending;
       const reverseOrder = this.activityAscending;
       this.activities.sort(function(a, b) {
-        if (a.first_name < b.first_name) {
+        if (a.matrix_string[0][0] < b.matrix_string[0][0]) {
           return reverseOrder ? -1 : 1;
         }
-        if (a.first_name > b.first_name) {
+        if (a.matrix_string[0][0] > b.matrix_string[0][0]) {
           return reverseOrder ? 1 : -1;
         }
       });
-    } else if (type === 'role') {
+    } else if (type === 'type') {
       this.typeAscending = !this.typeAscending;
       const reverseOrder = this.typeAscending;
       this.activities.sort(function(a, b) {
-        if (a.roles < b.roles) {
+        if (a.resource['en-US'].value[0] < b.resource['en-US'].value[0]) {
           return reverseOrder ? -1 : 1;
         }
-        if (a.roles > b.roles) {
+        if (a.resource['en-US'].value[0] > b.resource['en-US'].value[0]) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    } else if (type === 'share') {
+      this.shareAscending = !this.shareAscending;
+      const reverseOrder = this.shareAscending;
+      this.activities.sort(function(a, b) {
+        if (a.array_boolean[1] < b.array_boolean[1]) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.array_boolean[1] > b.array_boolean[1]) {
           return reverseOrder ? 1 : -1;
         }
       });

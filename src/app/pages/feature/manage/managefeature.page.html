@@ -97,7 +97,7 @@
             <ion-label class="menu-label">Programs</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': router.url.includes('plans')}" (click)="clickManageMenu('plans', null)">
+        <ion-col [ngClass]="{'selected': router.url.includes('plans')}" (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915476e172e4e64590e349'))">
           <ion-item class="ion-no-padding" [color]="router.url.includes('plans') ? 'primary' : 'secondary'" lines="none" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')">
             <ion-icon class="ion-no-margin" slot="start" name="paper-plane"></ion-icon>
             <ion-label class="menu-label">Plans</ion-label>
