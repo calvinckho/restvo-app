@@ -82,7 +82,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-    } else if (!this.platform.is('mobileweb')) { // desktop app
+    } else if (!this.platform.is('mobileweb') || this.platform.is('tablet')) { // desktop, laptap, touchscreen tablet
       get('https://meet.jit.si/external_api.js', () => {
         const domain = videoEndpoint.url;
         const options = {
