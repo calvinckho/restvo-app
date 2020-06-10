@@ -103,8 +103,8 @@
             <ion-label class="menu-label">Plans</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': (router.url.includes('schedule') && selectedSchedule && selectedSchedule._id === schedule._id)}" (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i" [hidden]="!(moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210))"> <!--if Schedule is enabled-->
-          <ion-item class="ion-no-padding" [color]="(router.url.includes('schedule') && selectedSchedule && selectedSchedule._id === schedule._id) ? 'primary' : 'secondary'" lines="none">
+        <ion-col [ngClass]="{'selected': (router.url.includes('/schedule/') && selectedSchedule && selectedSchedule._id === schedule._id)}" (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i" [hidden]="!(moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210))"> <!--if Schedule is enabled-->
+          <ion-item class="ion-no-padding" [color]="(router.url.includes('/schedule/') && selectedSchedule && selectedSchedule._id === schedule._id) ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
             <ion-label class="menu-label">Schedule {{i + 1}}</ion-label>
           </ion-item>
@@ -193,7 +193,7 @@
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
           </ion-item>
           <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
-            <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
+            <ion-item (click)="clickManageMenu('/schedule/', schedule)" *ngFor="let schedule of schedules; index as i">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'schedule' && selectedSchedule._id === schedule._id)}">Schedule {{i + 1}}</ion-label>
             </ion-item>
