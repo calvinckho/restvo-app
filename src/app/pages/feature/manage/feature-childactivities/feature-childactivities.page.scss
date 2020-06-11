@@ -11,7 +11,7 @@ app-feature-childactivities {
   .user-col {
     padding-top: 10px;
     padding-bottom: 10px;
-    width: 30%;
+    width: 40%;
   }
 
   .avatar-col {
@@ -19,7 +19,7 @@ app-feature-childactivities {
   }
 
   .name-col {
-    width: 20%;
+    width: 30%;
   }
 
   .user-avatar {
@@ -32,16 +32,16 @@ app-feature-childactivities {
     font-size: 12px;
   }
 
-  .type-col {
+/*  .type-col {
+    width: 20%;
+  }*/
+
+  .status-col {
     width: 20%;
   }
 
-  .status-col {
-    width: 15%;
-  }
-
   .actions-col {
-    width: 25%;
+    width: 30%;
   }
 
   .program-row {
