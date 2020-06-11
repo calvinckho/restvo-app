@@ -80,17 +80,21 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     event.stopPropagation();
     if (this.modalPage || this.platform.width() < 768) {
       // view
-      if (viewType === 'view') { //for journey and relationship, (moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
-        this.momentService.openMoment( { moment: moment, modalPage: true });
-      } else { // manage
+      if (viewType === 'manage') { // manage
         this.momentService.manageMoment({ moment: moment, modalPage: true });
+      } else if (viewType === 'edit') { // edit
+        this.momentService.editMoment({ moment: moment, modalPage: true });
+      } else { // view
+        this.momentService.openMoment( { moment: moment, modalPage: true });
       }
     } else {
-      if (viewType === 'view') { // view
-        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
-      } else {
+      if (viewType === 'manage') { // manage
         this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
+      } else if (viewType === 'edit') { // edit
+        this.router.navigate([{ outlets: { sub: ['edit', moment._id, { subpanel: true }] }}]);
+      } else { // view
+        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
       }
     }
   }

@@ -219,6 +219,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
             this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
         }
+        if (this.subpanel) { // because subpanel is narrow, turn off moreMediaOptions on page load
+            this.moreMediaOptions = false;
+        }
         this.reloadChatView();
     }
 
@@ -950,7 +953,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     this.closeModal(true);
                 }
             } else {
-                this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
+                if (this.platform.width() >= 992) {
+                    this.router.navigate([{ outlets: { sub: ['details', this.chatService.currentChatProps[this.propIndex].moment._id, { subpanel: true } ] }}]);
+                } else {
+                    this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
+                }
             }
         } else { // 1-1 connect chat
             if (this.modalPage) {
