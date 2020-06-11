@@ -45,6 +45,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // for child Activity
     @Input() parent_programId: any; // parent Program ID
 
+    subpanel = false;
     subscriptions: any = {};
     editTemplate = false;
   templateChanged = false;
@@ -178,6 +179,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // Onboarding Questions uses mainly the multiple choice and text input components. It needs to have an associated program ID and a type number (2 for participants onboarding, 3 for organizers, 4 for leaders)
 
   async ngOnInit() {
+      this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }

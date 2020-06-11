@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {GroupchatPageModule} from "./pages/group/groupchat/groupchat.module";
-import {DashboardPageModule} from "./pages/user/dashboard/dashboard.module";
 
 const routes: Routes = [
     {
@@ -46,6 +44,11 @@ const routes: Routes = [
     {
         path: 'details/:id',
         loadChildren: () => import('./pages/feature/showfeature/showfeature.module').then( m => m.ShowfeaturePageModule),
+        outlet: 'sub'
+    },
+    {
+        path: 'edit/:id',
+        loadChildren: () => import('./pages/feature/editfeature/editfeature.module').then( m => m.EditfeaturePageModule),
         outlet: 'sub'
     },
     {

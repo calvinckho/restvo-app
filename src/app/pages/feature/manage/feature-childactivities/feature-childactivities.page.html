@@ -78,7 +78,8 @@
       <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share with Participants</span></div>
       <!--<ion-button class="action-label" (click)="openChildActivity($event, activity, 'view')" fill="clear"><ion-icon name="open-outline"></ion-icon></ion-button>-->
       <ion-buttons class="actions-col ion-justify-content-evenly">
-        <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="cog-outline"></ion-icon></ion-button>
+        <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="key-outline"></ion-icon></ion-button>
+        <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>
         <ion-button (click)="pushToMessagePage($event, activity)" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
       </ion-buttons>
     </ion-item>
