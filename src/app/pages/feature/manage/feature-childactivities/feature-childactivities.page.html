@@ -9,7 +9,6 @@
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
       <div class="select-col"></div>
       <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
-      <!--<div class="type-col column-label" (click)="sortDisplay('type')" *ngIf="!modalPage">Type<ion-icon [name]="typeAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>-->
       <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
       <div class="actions-col column-label">Actions</div>
     </ion-item>
@@ -45,9 +44,7 @@
           {{activity.matrix_string[0][0]}}
         </ion-label>
       </div>
-      <!--<div class="ion-text-wrap type-col column-label" *ngIf="!modalPage">{{activity.resource['en-US'].value[0]}}</div>-->
-      <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share with Participants</span></div>
-      <!--<ion-button class="action-label" (click)="openChildActivity($event, activity, 'view')" fill="clear"><ion-icon name="open-outline"></ion-icon></ion-button>-->
+      <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share in Marketplace</span></div>
       <ion-buttons class="actions-col ion-justify-content-evenly">
         <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="key-outline"></ion-icon></ion-button>
         <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>
