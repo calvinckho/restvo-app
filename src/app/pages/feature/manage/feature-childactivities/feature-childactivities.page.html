@@ -62,15 +62,29 @@
       <ion-label>All {{this.categoryLabel}}</ion-label>
     </ion-list-header>-->
     <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
-      <div class="select-col">
-        <ion-icon color="tertiary" *ngIf="!activity.select" name="radio-button-off" (click)="selectParticipant($event, activity)"></ion-icon>
-        <ion-icon color="tertiary" *ngIf="activity.select" name="checkmark-circle" (click)="unselectParticipant($event, activity)"></ion-icon>
-      </div>
-      <div class="user-col">
+      <ion-buttons class="select-col">
+        <ion-button (click)="selectParticipant($event, activity)" fill="clear" *ngIf="!activity.select">
+          <ion-icon color="tertiary" name="radio-button-off"></ion-icon>
+        </ion-button>
+        <ion-button (click)="unselectParticipant($event, activity)" fill="clear" *ngIf="activity.select" >
+          <ion-icon color="tertiary" name="checkmark-circle"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <div class="user-col" *ngIf="modalPage">
         <ion-avatar class="user-avatar">
           <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
         </ion-avatar>
         <ion-label class="name-label ion-text-center ion-text-wrap">
+          {{activity.matrix_string[0][0]}}
+        </ion-label>
+      </div>
+      <div class="avatar-col" *ngIf="!modalPage">
+        <ion-avatar class="user-avatar">
+          <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
+        </ion-avatar>
+      </div>
+      <div class="name-col" *ngIf="!modalPage">
+        <ion-label class="name-label ion-text-wrap">
           {{activity.matrix_string[0][0]}}
         </ion-label>
       </div>

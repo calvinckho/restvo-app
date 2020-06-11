@@ -5,13 +5,21 @@ app-feature-childactivities {
   }
 
   .select-col {
-    width: 10%;
+    width: 8%;
   }
 
   .user-col {
     padding-top: 10px;
     padding-bottom: 10px;
-    width: 25%;
+    width: 30%;
+  }
+
+  .avatar-col {
+    width: 10%
+  }
+
+  .name-col {
+    width: 20%;
   }
 
   .user-avatar {
@@ -25,7 +33,7 @@ app-feature-childactivities {
   }
 
   .type-col {
-    width: 25%;
+    width: 20%;
   }
 
   .status-col {
