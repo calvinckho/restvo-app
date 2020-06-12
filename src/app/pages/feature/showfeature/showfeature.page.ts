@@ -644,7 +644,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         }
                         this.setupInteractableDisplay(interactableId, componentIndex);
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
-                        this.interactableDisplay[interactableId] = { editor: null };
+                        this.interactableDisplay[interactableId] = { editor: null, currentSaveState: "" };
                         // first determine if it is collaborative or private
                         const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
@@ -1205,7 +1205,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async respondToTextArea(event, componentIndex) {
         this.anyChangeMade = true;
         // Showing the user that the content is saving
-        this.currentSaveState = "Saving...";
+        this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saving...";
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1259,13 +1259,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.userData.refreshUserStatus({});
                 }
                 // Showing the user that the content has been saved at the end of the timeout
-                this.currentSaveState = 'Saved';
+                this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saved";
 
                 setTimeout(() => {
-                    this.currentSaveState = '';
+                    this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "";
                 }, 3000);
             } else {
-                this.currentSaveState = 'Failed';
+              this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Failed";
             }
         }, 1500);
     }

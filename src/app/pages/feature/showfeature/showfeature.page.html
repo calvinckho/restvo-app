@@ -623,7 +623,7 @@
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
         <ion-row class="ion-padding-horizontal ion-justify-content-end ion-padding-top" style="height: 12px">
-          <ion-note style="font-size: 10px;">{{ currentSaveState }}</ion-note>
+          <ion-note style="font-size: 10px;">{{ interactableDisplay[moment.resource.matrix_number[2][i]].currentSaveState }}</ion-note>
         </ion-row>
         <ion-item lines="none" class="ion-margin-vertical">
           <quill-editor (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
