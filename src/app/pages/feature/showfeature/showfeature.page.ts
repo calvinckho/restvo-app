@@ -644,6 +644,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         }
                         this.setupInteractableDisplay(interactableId, componentIndex);
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
+                        // setting the default values of the current interactableDisplay
                         this.interactableDisplay[interactableId] = { editor: null, currentSaveState: "" };
                         // first determine if it is collaborative or private
                         const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
@@ -1262,9 +1263,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saved";
 
                 setTimeout(() => {
-                    this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "";
+                  // setting the interactableDisplay on the current textarea to a blank state after saving data
+                  this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "";
                 }, 3000);
             } else {
+              // setting the interactableDisplay on the current textarea to a failure message
               this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Failed";
             }
         }, 1500);
