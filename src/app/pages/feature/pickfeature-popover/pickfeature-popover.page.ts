@@ -60,6 +60,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     async ngOnInit() {
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('id');
+        this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
         if (this.categoryId) { // if category is provided, skip to step 1
@@ -142,14 +143,14 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     async done() {
         let selectedProgram;
         if (this.modalPage) {
-            this.modalCtrl.dismiss(this.selectedMoments);
+            this.modalCtrl.dismiss(this.selectedMoments); // if modalPage, exit back to parent page and hand off processing of selected moments
         } else {
             this.loading = await this.loadingCtrl.create({
                 message: 'Processing...',
                 duration: 20000
             });
             await this.loading.present();
-            if (this.selectedMoments[0] && this.selectedMoments[0].cloned === 'new') { // cloning a sample. copy everything except calendar
+            if (this.selectedMoments[0] && this.selectedMoments[0].cloned === 'new') { // cloning a sample.
                 this.selectedMoments[0].calendar = { // reset the calendar
                     title: this.selectedMoments[0].matrix_string[0][0],
                     location: '',
@@ -162,6 +163,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         reminders: []
                     }
                 };
+                if (this.parent_programId) { // if parent program Id is provided, also update it
+                    this.selectedMoments[0].parent_programs = [this.parent_programId];
+                }
                 const clonedMoments: any = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
                     clonedMoments[0].resource = this.selectedMoments[0].resource; // clone the populated resource
@@ -173,23 +177,46 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
-            let hasOrganizerAccess: any;
-            // check hasOrganizerAccess
-            if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
-                hasOrganizerAccess = selectedProgram.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
-            } else if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
-                hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
-            }
-            if (hasOrganizerAccess) { // if hasOrganizerAccess
-                this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
+            console.log("check", this.router.url.includes('newplan'), this.parent_programId);
+                let type: any;
+                switch (this.categoryId) {
+                    case '5e9fe372c8bf1a622fec69d8':
+                        type = 'mentoring';
+                        break;
+                    case '5e9fe35cc8bf1a622fec69d7':
+                        type = 'groups';
+                        break;
+                    case '5e9f46e1c8bf1a622fec69d5':
+                        type = 'journey';
+                        break;
+                    case '5c915475e172e4e64590e348':
+                        type = 'programs';
+                        break;
+                    default:
+                        type = 'journey';
+                }
+            if (this.router.url.includes('newplan') && this.parent_programId, type, this.categoryId) { // if admin mode -> new plan
+                this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
-            } else { //if do not have organizer access
-                this.router.navigate(['/app/activity/' + selectedProgram._id]);
-                setTimeout(async () => {
+            } else {
+                let hasOrganizerAccess: any;
+                // check hasOrganizerAccess
+                if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
+                    hasOrganizerAccess = selectedProgram.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+                } else if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
+                    hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
+                }
+                if (hasOrganizerAccess) { // if hasOrganizerAccess
+                    this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
                     await this.loading.dismiss();
-                    await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
-                    this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
-                }, 2000);
+                } else { //if do not have organizer access
+                    this.router.navigate(['/app/activity/' + selectedProgram._id]);
+                    setTimeout(async () => {
+                        await this.loading.dismiss();
+                        await this.resourceService.loadSystemResources(); // this is required to ensure resource has already been loaded
+                        this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
+                    }, 2000);
+                }
             }
         }
     }
