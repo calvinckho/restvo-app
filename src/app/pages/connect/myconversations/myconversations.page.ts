@@ -69,6 +69,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                         obj.data.badge = 0;
                     }
                 });
+                await this.chatService.refreshTabBadges();
                 await this.renderConversations();
             } else if (data.action === 'render') { // e.g. socket.io event informing change in online status
                 await this.renderConversations();
@@ -206,7 +207,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
 
     async seeUserInfo(event, object) {
         event.stopPropagation();
-        object.data.participant.name = object.data.participant.first_name + ' ' + object.data.participant.last_name;
+        object.data.participant.name = `${object.data.participant.first_name} ${object.data.participant.last_name}`;
         if (this.platform.width() >= 768) {
             this.router.navigate(['/app/myconversations/person/' + object.data.participant._id], { replaceUrl: true });
         } else {

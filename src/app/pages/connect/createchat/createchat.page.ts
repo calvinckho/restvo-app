@@ -119,7 +119,7 @@ export class CreatechatPage implements OnInit {
             } else {
                 churchAppUsers.forEach((appuser) => {
                     if (appuser._id !== this.userData.user._id){
-                        appuser.name = appuser.first_name + " " + appuser.last_name;
+                        appuser.name = `${appuser.first_name} ${appuser.last_name}`;
                         this.listOfAppUsers.push({_id: appuser._id, name: appuser.name, avatar: appuser.avatar, select: false});
                     }
                 });
@@ -189,13 +189,19 @@ export class CreatechatPage implements OnInit {
     }
 
     modifyChatName(){
-        if (this.chatForm.controls.name.pristine){
+        if (this.chatForm.controls.name.pristine) {
             if (this.totalSelected === 1){
-                this.chatForm.patchValue({name: this.userData.user.first_name + " and " + this.selectedAppUsers[0].name});
-            } else if (this.totalSelected === 2){
-                this.chatForm.patchValue({name: this.userData.user.first_name + ", " + this.selectedAppUsers[0].name.split(' ')[0] + ", " + this.selectedAppUsers[1].name.split(' ')[0]});
-            } else if (this.totalSelected > 2){
-                this.chatForm.patchValue({name: this.userData.user.first_name + ", " + this.selectedAppUsers[0].name.split(' ')[0] + " and " + (this.totalSelected - 1).toString() + " friends"});
+                this.chatForm.patchValue({
+                  name: `${this.userData.user.first_name} ${this.selectedAppUsers[0].name}`
+                });
+            } else if (this.totalSelected === 2) {
+                this.chatForm.patchValue({
+                  name: `${this.userData.user.first_name}, ${this.selectedAppUsers[0].name.split(' ')[0]}, ${this.selectedAppUsers[1].name.split(' ')[0]}`
+                });
+            } else if (this.totalSelected > 2) {
+                this.chatForm.patchValue({
+                  name: `${this.userData.user.first_name}, ${this.selectedAppUsers[0].name.split(' ')[0]} ${(this.totalSelected - 1).toString()} friends`
+                });
             }
         }
     }
@@ -204,8 +210,10 @@ export class CreatechatPage implements OnInit {
         if (this.totalSelected === 1){ //direct message with 1 person
             this.createPrivateChat();
         } else if (this.totalSelected > 1) { //direct message with 2 or more people
-            /*this.page = 2;
-            this.title = 'Create Group Chat';*/
+            /*
+            this.page = 2;
+            this.title = 'Create Group Chat';
+            */
             this.selectGroupType('personal');
         }
     }
@@ -237,7 +245,7 @@ export class CreatechatPage implements OnInit {
                     if (conversation.blockedBy === this.userData.user._id) {
                         const alert = await this.alertCtrl.create({
                             header: 'User is Blocked',
-                            subHeader: 'Do you want to reconnect with ' + this.selectedAppUsers[0].name + '?',
+                            subHeader: `Do you want to reconnect with ${this.selectedAppUsers[0].name}?`,
                             buttons: [{
                                 text: 'Yes',
                                 handler: () => {
@@ -265,7 +273,7 @@ export class CreatechatPage implements OnInit {
                         alert.present();
                     } else {
                         const alert = await this.alertCtrl.create({
-                            header: 'Blocked by ' + this.selectedAppUsers[0].name + '.',
+                            header: `Blocked by ${this.selectedAppUsers[0].name}.`,
                             subHeader: 'You cannot direct message this user while being blocked.',
                             buttons: [{ text: 'Dismiss' }],
                             cssClass: 'level-15'
@@ -284,15 +292,14 @@ export class CreatechatPage implements OnInit {
             }
         } else {
             const alert = await this.alertCtrl.create({
-                header: 'Connect to ' + this.selectedAppUsers[0].name,
-                subHeader: 'You are not yet connected with ' + this.selectedAppUsers[0].name + ". Do you want to direct message " + this.selectedAppUsers[0].name + '?',
+                header: `Connect to ${this.selectedAppUsers[0].name}`,
+                subHeader: `You are not yet connected with ${this.selectedAppUsers[0].name}. Do you want to direct message ${this.selectedAppUsers[0].name}`,
                 buttons: [{ text: 'Yes',
                     handler: () => {
-                        console.log("creating new conversation...");
                         let navTransition = alert.dismiss();
                         navTransition.then( async () => {
                             await this.userData.checkPushNotification();
-                            const welcomeMessage = this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.';
+                            const welcomeMessage = `${this.userData.user.first_name} ${this.userData.user.last_name} is now connected with you.`;
                             const conversationId = await this.chatService.newConversation(this.selectedAppUsers[0]._id, { composedMessage : welcomeMessage, type: "connect" });
                             this.chatService.refreshTabBadges();
                             this.modalCtrl.dismiss();

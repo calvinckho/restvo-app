@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-split-pane contentId="main-app" [when]="userData.splitPaneState">
+  <ion-split-pane contentId="main-app" [when]="userData.splitPaneState" [ngClass]="{'split-pane-narrow': router.url.includes('(sub:') && platform.width() >= 768 }">
     <ion-menu menuId="main" side="start" contentId="main-app" mode="md" type="overlay">
       <ion-content>
         <ion-toolbar class="title-container" id="main-menu-toolbar">
@@ -91,4 +91,5 @@
     </ion-menu>
     <ion-router-outlet id="main-app" [swipeGesture]="false"></ion-router-outlet>
   </ion-split-pane>
+  <ion-router-outlet name="sub" id="sub-panel" [hidden]="!router.url.includes('(sub:') || platform.width() < 768"></ion-router-outlet>
 </ion-app>

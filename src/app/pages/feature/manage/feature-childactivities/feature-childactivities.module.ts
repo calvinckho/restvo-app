@@ -11,8 +11,8 @@ import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
 const routes: Routes = [
   {
     path: '',
-    component: FeatureChildActivitiesPage
-  }
+    component: FeatureChildActivitiesPage,
+  },
 ];
 
 @NgModule({

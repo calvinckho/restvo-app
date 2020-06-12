@@ -21,14 +21,45 @@ app-managefeature {
     height: 100%;
   }
 
+  .desktop-header {
+    //padding: 30px 0;
+    background-color: transparent !important;
+    box-shadow: none !important;
+
+    --background: transparent !important;
+
+    ion-col {
+      box-shadow: 0 5px 10px rgba(0,0,0,.2);
+      padding: 5px;
+      margin: 5px;
+      border-radius: 10px;
+      ion-item {
+        .menu-label {
+          font-size: 12px !important;
+          margin-left: 4px;
+        }
+        --inner-padding-end: 0;
+      }
+    }
+  }
+
+  .selected {
+    background-color: #e2666a !important;
+  }
+
+  .selected * {
+    color: white;
+    background-color: #e2666a !important;
+  }
+
   ion-router-outlet {
     border-left: 1px solid var(--ion-color-lightgrey);
   }
 
-  ion-content {
+/*  ion-content {
     display: flex;
     flex-direction: column;
-  }
+  }*/
 
   .bold-font {
     font-weight: bold;

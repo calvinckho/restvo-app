@@ -1,111 +1,80 @@
-<ion-header *ngIf="modalPage">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar *ngIf="modalPage">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-grid>
+    <ion-title *ngIf="title === 'People'">{{title}}</ion-title>
+    <ion-grid *ngIf="title !== 'People'">
       <ion-row>
-        <ion-col> <!--css is defined in editfeature.page.scss-->
-          <div class="title" [ngClass]="{'ios': platform.is('ios')}">{{title}}</div>
+        <ion-col>
+          <!--css is defined in editfeature.page.scss-->
+          <div class="title" [ngClass]="{'ios': platform.is('ios')}">
+            {{title}}
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-buttons slot="end">
+      <ion-button (click)="inviteSelect.open($event)">
+        <ion-icon name="person-add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-list>
+      <ion-item lines="none">
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
+        <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="renderUniqueParticipantList()" placeholder="Role" interface="popover" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px" *ngIf="!modalPage">
+          <ion-select-option [value]="this.participantLabel">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="this.organizerLabel">{{organizerLabel}}</ion-select-option>
+          <ion-select-option [value]="this.leaderLabel">{{leaderLabel}}</ion-select-option>
+        </ion-select>
+        <ion-button slot="end" (click)="inviteSelect.value = null; inviteSelect.open($event)" *ngIf="!modalPage">Add</ion-button>
+        <ion-select #InviteSelect placeholder="Add" interface="popover" (ionChange)="openPopUpModalAddParticipants($event)" mode="ios" hidden>
+          <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="selectedParticipants.length" lines="none">
+        <ion-label>{{selectedParticipants.length}} Selected</ion-label>
+        <ion-button slot="end" (click)="removeSelect.open($event)" slot="end">Remove Role</ion-button>
+        <ion-select #RemoveSelect (ionChange)="multiSelectAction($event)" placeholder="Remove Role" interface="popover" [interfaceOptions]="{header: 'Remove Role'}" [multiple]="true" style="width: 20%; min-width: 40px" hidden>
+          <ion-select-option [value]="{user_list: 'user_list_1', singularLabel: this.participantLabel, pluralLabel: this.participantsLabel}">{{participantLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: 'user_list_2', singularLabel: this.organizerLabel, pluralLabel: this.organizersLabel}">{{organizerLabel}}</ion-select-option>
+          <ion-select-option [value]="{user_list: 'user_list_3', singularLabel: this.leaderLabel, pluralLabel: this.leadersLabel}">{{leaderLabel}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
   </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
-  <ion-grid style="height: 100%; position: absolute" *ngIf="momentService.ionSpinner">
-    <ion-row class="ion-align-items-center" style="height: 100%">
+  <ion-grid style="height: 100%; position: absolute;" *ngIf="momentService.ionSpinner">
+    <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
   <div>
-    <ion-item lines="none">
-      <ion-label>{{participantsLabel}}</ion-label>
-    </ion-item>
-    <ion-grid *ngIf="moment._id" class="user-list-preview">
-      <ion-row class="participant-row">
-        <ion-col class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <img src="assets/img/avatar-default.jpg"/>
-              </ion-avatar>
-              <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{participantLabel}}</ion-label> <!--Add Participant-->
-            </div>
-          </ion-item>
-        </ion-col>
-        <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="seeUserInfo($event, user)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-              </ion-avatar>
-              <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'participant', j)"></ion-icon>
-              <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
-            </div>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ion-item lines="none">
-      <ion-label>{{leadersLabel}}</ion-label>
-    </ion-item>
-    <ion-grid *ngIf="moment._id" class="user-list-preview">
-      <ion-row class="participant-row">
-        <ion-col class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <img src="assets/img/avatar-default.jpg"/>
-              </ion-avatar>
-              <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{leaderLabel}}</ion-label>
-            </div>
-          </ion-item>
-        </ion-col>
-        <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="seeUserInfo($event, user)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-              </ion-avatar>
-              <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'leader', j)"></ion-icon>
-              <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
-            </div>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ion-item lines="none">
-      <ion-label>{{organizersLabel}}</ion-label>
-    </ion-item>
-    <ion-grid class="user-list-preview" *ngIf="moment._id">
-      <ion-row class="participant-row">
-        <ion-col class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <img src="assets/img/avatar-default.jpg"/>
-              </ion-avatar>
-              <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{organizerLabel}}</ion-label>
-            </div>
-          </ion-item>
-        </ion-col>
-        <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
-          <ion-item lines="none" (click)="seeUserInfo($event, user)">
-            <div class="participant-centered">
-              <ion-avatar class="participant-avatar" slot="start">
-                <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-              </ion-avatar>
-              <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'organizer', j)"></ion-icon>
-              <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
-            </div>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-list>
+      <ion-item lines="none">
+        <ion-icon slot="start" style="color: transparent"></ion-icon>
+        <ion-avatar slot="start" style="color: transparent"></ion-avatar>
+        <ion-label class="name-label" (click)="sortDisplay('participant')">People<ion-icon [name]="participantAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
+        <ion-label class="role-label column-label" (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
+        <div class="chat-label" *ngIf="!modalPage"></div>
+      </ion-item>
+      <ion-item *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+        <ion-icon slot="start" color="tertiary" *ngIf="!user.select" name="radio-button-off" (click)="selectParticipant(user)"></ion-icon>
+        <ion-icon slot="start" color="tertiary" *ngIf="user.select" name="checkmark-circle" (click)="unselectParticipant(user)"></ion-icon>
+        <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
+          <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+          <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+        </ion-avatar>
+        <ion-label class="ion-text-wrap name-label" (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label>
+        <ion-label class="ion-text-wrap role-label column-label">{{user.roles.join(" / ")}}</ion-label>
+        <ion-button class="chat-label" (click)="pushToMessagePage($event, user)" [disabled]="userData.user._id === user._id" *ngIf="!modalPage">Chat</ion-button>
+      </ion-item>
+    </ion-list>
   </div>
 </ion-content>
