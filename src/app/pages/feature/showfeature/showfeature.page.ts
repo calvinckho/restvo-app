@@ -55,6 +55,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
+  subpanel = false;
   subscriptions: any = {};
   mode = 'list';
   slideOpts = {
@@ -223,6 +224,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       public calendarService: CalendarService) {}
 
   async ngOnInit() {
+      this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
@@ -259,7 +261,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       } else { // otherwise refresh
           this.setup(data);
       }
-  }
+  };
 
   async setup(data) {
       this.loadStatus = 'loading';
@@ -644,7 +646,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         }
                         this.setupInteractableDisplay(interactableId, componentIndex);
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
-                        this.interactableDisplay[interactableId] = { editor: null };
+                        // setting the default values of the current interactableDisplay
+                        this.interactableDisplay[interactableId] = { editor: null, currentSaveState: "" };
                         // first determine if it is collaborative or private
                         const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
@@ -996,6 +999,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     user.name = user.first_name + ' ' + user.last_name;
     if (!this.authService.token) {
       this.openRegister(0, 'To see more about ' + user.name + ', sign in or create an account first.');
+    } else if (!this.modalPage && this.platform.width() >= 992) {
+        this.router.navigate([{ outlets: { sub: ['user', user._id, { subpanel: true } ] }}]);
     } else if (!this.modalPage && this.platform.width() >= 768) {
       this.router.navigate(['/app/person/' + user._id], { replaceUrl: false });
     } else {
@@ -1205,7 +1210,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async respondToTextArea(event, componentIndex) {
         this.anyChangeMade = true;
         // Showing the user that the content is saving
-        this.currentSaveState = 'Saving...';
+        this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saving...";
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1246,6 +1251,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
         this.timeoutHandle = setTimeout(async () => {
+            console.log("sending responsObj", this.responseObj);
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
             if (response) {
@@ -1259,13 +1265,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.userData.refreshUserStatus({});
                 }
                 // Showing the user that the content has been saved at the end of the timeout
-                this.currentSaveState = 'Saved';
+                this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saved";
 
                 setTimeout(() => {
-                    this.currentSaveState = '';
+                  // setting the interactableDisplay on the current textarea to a blank state after saving data
+                  this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "";
                 }, 3000);
             } else {
-                this.currentSaveState = 'Failed';
+              // setting the interactableDisplay on the current textarea to a failure message
+              this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Failed";
             }
         }, 1500);
     }
@@ -1419,7 +1427,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               params.responseId = note.response_id;
               componentProps.responseId = note.response_id;
           }
-          if (this.platform.width() >= 768) {
+          if (this.platform.width() >= 992) {
+              if (this.authService.token) {
+                  params.subpanel = true;
+                  this.router.navigate([{ outlets: { sub: ['details', momentId, params ] }}]);
+              } else { // for unauthenticated user and in landing page view, which is not a common case
+                  this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
+              }
+          } else if (this.platform.width() >= 768) {
               if (this.authService.token) {
                   this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
               } else { // for unauthenticated user and in landing page view, which is not a common case
@@ -1789,7 +1804,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     event.stopPropagation();
     if (this.platform.width() >= 768) {
       if (this.authService.token) {
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+          if (this.router.url.includes('/app/manage')) {
+              this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
+          } else {
+              this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+          }
       } else {
         this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
       }
@@ -1815,19 +1834,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             params.calendarId = calendarItem._id;
             componentProps.calendarId = calendarItem._id;
         }
-        if (this.platform.width() >= 768) {
-            if (this.authService.token) {
-                this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
-            } else { // for unauthenticated user and in landing page view, which is not a common case
-                this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
-            }
+        if (!this.authService.token) { // for authenticated user, use modalCtrl for in app experience
+            this.router.navigate(['/activity/' + momentId, params ], { replaceUrl: false });
+        } else if (!this.modalPage && this.platform.width() >= 992) {
+            params.subpanel = true;
+            this.router.navigate([{ outlets: { sub: ['details', momentId, params ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
+            this.router.navigate(['/app/activity/' + momentId, params ], { replaceUrl: false });
         } else {
-            if (this.authService.token) { // for authenticated user, use modalCtrl for in app experience
-                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
-                await modal.present();
-            } else { // for unauthenticated user and in landing page view, which is not a common case
-                this.router.navigate(['/activity/' + momentId], { replaceUrl: false });
-            }
+            const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
+            await modal.present();
         }
     }
 

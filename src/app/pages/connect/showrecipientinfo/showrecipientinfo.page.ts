@@ -25,6 +25,7 @@ export class ShowrecipientinfoPage implements OnInit {
     @Input() recipient: any = { _id: '', first_name: '', last_name: '', role: '', avatar: '' };
     @Input() programId: any; // optional, if a program context is provided
 
+    subpanel = false;
     subscriptions: any = {};
     loading: any;
     result: any = [];
@@ -60,6 +61,7 @@ export class ShowrecipientinfoPage implements OnInit {
     }
 
     ngOnInit() {
+        this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         if (this.userData.hasPlatformAdminAccess){
             this.setToggle();
         }
@@ -142,25 +144,27 @@ export class ShowrecipientinfoPage implements OnInit {
         if (this.result.conversation) { //if the recipient has been connected
             const conversation = this.result.conversation;
             if (conversation.type === 'connect') {
-                if (this.modalPage) {
-                    this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
-                } else {
-                    this.chatService.currentChatProps.push({
-                        conversationId: conversation._id,
-                        name: this.recipient.first_name + ' ' + this.recipient.last_name,
-                        recipient: this.recipient,
-                        page: 'chat',
-                        modalPage: false
-                    });
+                this.chatService.currentChatProps.push({
+                    conversationId: conversation._id,
+                    name: `${this.recipient.first_name} ${this.recipient.last_name}`,
+                    recipient: this.recipient,
+                    page: 'chat',
+                    modalPage: false
+                });
+                if (!this.modalPage && this.subpanel) {
+                    this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+                } else if (!this.modalPage && !this.subpanel) {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});
+                } else {
+                    this.chatService.openChat({conversationId: conversation._id, author: this.recipient});
                 }
             } else if (conversation.type === 'request') {
                 if (conversation.blockedBy) {
                     if (conversation.blockedBy === this.userData.user._id) {
                         const alert = await this.alertCtrl.create({
                             header: 'User is Blocked',
-                            message: 'Do you want to reconnect with ' + this.recipient.name + '?',
+                            message: `Do you want to reconnect with ${this.recipient.name}?`,
                             buttons: [{
                                 text: 'Yes',
                                 handler: () => {
@@ -178,7 +182,7 @@ export class ShowrecipientinfoPage implements OnInit {
                         alert.present();
                     } else {
                         const alert = await this.alertCtrl.create({
-                            header: 'Blocked by ' + this.recipient.name + '.',
+                            header: `Blocked by ${this.recipient.name}.`,
                             message: 'You cannot direct message this user while being blocked.',
                             buttons: [{ text: 'Dismiss' }],
                             cssClass: 'level-15'
@@ -197,15 +201,14 @@ export class ShowrecipientinfoPage implements OnInit {
             }
         } else {
             const alert = await this.alertCtrl.create({
-                header: 'Connect to ' + this.recipient.name,
-                message: 'You are not yet connected with ' + this.recipient.name + ". Do you want to direct message " + this.recipient.name + '?',
+                header: `Connect to ${this.recipient.name}`,
+                message: `You are not yet connected with ${this.recipient.name}. Do you want to direct message ${this.recipient.name}?`,
                 buttons: [{ text: 'Yes',
                     handler: () => {
-                        console.log("creating new conversation...");
                         const navTransition = alert.dismiss();
                         navTransition.then(async () => {
                             await this.userData.checkPushNotification();
-                            const welcomeMessage = this.userData.user.first_name + ' ' + this.userData.user.last_name + " is now connected with you.";
+                            const welcomeMessage = `${this.userData.user.first_name} ${this.userData.user.last_name} is now connected with you.`;
                             const newConversationId = await this.chatService.newConversation(this.recipient._id, { composedMessage : welcomeMessage, type: "connect" });
                             this.chatService.refreshTabBadges();
                             this.isConnected = true;
@@ -304,7 +307,8 @@ export class ShowrecipientinfoPage implements OnInit {
             this.router.navigate(['/app/activity/' + programId]);
         }
     }
-/*
+
+    /*
     async inviteToGroup(){
         const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Group", selectedAppUser: this.recipient}});
         invitePage.present();
@@ -313,7 +317,8 @@ export class ShowrecipientinfoPage implements OnInit {
     async inviteToCommunity(){
         const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Community", selectedAppUser: this.recipient}});
         invitePage.present();
-    }*/
+    }
+    */
 
     async createRelationship() {
         const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Relationship', maxMomentCount: 1, categoryId: '5dfdbb547b00ea76b75e5a70', allowCreate: false, allowSwitchCategory: false, modalPage: true}});
@@ -399,7 +404,7 @@ export class ShowrecipientinfoPage implements OnInit {
     async clearAbuseReport() {
         const alert = await this.alertCtrl.create({
             header: 'Clear Reports',
-            message: 'Are you sure you want to clear the abuse report for ' + this.recipient.name + '? Even if the report is clear, Restvo reserves the right to further investigate this user and take appropriate actions.',
+            message: `Are you sure you want to clear the abuse report for ${this.recipient.name}? Even if the report is clear, Restvo reserves the right to further investigate this user and take appropriate actions.`,
             buttons: [{
                 text: 'Proceed',
                 handler: () => {
@@ -417,10 +422,10 @@ export class ShowrecipientinfoPage implements OnInit {
 
     async blockConversation() {
         if (this.result.conversation){ //only if a connect conversation exists
-            this.recipient.name = this.recipient.name || this.recipient.first_name + " " + this.recipient.last_name;
+            this.recipient.name = `${this.recipient.name || this.recipient.first_name} ${this.recipient.last_name}`;
             const alert = await this.alertCtrl.create({
                 header: 'Block User',
-                message: 'Are you sure you want to block ' + this.recipient.name + '? ' + this.recipient.name + ' will no longer be able to add you as friend or message you.',
+                message: `Are you sure you want to block ${this.recipient.name}? ${this.recipient.name} will no longer be able to add you as friend or message you.`,
                 buttons: [{
                     text: 'Proceed',
                     handler: () => {
@@ -444,10 +449,10 @@ export class ShowrecipientinfoPage implements OnInit {
 
     async disconnectConversation(){
         if (this.result.conversation) { // only if a connect conversation exists
-            this.recipient.name = this.recipient.name || this.recipient.first_name + ' ' + this.recipient.last_name;
+            this.recipient.name = `${this.recipient.name || this.recipient.first_name} ${this.recipient.last_name}`;
             const alert = await this.alertCtrl.create({
                 header: 'Disconnect',
-                message: 'This will disconnect you from ' + this.recipient.name + ' and erase all chat history. Proceed?',
+                message: `This will disconnect you from ${this.recipient.name} and erase all chat history. Proceed?`,
                 buttons: [{
                     text: 'Proceed',
                     handler: () => {
@@ -473,7 +478,7 @@ export class ShowrecipientinfoPage implements OnInit {
         if (this.modalPage) {
             this.modalCtrl.dismiss(this.anyChangeMade);
         } else {
-            if (this.router.url.includes('myconversations')) { // the special case when viewing in the myconversations context
+            if (this.router.url.includes('myconversations') && !this.subpanel) { // the special case when viewing in the myconversations context and not in a subpanel
                 this.router.navigate(['/app/myconversations/chat'], { replaceUrl: true });
             } else {
                 this.location.back();

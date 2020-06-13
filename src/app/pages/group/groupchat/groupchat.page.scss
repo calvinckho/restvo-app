@@ -1,7 +1,14 @@
 app-groupchat {
 
+  height: 100%;
+
   ion-infinite-scroll {
     //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
+  }
+
+  ion-content {
+    //height: 100%;
+    max-height: calc(100% - 116px);
   }
 
   .titles {
@@ -51,7 +58,7 @@ app-groupchat {
 
   .chat-list {
     padding-top: 5%;
-    min-height: 100%;
+    //min-height: 100%;
   }
 
   //time stamp
@@ -495,7 +502,6 @@ app-groupchat {
     bottom: 10px;
     right: 8px;
     font-size: 15px;
-    
   }
 
 
@@ -504,7 +510,6 @@ app-groupchat {
   }
 
   .message-form {
-
     display: flex;
     border-color: var(--ion-color-lightgrey);
     border-style: solid;
@@ -522,7 +527,7 @@ app-groupchat {
 
     ion-icon {
       margin: 0;
-      padding-left: 0px;
+      padding-left: 0;
       padding-right: 0;
     }
 

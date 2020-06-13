@@ -1,4 +1,7 @@
 app-editfeature {
+
+  height: 100%;
+  
   ion-card-header {
     z-index: 10;
   }
@@ -10,12 +13,12 @@ app-editfeature {
     user-select: text;
   }
 
-  ion-item ion-datetime{
-    position:relative !important;
+  ion-item ion-datetime {
+    position: relative !important;
   }
 
-  ion-item ion-select{
-    position:relative !important;
+  ion-item ion-select {
+    position: relative !important;
   }
 
   .title {
@@ -62,7 +65,6 @@ app-editfeature {
     width: 70%;
     margin-left: 20%;
     margin-right: 40%;
-
   }
 
   .moment-label {
@@ -156,10 +158,10 @@ app-editfeature {
     font-size: 12px;
   }
 
-  .dynamicOptions{
+  .dynamicOptions {
     margin-left: 12%;
 
-    ::placeholder{
+    ::placeholder {
       color: #cecece;
     }
   }
@@ -168,19 +170,19 @@ app-editfeature {
     font-size: 18px;
   }
 
-  .addRemoveButtons{
+  .addRemoveButtons {
     width: 40%;
     height: 100%;
     padding-top: 5%;
     color: #cecece;
   }
 
-  #addButton{
+  #addButton {
     margin-left: 5%;
     width: 50%;
   }
 
-  .addRemoveText{
+  .addRemoveText {
     font-size: 15px;
     width: 100%;
     float: right;
@@ -222,7 +224,7 @@ app-editfeature {
   .monthview-element-dot {
     height: 5px;
     width: 5px;
-    margin: 0px .5px 0px .5px;
+    margin: 0px 0.5px 0px 0.5px;
     border-radius: 50%;
     background-color: var(--ion-color-primary);
   }
@@ -238,7 +240,7 @@ app-editfeature {
 
   .avatar {
     width: 40px !important;
-    height : 40px !important;
+    height: 40px !important;
     object-fit: cover;
   }
 
@@ -291,26 +293,20 @@ app-editfeature {
     width: 100%;
   }
 
-  .participant-centered {
-    width: 100px;
-    //height: 65px;
-    margin: auto 0;
+  .participant-avatar {
+    margin: 6px auto;
+  }
 
-    .participant-avatar {
-      margin: 6px auto;
-    }
+  .participant-joined {
+    position: absolute;
+    left: 60%;
+    top: 28px;
+  }
 
-    .participant-joined {
-      position: absolute;
-      left: 60%;
-      top: 28px;
-    }
-
-    .participant-label {
-      margin: 5px auto 6px;
-      color: grey;
-      font-size: 12px;
-    }
+  .participant-label {
+    margin: 5px auto 6px;
+    color: grey;
+    font-size: 12px;
   }
 
   .person-card {
@@ -413,7 +409,7 @@ app-editfeature {
   .remove-media {
     position: absolute;
     top: 4px;
-    right: calc(100%/2 - 45px);
+    right: calc(100% / 2 - 45px);
     z-index: 15;
   }
 
@@ -446,5 +442,37 @@ app-editfeature {
   .user-list-preview {
     max-height: 150px;
     overflow: scroll;
+  }
+  .column {
+    width: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .insight-person-avatar {
+      margin: 0 auto;
+    }
+
+    .insight-person-label {
+      margin: 5px auto 0 auto;
+      color: grey;
+      font-size: 12px;
+    }
+  }
+
+  /*editparticipant only css*/
+  .column-label {
+    text-align: center;
+  }
+
+  .name-label {
+    width: 25%;
+  }
+
+  .role-label {
+    width: 30%;
+  }
+
+  .chat-label {
+    width: 50px;
   }
 }

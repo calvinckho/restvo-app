@@ -196,7 +196,6 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
               this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
               const activityId = await this.storage.get('currentManageActivityId');
-              console.log("cached admin activity", activityId);
               if (activityId && this.userData.activitiesWithAdminAccess.length) {
                   if (this.userData.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
                       this.userData.currentManageActivityId = activityId;
@@ -568,8 +567,12 @@ export class MainTabPage implements OnInit, OnDestroy {
             if (data && data.modalPage) {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
                 await modal.present();
+            } else if (data && data.momentId && data.subpanel) {
+                this.router.navigate([{ outlets: { sub: ['details', data.momentId, { subpanel: true, relationshipId: data.relationshipId, calendarId: data.calendarId } ]}}]);
+            } else if (data && data.momentId && data.relationshipId && data.calendarId) {
+                this.router.navigate(['/app/activity/' + data.momentId, { relationshipId: data.relationshipId, calendarId: data.calendarId }]);
             } else if (data && data.momentId) {
-                this.router.navigate(['/app/activity/' + data.momentId]);
+                this.router.navigate(['/app/activity/' + data.momentId ]);
             }
         });
         this.subscriptions['openUserPrograms'] = this.userData.openUserPrograms$.subscribe(async (data) => {
@@ -699,11 +702,17 @@ export class MainTabPage implements OnInit, OnDestroy {
                     cssClass: 'level-10'
                 });
             }
-            const messagePage = await this.modalCtrl.create({
-                component: GroupchatPage,
-                componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-            });
-            await messagePage.present();
+            if (data.subpanel) {
+                this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+                // if it is displaying the chat view, it will reload the chat data
+                this.userData.refreshMyConversations({action: 'reload chat view'});
+            } else {
+                const messagePage = await this.modalCtrl.create({
+                    component: GroupchatPage,
+                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+                });
+                await messagePage.present();
+            }
         }
     }
 

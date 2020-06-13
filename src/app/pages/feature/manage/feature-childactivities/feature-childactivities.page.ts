@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {ModalController, Platform} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
@@ -7,7 +7,7 @@ import {Chat} from "../../../../services/chat.service";
 import {UserData} from "../../../../services/user.service";
 import {Moment} from "../../../../services/moment.service";
 import {Resource} from "../../../../services/resource.service";
-import {ManagefeaturePage} from "../managefeature.page";
+import {GroupchatPage} from "../../../group/groupchat/groupchat.page";
 
 @Component({
   selector: 'app-feature-childactivities',
@@ -24,14 +24,19 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   momentId: any;
   categoryLabel = '';
   ionSpinner = false;
-  samples: any;
+  activities: any;
+  selectedActivities = [];
   searchKeyword = '';
   refreshNeeded = false;
+  activityAscending = true;
+  typeAscending = true;
+  shareAscending = false;
 
   constructor(
       public route: ActivatedRoute,
       public router: Router,
       public platform: Platform,
+      public alertCtrl: AlertController,
       public authService: Auth,
       public chatService: Chat,
       public userData: UserData,
@@ -67,24 +72,29 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   // load Program child activities
   async loadChildActivities() {
-      this.samples = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
+      this.activities = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
+      this.activities.map((c) => c.select = false);
   }
 
-  async openChildActivity(event, moment) {
+  async openChildActivity(event, moment, viewType) {
     event.stopPropagation();
     if (this.modalPage || this.platform.width() < 768) {
-      // for journey and relationship, open
-      if ((moment.categories.map((c) => c._id).includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.map((c) => c._id).includes('5dfdbb547b00ea76b75e5a70'))) {
-        this.momentService.openMoment( { moment: moment, modalPage: true });
-      } else { // the rest are manage
+      // view
+      if (viewType === 'manage') { // manage
         this.momentService.manageMoment({ moment: moment, modalPage: true });
+      } else if (viewType === 'edit') { // edit
+        this.momentService.editMoment({ moment: moment, modalPage: true });
+      } else { // view
+        this.momentService.openMoment( { moment: moment, modalPage: true });
       }
     } else {
-      if (this.router.url.includes('app/manage')) { // if opened from Manage mode
+      if (viewType === 'manage') { // manage
         this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
-      } else { // such case does not exist yet. User should always open from the User -> About Me
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+      } else if (viewType === 'edit') { // edit
+        this.router.navigate([{ outlets: { sub: ['edit', moment._id, { subpanel: true }] }}]);
+      } else { // view
+        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
       }
     }
   }
@@ -141,7 +151,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
             clonedMoment.resource = moments[index].resource; // clone the populated resource
           }
         }
-        this.samples.unshift(...clonedMoments);
+        this.activities.unshift(...clonedMoments);
       }
     }
   }
@@ -162,6 +172,111 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       planIds: [activity._id],
       parent_programId: this.momentId
     });
+  }
+
+  async pushToMessagePage(event, activity) {
+    if (event) event.stopPropagation();
+    let chatObj = {
+      conversationId: activity.conversation,
+      name: activity.matrix_string[0][0],
+      moment: activity,
+      page: 'chat',
+      badge: 0,
+      modalPage: this.platform.width() < 768
+    };
+
+    if (this.platform.width() >= 768) {
+      this.chatService.currentChatProps.push(chatObj);
+      // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
+      this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+      // if it is displaying the chat view, it will reload the chat data
+      this.userData.refreshMyConversations({action: 'reload chat view'});
+    } else {
+      this.chatService.currentChatProps.push(chatObj);
+      const groupPage = await this.modalCtrl.create({
+        component: GroupchatPage,
+        componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+      });
+      await groupPage.present();
+    }
+  }
+
+  sortDisplay(type) {
+    if (type === 'activity') {
+      this.activityAscending = !this.activityAscending;
+      const reverseOrder = this.activityAscending;
+      this.activities.sort(function(a, b) {
+        if (a.matrix_string[0][0] < b.matrix_string[0][0]) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.matrix_string[0][0] > b.matrix_string[0][0]) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    } else if (type === 'type') {
+      this.typeAscending = !this.typeAscending;
+      const reverseOrder = this.typeAscending;
+      this.activities.sort(function(a, b) {
+        if (a.resource['en-US'].value[0] < b.resource['en-US'].value[0]) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.resource['en-US'].value[0] > b.resource['en-US'].value[0]) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    } else if (type === 'share') {
+      this.shareAscending = !this.shareAscending;
+      const reverseOrder = this.shareAscending;
+      this.activities.sort(function(a, b) {
+        if (a.array_boolean[1] < b.array_boolean[1]) {
+          return reverseOrder ? -1 : 1;
+        }
+        if (a.array_boolean[1] > b.array_boolean[1]) {
+          return reverseOrder ? 1 : -1;
+        }
+      });
+    }
+  }
+
+  selectParticipant(event, user) {
+    event.stopPropagation();
+    if (user.select) {
+      user.select = false;
+      const index = this.selectedActivities.indexOf(user);
+      this.selectedActivities.splice(index, 1);
+    } else {
+      user.select = true;
+      this.selectedActivities.push(user);
+      //this.searchbar.setFocus();
+    }
+  }
+
+  unselectParticipant(event, user) {
+    event.stopPropagation();
+    let index = this.selectedActivities.indexOf(user);
+    if (index > -1) {
+      this.selectedActivities[index].select = false;
+    }
+    index = this.selectedActivities.indexOf(user);
+    if (index > -1) {
+      this.selectedActivities.splice(index, 1);
+    }
+  }
+
+  async multiSelectAction(event) {
+    event.stopPropagation();
+    if (!this.selectedActivities.length || !event.detail.value.length) return; // if no participant or remove type selected, exit
+    const alert = await this.alertCtrl.create({
+      header: 'Remove ' + (this.selectedActivities.length === 1 ? event.detail.value[0].singularLabel : event.detail.value[0].pluralLabel),
+      subHeader: 'You are about to remove ' + (this.selectedActivities.length === 1 ? (this.selectedActivities[0].first_name + ' ' + this.selectedActivities[0].last_name + ' as a ' + event.detail.value[0].singularLabel) : (this.selectedActivities.length + ' ' + event.detail.value[0].pluralLabel)) + '. Are you sure you want to proceed?',
+      cssClass: 'level-15',
+      buttons: [{ text: 'Remove',
+        handler: async () => {
+          alert.dismiss();
+          //this.removeFromUserLists(event.detail.value.map((c) => c.user_list), this.selectedActivities.map((c) => c._id));
+        }}, { text: 'Cancel' }]
+    });
+    await alert.present();
   }
 
   closeModal() {

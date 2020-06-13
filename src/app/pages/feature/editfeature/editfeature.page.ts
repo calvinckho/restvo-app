@@ -45,6 +45,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // for child Activity
     @Input() parent_programId: any; // parent Program ID
 
+    subpanel = false;
     subscriptions: any = {};
     editTemplate = false;
   templateChanged = false;
@@ -178,6 +179,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // Onboarding Questions uses mainly the multiple choice and text input components. It needs to have an associated program ID and a type number (2 for participants onboarding, 3 for organizers, 4 for leaders)
 
   async ngOnInit() {
+      this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
   }
@@ -188,14 +190,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   ionViewWillEnter() {
       // re-entering edit on Desktop only
       if (this.userData.user && this.moment && this.moment._id && !this.modalPage) {
-          console.log("reload 1")
           this.setup();
       }
   }
 
     reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
       if (this.userData.user && !this.initialSetupCompleted) {
-          console.log("reload 2")
           this.setup();
       }
     };
@@ -230,6 +230,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
               if (this.route.snapshot.paramMap.get('id')) {
                   this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
+                  console.log("loaded moment", this.moment)
               }
           } // if enter via modalPage, the moment object should be provided via @Input
 
@@ -689,7 +690,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   async seeUserInfo(event, user) {
     event.stopPropagation();
     user.name = user.first_name + ' ' + user.last_name;
-      this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
+      if (!this.modalPage && this.platform.width() >= 768) {
+          this.router.navigate([{ outlets: { sub: ['user', user._id, { subpanel: true } ] }}]);
+      } else {
+          this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
+      }
   }
 
     async reloadMomentUserLists() {
