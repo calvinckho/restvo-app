@@ -622,18 +622,18 @@
         <ion-item lines="none" *ngIf="moment.matrix_string[i][0]">
           <div style="font-size: 14px" class="ion-text-wrap">{{moment.matrix_string[i][0]}}</div>
         </ion-item>
-        <ion-row class="ion-padding-horizontal ion-justify-content-end ion-padding-top" style="height: 12px">
-          <!-- currentSaveState display for textarea grabbed from interactableDisplay -->
-          <ion-note style="font-size: 10px;">{{ interactableDisplay[moment.resource.matrix_number[2][i]].currentSaveState }}</ion-note>
-        </ion-row>
         <!-- iterated textarea -->
-        <ion-item lines="none" class="ion-margin-vertical">
+        <ion-item lines="none">
           <!-- run respondToTextArea to update the currentSaveState display -->
           <quill-editor
             (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
             (onContentChanged)="respondToTextArea($event, i)"
             [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
             [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].indexOf(userData.user.role) > -1) ? 42 : 0) + 'px'}" format="object"></quill-editor>
+            <ion-row class="ion-padding-horizontal ion-padding-top" style="height: 12px">
+              <!-- currentSaveState display for textarea grabbed from interactableDisplay -->
+              <ion-note style="font-size: 10px;">{{ interactableDisplay[moment.resource.matrix_number[2][i]].currentSaveState }}</ion-note>
+            </ion-row>
         </ion-item>
         <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i]].collaborative">
           <ion-item *ngIf="resource._id">
