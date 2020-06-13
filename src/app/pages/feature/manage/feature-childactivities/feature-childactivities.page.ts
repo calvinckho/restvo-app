@@ -102,7 +102,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   async chooseNewPlan() {
     let componentProps: any;
-    componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false };
+    componentProps = {title: 'Choose from Available Templates', categoryId: 'all', allowCreate: true, allowSwitchCategory: false };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
     } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
@@ -158,7 +158,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
         }
       }
     } else {
-      this.router.navigate(['/app/manage/activity/' + this.momentId + '/newplan/', componentProps ], { replaceUrl: true });
+      this.router.navigate(['/app/manage/activity/' + this.momentId + '/newplan/', componentProps ], { replaceUrl: false });
     }
   }
 

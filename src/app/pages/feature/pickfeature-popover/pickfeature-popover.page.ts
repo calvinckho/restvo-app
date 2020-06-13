@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, LoadingController, ModalController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, Platform} from '@ionic/angular';
 import {Location} from "@angular/common";
 import {CacheService} from 'ionic-cache';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -46,6 +46,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         public router: Router,
+        public platform: Platform,
         private location: Location,
         private alertCtrl: AlertController,
         private cache: CacheService,
@@ -59,11 +60,14 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
-        this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('id');
+        this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
-        if (this.categoryId) { // if category is provided, skip to step 1
+        if (this.categoryId === 'all') { // if category is provided, skip to step 1
+            this.step = 1;
+            this.categoryId = null;
+        } else if (this.categoryId) {
             this.step = 1;
         } else {
             this.categoryId = '5e9f46e1c8bf1a622fec69d5'; // default choice is a Journey
@@ -81,7 +85,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     async loadSamples() {
         setTimeout(async () => {
             this.reachedEnd = false;
-            this.samples = [{}];
+            this.samples = [];
             this.pageNum = 0;
             this.loadMoreSamples();
         }, 50);
@@ -97,7 +101,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (!samples.length) {
                 this.reachedEnd = true;
             } else {
-                this.samples = samples;
+                samples.forEach((parent) => {
+                    this.samples.push(...parent.sample_activities);
+                });
             }
         } else {
             this.ionSpinner = false;
@@ -129,15 +135,65 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     async openFeature(event, moment) {
         event.stopPropagation();
-        if (this.modalPage) {
-            this.momentService.openMoment( { moment: moment, modalPage: true});
-        } else {
+        if (!this.modalPage && this.platform.width() >= 992) {
+            this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
             this.router.navigate(['/app/activity/' + moment._id]);
+        } else {
+            this.momentService.openMoment( { moment: moment, modalPage: true});
         }
     }
 
     async removeMoment(i) {
         this.selectedMoments.splice(i, 1);
+    }
+
+    async createMoment() {
+        if (this.modalPage) {
+            this.close();
+        }
+        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
+            this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
+        } else { // create other Activities
+            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
+        }
+    }
+
+    async changeView(event) {
+        this.currentView = event.detail.value;
+    }
+
+    async next() {
+        if (this.step < 0) {
+            this.step++;
+        } else if (this.step === 0) {
+            this.step++;
+            this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
+            if (this.step === 1) {
+                await this.loadSamples();
+            }
+        } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Plan (Plan can only be adopted, and cannot be edited)
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {
+                if (this.selectedMoments[0].categories.includes('5e9f46e1c8bf1a622fec69d5')) { // journey
+                    this.categoryId = '5e9f46e1c8bf1a622fec69d5';
+                } else if (this.selectedMoments[0].categories.includes('5e9fe372c8bf1a622fec69d8')) { // mentoring
+                    this.categoryId = '5e9fe372c8bf1a622fec69d8';
+                } else if (this.selectedMoments[0].categories.includes('5e9fe35cc8bf1a622fec69d7')) { // group
+                    this.categoryId = '5e9fe35cc8bf1a622fec69d7';
+                } else {
+                    this.categoryId = this.selectedMoments[0].categories[0]; // for others, just use the first in the item (e.g. Program, Community)
+                }
+                this.step++;
+            } else {
+                this.done();
+            }
+        } else if (this.step >= 2) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.categoryId)) {
+                this.step++;
+            } else {
+                this.done();
+            }
+        }
     }
 
     async done() {
@@ -177,24 +233,23 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
-            console.log("check", this.router.url.includes('newplan'), this.parent_programId);
-                let type: any;
-                switch (this.categoryId) {
-                    case '5e9fe372c8bf1a622fec69d8':
-                        type = 'mentoring';
-                        break;
-                    case '5e9fe35cc8bf1a622fec69d7':
-                        type = 'groups';
-                        break;
-                    case '5e9f46e1c8bf1a622fec69d5':
-                        type = 'journey';
-                        break;
-                    case '5c915475e172e4e64590e348':
-                        type = 'programs';
-                        break;
-                    default:
-                        type = 'journey';
-                }
+            let type: any;
+            switch (this.categoryId) {
+                case '5e9fe372c8bf1a622fec69d8':
+                    type = 'mentoring';
+                    break;
+                case '5e9fe35cc8bf1a622fec69d7':
+                    type = 'groups';
+                    break;
+                case '5e9f46e1c8bf1a622fec69d5':
+                    type = 'journey';
+                    break;
+                case '5c915475e172e4e64590e348':
+                    type = 'programs';
+                    break;
+                default:
+                    type = 'journey';
+            }
             if (this.router.url.includes('newplan') && this.parent_programId, type, this.categoryId) { // if admin mode -> new plan
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
@@ -217,46 +272,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
                     }, 2000);
                 }
-            }
-        }
-    }
-
-    async createMoment() {
-        if (this.modalPage) {
-            this.close();
-        }
-        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
-            this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
-        } else { // create other Activities
-            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
-        }
-    }
-
-    async changeView(event) {
-        this.currentView = event.detail.value;
-    }
-
-
-    async next() {
-        if (this.step < 0) {
-            this.step++;
-        } else if (this.step === 0) {
-            this.step++;
-            this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
-            if (this.step === 1) {
-                await this.loadSamples();
-            }
-        } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Plan (Plan can only be adopted, and cannot be edited)
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {
-                this.step++;
-            } else {
-                this.done();
-            }
-        } else if (this.step >= 2) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.categoryId)) {
-                this.step++;
-            } else {
-                this.done();
             }
         }
     }
