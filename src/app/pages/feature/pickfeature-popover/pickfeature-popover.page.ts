@@ -277,7 +277,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     back() {
-        if (this.step === -2 || this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
+        if (this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
             this.close();
         } else {
             this.step--;
