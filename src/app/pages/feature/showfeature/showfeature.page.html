@@ -169,9 +169,6 @@
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">
           <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
-          <div class="moment-input">Due Date</div>
-        </ion-item>
-        <ion-item lines="none">
           <ion-label class="moment-label" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
           <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
         </ion-item>
