@@ -568,10 +568,6 @@ export class UserData {
         });
     }
 
-    checkIfEmailExists(email) {
-        return this.http.get(this.networkService.domain + '/api/auth/checkifexist/' + email, this.authService.httpAuthOptions).toPromise();
-    }
-
     async leaveGroup(group) {
         let promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
