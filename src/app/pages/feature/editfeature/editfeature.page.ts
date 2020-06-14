@@ -1163,7 +1163,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       await this.awsService.cleanUp(this.moment._id, this.moment.assets);
       //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
-      this.moment.assets = this.awsService.sessionAssets[this.moment._id];
+      // if sessionAssets has not been initiated and hence return null, reassign it back to an empty array
+      this.moment.assets = this.awsService.sessionAssets[this.moment._id] || [];
       if (this.moment._id) { // sending moment object with fully populated resource object to server
           try {
               await this.momentService.update(this.moment);

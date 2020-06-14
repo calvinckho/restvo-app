@@ -22,7 +22,7 @@
   </ion-item>
   <ion-grid class="program-grid">
     <ion-row class="program-row">
-      <ion-col class="ion-align-self-center" *ngFor="let program of programs" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+      <ion-col class="ion-align-self-center" *ngFor="let program of programs" size="auto">
         <ion-card class="program-card" (click)="selectDefault($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
           <ion-card-header class="ion-no-padding">
             <div class="program-photo-container" [ngClass]="{'opacity': program._id !== (userData.defaultProgram && userData.defaultProgram._id) }">
