@@ -9,6 +9,7 @@ import { EditfeaturePage } from './editfeature.page';
 import {AutosizeModule} from "ngx-autosize";
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import { PlyrModule } from 'ngx-plyr';
+import {UploadmediaPageModule} from "../uploadmedia/uploadmedia.module";
 
 const routes: Routes = [
   {
@@ -25,7 +26,7 @@ const routes: Routes = [
     AutosizeModule,
     PlyrModule,
     IonicModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
   declarations: [EditfeaturePage]
 })

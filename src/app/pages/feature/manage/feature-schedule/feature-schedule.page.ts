@@ -161,7 +161,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.touchPlanTimeline();
         await this.momentService.touchSchedule(this.schedule);
       } else {
-        console.log("check", this.recurrenceStartDate, this.schedule.startDate);
         // for Activity, either create schedule or send to the backend to repopulate the timeline
         this.schedule.operation = operation;
         await this.momentService.touchSchedule(this.schedule);

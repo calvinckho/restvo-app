@@ -129,7 +129,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     selectSample(sample) {
-        console.log("selecting...", sample)
         sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
         sample.joinAs = this.joinAs;
         this.selectedMoments.push(sample);
@@ -269,7 +268,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 default:
                     type = 'journey';
             }
-            if (this.router.url.includes('newplan') && this.parent_programId, type, this.categoryId) { // if admin mode -> new plan
+            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new plan
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
             } else {
@@ -283,7 +282,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 if (hasOrganizerAccess) { // if hasOrganizerAccess
                     this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
                     await this.loading.dismiss();
-                } else { //if do not have organizer access
+                } else { // if do not have organizer access
                     this.router.navigate(['/app/activity/' + selectedProgram._id]);
                     setTimeout(async () => {
                         await this.loading.dismiss();

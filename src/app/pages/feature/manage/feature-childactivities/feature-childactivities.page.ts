@@ -187,42 +187,30 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       await modal.present();
       const {data: moments} = await modal.onDidDismiss();
       if (moments && moments.length) {
-        // if choosing Plans as child activities (e.g. Pick Plan)
-        if (this.categoryId === '5c915476e172e4e64590e349') {
-          // if the current Activity has To-Do enabled (e.g. relationships)
-          if (this.moment.resource.matrix_number[0].includes(10210)) {
-            await this.momentService.adoptPlan({
-              operation: 'adopt plan',
-              planIds: moments.map((moment) => moment._id),
-              parent_programId: this.momentId,
-            });
-          }
-        } else {
-          for (const moment of moments) {
-            // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
-            moment.calendar = { // reset the calendar
-              title: moment.matrix_string[0][0],
-              location: '',
-              notes: '',
-              startDate: new Date().toISOString(),
-              endDate: new Date().toISOString(),
-              options: {
-                firstReminderMinutes: 0,
-                secondReminderMinutes: 0,
-                reminders: []
-              }
-            };
-            moment.parent_programs = [this.momentId];
-          }
-          const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
-          for (const clonedMoment of clonedMoments) {
-            const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
-            if (index > -1) {
-              clonedMoment.resource = moments[index].resource; // clone the populated resource
+        for (const moment of moments) {
+          // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+          moment.calendar = { // reset the calendar
+            title: moment.matrix_string[0][0],
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+              firstReminderMinutes: 0,
+              secondReminderMinutes: 0,
+              reminders: []
             }
-          }
-          this.activities.unshift(...clonedMoments);
+          };
+          moment.parent_programs = [this.momentId];
         }
+        const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
+        for (const clonedMoment of clonedMoments) {
+          const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+          if (index > -1) {
+            clonedMoment.resource = moments[index].resource; // clone the populated resource
+          }
+        }
+        this.activities.unshift(...clonedMoments);
       }
     }
   }

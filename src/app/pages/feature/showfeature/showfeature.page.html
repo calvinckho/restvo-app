@@ -546,7 +546,7 @@
         </div>
       </div>
       <div class="component" *ngIf="item === 10370"> <!--Plan-->
-        <ion-slides class="program-slides" #plansSlides [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+        <ion-slides class="program-slides" #plansSlides [options]="{grabCursor: true, updateOnWindowResize: true}">
           <ion-slide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
             <ion-card class="program-card" (click)="openProgram($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
               <ion-card-content class="ion-no-padding">
@@ -918,7 +918,7 @@
               </ion-item>
             </ion-item-group>
             <div class="component" *ngIf="item === 10370"> <!--Plan-->
-              <ion-slides class="program-slides" #plansSlides [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+              <ion-slides class="program-slides" #plansSlides [options]="{grabCursor: true, updateOnWindowResize: true}">
                 <ion-slide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
                   <ion-card class="program-card" (click)="openProgram($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                     <ion-card-header class="ion-no-padding">
@@ -1423,7 +1423,7 @@
     <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Communities/Programs Section Header-->
       <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured Communities</ion-label>
     </ion-item>
-    <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{slidesPerView: 3.5, grabCursor: true, updateOnWindowResize: true}">
+    <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{grabCursor: true, updateOnWindowResize: true}">
       <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
         <ion-card class="program-card" (click)="openProgram($event, program)">
           <ion-card-header class="ion-no-padding">

@@ -53,7 +53,7 @@
         </ion-item>
         <ion-grid class="program-grid">
           <ion-row class="program-row">
-            <ion-col class="ion-align-self-center" *ngFor="let program of result.programs" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2" [hidden]="program._id === '5d5785b462489003817fee18'">
+            <ion-col class="ion-align-self-center" *ngFor="let program of result.programs" size="auto" [hidden]="program._id === '5d5785b462489003817fee18'">
               <ion-card class="program-card" (click)="selectedProgram = program._id">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header class="ion-no-padding">
                   <div class="program-photo-container" [ngClass]="{'opacity': program._id !== selectedProgram }">
