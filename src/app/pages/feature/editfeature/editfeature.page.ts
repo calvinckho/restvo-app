@@ -819,6 +819,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             categoryId = '5e9f46e1c8bf1a622fec69d5'; // only Journey is allowed in Picker
             allowSwitchCategory = false; // lock it so user is not allowed to switch category
         }
+        // limit to modalPage usage because subpanel view picker will only clone Recent activities.
+        // because we want to enable referencing of Recent activities, we are limited to only using a picker modal
         const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', categoryId: categoryId, allowSwitchCategory: allowSwitchCategory, modalPage: true}});
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
