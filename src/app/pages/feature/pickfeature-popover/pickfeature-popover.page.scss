@@ -1,5 +1,9 @@
 app-pickfeature-popover {
 
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
   .new-section {
     padding-top: 8px;
   }

@@ -15,6 +15,11 @@
     <ion-title *ngIf="step === 1 && !categoryId">Choose from Available Templates</ion-title>
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
+      <ion-buttons slot="end">
+          <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
+              <ion-icon name="close"></ion-icon>
+          </ion-button>
+      </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="step === 1">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
@@ -104,7 +109,7 @@
                 <div class="program-name dark">Create</div>
               </ion-card>
             </ion-col>
-            <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || sample.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+            <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || sample.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
               <ion-card class="program-card" (click)="selectSample(sample)">
                 <ion-card-header class="ion-no-padding">
                   <div class="program-photo-container">
@@ -123,7 +128,7 @@
     </div>
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
       <ion-row class="program-row">
-        <ion-col class="ion-align-self-center" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : (categoryId === '5e17acd47b00ea76b75e5a71' ? calendarService.calendarItems.length - 1 : 50); index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!(calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || calendarItem.moment.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && (calendarItem.moment.categories.indexOf(categoryId) > -1))">
+        <ion-col class="ion-align-self-center" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : (categoryId === '5e17acd47b00ea76b75e5a71' ? calendarService.calendarItems.length - 1 : 50); index as i" size-xs="6" [hidden]="!(calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || calendarItem.moment.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && (calendarItem.moment.categories.indexOf(categoryId) > -1))">
           <ion-card class="program-card" (click)="selectCalendarItem(calendarItem)" *ngIf="calendarItem.moment" >   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
