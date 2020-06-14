@@ -403,10 +403,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               } else if (data.type === 'refresh calendar items') {
                   // load content calendars from backend.
                   // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
-                  // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                   if (this.hasOrganizerAccess) {
                       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
                       this.adminOrPublicAccessContentCalendars = results || [];
+                  // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                   } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
                       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                       this.adminOrPublicAccessContentCalendars = results || [];
@@ -594,6 +594,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
                 if (results && results.hasOrganizerLeaderAccess) {
+                    console.log("access", this.hasOrganizerAccess, results.hasOrganizerLeaderAccess)
                     this.hasOrganizerAccess = this.hasOrganizerAccess || results.hasOrganizerLeaderAccess;
                 }
                 for (const response of this.responses) {
@@ -613,10 +614,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 // load content calendars from backend.
                 // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
-                // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                 if (this.hasOrganizerAccess) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
                     this.adminOrPublicAccessContentCalendars = results || [];
+                // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                 } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                     this.adminOrPublicAccessContentCalendars = results || [];
