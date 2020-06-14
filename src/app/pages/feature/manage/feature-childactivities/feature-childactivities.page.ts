@@ -103,7 +103,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   // in Plan, allow the user to choose to clone an Activity from the marketplace
   async chooseFromMarketplace() {
     let componentProps: any;
-    componentProps = {title: 'Choose from Available Templates', categoryId: 'all', allowCreate: true, allowSwitchCategory: false };
+    componentProps = {title: 'Choose from Available Templates', categoryId: 'all', allowCreate: false, allowSwitchCategory: false };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
     } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
@@ -187,9 +187,9 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       await modal.present();
       const {data: moments} = await modal.onDidDismiss();
       if (moments && moments.length) {
-        // if choosing Plans as child activities
+        // if choosing Plans as child activities (e.g. Pick Plan)
         if (this.categoryId === '5c915476e172e4e64590e349') {
-          // only if To-Do is enabled (e.g. relationships)
+          // if the current Activity has To-Do enabled (e.g. relationships)
           if (this.moment.resource.matrix_number[0].includes(10210)) {
             await this.momentService.adoptPlan({
               operation: 'adopt plan',

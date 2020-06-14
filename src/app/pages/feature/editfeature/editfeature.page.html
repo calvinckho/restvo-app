@@ -32,7 +32,7 @@
      <!-- <ion-input *ngIf="editTemplate" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].value[5]" [(ngModel)]="moment.resource['en-US'].value[0]"></ion-input> &lt;!&ndash;Template Type&ndash;&gt;-->
       <ion-button (click)="edit()">{{resource['en-US'].value[8]}} {{resource['en-US'].value[9]}}</ion-button> <!--Customize Template-->
     </ion-item>
-    <ion-item-group *ngIf="moment.program">
+    <ion-item-group *ngIf="moment.program && moment.program.length">
       <ion-item>
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="code-working"></ion-icon></div>
         <ion-label>Program Id</ion-label>

@@ -63,9 +63,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
+        this.programId = this.programId || this.route.snapshot.paramMap.get('programId');
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
-        this.allowCreate = this.allowCreate || !!this.route.snapshot.paramMap.get('allowCreate');
+        this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
         if (this.categoryId === 'all') { // if category is provided, skip to step 1
             this.step = 1;
@@ -156,12 +157,24 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         if (this.modalPage) {
             this.close();
         }
+        const data: any = {};
+        if (this.categoryId) {
+            data.categoryId = this.categoryId;
+        }
+        if (this.programId) {
+            data.programId = this.programId;
+        }
+        if (this.parent_programId) {
+            data.parent_programId = this.parent_programId;
+        }
         if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
         } else if (!this.modalPage && this.platform.width() >= 992) {
-            this.router.navigate([{ outlets: { sub: ['create', {categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, subpanel: true }] }}]);
+            data.subpanel = true;
+            this.router.navigate([{ outlets: { sub: ['create', data] }}]);
         } else { // create other Activities
-            this.momentService.editMoment({categoryId: this.categoryId, programId: this.programId, parent_programId: this.parent_programId, modalPage: true });
+            data.modalPage = true;
+            this.momentService.editMoment(data);
         }
     }
 
