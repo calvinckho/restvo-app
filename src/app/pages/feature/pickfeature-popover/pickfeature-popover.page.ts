@@ -120,7 +120,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         const selectedMoment = JSON.parse(JSON.stringify(calendarItem.moment));
         selectedCalendar.moment = selectedMoment._id;
         selectedMoment.calendar = selectedCalendar;
-        selectedMoment.cloned = false;
+        if (this.subpanel) {
+            // if handled in sub panel, clone it
+            selectedMoment.cloned = 'new';
+        } else { // in modalPage, which happens in chat and editfeature where user is referencing
+            selectedMoment.cloned = false;
+        }
         selectedMoment.joinAs = this.joinAs;
         this.selectedMoments.push(selectedMoment);
         if (this.selectedMoments.length > this.maxMomentCount) {
@@ -280,7 +285,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
                 }
                 if (hasOrganizerAccess) { // if hasOrganizerAccess
-                    this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
+                    if (this.router.url.includes('invite') || this.router.url.includes('choose')) {
+                        this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
+                    } else {
+                        this.router.navigate([{ outlets: { sub: null }}]);
+                    }
                     await this.loading.dismiss();
                 } else { // if do not have organizer access
                     this.router.navigate(['/app/activity/' + selectedProgram._id]);
@@ -291,6 +300,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     }, 2000);
                 }
             }
+            this.cleanup();
         }
     }
 
@@ -308,6 +318,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else {
             this.location.back();
         }
+        this.cleanup();
+    }
+
+    cleanup() {
         this.searchKeyword = '';
         this.currentView = 'new';
         this.samples = [];
