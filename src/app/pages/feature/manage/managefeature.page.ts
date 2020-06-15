@@ -244,11 +244,14 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   async changeManageActivity(event) {
     event.stopPropagation();
-    this.storage.set('currentManageActivityId', event.detail.value);
-    this.userData.currentManageActivityId = event.detail.value;
-    if (!this.modalPage) {
-      this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+    if (!this.initialSetupCompleted) {
+      this.storage.set('currentManageActivityId', event.detail.value);
+      this.userData.currentManageActivityId = event.detail.value;
+      if (!this.modalPage) {
+        this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+      }
     }
+
   }
 
   async upOneLevel(momentId) {

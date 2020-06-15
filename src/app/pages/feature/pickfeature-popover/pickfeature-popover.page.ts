@@ -1,5 +1,11 @@
-import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, LoadingController, ModalController, Platform} from '@ionic/angular';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    ActionSheetController,
+    AlertController,
+    LoadingController,
+    ModalController,
+    Platform
+} from '@ionic/angular';
 import {Location} from "@angular/common";
 import {CacheService} from 'ionic-cache';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -16,7 +22,6 @@ import {UserData} from "../../../services/user.service";
   encapsulation: ViewEncapsulation.None
 })
 export class PickfeaturePopoverPage implements OnInit, OnDestroy {
-
     @Input() title: any;
     @Input() modalPage: any;
     @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Journey', 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
@@ -25,7 +30,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
     // relationship: joinAs
-    @Input() joinAs; // join as user_list_1 (participant) or user_list_3 (leader)
+    @Input() joinAs; // join createCalendaras user_list_1 (participant) or user_list_3 (leader)
+    // create Content Calandar
+    @Input() scheduleId: any;
+    @Input() disableSelect: any;
 
     @Input() allowCreate = false;
     @Input() allowSwitchCategory;
@@ -35,6 +43,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     searchKeyword = '';
     currentView = 'new';
     samples = [];
+    recentCalendarItems = [];
     ionSpinner = false;
     pageNum = 0;
     reachedEnd = false;
@@ -50,6 +59,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         public platform: Platform,
         private location: Location,
         private alertCtrl: AlertController,
+        private actionSheetCtrl: ActionSheetController,
         private cache: CacheService,
         public resourceService: Resource,
         public modalCtrl: ModalController,
@@ -66,6 +76,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.programId = this.programId || this.route.snapshot.paramMap.get('programId');
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
+        this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
+
+        this.disableSelect = this.disableSelect || this.route.snapshot.paramMap.get('disableSelect') === 'true';
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
         if (this.categoryId === 'all') { // if category is provided, skip to step 1
@@ -83,6 +96,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     refreshAfterCreateMomentHandler = async () => {
         if (this.userData.user) {
             this.loadSamples();
+            this.renderRecentList();
         }
     };
 
@@ -114,23 +128,71 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         }
     }
 
-    selectCalendarItem(calendarItem) {
+    async selectCalendarItem(event, calendarItem) {
         // restore moment as parent and calendar as child object
         const selectedCalendar = JSON.parse(JSON.stringify(calendarItem));
         const selectedMoment = JSON.parse(JSON.stringify(calendarItem.moment));
         selectedCalendar.moment = selectedMoment._id;
         selectedMoment.calendar = selectedCalendar;
-        if (this.subpanel) {
-            // if handled in sub panel, clone it
-            selectedMoment.cloned = 'new';
-        } else { // in modalPage, which happens in chat and editfeature where user is referencing
-            selectedMoment.cloned = false;
+        let actionSheet: any;
+        let buttons = [];
+        if (!this.disableSelect) {
+            buttons = buttons.concat([
+                {
+                    text: 'Select',
+                    handler: () => {
+                        const navTransition = actionSheet.dismiss();
+                        navTransition.then( async () => {
+                            selectedMoment.cloned = false;
+                            selectedMoment.joinAs = this.joinAs;
+                            this.selectedMoments.push(selectedMoment);
+                            if (this.selectedMoments.length > this.maxMomentCount) {
+                                this.selectedMoments.splice(0, 1);
+                            }
+                        });
+                    }
+                },
+            ]);
         }
-        selectedMoment.joinAs = this.joinAs;
-        this.selectedMoments.push(selectedMoment);
-        if (this.selectedMoments.length > this.maxMomentCount) {
-            this.selectedMoments.splice(0, 1);
-        }
+        buttons = buttons.concat([
+            {
+                text: 'Clone', // View
+                //role: 'destructive',
+                //icon: 'trash',
+                handler: () => {
+                    const navTransition = actionSheet.dismiss();
+                    navTransition.then( async () => {
+                        selectedMoment.cloned = 'new';
+                        selectedMoment.joinAs = this.joinAs;
+                        this.selectedMoments.push(selectedMoment);
+                        if (this.selectedMoments.length > this.maxMomentCount) {
+                            this.selectedMoments.splice(0, 1);
+                        }
+                    });
+                }
+            },
+            {
+                text: 'View', // View
+                //role: 'destructive',
+                //icon: 'trash',
+                handler: () => {
+                    const navTransition = actionSheet.dismiss();
+                    navTransition.then( async () => {
+                        this.openFeature(event, selectedMoment);
+                    });
+                }
+            },
+            {
+                text: 'Cancel', // Cancel
+                //icon: 'close-circle',
+                role: 'cancel',
+            }]);
+        actionSheet = await this.actionSheetCtrl.create({
+            header: selectedMoment.matrix_string[0][0],
+            buttons: buttons,
+            cssClass: 'level-15'
+        });
+        await actionSheet.present();
     }
 
     selectSample(sample) {
@@ -140,6 +202,26 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         if (this.selectedMoments.length > this.maxMomentCount) {
             this.selectedMoments.splice(0, 1);
         }
+    }
+
+    async executeSearch(event) {
+        event.stopPropagation();
+        this.renderRecentList();
+    }
+
+    async cancelSearch(event) {
+        event.stopPropagation();
+        this.renderRecentList();
+    }
+
+    renderRecentList() {
+        this.recentCalendarItems = [];
+        const requested_categories = ['5c915475e172e4e64590e348', '5e9f46e1c8bf1a622fec69d5', '5dfdbb547b00ea76b75e5a70', '5e9fe35cc8bf1a622fec69d7', '5e9fe372c8bf1a622fec69d8'];
+        this.calendarService.calendarItems.forEach((calendarItem) => {
+            if (calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.matrix_string[0][0].toLowerCase().includes(this.searchKeyword.toLowerCase()) || calendarItem.moment.resource['en-US'].value[0].toLowerCase().includes(this.searchKeyword.toLowerCase())) && (this.categoryId ? calendarItem.moment.categories.includes(this.categoryId) : requested_categories.find((c) => calendarItem.moment.categories.includes(c)))) {
+                this.recentCalendarItems.push(calendarItem);
+            }
+        });
     }
 
     async openFeature(event, moment) {
@@ -253,9 +335,31 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else {
                 selectedProgram = this.selectedMoments[0];
             }
+            // in invite flow, if joinAs is provided, add user accordingly
             if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
                 await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
             }
+
+            // if scheduleId is provided by Admin - Schedule view, also create Content Calendar
+            if (this.scheduleId) {
+                const newCalendarItem: any = {
+                    moment: selectedProgram._id,
+                    title: selectedProgram.matrix_string[0][0],
+                    schedule: this.scheduleId,
+                    startDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+                    endDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+                    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+                    endDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+                    options: { // the details of the repeating schedule
+                        firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
+                    }
+                };
+                const result: any = await this.momentService.loadSchedule(this.scheduleId);
+                newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
+                await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+            }
+            // route user upon completing all operation
+            // if Admin portal - New Plan, send the user to the category page
             let type: any;
             switch (this.categoryId) {
                 case '5e9fe372c8bf1a622fec69d8':
@@ -276,7 +380,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new plan
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
-            } else {
+            } else if (this.router.url.includes('invite') || this.router.url.includes('choose')) { // else, in invite flow,  send user to the addParticipant page if the user is an organizer, or to the
                 let hasOrganizerAccess: any;
                 // check hasOrganizerAccess
                 if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'object') { // if user_list is populated, i.e. array of objects
@@ -284,12 +388,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 } else if (selectedProgram.user_list_2 && selectedProgram.user_list_2.length && selectedProgram.user_list_2[0] && typeof selectedProgram.user_list_2[0] === 'string') { // if user_list is not populated, i.e. array of strings
                     hasOrganizerAccess = selectedProgram.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role);
                 }
+
                 if (hasOrganizerAccess) { // if hasOrganizerAccess
-                    if (this.router.url.includes('invite') || this.router.url.includes('choose')) {
-                        this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
-                    } else {
-                        this.router.navigate([{ outlets: { sub: null }}]);
-                    }
+                    this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/people/' + selectedProgram._id]);
                     await this.loading.dismiss();
                 } else { // if do not have organizer access
                     this.router.navigate(['/app/activity/' + selectedProgram._id]);
@@ -299,9 +400,30 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         this.momentService.addParticipants(selectedProgram, this.resourceService.resource, 'both', ['user_list_1'], this.resourceService.resource['en-US'].value[32] + ' to ' + selectedProgram.matrix_string[0][0], this.resourceService.resource['en-US'].value[32]);
                     }, 2000);
                 }
+            } else { // in Admin - Schedule view
+                this.router.navigate([{ outlets: { sub: null }}]);
+                await this.loading.dismiss();
             }
             this.cleanup();
         }
+    }
+
+    async deleteContent(content) {
+        const alert = await this.alertCtrl.create({
+            header: 'Delete ' + content.resource['en-US'].value[0],
+            message: 'Are you sure you want to permanently delete ' + content.matrix_string[0][0] + '? All calendar items that uses this content will also be removed from the timeline.',
+            buttons: [{ text: 'Ok',
+                handler: () => {
+                    const navTransition = alert.dismiss();
+                    navTransition.then( async () => {
+                        // Remove the Content
+                        await this.momentService.delete(content);
+                    });
+                }},
+                { text: 'Cancel' }],
+            cssClass: 'level-15'
+        });
+        alert.present();
     }
 
     back() {

@@ -19,10 +19,10 @@
   <ion-list *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--Show except in Plans-->
     <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
       <ion-buttons class="select-col">
-        <ion-button (click)="selectParticipant($event, activity)" fill="clear" *ngIf="!activity.select">
+        <ion-button (click)="selectActivity($event, activity)" fill="clear" *ngIf="!activity.select">
           <ion-icon color="tertiary" name="radio-button-off"></ion-icon>
         </ion-button>
-        <ion-button (click)="unselectParticipant($event, activity)" fill="clear" *ngIf="activity.select" >
+        <ion-button (click)="unselectActivity($event, activity)" fill="clear" *ngIf="activity.select" >
           <ion-icon color="tertiary" name="checkmark-circle"></ion-icon>
         </ion-button>
       </ion-buttons>

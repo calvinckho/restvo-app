@@ -1,13 +1,10 @@
-<ion-header *ngIf="modalPage">
-  <ion-toolbar>
+<ion-header >
+  <ion-toolbar *ngIf="modalPage">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
-</ion-header>
-
-<ion-content *ngIf="schedule">
   <ion-toolbar class="filter">
     <ion-segment [(ngModel)]="view">
       <ion-segment-button value="timeline">Timeline</ion-segment-button>
@@ -15,6 +12,9 @@
       <ion-segment-button value="settings" [disabled]="!scheduleId">Settings</ion-segment-button>
     </ion-segment>
   </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="schedule">
   <ion-list *ngIf="view === 'timeline'">
     <ion-item-group>
       <ion-item lines="none">
@@ -90,16 +90,12 @@
       </ion-button>
     </ion-row>
     <ion-item-divider></ion-item-divider>
-    <ion-row *ngIf="this.schedule._id && !timeline.length" class="ion-justify-content-center">
-      <ion-col class="ion-margin-horizontal">
-        <ion-note>Your timeline is empty. Use the 'Content' tab to add content.</ion-note>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!this.schedule._id" class="ion-justify-content-center">
-      <ion-col class="ion-margin-horizontal">
-        <ion-note>Click 'Create Schedule' to begin.</ion-note>
-      </ion-col>
-    </ion-row>
+    <ion-item *ngIf="this.schedule._id && !timeline.length">
+      <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
+    </ion-item>
+    <ion-item *ngIf="!this.schedule._id">
+      <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
+    </ion-item>
     <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
       <ion-item *virtualItem="let calendaritem; let j = index;">
         <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
@@ -114,6 +110,12 @@
         </ion-buttons>
       </ion-item>
     </ion-virtual-scroll>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="addContenCalendar()" color="primary" fill="solid" expand="full">
+        <ion-icon name="add"></ion-icon>
+        <ion-label>Add New</ion-label>
+      </ion-button>
+    </ion-row>
   </ion-list>
     <ion-list *ngIf="view === 'content'">
       <ion-item lines="none">
@@ -136,7 +138,7 @@
             </ion-card>
           </ion-col>
           <ion-col class="ion-align-self-center" *ngFor="let content of activities; index as i" size="auto" [hidden]="!((content.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || content.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
-            <ion-card class="program-card" (click)="chooseContent(content)">
+            <ion-card class="program-card" (click)="defaultContentAction($event, content)">
               <ion-card-header class="ion-no-padding">
                 <div class="program-photo-container">
                   <ion-img class="program-photo" [src]="(content.assets && content.assets.length && content.assets[0]) | background: content._id"></ion-img>
@@ -144,9 +146,9 @@
               </ion-card-header>
               <div class="program-type"><ion-badge color="button1">{{content.resource['en-US'].value[0]}}</ion-badge></div>
               <div class="program-name light">{{content.matrix_string[0][0]}}</div>
-              <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, content, 'edit')" fill="clear" size="small">
+              <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openChildActivity($event, content, 'edit')" fill="clear" size="small">
                 <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
-              </ion-button>
+              </ion-button>-->
             </ion-card>
           </ion-col>
         </ion-row>

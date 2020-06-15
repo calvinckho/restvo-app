@@ -4,6 +4,46 @@ app-pickfeature-popover {
   display: flex;
   flex-direction: column;
 
+  .column-label {
+    text-align: center;
+  }
+
+  .select-col {
+    width: 8%;
+  }
+
+  .user-col {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 40%;
+  }
+
+  .avatar-col {
+    width: 20%
+  }
+
+  .name-col {
+    width: 40%;
+  }
+
+  .user-avatar {
+    margin: 0 auto;
+  }
+
+  .name-label {
+    margin: 5px auto 0 auto;
+    color: grey;
+    font-size: 12px;
+  }
+
+  .type-col {
+    width: 25%;
+  }
+
+  .actions-col {
+    width: 15%;
+  }
+
   .new-section {
     padding-top: 8px;
   }

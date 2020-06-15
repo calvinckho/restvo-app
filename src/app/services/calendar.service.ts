@@ -60,7 +60,6 @@ export class CalendarService {
             this.calendarItems = calendarItems || [];
         } catch (err) {
             this.calendarItems = [];
-            console.log("cannot load calendarItems from storage");
         }
         const lastUpdatedAt = this.findLatestTimeStamp(this.calendarItems);
         try {
