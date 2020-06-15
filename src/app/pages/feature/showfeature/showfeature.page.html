@@ -217,11 +217,11 @@
           </div>
         </ion-list>
       </ion-item-group>
-      <ion-item *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
+      <ion-item (click)="select.open($event)" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="flag"></ion-icon></div>
         <div *ngFor="let goal of parentRelationshipListOfGoals" class="moment-input">{{parentRelationshipGoalAttributes.includes(goal[0]) ? goal[5] : "Assigned To"}}</div>
         <ion-label hidden="true">Goals</ion-label>
-        <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end">
+        <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end" hidden>
           <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [class.selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
         </ion-select>
       </ion-item>
