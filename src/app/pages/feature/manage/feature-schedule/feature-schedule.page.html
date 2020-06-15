@@ -85,7 +85,7 @@
       <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && this.parentCategoryId === '5c915476e172e4e64590e349'"> <!--Plan's Schedule-->
         <span>Save</span>
       </ion-button>
-      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence"> <!--Only available for non-Plan child Activity-->
+      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
         <span>Repopulate Timeline</span>
       </ion-button>
     </ion-row>
@@ -111,7 +111,7 @@
       </ion-item>
     </ion-virtual-scroll>
     <ion-row class="ion-justify-content-center">
-      <ion-button (click)="addContenCalendar()" color="primary" fill="solid" expand="full">
+      <ion-button (click)="addContenCalendar()" shape="round" color="primary" fill="solid" expand="full">
         <ion-icon name="add"></ion-icon>
         <ion-label>Add New</ion-label>
       </ion-button>
