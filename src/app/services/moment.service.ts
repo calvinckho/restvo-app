@@ -15,6 +15,7 @@ import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeo
 import { Observable, BehaviorSubject } from 'rxjs';
 import {Storage} from "@ionic/storage";
 import {PaymentService} from "./payment.service";
+import {Router} from "@angular/router";
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -69,6 +70,7 @@ export class Moment {
     public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
 
     constructor(private http: HttpClient,
+                private router: Router,
                 private storage: Storage,
                 private platform: Platform,
                 private alertCtrl: AlertController,
@@ -593,11 +595,18 @@ export class Moment {
     async delete(moment) {
         const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id, this.authService.httpAuthOptions)
             .toPromise();
-        await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
-        await this.calendarService.getUserCalendar();
-        await this.chatService.getAllUserConversations();
-        this.userData.refreshAppPages();
-        return promise;
+        let duration = 5;
+        if (this.router.url.includes('outlets')) { // just in case the subpanel view of the deleted Moment is open
+            this.router.navigate([{ outlets: { sub: null }}]);
+            duration = 1500; // if reseting outlet, provide a 1.5 sec delay
+        }
+        setTimeout(async () => {
+            await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
+            await this.calendarService.getUserCalendar();
+            await this.chatService.getAllUserConversations();
+            this.userData.refreshAppPages();
+            return promise;
+        }, duration);
     }
 
     async loadActivitySchedules(activityId) {

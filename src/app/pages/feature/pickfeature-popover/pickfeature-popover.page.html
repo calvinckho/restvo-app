@@ -16,13 +16,19 @@
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
-          <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
+          <ion-button (click)="this.close(); router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
               <ion-icon name="close"></ion-icon>
           </ion-button>
       </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="step === 1">
-    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" debounce="500" placeholder="Search"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar class="filter" *ngIf="step === 1">
+    <ion-segment [(ngModel)]="currentView">
+      <ion-segment-button value="new">New</ion-segment-button>
+      <ion-segment-button value="recent">Recent</ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
@@ -89,12 +95,6 @@
     </ion-row>
   </ion-grid>
   <div *ngIf="step === 1">
-    <ion-toolbar class="filter">
-      <ion-segment [(ngModel)]="currentView">
-        <ion-segment-button value="new">New</ion-segment-button>
-        <ion-segment-button value="recent">Recent</ion-segment-button>
-      </ion-segment>
-    </ion-toolbar>
     <div *ngIf="currentView === 'new'" class="new-section">
         <!--<ion-label class="program-title ion-margin" *ngIf="(categoryId !== '5e17acd47b00ea76b75e5a71') && parent.matrix_string">{{parent.matrix_string[0][0]}}</ion-label>-->
         <ion-grid class="program-grid">
@@ -127,22 +127,41 @@
       </ion-grid>
     </div>
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
-      <ion-row class="program-row">
+      <ion-virtual-scroll [items]="recentCalendarItems" approxItemHeight="100px">
+        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)">
+          <div class="avatar-col" *ngIf="calendarItem.moment">
+            <ion-avatar class="user-avatar">
+              <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
+            </ion-avatar>
+          </div>
+          <div class="name-col" *ngIf="calendarItem.moment">
+            <ion-label class="name-label ion-text-wrap">
+              {{calendarItem.moment.matrix_string[0][0]}}
+            </ion-label>
+          </div>
+          <div class="type-col ion-text-wrap"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
+          <!--<div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="calendarItem.moment.array_boolean[1]">Share in Marketplace</span></div>-->
+          <ion-buttons class="actions-col ion-justify-content-evenly" *ngIf="calendarItem.moment">
+            <ion-button (click)="openFeature($event, calendarItem.moment)" fill="clear"><ion-icon name="eye-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-virtual-scroll>
+      <!--<ion-row class="program-row">
         <ion-col class="ion-align-self-center" size="auto" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : (categoryId === '5e17acd47b00ea76b75e5a71' ? calendarService.calendarItems.length - 1 : 50); index as i" [hidden]="!(calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || calendarItem.moment.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && (calendarItem.moment.categories.indexOf(categoryId) > -1))">
-          <ion-card class="program-card" (click)="selectCalendarItem(calendarItem)" *ngIf="calendarItem.moment" >   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+          <ion-card class="program-card" (click)="selectCalendarItem($event, calendarItem)" *ngIf="calendarItem.moment" >   &lt;!&ndash;[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"&ndash;&gt;
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
                 <ion-img class="program-photo" [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
               </div>
             </ion-card-header>
-            <div class="program-type"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
             <div class="program-name light">{{calendarItem.moment.matrix_string[0][0]}}</div>
+            <div class="program-type"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
             <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, calendarItem.moment)" fill="clear" size="small">
               <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
             </ion-button>
           </ion-card>
         </ion-col>
-      </ion-row>
+      </ion-row>-->
     </ion-grid>
   </div>
   <ion-grid *ngIf="step === 2" class="full-height">

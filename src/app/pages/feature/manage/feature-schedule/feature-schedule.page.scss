@@ -53,7 +53,7 @@ app-feature-schedule {
 
   .content-count {
     margin: 0 10px;
-    width: 20px;
+    width: 10%;
   }
 
   .content-date {
@@ -140,5 +140,9 @@ app-feature-schedule {
     position: absolute;
     top: 0;
     right: 2px;
+  }
+
+  .message-label {
+    margin: 0 auto;
   }
 }

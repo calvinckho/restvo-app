@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, ModalController, Platform} from "@ionic/angular";
+import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ActionSheetController, AlertController, IonContent, ModalController, Platform} from "@ionic/angular";
 import {Moment} from "../../../../services/moment.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
@@ -8,6 +8,7 @@ import {UserData} from "../../../../services/user.service";
 import {Resource} from "../../../../services/resource.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FeatureChildActivitiesPage} from "../feature-childactivities/feature-childactivities.page";
+import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
 
 @Component({
   selector: 'app-feature-schedule',
@@ -16,6 +17,7 @@ import {FeatureChildActivitiesPage} from "../feature-childactivities/feature-chi
   encapsulation: ViewEncapsulation.None
 })
 export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit {
+  @ViewChild(IonContent, {static: false}) content: IonContent;
 
   @Input() modalPage: any;
   @Input() moment: any; // the program object
@@ -70,6 +72,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public router: Router,
       public platform: Platform,
       public alertCtrl: AlertController,
+      public actionSheetCtrl: ActionSheetController,
       public authService: Auth,
       public chatService: Chat,
       public calendarService: CalendarService,
@@ -271,10 +274,138 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     return array;
   }
 
+  async addContenCalendar() {
+    let componentProps: any;
+    componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, scheduleId: this.scheduleId };
+    if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
+      componentProps.programId = this.momentId;
+    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
+      componentProps.parent_programId = this.momentId;
+      componentProps.maxMomentCount = 1;
+      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
+        componentProps.allowCreate = false;
+      }
+    } else { // pick other activities
+      componentProps.parent_programId = this.momentId;
+    }
+    if (this.platform.width() >= 992) {
+      componentProps.subpanel = true;
+      this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
+    } else {
+      componentProps.modalPage = true;
+      const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
+      await modal.present();
+      const {data: moments} = await modal.onDidDismiss();
+      let selectedProgram;
+
+      if (moments && moments[0] && moments[0].cloned === 'new') { // cloning a sample.
+          // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+        moments[0].calendar = { // reset the calendar
+            title: moments[0].matrix_string[0][0],
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+              firstReminderMinutes: 0,
+              secondReminderMinutes: 0,
+              reminders: []
+            }
+          };
+        moments[0].parent_programs = [this.momentId];
+        const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
+        for (const clonedMoment of clonedMoments) {
+          const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+          if (index > -1) {
+            clonedMoment.resource = moments[index].resource; // clone the populated resource
+          }
+        }
+        this.activities.unshift(...clonedMoments);
+        selectedProgram = clonedMoments[0];
+      } else if (moments && moments[0]) {
+        selectedProgram = moments[0];
+      }
+      if (selectedProgram) {
+        const newCalendarItem: any = {
+          moment: selectedProgram._id,
+          title: selectedProgram.matrix_string[0][0],
+          schedule: this.schedule._id,
+          startDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+          endDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+          startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+          endDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+          options: { // the details of the repeating schedule
+            firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
+          },
+          uniqueAnswersPerCalendar: this.schedule.array_boolean[1]
+        };
+        await this.momentService.touchContentCalendarItems(this.momentId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+      }
+    }
+  }
+
+  // add New Content to Content tab
+  async addNewContent() {
+    let componentProps: any;
+    componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, disableSelect: true };
+    if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
+      componentProps.programId = this.momentId;
+    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
+      componentProps.parent_programId = this.momentId;
+      componentProps.maxMomentCount = 1;
+      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
+        componentProps.allowCreate = false;
+      }
+    } else { // pick other activities
+      componentProps.parent_programId = this.momentId;
+    }
+    if (this.platform.width() >= 992) {
+      componentProps.subpanel = true;
+      this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
+    } else {
+      componentProps.modalPage = true;
+      const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
+      await modal.present();
+      const {data: moments} = await modal.onDidDismiss();
+      let selectedMoment;
+      if (moments && moments[0] && moments[0].cloned === 'new') { // cloning a sample.
+        // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+        moments[0].calendar = { // reset the calendar
+          title: moments[0].matrix_string[0][0],
+          location: '',
+          notes: '',
+          startDate: new Date().toISOString(),
+          endDate: new Date().toISOString(),
+          options: {
+            firstReminderMinutes: 0,
+            secondReminderMinutes: 0,
+            reminders: []
+          }
+        };
+        moments[0].parent_programs = [this.momentId];
+        const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
+        for (const clonedMoment of clonedMoments) {
+          const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+          if (index > -1) {
+            clonedMoment.resource = moments[index].resource; // clone the populated resource
+          }
+        }
+        this.activities.unshift(...clonedMoments);
+        selectedMoment = clonedMoments[0];
+      } else if (moments && moments[0]) { // select is disabled so thi is logically impossible
+        selectedMoment = moments[0];
+      }
+      if (selectedMoment) {
+        this.chooseContent(selectedMoment);
+      }
+    }
+  }
+
   async chooseContent(content) {
     this.schedule.child_moments.push(content);
     this.schedule.operation = 'update schedule';
     await this.momentService.touchSchedule(this.schedule);
+    this.content.scrollToBottom(50);
   }
 
   async removeContent(event, index) {
@@ -289,7 +420,84 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     await this.momentService.touchContentCalendarItems(momentId, {operation: 'delete calendar items',  calendaritems: [calendaritem]});
   }
 
-  // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction
+  async defaultContentAction(event, content) {
+    let actionSheet: any;
+    let buttons = [];
+    buttons = buttons.concat([
+      {
+        text: 'Add to Content list',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.chooseContent(content);
+          });
+        }
+      },
+      {
+        text: 'View', // View
+        //role: 'destructive',
+        //icon: 'trash',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.openChildActivity(event, content, 'view');
+          });
+        }
+      },
+      {
+        text: 'Edit', // Edit
+        //role: 'destructive',
+        //icon: 'trash',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.openChildActivity(event, content, 'edit');
+          });
+        }
+      },
+      {
+        text: 'Delete', // Delete
+        role: 'destructive',
+        //icon: 'trash',
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.deleteContent(content);
+          });
+        }
+      },
+      {
+        text: 'Cancel', // Cancel
+        //icon: 'close-circle',
+        role: 'cancel',
+      }]);
+    actionSheet = await this.actionSheetCtrl.create({
+      header: content.matrix_string[0][0],
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
+  }
+
+  async deleteContent(content) {
+    const alert = await this.alertCtrl.create({
+      header: 'Delete ' + content.resource['en-US'].value[0],
+      message: 'Are you sure you want to permanently delete ' + content.matrix_string[0][0] + '? All calendar items that uses this content will also be removed from the timeline.',
+      buttons: [{ text: 'Ok',
+        handler: () => {
+          const navTransition = alert.dismiss();
+          navTransition.then( async () => {
+            // Remove the Content
+            await this.momentService.delete(content);
+          });
+        }},
+        { text: 'Cancel' }],
+      cssClass: 'level-15'
+    });
+    alert.present();
+  }
+
+// this function is used by Angular *ngFor to track the dynamic DOM creation and destruction
   customTrackBy(index: number, item: any): any {
     return index;
   }
