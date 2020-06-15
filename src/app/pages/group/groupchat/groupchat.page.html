@@ -21,6 +21,25 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-content *ngIf="!chatService.currentChatProps[propIndex]">
+  <ion-grid style="height: 100%">
+    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+      <div>
+        <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
+          <!--<ion-img class="login-logo" src="assets/img/push-notification.png"></ion-img>-->
+          <ion-icon name="chatbubbles"></ion-icon>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-label>No Chat Message to Display</ion-label>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" fill="clear">Close</ion-button>
+        </ion-row>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
 <ion-content *ngIf="chatService.currentChatProps[propIndex]">
   <!--This is the Chat page-->
   <!--get new data when page is refreshed-->
