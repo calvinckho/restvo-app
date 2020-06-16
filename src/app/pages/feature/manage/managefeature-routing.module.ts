@@ -82,6 +82,10 @@ const routes: Routes = [
             },
         ]
     },
+  {
+    path: 'feature-curriculum',
+    loadChildren: () => import('./feature-curriculum/feature-curriculum.module').then( m => m.FeatureCurriculumPageModule)
+  },
     ];
 
 @NgModule({

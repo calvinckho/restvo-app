@@ -89,7 +89,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else {
             this.categoryId = '5e9f46e1c8bf1a622fec69d5'; // default choice is a Journey
         }
-        // if picker for Onboarding Processes or if it is pre-selected via Input, assign categoryId the proceed to step 2
         this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
@@ -195,13 +194,46 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         await actionSheet.present();
     }
 
-    selectSample(sample) {
-        sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
-        sample.joinAs = this.joinAs;
-        this.selectedMoments.push(sample);
-        if (this.selectedMoments.length > this.maxMomentCount) {
-            this.selectedMoments.splice(0, 1);
-        }
+    async selectSample(sample) {
+        let actionSheet: any;
+        let buttons = [];
+        buttons = buttons.concat([
+            {
+                text: 'Clone', // Clone
+                handler: () => {
+                    const navTransition = actionSheet.dismiss();
+                    navTransition.then( async () => {
+                        sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
+                        sample.joinAs = this.joinAs;
+                        this.selectedMoments.push(sample);
+                        if (this.selectedMoments.length > this.maxMomentCount) {
+                            this.selectedMoments.splice(0, 1);
+                        }
+                    });
+                }
+            },
+            {
+                text: 'View', // View
+                //role: 'destructive',
+                //icon: 'trash',
+                handler: () => {
+                    const navTransition = actionSheet.dismiss();
+                    navTransition.then( async () => {
+                        this.openFeature(event, sample);
+                    });
+                }
+            },
+            {
+                text: 'Cancel', // Cancel
+                //icon: 'close-circle',
+                role: 'cancel',
+            }]);
+        actionSheet = await this.actionSheetCtrl.create({
+            header: sample.matrix_string[0][0],
+            buttons: buttons,
+            cssClass: 'level-15'
+        });
+        await actionSheet.present();
     }
 
     async executeSearch(event) {

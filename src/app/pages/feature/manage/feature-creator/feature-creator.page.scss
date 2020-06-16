@@ -1,0 +1,50 @@
+app-feature-creator {
+  .program-card {
+    //width: 100%;
+    object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .program-photo-container {
+    height: 150px;
+    overflow: hidden;
+  }
+
+  .program-photo {
+    object-fit: cover;
+    cursor: pointer;
+    //opacity: 50%;
+    height: 100%;
+    //width: 100%;
+    margin: auto;
+    display: block;
+    //max-height: 200px;
+  }
+
+  .program-type {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .program-name {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 15;
+  }
+
+  .info-moment {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+
+  .light {
+    color: white;
+  }
+}

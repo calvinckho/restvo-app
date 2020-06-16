@@ -116,11 +116,11 @@
                     <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
                   </div>
                 </ion-card-header>
-                <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
+                <div class="program-type"><ion-badge color="button1" class="ion-text-wrap">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
                 <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-                <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, sample)" fill="clear" size="small">
+                <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, sample)" fill="clear" size="small">
                   <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
-                </ion-button>
+                </ion-button>-->
               </ion-card>
             </ion-col>
         </ion-row>
@@ -139,7 +139,7 @@
               {{calendarItem.moment.matrix_string[0][0]}}
             </ion-label>
           </div>
-          <div class="type-col ion-text-wrap"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
+          <div class="type-col"><ion-badge color="button1" class="ion-text-wrap">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
           <!--<div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="calendarItem.moment.array_boolean[1]">Share in Marketplace</span></div>-->
           <ion-buttons class="actions-col ion-justify-content-evenly" *ngIf="calendarItem.moment">
             <ion-button (click)="openFeature($event, calendarItem.moment)" fill="clear"><ion-icon name="eye-outline"></ion-icon></ion-button>
