@@ -102,12 +102,12 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
-    //console.log("cat", this.moment.categories)
     this.menu = [
       {
         url: 'overview',
         label: 'Overview',
         component: EditfeaturePage,
+        params: {}
       },
       {
         url: 'curriculum',
@@ -134,13 +134,13 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73' } // sends in the parent category ID
       },
     ];
-    const menuItem = this.menu.find((c) => c.url === menuOption);
+    const menuItem: any = this.menu.find((c) => c.url === menuOption);
     console.log(menuOption);
-    const componentProps = { view: null, modalPage: true };
     if (this.platform.width() >= 768) {
       this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: false });
     } else {
-      const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: componentProps });
+      menuItem.params.modalPage = true;
+      const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
       await manageModal.present();
     }
   }

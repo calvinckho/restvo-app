@@ -293,6 +293,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
     } else {
       componentProps.modalPage = true;
+      console.log("b4", componentProps, this.categoryId, this.momentId)
       const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
       await modal.present();
       const {data: moments} = await modal.onDidDismiss();

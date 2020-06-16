@@ -175,10 +175,15 @@
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Programs</ion-label>
     </ion-item>
-    <!--show this for everything except Plan, and when Plan is in child_categories-->
-    <ion-item (click)="clickManageMenu('plans', null)" [hidden]="moment && moment.categories && moment.categories.includes('5c915476e172e4e64590e349')" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915476e172e4e64590e349'))">
+    <!--plan is shown only in Community and Program-->
+    <ion-item (click)="clickManageMenu('plans', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--if Community or Program-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Plans</ion-label>
+    </ion-item>
+    <!--curriculum is shown only in journey and relationship-->
+    <ion-item (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
+      <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-label>Curriculum</ion-label>
     </ion-item>
     <!--Journey, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('journey', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))"> <!--Journey-->

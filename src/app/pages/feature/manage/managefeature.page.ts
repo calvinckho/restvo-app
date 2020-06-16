@@ -108,16 +108,19 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'insight',
         label: 'Insight',
         component: FeatureInsightPage,
+        params: {}
       },
       {
         url: 'profile',
         label: 'Profile',
         component: null, // this is not required as we are using event to open this component to avoid circular dependency
+        params: {}
       },
       {
         url: 'people',
         label: 'People',
         component: EditparticipantsPage,
+        params: {}
       },
       {
         url: 'programs',
@@ -128,15 +131,15 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
           categoryId: '5c915475e172e4e64590e348',
         }
       },
-        {
-            url: 'journey',
-            label: 'Journey',
-            categoryId: '5e9f46e1c8bf1a622fec69d5', // journey category ID
-            component: FeatureChildActivitiesPage,
-            params: {
-                categoryId: '5e9f46e1c8bf1a622fec69d5',
-            }
-        },
+      {
+          url: 'journey',
+          label: 'Journey',
+          categoryId: '5e9f46e1c8bf1a622fec69d5', // journey category ID
+          component: FeatureChildActivitiesPage,
+          params: {
+              categoryId: '5e9f46e1c8bf1a622fec69d5',
+          }
+      },
       {
         url: 'mentoring',
         label: 'Mentoring',
@@ -167,11 +170,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       {
         url: 'creator',
         label: 'Curriculum',
-        //categoryId: '5c915476e172e4e64590e349', // content's category ID
         component: FeatureCreatorPage,
-        /*params: {
-          categoryId: '5c915476e172e4e64590e349',
-        }*/
+        params: {}
       },
       {
         url: 'schedule',
@@ -199,14 +199,16 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'billing',
         label: 'Billing',
         component: FeatureBillingPage,
+        params: {}
       },
       {
         url: 'subscription',
         label: 'Subscription',
         component: FeatureSubscriptionPage,
+        params: {}
       },
     ];
-    const menuItem = this.menu.find((c) => c.url === menuOption);
+    const menuItem: any = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {
       if (menuOption === 'creator') {
         this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/overview/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
@@ -219,7 +221,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       } else if (menuOption === 'profile') {
         this.momentService.openMoment( { moment: this.moment, modalPage: true });
       } else {
-        const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: { moment: this.moment, categoryId: menuItem.categoryId, parentCategoryId: menuItem.parentCategoryId, title: menuItem.label, scheduleId: (selectedSchedule ? selectedSchedule._id : null), modalPage: true } });
+        menuItem.params.moment = this.moment;
+        menuItem.params.title = menuItem.label;
+        menuItem.params.modalPage = true;
+        const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
         await manageModal.present();
       }
     }

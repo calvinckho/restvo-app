@@ -11,6 +11,8 @@ import {FeatureChildActivitiesPageModule} from "./feature-childactivities/featur
 import {FeatureSchedulePageModule} from "./feature-schedule/feature-schedule.module";
 import {FeatureBillingPageModule} from "./feature-billing/feature-billing.module";
 import {FeatureSubscriptionPageModule} from "./feature-subscription/feature-subscription.module";
+import {FeatureCreatorPageModule} from "./feature-creator/feature-creator.module";
+import {FeatureCurriculumPageModule} from "./feature-curriculum/feature-curriculum.module";
 
 @NgModule({
   imports: [
@@ -22,7 +24,9 @@ import {FeatureSubscriptionPageModule} from "./feature-subscription/feature-subs
     FeatureSchedulePageModule,
     FeatureChildActivitiesPageModule,
       FeatureBillingPageModule,
-      FeatureSubscriptionPageModule
+      FeatureSubscriptionPageModule,
+      FeatureCreatorPageModule,
+    FeatureCurriculumPageModule
   ],
   declarations: [ManagefeaturePage]
 })
