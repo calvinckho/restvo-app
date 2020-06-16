@@ -40,7 +40,6 @@ import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   @ViewChild(IonSelect, {static: false}) select: IonSelect;
-  selectedMenuOption = '';
   menu: any;
   schedules: any;
   selectedSchedule: any;
@@ -78,13 +77,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
         chatService, churchService, groupService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
-  }
-
-  async ngOnInit() {
-    super.ngOnInit();
-    if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
-      this.selectedMenuOption = 'profile';
-    }
   }
 
   reloadEditPage = async () => { // refresh the Manage Feature Page if desktop is in Manage view, or if opened by modalPage
@@ -216,14 +208,12 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     ];
     const menuItem = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {
-      this.selectedMenuOption = menuOption;
       if (menuOption === 'creator') {
         this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/overview/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
       } else {
         this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
       }
     } else {
-      this.selectedMenuOption = '';
       if (menuOption === 'onboarding') {
         this.momentService.openPreferences({ programId: this.moment._id, organizer: true, modalPage: true });
       } else if (menuOption === 'profile') {
