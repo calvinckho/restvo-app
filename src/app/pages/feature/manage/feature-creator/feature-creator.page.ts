@@ -98,7 +98,6 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   async loadSchedules() {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(this.id);
-    console.log("schedules", this.schedules);
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
@@ -107,7 +106,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         url: 'overview',
         label: 'Overview',
         component: EditfeaturePage,
-        params: {}
+        params: { moment: { _id: this.id }}
       },
       {
         url: 'curriculum',

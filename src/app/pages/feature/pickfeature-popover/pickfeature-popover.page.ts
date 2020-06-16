@@ -81,7 +81,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.disableSelect = this.disableSelect || this.route.snapshot.paramMap.get('disableSelect') === 'true';
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
-        console.log("check", this.parent_programId, this.categoryId)
         if (this.categoryId === 'all') { // if category is provided, skip to step 1
             this.step = 1;
             this.categoryId = null;
