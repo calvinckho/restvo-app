@@ -230,9 +230,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
               if (this.route.snapshot.paramMap.get('id')) {
                   this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
-                  console.log("loaded moment", this.moment)
               }
-          } // if enter via modalPage, the moment object should be provided via @Input
+          } else if (this.modalPage && this.moment && this.moment._id && !this.moment.matrix_string) { // if enter via modalPage, load moment if only the _id is provided
+              this.moment = await this.momentService.load(this.moment._id);
+          }
+          console.log("loaded moment", this.moment);
 
           // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
 
@@ -1163,7 +1165,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
       // clean up DO of unlinked media URLs in this.moment.assets before it is overwritten by sessionAssets
       await this.awsService.cleanUp(this.moment._id, this.moment.assets);
-      //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
       // if sessionAssets has not been initiated and hence return null, reassign it back to an empty array
       this.moment.assets = this.awsService.sessionAssets[this.moment._id] || [];
@@ -1174,7 +1175,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               return this.closeModal(this.anyChangeMade);
           }
       } else { // if create new, create moment in the backend
-          console.log("check", this.moment)
           const createdMoment: any = await this.momentService.create(this.moment); // create feature
           this.moment._id = createdMoment._id;
           this.moment.access_tokens = createdMoment.access_tokens;
