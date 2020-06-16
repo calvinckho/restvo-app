@@ -75,31 +75,10 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
     public responseService: Response,
     public calendarService: CalendarService
   ) {
-    super(
-      route,
-      router,
-      location,
-      electronService,
-      swUpdate,
-      change,
-      platform,
-      alertCtrl,
-      toastCtrl,
-      actionSheetCtrl,
-      popoverCtrl,
-      modalCtrl,
-      loadingCtrl,
-      chatService,
-      churchService,
-      groupService,
-      networkService,
-      userData,
-      awsService,
-      momentService,
-      resourceService,
-      responseService,
-      calendarService
-    );
+    super(route, router, location, electronService, swUpdate, change,
+        platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
+        chatService, churchService, groupService, networkService, userData, awsService,
+        momentService, resourceService, responseService, calendarService);
   }
 
   // for Desktop routing, it is possible for user to jump between page views without properly using the back button (closeModal and ngOnDestroy).

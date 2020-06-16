@@ -30,6 +30,7 @@ import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
+import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -86,7 +87,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     }
   }
 
-  reloadEditPage = async () => { // refresh the Edit Page if desktop is in Manage view, or if opened by modalPage
+  reloadEditPage = async () => { // refresh the Manage Feature Page if desktop is in Manage view, or if opened by modalPage
     if (this.userData.user && (this.router.url.includes('manage') || this.modalPage)) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
@@ -96,7 +97,9 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       this.loadSchedules(momentId);
 
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
-      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
+
+      // only load stripe customer data if it is a Community
+      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
@@ -170,13 +173,13 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         }
       },
       {
-        url: 'contents',
-        label: 'Contents',
-        categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
-        component: FeatureChildActivitiesPage,
-        params: {
-          categoryId: '5e1bbda67b00ea76b75e5a73',
-        }
+        url: 'creator',
+        label: 'Creator',
+        //categoryId: '5c915476e172e4e64590e349', // content's category ID
+        component: FeatureCreatorPage,
+        /*params: {
+          categoryId: '5c915476e172e4e64590e349',
+        }*/
       },
       {
         url: 'schedule',
@@ -214,7 +217,11 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     const menuItem = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {
       this.selectedMenuOption = menuOption;
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      if (menuOption === 'creator') {
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/overview/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      } else {
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      }
     } else {
       this.selectedMenuOption = '';
       if (menuOption === 'onboarding') {

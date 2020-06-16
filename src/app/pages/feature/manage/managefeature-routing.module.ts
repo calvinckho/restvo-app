@@ -49,6 +49,10 @@ const routes: Routes = [
                 loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
             },
             {
+                path: 'creator',
+                loadChildren: () => import('./feature-creator/feature-creator.module').then( m => m.FeatureCreatorPageModule),
+            },
+            {
                 path: 'newplan',
                 loadChildren: () => import('../pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule),
             },
