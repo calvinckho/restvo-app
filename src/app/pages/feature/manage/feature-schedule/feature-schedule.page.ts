@@ -72,14 +72,14 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public router: Router,
       public platform: Platform,
       public alertCtrl: AlertController,
-      public actionSheetCtrl: ActionSheetController,
       public authService: Auth,
       public chatService: Chat,
-      public calendarService: CalendarService,
       public userData: UserData,
       public momentService: Moment,
       public resourceService: Resource,
-      public modalCtrl: ModalController
+      public modalCtrl: ModalController,
+      public actionSheetCtrl: ActionSheetController,
+      public calendarService: CalendarService,
   ) {
     super(route, router, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl);
@@ -104,7 +104,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.programId = this.route.snapshot.paramMap.get('id');
       }
       this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
-      if (this.scheduleId) {
+      if (this.scheduleId && this.scheduleId !== 'null') {
         const result: any = await this.momentService.loadSchedule(this.scheduleId);
         if (result && result.schedule) {
           this.schedule = result.schedule;

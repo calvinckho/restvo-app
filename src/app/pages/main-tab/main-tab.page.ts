@@ -569,7 +569,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await modal.present();
             } else if (data && data.momentId && data.subpanel) {
                 this.router.navigate([{ outlets: { sub: ['details', data.momentId, data ]}}]);
-            } else {
+            } else if (data && data.momentId) {
                 this.router.navigate(['/app/activity/' + data.momentId, data ]);
             }
         });

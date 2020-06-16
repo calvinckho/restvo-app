@@ -166,7 +166,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       },
       {
         url: 'creator',
-        label: 'Creator',
+        label: 'Curriculum',
         //categoryId: '5c915476e172e4e64590e349', // content's category ID
         component: FeatureCreatorPage,
         /*params: {
@@ -241,7 +241,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   async changeManageActivity(event) {
     event.stopPropagation();
-    if (!this.initialSetupCompleted) {
+    if (this.initialSetupCompleted) {
       this.storage.set('currentManageActivityId', event.detail.value);
       this.userData.currentManageActivityId = event.detail.value;
       if (!this.modalPage) {

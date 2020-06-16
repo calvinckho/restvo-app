@@ -1,0 +1,53 @@
+<ion-header *ngIf="modalPage">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Creator</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="moment && moment.resource">
+  <ion-grid class="full-height">
+    <ion-row class="full-height">
+      <ion-col class="full-height" size-xs="12" size-sm="12" size-md="3" size-lg="3">
+        <ion-card class="program-card">
+          <ion-card-header class="ion-no-padding">
+            <div class="program-photo-container">
+              <ion-img class="program-photo" [src]="(moment.assets && moment.assets.length && moment.assets[0]) | background: moment._id"></ion-img>
+            </div>
+          </ion-card-header>
+          <div class="program-type"><ion-badge color="button1">{{moment.resource['en-US'].value[0]}}</ion-badge></div>
+          <div class="program-name light">{{moment.matrix_string[0][0]}}</div>
+          <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, moment)" fill="clear" size="small">
+            <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
+          </ion-button>-->
+        </ion-card>
+        <ion-list>
+          <ion-item (click)="clickManageMenu('overview', null)">
+            <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': router.url.includes('/overview/')}">Overview</ion-label>
+          </ion-item>
+          <ion-item (click)="clickManageMenu('curriculum', null)">
+            <ion-icon slot="start" name="bicycle" *ngIf="platform.width() < 768"></ion-icon>
+            <ion-label [ngClass]="{ 'bold-font': router.url.includes('/curriculum/')}">Curriculum</ion-label>
+          </ion-item>
+          <ion-item-divider></ion-item-divider>
+          <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
+            <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
+              <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-label>Schedule {{i + 1}}</ion-label>
+            </ion-item>
+            <ion-item (click)="clickManageMenu('new-schedule', null)">
+              <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-label>+ Schedule</ion-label>
+            </ion-item>
+          </ion-item-group>
+        </ion-list>
+      </ion-col>
+      <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">
+        <ion-router-outlet></ion-router-outlet>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
