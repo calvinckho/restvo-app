@@ -32,6 +32,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   typeAscending = true;
   shareAscending = false;
   planPage = 'createOrChoose';
+  actionType: any;
 
   constructor(
       public route: ActivatedRoute,

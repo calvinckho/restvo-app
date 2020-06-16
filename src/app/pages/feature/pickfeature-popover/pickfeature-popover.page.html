@@ -98,7 +98,7 @@
     <div *ngIf="currentView === 'new'" class="new-section">
         <!--<ion-label class="program-title ion-margin" *ngIf="(categoryId !== '5e17acd47b00ea76b75e5a71') && parent.matrix_string">{{parent.matrix_string[0][0]}}</ion-label>-->
         <ion-grid class="program-grid">
-          <ion-row class="program-row">
+          <ion-row class="program-row ion-justify-content-start">
             <ion-col *ngIf="allowCreate" class="ion-align-self-center" size="auto">
               <ion-card class="program-card" (click)="createMoment()" id="create-new-moment">
                 <ion-card-header class="ion-no-padding" color="lightgrey">

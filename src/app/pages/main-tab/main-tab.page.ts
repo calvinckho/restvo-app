@@ -568,11 +568,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
                 await modal.present();
             } else if (data && data.momentId && data.subpanel) {
-                this.router.navigate([{ outlets: { sub: ['details', data.momentId, { subpanel: true, relationshipId: data.relationshipId, calendarId: data.calendarId } ]}}]);
-            } else if (data && data.momentId && data.relationshipId && data.calendarId) {
-                this.router.navigate(['/app/activity/' + data.momentId, { relationshipId: data.relationshipId, calendarId: data.calendarId }]);
-            } else if (data && data.momentId) {
-                this.router.navigate(['/app/activity/' + data.momentId ]);
+                this.router.navigate([{ outlets: { sub: ['details', data.momentId, data ]}}]);
+            } else {
+                this.router.navigate(['/app/activity/' + data.momentId, data ]);
             }
         });
         this.subscriptions['openUserPrograms'] = this.userData.openUserPrograms$.subscribe(async (data) => {

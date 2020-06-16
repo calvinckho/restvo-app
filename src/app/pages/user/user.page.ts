@@ -27,7 +27,7 @@ export class UserPage {
     resource: any;
     hasOrganizerAccess = false;
 
-    menu = [
+    menu: any = [
         {
             url: 'profile',
             label: 'Profile',
@@ -66,8 +66,6 @@ export class UserPage {
                 private location: Location,
                 public platform: Platform,
                 public chatService: Chat,
-                private resourceService: Resource,
-                private momentService: Moment,
                 public modalCtrl: ModalController,
                 public userData: UserData) {
 
