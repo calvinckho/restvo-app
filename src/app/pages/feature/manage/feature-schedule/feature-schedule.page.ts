@@ -9,6 +9,7 @@ import {Resource} from "../../../../services/resource.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FeatureChildActivitiesPage} from "../feature-childactivities/feature-childactivities.page";
 import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-feature-schedule',
@@ -70,6 +71,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   constructor(
       public route: ActivatedRoute,
       public router: Router,
+      public location: Location,
       public platform: Platform,
       public alertCtrl: AlertController,
       public authService: Auth,
@@ -173,6 +175,12 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.schedule = schedule;
         if (this.modalPage) {
           this.closeModal();
+        } else {
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: {scheduleId: this.schedule._id},
+            queryParamsHandling: 'merge', // remove to replace all query params by provided
+          });
         }
       }
     }
@@ -259,7 +267,8 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           if (this.modalPage) {
             this.closeModal();
           } else {
-            this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
+            this.location.back();
+            //this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
           }
         }}, { text: 'Cancel' }]
     });
