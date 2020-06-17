@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" [hidden]="!modalPage && planPage === 'createOrChoose'">
+      <ion-button (click)="back()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Plans</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="full-height" *ngIf="planPage === 'createOrChoose'">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="planPage = 'create'">
+          <ion-card-header>
+            <ion-card-title>Create a New Plan</ion-card-title>
+          </ion-card-header>
+          <!--<ion-card-content>
+            <li>Embark on a Journey of Growth</li>
+          </ion-card-content>-->
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="chooseFromMarketplace()">
+          <ion-card-header>
+            <ion-card-title>Choose from Available Template</ion-card-title>
+          </ion-card-header>
+          <!--<ion-card-content>
+            <li>Grow with the Guidance from a Mentor</li>
+          </ion-card-content>-->
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="full-height" *ngIf="planPage === 'create'">
+    <ion-row class="ion-justify-content-center ion-align-items-center full-height">
+      <ion-col>
+        <ion-item lines="none"> <!--Create Your own plan-->
+          <div class="moment-label" style="font-style: italic; color: var(--ion-color-darkgrey)" slot="start">Create Your Own Plan</div>
+        </ion-item>
+        <ion-item lines="none" class="ion-margin-vertical"> <!--Name-->
+          <ion-label position="stacked">Name your plan</ion-label>
+          <ion-input class="ion-text-start" type="text" [(ngModel)]="planName" placeholder="Plan Name"></ion-input>
+        </ion-item>
+        <!--<ion-item lines="none"> &lt;!&ndash;Description&ndash;&gt;
+          <ion-label class="summary-label">Description:</ion-label>
+          <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
+        </ion-item>-->
+        <ion-item lines="none" class="ion-margin-vertical">
+          <ion-label position="stacked">Select the type of plan</ion-label>
+          <ion-select (ionChange)="loadSample($event)" placeholder="Plan Type">
+            <ion-select-option value="5ea350d2dede5c7f29cf8490">Journey</ion-select-option>
+            <ion-select-option value="5ea398fadede5c7f29cf85c4">Group</ion-select-option>
+            <ion-select-option value="5df88e7669f2546c0a26a7f3">Mentoring</ion-select-option>
+            <ion-select-option value="5ea1fa876240cd58bb82a694">Program</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-row class="ion-margin-vertical">
+          <ion-button [disabled]="!planName || !selectedSample" expand="full" shape="round" class="centered" (click)="createPlan()">
+            <div>Create new plan</div>
+          </ion-button>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

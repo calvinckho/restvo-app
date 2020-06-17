@@ -13,6 +13,7 @@ import {FeatureBillingPageModule} from "./feature-billing/feature-billing.module
 import {FeatureSubscriptionPageModule} from "./feature-subscription/feature-subscription.module";
 import {FeatureCreatorPageModule} from "./feature-creator/feature-creator.module";
 import {FeatureCurriculumPageModule} from "./feature-curriculum/feature-curriculum.module";
+import {FeaturePlansPageModule} from "./feature-plans/feature-plans.module";
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import {FeatureCurriculumPageModule} from "./feature-curriculum/feature-curricul
       FeatureBillingPageModule,
       FeatureSubscriptionPageModule,
       FeatureCreatorPageModule,
-    FeatureCurriculumPageModule
+    FeatureCurriculumPageModule,
+      FeaturePlansPageModule
   ],
   declarations: [ManagefeaturePage]
 })

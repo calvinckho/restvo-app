@@ -471,6 +471,16 @@ app-showfeature {
     max-width: 150px;
   }
 
+  .swiper-button-prev {
+    top: 215px;
+    margin-top: 0;
+  }
+
+  .swiper-button-next {
+    top: 215px;
+    margin-top: 0;
+  }
+
   .program-card {
     height: 100%;
     width: 100%;
@@ -906,48 +916,5 @@ app-showfeature {
 
   .tab-button {
     //--indicator-height: 42px;
-  }
-
-  //slider Buttons
-  .slideButton{
-    background: transparent;
-    border-radius: 50%;
-    top: 40%;
-    border: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: auto;
-  }
-  
-  
-  .arrowButton{
-    width: 3em;
-    height: 5em;
-  }
-  @media (prefers-color-scheme: light) {
-    .arrowButton{
-      color: #202020;
-    }
-    .slideButton:disabled {
-      .arrowButton{
-        color: #E5E5E5;
-      }
-    }
-    
-  }
-  @media (prefers-color-scheme: dark) {
-    .arrowButton{
-      color: white;
-    }
-    .slideButton:disabled {
-      color: #E5E5E5;
-    }
-    .slideButton:disabled {
-      .arrowButton{
-        color: darkgray;
-      }
-    }
-    
   }
 }

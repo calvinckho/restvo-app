@@ -1,0 +1,20 @@
+app-feature-plans {
+  .full-height {
+    height: 100%;
+  }
+
+  .slide-row {
+    height: 100%;
+    padding-bottom: 42px;
+    //overflow-y: scroll
+  }
+
+  .grid-row {
+    //align-items: center !important;
+    overflow: scroll;
+  }
+
+  .summary-label {
+    width: 20%;
+  }
+}

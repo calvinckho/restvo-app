@@ -45,8 +45,8 @@ const routes: Routes = [
                 loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
             },
             {
-                path: 'plans/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                path: 'plans',
+                loadChildren: () => import('./feature-plans/feature-plans.module').then( m => m.FeaturePlansPageModule),
             },
             {
                 path: 'creator',
@@ -85,6 +85,10 @@ const routes: Routes = [
   {
     path: 'feature-curriculum',
     loadChildren: () => import('./feature-curriculum/feature-curriculum.module').then( m => m.FeatureCurriculumPageModule)
+  },
+  {
+    path: 'feature-plans',
+    loadChildren: () => import('./feature-plans/feature-plans.module').then( m => m.FeaturePlansPageModule)
   },
     ];
 

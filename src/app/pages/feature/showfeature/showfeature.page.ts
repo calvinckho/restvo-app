@@ -178,6 +178,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   categoryIds = [];
   
   //Slider Button
+    peopleSlidesOptions = {
+        slidesPerView: 1.1,
+        grabCursor: true,
+        updateOnWindowResize: true,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        }
+    };
   disablePrevBtn = true;
   disableNextBtn = false;
 
@@ -266,22 +275,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.setup(data);
       }
   };
-  swipeNext(){
-    this.slides.slideNext();
-  }
-  swipePrevious(){
-    this.slides.slidePrev();
-  }
-  doCheck() {
-    let prom1 = this.slides.isBeginning();
-    let prom2 = this.slides.isEnd();
-  
-    Promise.all([prom1, prom2]).then((data) => {
-      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
-      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
-    });
-  }
-  
+
   async setup(data) {
       this.loadStatus = 'loading';
       await this.loadCalendarItem();
@@ -1315,6 +1309,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipePeopleSlide() {
+      this.disablePrevBtn = await this.slides.isBeginning();
+      this.disableNextBtn = await this.slides.isEnd();
     if (this.peopleSlides && this.loadStatus !== 'loading') {
       const currentSlideIndex = await this.peopleSlides.getActiveIndex();
       if (currentSlideIndex === this.matchedPeople.length - 4) {

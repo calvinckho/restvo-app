@@ -31,6 +31,7 @@ import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscripti
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
 import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
+import {FeaturePlansPage} from "./feature-plans/feature-plans.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -161,10 +162,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       {
         url: 'plans',
         label: 'Plans',
-        categoryId: '5c915476e172e4e64590e349', // plan's category ID
-        component: FeatureChildActivitiesPage,
+        //categoryId: '5c915476e172e4e64590e349', // plan's category ID
+        component: FeaturePlansPage,
         params: {
-          categoryId: '5c915476e172e4e64590e349',
+          //categoryId: '5c915476e172e4e64590e349',
         }
       },
       {
@@ -222,7 +223,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.momentService.openMoment( { moment: this.moment, modalPage: true });
       } else {
         menuItem.params.moment = this.moment;
-        menuItem.params.title = menuItem.label;
+        //menuItem.params.title = menuItem.label; TODO: need testing to confirm this is not required
         menuItem.params.modalPage = true;
         const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
         await manageModal.present();

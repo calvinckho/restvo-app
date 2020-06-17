@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{this.categoryLabel}}</ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="activities && categoryId !== '5c915476e172e4e64590e349'"> <!--Show always except in Plans-->
+  <ion-toolbar *ngIf="activities"> <!--Show always except in Plans-->
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
       <div class="select-col"></div>
       <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
@@ -16,7 +16,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--Show except in Plans-->
+  <ion-list>
     <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
       <ion-buttons class="select-col">
         <ion-button (click)="selectActivity($event, activity)" fill="clear" *ngIf="!activity.select">
@@ -52,35 +52,4 @@
       </ion-buttons>
     </ion-item>
   </ion-list>
-  <ion-grid class="full-height" *ngIf="categoryId === '5c915476e172e4e64590e349'"> <!--For Plans-->
-    <ion-row class="full-height grid-row ion-align-items-center" *ngIf="planPage === 'createOrChoose'">
-      <ion-grid>
-        <ion-row class="ion-justify-content-start">
-          <ion-col size-xs="12" size-sm="6">
-            <ion-card class="category-card" mode="md" (click)="planPage = 'create'">
-              <ion-card-header>
-                <ion-card-title>Create a New Plan</ion-card-title>
-              </ion-card-header>
-              <!--<ion-card-content>
-                <li>Embark on a Journey of Growth</li>
-              </ion-card-content>-->
-            </ion-card>
-          </ion-col>
-          <ion-col size-xs="12" size-sm="6">
-            <ion-card class="category-card" mode="md" (click)="chooseFromMarketplace()">
-              <ion-card-header>
-                <ion-card-title>Choose from Available Template</ion-card-title>
-              </ion-card-header>
-              <!--<ion-card-content>
-                <li>Grow with the Guidance from a Mentor</li>
-              </ion-card-content>-->
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-row>
-  </ion-grid>
-  <ion-grid *ngIf="planPage === 'create'" class="full-height">
-
-  </ion-grid>
 </ion-content>
