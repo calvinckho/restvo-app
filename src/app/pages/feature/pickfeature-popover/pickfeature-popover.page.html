@@ -141,27 +141,11 @@
           </div>
           <div class="type-col"><ion-badge color="button1" class="ion-text-wrap">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
           <!--<div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="calendarItem.moment.array_boolean[1]">Share in Marketplace</span></div>-->
-          <ion-buttons class="actions-col ion-justify-content-evenly" *ngIf="calendarItem.moment">
+          <!--<ion-buttons class="actions-col ion-justify-content-evenly" *ngIf="calendarItem.moment">
             <ion-button (click)="openFeature($event, calendarItem.moment)" fill="clear"><ion-icon name="eye-outline"></ion-icon></ion-button>
-          </ion-buttons>
+          </ion-buttons>-->
         </ion-item>
       </ion-virtual-scroll>
-      <!--<ion-row class="program-row">
-        <ion-col class="ion-align-self-center" size="auto" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : (categoryId === '5e17acd47b00ea76b75e5a71' ? calendarService.calendarItems.length - 1 : 50); index as i" [hidden]="!(calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || calendarItem.moment.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && (calendarItem.moment.categories.indexOf(categoryId) > -1))">
-          <ion-card class="program-card" (click)="selectCalendarItem($event, calendarItem)" *ngIf="calendarItem.moment" >   &lt;!&ndash;[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"&ndash;&gt;
-            <ion-card-header class="ion-no-padding">
-              <div class="program-photo-container">
-                <ion-img class="program-photo" [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
-              </div>
-            </ion-card-header>
-            <div class="program-name light">{{calendarItem.moment.matrix_string[0][0]}}</div>
-            <div class="program-type"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
-            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, calendarItem.moment)" fill="clear" size="small">
-              <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
-            </ion-button>
-          </ion-card>
-        </ion-col>
-      </ion-row>-->
     </ion-grid>
   </div>
   <ion-grid *ngIf="step === 2" class="full-height">

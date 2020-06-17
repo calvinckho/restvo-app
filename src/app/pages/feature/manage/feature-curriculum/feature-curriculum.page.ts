@@ -8,6 +8,7 @@ import {UserData} from "../../../../services/user.service";
 import {Moment} from "../../../../services/moment.service";
 import {Resource} from "../../../../services/resource.service";
 import {FeatureSchedulePage} from "../feature-schedule/feature-schedule.page";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-feature-curriculum',
@@ -20,6 +21,7 @@ export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit
   constructor(
       public route: ActivatedRoute,
       public router: Router,
+      public location: Location,
       public platform: Platform,
       public alertCtrl: AlertController,
       public actionSheetCtrl: ActionSheetController,
@@ -31,7 +33,7 @@ export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit
       public resourceService: Resource,
       public modalCtrl: ModalController
   ) {
-    super(route, router, platform, alertCtrl, authService, chatService,
+    super(route, router, location, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl, actionSheetCtrl, calendarService);
   }
 

@@ -106,7 +106,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         url: 'overview',
         label: 'Overview',
         component: EditfeaturePage,
-        params: { moment: { _id: this.id }}
+        params: {}
       },
       {
         url: 'curriculum',
@@ -139,6 +139,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
       this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: false });
     } else {
       menuItem.params.modalPage = true;
+      menuItem.params.moment = this.moment;
       const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
       await manageModal.present();
     }
