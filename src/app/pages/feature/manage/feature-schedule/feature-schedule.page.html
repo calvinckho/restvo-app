@@ -110,7 +110,7 @@
         </ion-buttons>
       </ion-item>
     </ion-virtual-scroll>
-    <ion-row class="ion-justify-content-center">
+    <ion-row class="ion-justify-content-center" *ngIf="this.schedule._id">
       <ion-button (click)="addContenCalendar()" shape="round" color="primary" fill="solid" expand="full">
         <ion-icon name="add"></ion-icon>
         <ion-label>Add New</ion-label>

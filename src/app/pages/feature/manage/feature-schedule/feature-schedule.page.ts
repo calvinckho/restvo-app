@@ -154,6 +154,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async touchSchedule(operation) {
+    let schedule;
     if (operation === 'create schedule' || this.schedule._id) {
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
@@ -162,14 +163,17 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         // for Plan, auto re-populate the timeline and save the changes
         this.schedule.operation = operation;
         this.touchPlanTimeline();
-        await this.momentService.touchSchedule(this.schedule);
+        schedule = await this.momentService.touchSchedule(this.schedule);
       } else {
         // for Activity, either create schedule or send to the backend to repopulate the timeline
         this.schedule.operation = operation;
-        await this.momentService.touchSchedule(this.schedule);
+        schedule = await this.momentService.touchSchedule(this.schedule);
       }
-      if (operation === 'create schedule' && this.modalPage) {
-        this.closeModal();
+      if (operation === 'create schedule' && schedule && schedule._id) {
+        this.schedule = schedule;
+        if (this.modalPage) {
+          this.closeModal();
+        }
       }
     }
   }

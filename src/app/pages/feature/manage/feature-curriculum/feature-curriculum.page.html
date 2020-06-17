@@ -9,6 +9,11 @@
 
 <ion-content *ngIf="schedule">
   <ion-list>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
+        <span>Create Curriculum</span>
+      </ion-button>
+    </ion-row>
     <ion-item *ngIf="this.schedule._id && !timeline.length">
       <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
     </ion-item>
@@ -29,7 +34,7 @@
         </ion-buttons>
       </ion-item>
     </ion-virtual-scroll>
-    <ion-row class="ion-justify-content-center">
+    <ion-row class="ion-justify-content-center" *ngIf="this.schedule._id">
       <ion-button (click)="addContenCalendar()" shape="round" color="primary" fill="solid" expand="full">
         <ion-icon name="add"></ion-icon>
         <ion-label>Add New</ion-label>
