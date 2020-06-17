@@ -42,10 +42,10 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
 export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
-  @ViewChild('peopleSlides', {static: false}) peopleSlides: IonSlides;
-  @ViewChild('plansSlides', {static: false}) plansSlides: IonSlides;
-  @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
-  @ViewChild('goalsSlides', {static: false}) goalsSlides: IonSlides;
+    @ViewChild('peopleSlides', {static: false}) peopleSlides: IonSlides;
+    @ViewChild('plansSlides', {static: false}) plansSlides: IonSlides;
+    @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
+    @ViewChild('goalsSlides', {static: false}) goalsSlides: IonSlides;
     @ViewChild(IonFab, {static: false}) fabButtons: IonFab;
     @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
@@ -176,6 +176,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   programs = [];
   programPageNum = 0;
   categoryIds = [];
+  
+  //Slider Button
+  disablePrevBtn = true;
+  disableNextBtn = false;
 
   // Content Calendar Item
     calendarItem: any;
@@ -262,7 +266,22 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.setup(data);
       }
   };
-
+  swipeNext(){
+    this.slides.slideNext();
+  }
+  swipePrevious(){
+    this.slides.slidePrev();
+  }
+  doCheck() {
+    let prom1 = this.slides.isBeginning();
+    let prom2 = this.slides.isEnd();
+  
+    Promise.all([prom1, prom2]).then((data) => {
+      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
+      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
+    });
+  }
+  
   async setup(data) {
       this.loadStatus = 'loading';
       await this.loadCalendarItem();
