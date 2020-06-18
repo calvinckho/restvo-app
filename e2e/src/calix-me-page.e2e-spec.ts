@@ -79,6 +79,6 @@ describe('navigate around the maintab', () => {
     it('should load the edit profile page', async () => {
       maintab.clickTabButton('#edit-profile-button');
       await browser.sleep(5000); // wait 5 sec
-      expect(await app.currentUrl()).toContain('app/me');
+      expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
     });
 });
