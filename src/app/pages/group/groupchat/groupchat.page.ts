@@ -718,6 +718,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async openPickFeature() {
         try {
+            // limit to modalPage usage because subpanel view picker will only clone Recent activities.
+            // because we want to enable referencing of Recent activities in Picker, we are limited to only using picker modal
             const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, allowSwitchCategory: true, modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();

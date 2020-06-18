@@ -1,5 +1,49 @@
 app-pickfeature-popover {
 
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  .column-label {
+    text-align: center;
+  }
+
+  .select-col {
+    width: 8%;
+  }
+
+  .user-col {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 40%;
+  }
+
+  .avatar-col {
+    width: 20%
+  }
+
+  .name-col {
+    width: 50%;
+  }
+
+  .user-avatar {
+    margin: 0 auto;
+  }
+
+  .name-label {
+    margin: 5px auto 0 auto;
+    color: grey;
+    font-size: 12px;
+  }
+
+  .type-col {
+    width: 30%;
+  }
+
+  .actions-col {
+    width: 15%;
+  }
+
   .new-section {
     padding-top: 8px;
   }
@@ -9,6 +53,7 @@ app-pickfeature-popover {
   }
 
   .category-card {
+    width: 220px;
     opacity: 0.3;
     height: 100%;
   }
@@ -19,7 +64,7 @@ app-pickfeature-popover {
   }
 
   .program-card {
-    width: auto;
+    width: 133px;
     object-fit: contain;
     margin: 0 3%;
   }
@@ -45,6 +90,7 @@ app-pickfeature-popover {
     top: 2%;
     left: 2%;
     font-size: 12px;
+    max-width: 90%;
     cursor: pointer;
   }
 

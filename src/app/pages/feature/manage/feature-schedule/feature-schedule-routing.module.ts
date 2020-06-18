@@ -6,17 +6,6 @@ const routes: Routes = [
     {
         path: ':id',
         component: FeatureSchedulePage,
-        /*children: [
-            {
-                path: 'contents',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: '../../feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPage'
-                    },
-                ]
-            }
-        ]*/
     },
 ];
 

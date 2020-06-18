@@ -45,6 +45,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // for child Activity
     @Input() parent_programId: any; // parent Program ID
 
+    @Input() visibleComponents: any;
+
     subpanel = false;
     subscriptions: any = {};
     editTemplate = false;
@@ -222,6 +224,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
           this.churches.unshift({_id: '', name: 'None', selected: false});
 
+          // optional: visible components. If none is provided, show all
+          this.visibleComponents = (this.visibleComponents || this.route.snapshot.paramMap.get('visibleComponents') || []);
+          if (typeof this.visibleComponents === 'string' && this.visibleComponents.length) {
+              this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
+          }
+
           if (!this.modalPage) { // if angular routing, load moment id
               this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
               this.parent_programId = this.route.snapshot.paramMap.get('parent_programId'); // the program ID
@@ -230,9 +238,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
               if (this.route.snapshot.paramMap.get('id')) {
                   this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
-                  console.log("loaded moment", this.moment)
               }
-          } // if enter via modalPage, the moment object should be provided via @Input
+          } else if (this.modalPage && this.moment && this.moment._id && !this.moment.matrix_string) { // if enter via modalPage, load moment if only the _id is provided
+              this.moment = await this.momentService.load(this.moment._id);
+          }
+          console.log("loaded moment", this.moment);
 
           // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
 
@@ -459,8 +469,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               });
           }
           this.initialSetupCompleted = true;
-          console.log('moment resource', this.moment.resource);
+          console.log('moment resource', this.moment.resource, this.templateChanged);
       } catch (err) {
+          console.log("editfeature setup error", err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
           this.router.navigate(['/app/me']);
       }
@@ -819,6 +830,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             categoryId = '5e9f46e1c8bf1a622fec69d5'; // only Journey is allowed in Picker
             allowSwitchCategory = false; // lock it so user is not allowed to switch category
         }
+        // limit to modalPage usage because subpanel view picker will only clone Recent activities.
+        // because we want to enable referencing of Recent activities, we are limited to only using a picker modal
         const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', categoryId: categoryId, allowSwitchCategory: allowSwitchCategory, modalPage: true}});
         await modal.present();
         const {data: moments} = await modal.onDidDismiss();
@@ -1087,6 +1100,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           return;
       }
       if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
+          console.log("updating template", this.templateChanged)
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
           this.editTemplate = false; // turn edit mode off
@@ -1161,9 +1175,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
       // clean up DO of unlinked media URLs in this.moment.assets before it is overwritten by sessionAssets
       await this.awsService.cleanUp(this.moment._id, this.moment.assets);
-      //console.log("check", this.awsService.tempUploadedMedia);
       // sessionAssets has the latest, valid media URLs for this moment. Store it in moment.assets before save
-      this.moment.assets = this.awsService.sessionAssets[this.moment._id];
+      // if sessionAssets has not been initiated and hence return null, reassign it back to an empty array
+      this.moment.assets = this.awsService.sessionAssets[this.moment._id] || [];
       if (this.moment._id) { // sending moment object with fully populated resource object to server
           try {
               await this.momentService.update(this.moment);
@@ -1171,7 +1185,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               return this.closeModal(this.anyChangeMade);
           }
       } else { // if create new, create moment in the backend
-          console.log("check", this.moment)
           const createdMoment: any = await this.momentService.create(this.moment); // create feature
           this.moment._id = createdMoment._id;
           this.moment.access_tokens = createdMoment.access_tokens;

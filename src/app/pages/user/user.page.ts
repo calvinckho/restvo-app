@@ -22,12 +22,10 @@ import {Moment} from "../../services/moment.service";
   encapsulation: ViewEncapsulation.None
 })
 export class UserPage {
-
-    selectedMenuOption = '';
     resource: any;
     hasOrganizerAccess = false;
 
-    menu = [
+    menu: any = [
         {
             url: 'profile',
             label: 'Profile',
@@ -66,23 +64,9 @@ export class UserPage {
                 private location: Location,
                 public platform: Platform,
                 public chatService: Chat,
-                private resourceService: Resource,
-                private momentService: Moment,
                 public modalCtrl: ModalController,
                 public userData: UserData) {
 
-    }
-
-    ionViewWillEnter() {
-        let currentSubPage: any;
-        if (this.router.url === '/app/user') {
-            this.selectedMenuOption = this.platform.width() >= 768 ? 'profile' : '';
-        } else {
-            currentSubPage = this.menu.find((c) => this.router.url.includes(c.url));
-            if (currentSubPage) {
-                this.selectedMenuOption = this.platform.width() >= 768 ? currentSubPage.url : '';
-            }
-        }
     }
 
     async clickManageMenu(menuOption) {
@@ -95,10 +79,8 @@ export class UserPage {
             componentProps.view = 'calendar';
         }
         if (this.platform.width() >= 768) {
-            this.selectedMenuOption = menuOption;
             this.router.navigate(['/app/user/' + menuOption, params], { replaceUrl: true });
         } else {
-            this.selectedMenuOption = '';
             const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: componentProps });
             await manageModal.present();
         }

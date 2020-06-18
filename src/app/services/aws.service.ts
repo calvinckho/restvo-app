@@ -258,6 +258,7 @@ export class Aws {
 
     // clean up previously uploaded assets (e.g. in this.moment.assets) that are no longer linked, or clean up all unused uploaded assets
     async cleanUp(sessionId: string, origin: any) {
+        if (!origin) return; // origin cannot be null
         const imageSource: any = JSON.parse(JSON.stringify(origin));
         switch (typeof imageSource) {
             case 'object': // imageSource is an array. Typical use case is to clean up unlinked Media URL from DO

@@ -287,7 +287,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
             }
             event.target.complete();
         }
-        console.log("check", this.communitiesboards)
     }
 
     loadMorePosts(board) {

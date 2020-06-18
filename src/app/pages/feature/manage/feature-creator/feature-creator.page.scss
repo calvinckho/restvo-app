@@ -1,20 +1,13 @@
-app-programs {
-
-  .program-row {
-    height: 100px;
-  }
-
+app-feature-creator {
   .program-card {
-    width: 133px;
+    //width: 100%;
     object-fit: contain;
     margin: 0 3%;
   }
 
   .program-photo-container {
-    height: 80px;
+    height: 150px;
     overflow: hidden;
-    //border-radius: 50%;
-    //margin: 5% auto;
   }
 
   .program-photo {
@@ -28,16 +21,6 @@ app-programs {
     //max-height: 200px;
   }
 
-  .program-name {
-    position: absolute;
-    bottom: 2%;
-    left: 2%;
-    color: white;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 15;
-  }
-
   .program-type {
     position: absolute;
     top: 2%;
@@ -46,13 +29,22 @@ app-programs {
     cursor: pointer;
   }
 
+  .program-name {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 15;
+  }
+
   .info-moment {
     position: absolute;
     top: 0;
     right: 2px;
   }
 
-  .opacity {
-    opacity: 0.4;
+  .light {
+    color: white;
   }
 }

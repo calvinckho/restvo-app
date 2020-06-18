@@ -30,6 +30,8 @@ import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
 import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
+import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
+import {FeaturePlansPage} from "./feature-plans/feature-plans.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -39,7 +41,6 @@ import {Storage} from "@ionic/storage";
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   @ViewChild(IonSelect, {static: false}) select: IonSelect;
-  selectedMenuOption = '';
   menu: any;
   schedules: any;
   selectedSchedule: any;
@@ -79,14 +80,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         momentService, resourceService, responseService, calendarService);
   }
 
-  async ngOnInit() {
-    super.ngOnInit();
-    if (this.platform.width() >= 768 && this.router.url.includes('profile')) {
-      this.selectedMenuOption = 'profile';
-    }
-  }
-
-  reloadEditPage = async () => { // refresh the Edit Page if desktop is in Manage view, or if opened by modalPage
+  reloadEditPage = async () => { // refresh the Manage Feature Page if desktop is in Manage view, or if opened by modalPage
     if (this.userData.user && (this.router.url.includes('manage') || this.modalPage)) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       if (!this.modalPage) {
@@ -96,7 +90,9 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       this.loadSchedules(momentId);
 
       await this.setup(); // need to load Editfeature's setup() because reloadEditPage overrides the parent handler of the same name
-      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) { // only check if it is a Community
+
+      // only load stripe customer data if it is a Community
+      if (this.moment && this.moment.categories.includes('5c915324e172e4e64590e346') && this.moment.subscriptionId) {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
@@ -113,16 +109,19 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'insight',
         label: 'Insight',
         component: FeatureInsightPage,
+        params: {}
       },
       {
         url: 'profile',
         label: 'Profile',
         component: null, // this is not required as we are using event to open this component to avoid circular dependency
+        params: {}
       },
       {
         url: 'people',
         label: 'People',
         component: EditparticipantsPage,
+        params: {}
       },
       {
         url: 'programs',
@@ -133,15 +132,15 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
           categoryId: '5c915475e172e4e64590e348',
         }
       },
-        {
-            url: 'journey',
-            label: 'Journey',
-            categoryId: '5e9f46e1c8bf1a622fec69d5', // journey category ID
-            component: FeatureChildActivitiesPage,
-            params: {
-                categoryId: '5e9f46e1c8bf1a622fec69d5',
-            }
-        },
+      {
+          url: 'journey',
+          label: 'Journey',
+          categoryId: '5e9f46e1c8bf1a622fec69d5', // journey category ID
+          component: FeatureChildActivitiesPage,
+          params: {
+              categoryId: '5e9f46e1c8bf1a622fec69d5',
+          }
+      },
       {
         url: 'mentoring',
         label: 'Mentoring',
@@ -163,20 +162,17 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       {
         url: 'plans',
         label: 'Plans',
-        categoryId: '5c915476e172e4e64590e349', // plan's category ID
-        component: FeatureChildActivitiesPage,
+        //categoryId: '5c915476e172e4e64590e349', // plan's category ID
+        component: FeaturePlansPage,
         params: {
-          categoryId: '5c915476e172e4e64590e349',
+          //categoryId: '5c915476e172e4e64590e349',
         }
       },
       {
-        url: 'contents',
-        label: 'Contents',
-        categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
-        component: FeatureChildActivitiesPage,
-        params: {
-          categoryId: '5e1bbda67b00ea76b75e5a73',
-        }
+        url: 'creator',
+        label: 'Curriculum',
+        component: FeatureCreatorPage,
+        params: { visibleComponents: '10000,10010,10050' } // for /creator/id/overview/id which is editfeature
       },
       {
         url: 'schedule',
@@ -204,25 +200,32 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'billing',
         label: 'Billing',
         component: FeatureBillingPage,
+        params: {}
       },
       {
         url: 'subscription',
         label: 'Subscription',
         component: FeatureSubscriptionPage,
+        params: {}
       },
     ];
-    const menuItem = this.menu.find((c) => c.url === menuOption);
+    const menuItem: any = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {
-      this.selectedMenuOption = menuOption;
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      if (menuOption === 'creator') {
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/overview/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      } else {
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+      }
     } else {
-      this.selectedMenuOption = '';
       if (menuOption === 'onboarding') {
         this.momentService.openPreferences({ programId: this.moment._id, organizer: true, modalPage: true });
       } else if (menuOption === 'profile') {
         this.momentService.openMoment( { moment: this.moment, modalPage: true });
       } else {
-        const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: { moment: this.moment, categoryId: menuItem.categoryId, parentCategoryId: menuItem.parentCategoryId, title: menuItem.label, scheduleId: (selectedSchedule ? selectedSchedule._id : null), modalPage: true } });
+        menuItem.params.moment = this.moment;
+        //menuItem.params.title = menuItem.label; TODO: need testing to confirm this is not required
+        menuItem.params.modalPage = true;
+        const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
         await manageModal.present();
       }
     }
@@ -244,11 +247,14 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   async changeManageActivity(event) {
     event.stopPropagation();
-    this.storage.set('currentManageActivityId', event.detail.value);
-    this.userData.currentManageActivityId = event.detail.value;
-    if (!this.modalPage) {
-      this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+    if (this.initialSetupCompleted) {
+      this.storage.set('currentManageActivityId', event.detail.value);
+      this.userData.currentManageActivityId = event.detail.value;
+      if (!this.modalPage) {
+        this.router.navigate(['/app/manage/activity/' + event.detail.value + '/insight/' + event.detail.value]);
+      }
     }
+
   }
 
   async upOneLevel(momentId) {
