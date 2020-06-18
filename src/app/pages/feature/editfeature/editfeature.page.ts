@@ -45,6 +45,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // for child Activity
     @Input() parent_programId: any; // parent Program ID
 
+    @Input() visibleComponents: any;
+
     subpanel = false;
     subscriptions: any = {};
     editTemplate = false;
@@ -221,6 +223,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.churches = this.userData.user.churches.map((c) => {return {_id: c._id, name: c.name, selected: false};});
           this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
           this.churches.unshift({_id: '', name: 'None', selected: false});
+
+          // optional: visible components. If none is provided, show all
+          this.visibleComponents = (this.visibleComponents || this.route.snapshot.paramMap.get('visibleComponents') || []);
+          if (typeof this.visibleComponents === 'string' && this.visibleComponents.length) {
+              this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
+          }
 
           if (!this.modalPage) { // if angular routing, load moment id
               this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
@@ -461,8 +469,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               });
           }
           this.initialSetupCompleted = true;
-          console.log('moment resource', this.moment.resource);
+          console.log('moment resource', this.moment.resource, this.templateChanged);
       } catch (err) {
+          console.log("editfeature setup error", err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
           this.router.navigate(['/app/me']);
       }
@@ -1091,6 +1100,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           return;
       }
       if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
+          console.log("updating template", this.templateChanged)
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
           this.editTemplate = false; // turn edit mode off

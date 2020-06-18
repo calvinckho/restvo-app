@@ -106,7 +106,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         url: 'overview',
         label: 'Overview',
         component: EditfeaturePage,
-        params: {}
+        params: { visibleComponents: '10000,10010,10050' } // for /creator/id/overview/id which is editfeature
       },
       {
         url: 'curriculum',
