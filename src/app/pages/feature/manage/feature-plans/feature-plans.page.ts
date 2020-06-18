@@ -32,6 +32,11 @@ import {FeatureCreatorPage} from "../feature-creator/feature-creator.page";
   styleUrls: ['./feature-plans.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
+
+/**
+ * In Admin view, this shows as the Plan tab in Community and Program
+ * It has two action cards: create new plan, and choose from the marketplace
+ */
 export class FeaturePlansPage extends EditfeaturePage implements OnInit {
 
   planPage = 'createOrChoose';
