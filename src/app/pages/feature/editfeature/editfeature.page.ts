@@ -425,7 +425,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   // rebuild the moment assets array using raw data
                   this.moment.assets = [];
                   this.moment.resource.matrix_number[0].forEach((componentId, index) => { // loop through all component ids
-                      if (componentId >= 10300 && componentId <= 10360) {
+                      if (componentId >= 10300 && componentId <= 10360 || (componentId === 10010) || (componentId === 40010)) {
                           for (const asset of this.moment.matrix_string[index]) { // loop through all media file and add the ones that is an image to the moment.assets array
                               if (asset && asset.length && (['jpg', 'jpeg', 'gif', 'png']).includes(asset.substring(asset.lastIndexOf('.') + 1).toLowerCase())) {
                                   this.moment.assets.push(asset);
@@ -469,7 +469,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               });
           }
           this.initialSetupCompleted = true;
-          console.log('moment resource', this.moment.resource, this.templateChanged);
+          console.log('editfeature setup completed', this.moment);
       } catch (err) {
           console.log("editfeature setup error", err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
