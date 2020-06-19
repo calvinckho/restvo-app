@@ -73,7 +73,7 @@
               {{userData.user.first_name}} {{userData.user.last_name}}
             </ion-card-title>
             <div class="person-title" [innerHTML]="userData.user.bio"></div>
-            <ion-button shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
+            <ion-button id="edit-profile-button" shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
         </ion-item>
       </ion-card>
@@ -109,7 +109,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
-              <ion-button slot="end" [routerLink]="['../choose/5e9f46e1c8bf1a622fec69d5']" fill="clear">
+              <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
@@ -146,7 +146,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
-              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_1' }]" fill="clear">
+              <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
@@ -215,7 +215,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
-              <ion-button slot="end" [routerLink]="['../choose/5e9fe372c8bf1a622fec69d8', { joinAs: 'user_list_3' }]" fill="clear">
+              <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
@@ -284,7 +284,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Groups</ion-label>
-              <ion-button slot="end" [routerLink]="['../choose/5e9fe35cc8bf1a622fec69d7']" fill="clear">
+              <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe35cc8bf1a622fec69d7' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>

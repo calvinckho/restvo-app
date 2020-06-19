@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="modalPage">
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Curriculum</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="schedule">
+  <ion-list>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
+        <span>Create Curriculum</span>
+      </ion-button>
+    </ion-row>
+    <ion-item *ngIf="this.schedule._id && !timeline.length">
+      <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
+    </ion-item>
+    <ion-item *ngIf="!this.schedule._id">
+      <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
+    </ion-item>
+    <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
+      <ion-item *virtualItem="let calendaritem; let j = index;">
+        <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
+        <span class="content-count">{{j+1}}.</span>
+        <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
+        <!--<span class="content-date">{{calendaritem.startDate | datetime: 'm:s,d:n,y:n'}}</span>-->
+        <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
+        <!--<span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>-->
+        <ion-buttons slot="end" class="ion-no-margin">
+          <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
+          <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-virtual-scroll>
+    <ion-row class="ion-justify-content-center" *ngIf="this.schedule._id">
+      <ion-button (click)="addContenCalendar()" shape="round" color="primary" fill="solid" expand="full">
+        <ion-icon name="add"></ion-icon>
+        <ion-label>Add New</ion-label>
+      </ion-button>
+    </ion-row>
+  </ion-list>
+</ion-content>

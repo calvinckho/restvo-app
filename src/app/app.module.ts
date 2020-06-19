@@ -38,6 +38,7 @@ import {ShowfeaturePageModule} from "./pages/feature/showfeature/showfeature.mod
 import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pickpeople-popover.module";
 import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/pickfeature-popover.module";
 import {ProgramsPageModule} from "./pages/user/programs/programs.module";
+import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.module";
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import {ProgramsPageModule} from "./pages/user/programs/programs.module";
       PickfeaturePopoverPageModule,
       PickpeoplePopoverPageModule,
       ProgramsPageModule,
+      UploadmediaPageModule,
       NgxStripeModule.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],

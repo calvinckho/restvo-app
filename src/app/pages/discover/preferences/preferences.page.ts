@@ -151,10 +151,22 @@ export class PreferencesPage implements OnInit, OnDestroy {
 
     async chooseOnboardingProcess(event) {
       event.stopPropagation();
-      const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', categoryId: '5e17acd47b00ea76b75e5a71', programId: this.programId, type: this.type, allowCreate: true, allowSwitchCategory: false, modalPage: true }});
-      await modal.present();
-      const {data: moments} = await modal.onDidDismiss();
-      if (moments && moments.length) {
+      const componentProps: any = {title: 'Choose from Library', categoryId: '5e17acd47b00ea76b75e5a71', allowCreate: true, allowSwitchCategory: false };
+      if (this.programId) {
+        componentProps.programId = this.programId;
+      }
+      if (this.type) {
+        componentProps.type = this.type;
+      }
+      if (!this.modalPage && this.platform.width() >= 992) {
+        componentProps.subpanel = true;
+        this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
+      } else {
+        componentProps.modalPage = true;
+        const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps});
+        await modal.present();
+        const {data: moments} = await modal.onDidDismiss();
+        if (moments && moments.length) {
           for (const moment of moments) {
             // prepare object for cloning. copy everything except calendar and add program and onboarding types
             moment.calendar = { // reset the calendar
@@ -176,12 +188,13 @@ export class PreferencesPage implements OnInit, OnDestroy {
           }
           const clonedMoments: any = await this.momentService.clone(moments, null); // clone the array of selected activities from Picker
           for (const clonedMoment of clonedMoments) {
-              const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
-              if (index > -1) {
-                 clonedMoment.resource = moments[index].resource; // clone the populated resource
-              }
+            const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+            if (index > -1) {
+              clonedMoment.resource = moments[index].resource; // clone the populated resource
+            }
           }
           this.moments.unshift(...clonedMoments);
+        }
       }
     }
 

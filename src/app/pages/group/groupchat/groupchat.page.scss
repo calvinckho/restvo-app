@@ -1,14 +1,11 @@
 app-groupchat {
 
-  height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 
   ion-infinite-scroll {
     //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
-  }
-
-  ion-content {
-    //height: 100%;
-    max-height: calc(100% - 116px);
   }
 
   .titles {
@@ -671,8 +668,8 @@ app-groupchat {
   }
 
   .program-card {
-    height: 100%;
-    width: 100%;
+    height: 100px;
+    width: 133px;
     object-fit: contain;
     margin: 0 3%;
   }
@@ -684,7 +681,7 @@ app-groupchat {
   }
 
   .program-photo-container {
-    height: 80px;
+    height: 100px;
     overflow: hidden;
   }
 
@@ -828,6 +825,7 @@ app-groupchat {
   }
 
   .program-slide {
+    height: 100px;
     max-width: 150px;
   }
 }

@@ -178,6 +178,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   categoryIds = [];
   
   //Slider Button
+    peopleSlidesOptions = {
+        slidesPerView: 1.1,
+        grabCursor: true,
+        updateOnWindowResize: true,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        }
+    };
   disablePrevBtn = true;
   disableNextBtn = false;
 
@@ -266,22 +275,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.setup(data);
       }
   };
-  swipeNext(){
-    this.slides.slideNext();
-  }
-  swipePrevious(){
-    this.slides.slidePrev();
-  }
-  doCheck() {
-    let prom1 = this.slides.isBeginning();
-    let prom2 = this.slides.isEnd();
-  
-    Promise.all([prom1, prom2]).then((data) => {
-      data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
-      data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
-    });
-  }
-  
+
   async setup(data) {
       this.loadStatus = 'loading';
       await this.loadCalendarItem();
@@ -403,10 +397,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               } else if (data.type === 'refresh calendar items') {
                   // load content calendars from backend.
                   // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
-                  // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                   if (this.hasOrganizerAccess) {
                       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
                       this.adminOrPublicAccessContentCalendars = results || [];
+                  // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                   } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
                       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                       this.adminOrPublicAccessContentCalendars = results || [];
@@ -594,6 +588,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
                 if (results && results.hasOrganizerLeaderAccess) {
+                    console.log("access", this.hasOrganizerAccess, results.hasOrganizerLeaderAccess)
                     this.hasOrganizerAccess = this.hasOrganizerAccess || results.hasOrganizerLeaderAccess;
                 }
                 for (const response of this.responses) {
@@ -613,10 +608,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 // load content calendars from backend.
                 // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
-                // or if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                 if (this.hasOrganizerAccess) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
                     this.adminOrPublicAccessContentCalendars = results || [];
+                // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
                 } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                     this.adminOrPublicAccessContentCalendars = results || [];
@@ -1314,6 +1309,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipePeopleSlide() {
+      this.disablePrevBtn = await this.slides.isBeginning();
+      this.disableNextBtn = await this.slides.isEnd();
     if (this.peopleSlides && this.loadStatus !== 'loading') {
       const currentSlideIndex = await this.peopleSlides.getActiveIndex();
       if (currentSlideIndex === this.matchedPeople.length - 4) {

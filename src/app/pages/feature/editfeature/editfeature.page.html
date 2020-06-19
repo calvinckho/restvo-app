@@ -28,11 +28,10 @@
   <ion-list [ngClass]="{'editTemplate': editTemplate}">
     <ion-item *ngIf="!editTemplate"> <!--Template Name and Save Template button-->
       <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="folder"></ion-icon></div>
-      <ion-label *ngIf="!editTemplate">{{moment.resource['en-US'].value[0]}}</ion-label>
-     <!-- <ion-input *ngIf="editTemplate" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].value[5]" [(ngModel)]="moment.resource['en-US'].value[0]"></ion-input> &lt;!&ndash;Template Type&ndash;&gt;-->
-      <ion-button (click)="edit()">{{resource['en-US'].value[8]}} {{resource['en-US'].value[9]}}</ion-button> <!--Customize Template-->
+      <ion-label>{{moment.resource['en-US'].value[0]}}</ion-label>
+      <ion-button (click)="edit()" *ngIf="!visibleComponents.length">{{resource['en-US'].value[8]}} {{resource['en-US'].value[9]}}</ion-button> <!--Customize Template-->
     </ion-item>
-    <ion-item-group *ngIf="moment.program">
+    <ion-item-group *ngIf="moment.program && moment.program.length">
       <ion-item>
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="code-working"></ion-icon></div>
         <ion-label>Program Id</ion-label>
@@ -98,20 +97,20 @@
     <ion-reorder-group (ionItemReorder)="reorderComponents($event)" [disabled]="!editTemplate">
       <div *ngFor="let item of moment.resource.matrix_number[0]; trackBy: customTrackBy; index as i">
         <!--title-->
-        <ion-item *ngIf="item === 10000" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10000" lines="none">
           <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
           <ion-textarea [(ngModel)]="moment.matrix_string[i][0]" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="moment.resource['en-US'].value[0] + ' ' + resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]" ></ion-textarea>
         </ion-item>
         <!--section header-->
-        <ion-item color="lightgrey" *ngIf="item === 10050" lines="none">
+        <ion-item color="lightgrey" *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10050" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu" color="darkgrey"></ion-icon></ion-reorder>
-          <ion-input class="section-header" color="darkgrey" [(ngModel)]="moment.resource['en-US'].matrix_string[i][1]"></ion-input>
+          <ion-input class="section-header" color="darkgrey" [(ngModel)]="moment.resource['en-US'].matrix_string[i][1]" (ionChange)="templateChanged = true"></ion-input>
           <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="secondary"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
         <!--location-->
-        <ion-item-group *ngIf="item === 10100">
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10100">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <ion-icon class="side-icon" color="grey" name="pin"></ion-icon></div>
@@ -137,7 +136,7 @@
           </div>
         </ion-item-group>
         <!--Visibility-->
-        <ion-item-group *ngIf="item === 20000">
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 20000">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="eye"></ion-icon></div>
@@ -196,7 +195,7 @@
             </ion-item>
           </ion-item-group>
         </ion-item-group>
-        <ion-item-group *ngIf="item === 20010"> <!--Slider-->
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 20010"> <!--Slider-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="albums"></ion-icon></div>
@@ -210,7 +209,7 @@
             <ion-label class="moment-input" class="ion-text-wrap">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
           </ion-item>
         </ion-item-group>
-        <ion-item-group *ngIf="item === 20020"> <!--Tabs-->
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 20020"> <!--Tabs-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="albums"></ion-icon></div>
@@ -258,7 +257,7 @@
           </ion-item>
         </ion-item-group>
         <!--Start/End Date-->
-        <ion-item-group *ngIf="item === 10200">
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10200">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <img class="side-image" src="assets/img/Calendar_Gray.png"></div>
@@ -333,7 +332,7 @@
           </ion-item>
         </ion-item-group>
         <!--To-Dos-->
-        <ion-item-group *ngIf="item === 10210">
+        <ion-item-group *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10210">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <img class="side-image" src="assets/img/Calendar_Gray.png"></div>
@@ -400,19 +399,19 @@
           </ion-item>
         </ion-item-group>
         <!--Textarea + Media-->
-        <ion-item *ngIf="item === 10010" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <ion-textarea rows="4" [minRows]="1" [maxRows]="6" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
           <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
-        <ion-item *ngIf="item === 10010 && resource['en-US'].value.length > 36" lines="none"> <!--textarea media section-->
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010 && resource['en-US'].value.length > 36" lines="none"> <!--textarea media section-->
           <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></label>
           <label class="moment-input" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</label>
         </ion-item>
         <!--Upload Media-->
-        <ion-item *ngIf="item === 10300" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10300" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></label>
           <label class="moment-input" (click)="openUploadMedia(i, item)" *ngIf="resource['en-US'].value.length > 36">{{resource['en-US'].value[36]}}</label>
@@ -420,7 +419,7 @@
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
-        <ion-item *ngIf="item === 10310" lines="none"> <!--Obsolete in 1.6.3 (51)+-->
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10310" lines="none"> <!--Obsolete in 1.6.3 (51)+-->
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></div>
           <div class="moment-input" (click)="openUploadMedia(i, item)">
@@ -432,7 +431,7 @@
           </ion-buttons>
         </ion-item>
         <!--Video-->
-        <ion-item *ngIf="item === 10320" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10320" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></label>
           <input *ngIf="moment.matrix_string[i]?.length && !moment.matrix_string[i][0]?.length" type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event, i)" accept="video/*"/>
@@ -442,7 +441,7 @@
           </ion-buttons>
         </ion-item>
         <!--Youtube-->
-        <ion-item *ngIf="item === 10330" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10330" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></div>
           <div class="moment-input" (click)="promptVideoUrl('youtube', i)">
@@ -454,7 +453,7 @@
           </ion-buttons>
         </ion-item>
         <!--File-->
-        <ion-item *ngIf="item === 10360" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10360" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
           <input *ngIf="moment.matrix_string[i]?.length && !moment.matrix_string[i][0]?.length" type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event, i)"/>
@@ -464,7 +463,7 @@
           </ion-buttons>
         </ion-item>
         <!--Video Conference-->
-        <ion-item *ngIf="item === 10600" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10600" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <div class="moment-label" slot="start"> <ion-icon class="side-icon" color="grey" name="videocam"></ion-icon></div>
           <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div> <!--Video Conference-->
@@ -472,7 +471,7 @@
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
-        <ion-item *ngIf="item === 10600" lines="none" class="padding-start">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10600" lines="none" class="padding-start">
           <ion-label slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
           <ion-range style="width: 50%" min="2" max="1000" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-range>
           <ion-input style="width: 10%" placeholder="2" [(ngModel)]="moment.matrix_number[i][0]" slot="end" (ionChange)="moment.matrix_number[i][0] = moment.matrix_number[i][0] || 2"></ion-input>
@@ -486,7 +485,7 @@
           </ion-item>
         </div>
         <!--Photo Viewer-->
-        <div *ngIf="(item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010) && moment.matrix_string[i]?.length">
+        <div *ngIf="((!visibleComponents.length || visibleComponents.includes(item)) && item === 10010 || (!visibleComponents.length || visibleComponents.includes(item)) && item === 10300 || (!visibleComponents.length || visibleComponents.includes(item)) && item === 10310 || (!visibleComponents.length || visibleComponents.includes(item)) && item === 10360 || (!visibleComponents.length || visibleComponents.includes(item)) && item === 40010) && moment.matrix_string[i]?.length">
           <ion-grid class="selected-grid">
             <ion-row>
               <ion-col *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0); index as j" size-xs="4" size-sm="3" size-md="2" size-lg="2" class="ion-margin-horizontal">
@@ -514,7 +513,7 @@
           </ion-grid>
         </div>
         <!--Video Player-->
-        <ion-item *ngIf="item === 10320 && moment.matrix_string[i]?.length && moment.matrix_string[i][0]?.length" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10320 && moment.matrix_string[i]?.length && moment.matrix_string[i][0]?.length" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i][0], 'type': 'video/' + (moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(moment.matrix_string[i][0].substring(moment.matrix_string[i][0].lastIndexOf('.') + 1).toLowerCase()) > -1"  (click)="$event.stopPropagation()"></div>
           <ion-button class="remove-photo" fill="clear" size="large" (click)="removeMedia(i, 0)">
@@ -522,7 +521,7 @@
           </ion-button>
         </ion-item>
         <!--Youtube Player-->
-        <ion-item *ngIf="item === 10330 && moment.matrix_string[i]?.length && moment.matrix_string[i][0]?.length" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10330 && moment.matrix_string[i]?.length && moment.matrix_string[i][0]?.length" lines="none">
           <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
           <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i][0], 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
           <ion-button class="remove-photo" fill="clear" size="large" (click)="removeMedia(i, 0)">
@@ -530,7 +529,7 @@
           </ion-button>
         </ion-item>
 
-        <div *ngIf="item === 10400"> <!--Add Reminder-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10400"> <!--Add Reminder-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="alarm"></ion-icon></div>
@@ -558,12 +557,12 @@
             <ion-icon slot="end" name="trash" color="grey" (click)="deleteReminder($event, j)"></ion-icon>
           </ion-item>
         </div>
-        <ion-item *ngIf="item === 10400 && reminders?.length < 2" lines="none">
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10400 && reminders?.length < 2" lines="none">
           <div class="moment-label"> <ion-icon class="side-icon" color="grey" name="alarm"></ion-icon></div>
           <div class="moment-input" (click)="addNewReminder()">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</div>
         </ion-item>
 
-        <div *ngIf="item === 10370"> <!--References-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10370"> <!--References-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <ion-icon class="side-icon" color="grey" name="link"></ion-icon></div>
@@ -592,7 +591,7 @@
             </ion-button>
           </ion-item>
         </div>
-        <div *ngIf="item === 11000"> <!--Chat-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 11000"> <!--Chat-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="chatbubbles"></ion-icon></div>
@@ -614,7 +613,7 @@
             <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[6]"></ion-toggle>
           </ion-item>
         </div>
-        <div *ngIf="item === 12000"> <!--Notes-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 12000"> <!--Notes-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></div>
@@ -624,7 +623,7 @@
             </ion-buttons>
           </ion-item>
         </div>
-        <div *ngIf="item === 30000"> <!--Poll-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 30000"> <!--Poll-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <img class="side-image" src="assets/img/Poll_Gray.png"></div>
@@ -650,7 +649,7 @@
             </ion-button>
           </ion-buttons>
         </div>
-        <div *ngIf="item === 40000"> <!--Multiple Choice-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 40000"> <!--Multiple Choice-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
@@ -687,7 +686,7 @@
             </ion-button>
           </ion-buttons>
         </div>
-        <div *ngIf="item === 40010"> <!--Text Answer-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 40010"> <!--Text Answer-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="help"></ion-icon></div>
@@ -732,7 +731,7 @@
           </ion-item>
         </div>
         <!--Multiple Choice with Picture Tiles or List of Choices-->
-        <div *ngIf="item === 40020">
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 40020">
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
@@ -800,7 +799,7 @@
             </ion-button>
           </ion-buttons>
         </div>
-        <div *ngIf="item === 50000"> <!--Directory-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 50000"> <!--Directory-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="contacts"></ion-icon></div>
@@ -1126,7 +1125,7 @@
             <ion-label class="ion-text-wrap" color="danger">The matching configurations will be available after you save your activity.</ion-label>
           </ion-item>
         </div>
-        <div *ngIf="item === 10500"> <!--People-->
+        <div *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10500"> <!--People-->
           <ion-item lines="none">
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"> <img class="side-image" src="assets/img/avatar-group.png"></div>

@@ -47,13 +47,18 @@ const routes: Routes = [
         outlet: 'sub'
     },
     {
+        path: 'create',
+        loadChildren: () => import('./pages/feature/editfeature/editfeature.module').then( m => m.EditfeaturePageModule),
+        outlet: 'sub'
+    },
+    {
         path: 'edit/:id',
         loadChildren: () => import('./pages/feature/editfeature/editfeature.module').then( m => m.EditfeaturePageModule),
         outlet: 'sub'
     },
     {
-        path: 'sub_me',
-        loadChildren: () => import('./pages/user/dashboard/dashboard.module').then( m => m.DashboardPageModule),
+        path: 'pickfeature',
+        loadChildren: () => import('./pages/feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule),
         outlet: 'sub'
     },
     {

@@ -40,50 +40,6 @@ app-feature-childactivities {
     width: 30%;
   }
 
-  .program-row {
-    max-height: 70%;
-    overflow: scroll;
-  }
-
-  .program-card {
-    width: auto;
-    object-fit: contain;
-    margin: 0 3%;
-  }
-
-  .program-photo-container {
-    height: 80px;
-    overflow: hidden;
-  }
-
-  .program-photo {
-    object-fit: cover;
-    cursor: pointer;
-    //opacity: 50%;
-    height: 100%;
-    //width: 100%;
-    margin: auto;
-    display: block;
-    //max-height: 200px;
-  }
-
-  .program-type {
-    position: absolute;
-    top: 2%;
-    left: 2%;
-    font-size: 12px;
-    cursor: pointer;
-  }
-
-  .program-name {
-    position: absolute;
-    bottom: 2%;
-    left: 2%;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 15;
-  }
-
   .remove-moment {
     position: absolute;
     top: 0;

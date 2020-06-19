@@ -31,6 +31,8 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   activityAscending = true;
   typeAscending = true;
   shareAscending = false;
+  planPage = 'createOrChoose';
+  actionType: any;
 
   constructor(
       public route: ActivatedRoute,
@@ -96,72 +98,6 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       } else { // view
         this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
       }
-    }
-  }
-
-  async chooseChildActivity() {
-      let componentProps: any;
-      componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, modalPage: true };
-      if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
-          componentProps.programId = this.momentId;
-      } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
-          componentProps.parent_programId = this.momentId;
-          componentProps.maxMomentCount = 1;
-          if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
-            componentProps.allowCreate = false;
-          }
-      } else { // pick other activities
-          componentProps.parent_programId = this.momentId;
-      }
-    const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
-    await modal.present();
-    const {data: moments} = await modal.onDidDismiss();
-    if (moments && moments.length) {
-      // if choosing Plans as child activities
-      if (this.categoryId === '5c915476e172e4e64590e349') {
-        // only if To-Do is enabled (e.g. relationships)
-        if (this.moment.resource.matrix_number[0].includes(10210)) {
-          await this.momentService.adoptPlan({
-            operation: 'adopt plan',
-            planIds: moments.map((moment) => moment._id),
-            parent_programId: this.momentId,
-          });
-        }
-      } else {
-        for (const moment of moments) {
-          // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
-          moment.calendar = { // reset the calendar
-            title: moment.matrix_string[0][0],
-            location: '',
-            notes: '',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
-            options: {
-              firstReminderMinutes: 0,
-              secondReminderMinutes: 0,
-              reminders: []
-            }
-          };
-          moment.parent_programs = [this.momentId];
-        }
-        const clonedMoments: any = await this.momentService.clone(moments, 'admin'); // clone and do not add admin as participants
-        for (const clonedMoment of clonedMoments) {
-          const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
-          if (index > -1) {
-            clonedMoment.resource = moments[index].resource; // clone the populated resource
-          }
-        }
-        this.activities.unshift(...clonedMoments);
-      }
-    }
-  }
-
-  async editContent(event, activity) {
-    event.stopPropagation();
-    if (this.platform.width() < 768) {
-      this.momentService.editMoment({ moment: activity, modalPage: true });
-    } else {
-      this.router.navigate(['/app/edit/' + activity._id]);
     }
   }
 
@@ -238,7 +174,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     }
   }
 
-  selectParticipant(event, user) {
+  selectActivity(event, user) {
     event.stopPropagation();
     if (user.select) {
       user.select = false;
@@ -251,7 +187,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     }
   }
 
-  unselectParticipant(event, user) {
+  unselectActivity(event, user) {
     event.stopPropagation();
     let index = this.selectedActivities.indexOf(user);
     if (index > -1) {
