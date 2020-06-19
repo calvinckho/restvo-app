@@ -220,7 +220,7 @@
       <ion-item (click)="select.open($event)" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="warning" name="pricetag"></ion-icon></div>
         <div class="moment-input">
-          <span color="warning" *ngFor="let goal of parentRelationshipGoalAttributes">{{ goal[5] }}, </span>
+          <span color="warning" *ngFor="let goal of parentRelationshipListOfGoals">{{ goal[5] }}, </span>
         </div>
         <ion-label hidden="true">Goals</ion-label>
         <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end" hidden>
