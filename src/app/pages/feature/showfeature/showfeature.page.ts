@@ -555,7 +555,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async loadMoment() {
       try {
           this.moment = await this.momentService.load(this.moment._id);
-          console.log('loaded moment', this.moment)
+          console.log('loaded moment', this.moment);
       } catch (err) {
           // if the Activity is deleted and it is trying to refresh the page
           if (this.authService.token) {
@@ -573,9 +573,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.responseObj.moment = this.moment._id;
         // initialize the planModules array
         this.planModules = [];
-        this.moment.array_moment.forEach((moment) => {
-            this.planModules.push(moment);
-        });
+        if (this.moment.array_moment) {
+            this.moment.array_moment.forEach((moment) => {
+                this.planModules.push(moment);
+            });
+        }
         if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
             // if there is any interactable (schedule, poll, m.c., text answers), load responses
             if (this.moment.resource.matrix_number[0].find((c) => (c === 10210) || (c >= 30000 && c <= 49999))) {
