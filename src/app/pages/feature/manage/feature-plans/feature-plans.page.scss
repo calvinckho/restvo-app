@@ -17,4 +17,13 @@ app-feature-plans {
   .summary-label {
     width: 20%;
   }
+
+  .category-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 300px;
+    text-align: center;
+  }
 }
