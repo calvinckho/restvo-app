@@ -172,7 +172,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'creator',
         label: 'Curriculum',
         component: FeatureCreatorPage,
-        params: { visibleComponents: '10000,10010,10050' } // for /creator/id/overview/id which is editfeature
+        params: { visibleComponents: '10000,10010,10050,10300' } // for /creator/id/overview/id which is editfeature
       },
       {
         url: 'schedule',

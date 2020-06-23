@@ -85,7 +85,6 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   }
 
   reloadEditPage = async () => {
-    console.log("reload creator")
     // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
     if (this.userData.user && (this.router.url.includes('creator') || this.modalPage)) {
 
@@ -107,7 +106,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         url: 'overview',
         label: 'Overview',
         component: EditfeaturePage,
-        params: { visibleComponents: '10000,10010,10050' } // for /creator/id/overview/id which is editfeature
+        params: { visibleComponents: '10000,10010,10050,10300' } // for /creator/id/overview/id which is editfeature
       },
       {
         url: 'curriculum',
