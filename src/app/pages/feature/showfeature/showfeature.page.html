@@ -221,7 +221,7 @@
         </ion-list>
       </ion-item-group>
       <ion-item *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
-        <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="flag"></ion-icon></div>
+        <div class="moment-label" slot="start"><ion-icon class="side-icon" name="pricetag" color="grey"></ion-icon></div>
         <div class="moment-input">Assigned To</div>
         <ion-label hidden="true">Goals</ion-label>
         <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end">
