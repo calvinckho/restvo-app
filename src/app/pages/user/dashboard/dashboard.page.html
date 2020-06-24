@@ -150,8 +150,10 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
-            <div *ngIf="!(myMentors && myMentors.length)">
-              Image
+            <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
+              <img src="assets/img/mentors.svg" alt="" />
+              <a [href]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
+              You don't have any mentors yet. Discover some today.</a>
             </div>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -296,8 +298,10 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
-            <div *ngIf="!(groups && groups.length)">
-              Image
+            <div class="empty-state" *ngIf="!(groups && groups.length)">
+              <img src="assets/img/groups.svg" alt="" />
+              <a [href]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
+              You don't have any groups yet. Discover some today.</a>
             </div>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
