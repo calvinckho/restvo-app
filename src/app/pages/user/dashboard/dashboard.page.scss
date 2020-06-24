@@ -49,6 +49,16 @@ app-dashboard {
     margin: 0 auto;
   }
 
+  .empty-state {
+    text-align: center;
+
+    & img {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 15px;
+    }
+  }
+
   .transparent {
     --background: transparent !important;
   }
