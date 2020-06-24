@@ -152,7 +152,7 @@
             </ion-item>
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
               <img src="assets/img/mentors.svg" alt="" />
-              <a [href]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
+              <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any mentors yet. Discover some today.</a>
             </div>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
@@ -226,7 +226,7 @@
             </ion-item>
             <div class="empty-state" *ngIf="!(myMentees && myMentees.length)">
               <img src="assets/img/mentees.svg" alt="" />
-              <a [href]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
+              <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any mentees yet. Discover some today.</a>
             </div>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
@@ -300,7 +300,7 @@
             </ion-item>
             <div class="empty-state" *ngIf="!(groups && groups.length)">
               <img src="assets/img/groups.svg" alt="" />
-              <a [href]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
+              <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any groups yet. Discover some today.</a>
             </div>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
