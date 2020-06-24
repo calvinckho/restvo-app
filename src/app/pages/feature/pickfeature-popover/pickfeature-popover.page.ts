@@ -467,7 +467,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     close() {
-        if (this.modalPage) {
+        if (this.subpanel) {
+            this.router.navigate([{ outlets: { sub: null }}]);
+        } else if (this.modalPage) {
             this.modalCtrl.dismiss();
         } else {
             this.location.back();

@@ -16,7 +16,7 @@
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
-          <ion-button (click)="this.close(); router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
+          <ion-button (click)="this.close()" [hidden]="!subpanel"> <!--close subpanel-->
               <ion-icon name="close"></ion-icon>
           </ion-button>
       </ion-buttons>
