@@ -142,7 +142,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentors-->
-        <ion-col *ngIf="myMentors && myMentors.length" [size]="(platform.width() >= 768) && (myMentors.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (myMentors.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
@@ -150,6 +150,9 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+            <div *ngIf="!(myMentors && myMentors.length)">
+              Image
+            </div>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
                 <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
@@ -211,7 +214,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentees-->
-        <ion-col *ngIf="myMentees && myMentees.length" [size]="(platform.width() >= 768) && (myMentees.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (myMentees.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
@@ -219,6 +222,9 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+            <div *ngIf="!(myMentees && myMentees.length)">
+              Image 
+            </div>
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
                 <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
