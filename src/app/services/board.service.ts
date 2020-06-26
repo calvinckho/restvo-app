@@ -7,9 +7,7 @@ import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { CalendarService } from './calendar.service';
 import * as io from 'socket.io-client';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
+
 import { NetworkService } from './network-service.service';
 
 @Injectable({ providedIn: 'root' })

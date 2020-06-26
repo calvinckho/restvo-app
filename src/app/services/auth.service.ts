@@ -2,15 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
 import { Storage } from '@ionic/storage';
-import {Capacitor, Plugins} from '@capacitor/core';
+import {Plugins} from '@capacitor/core';
 import {LoadingController, Platform} from '@ionic/angular';
 
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
 import { NetworkService } from './network-service.service';
 import 'capacitor-share-extension';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class Auth {

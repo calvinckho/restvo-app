@@ -7,7 +7,7 @@ import {ActionSheetController, ToastController, Platform, LoadingController, Ale
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import fixOrientation from 'fix-orientation-capacitor';
 import {Resource} from "./resource.service";
 

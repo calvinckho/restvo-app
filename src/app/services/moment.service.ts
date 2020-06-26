@@ -9,7 +9,7 @@ import { Resource } from './resource.service';
 import { UserData } from './user.service'
 import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';

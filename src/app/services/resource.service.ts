@@ -8,7 +8,7 @@ import {
 } from "@ionic/angular";
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import { Storage } from "@ionic/storage";
 import { CacheService } from "ionic-cache";
 import {UserData} from "./user.service";

@@ -12,11 +12,11 @@ import { Auth } from './auth.service';
 import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import {User} from '../interfaces/user';
 import {Capacitor, Plugins} from "@capacitor/core";
 import {Router} from "@angular/router";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserData {
