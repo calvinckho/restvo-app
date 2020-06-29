@@ -151,7 +151,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
 
     async chooseOnboardingProcess(event) {
       event.stopPropagation();
-      const componentProps: any = {title: 'Choose from Library', categoryId: '5e17acd47b00ea76b75e5a71', allowCreate: true, allowSwitchCategory: false };
+      const componentProps: any = {title: 'Choose from Library', categoryId: '5e17acd47b00ea76b75e5a71', allowCreate: true, allowSwitchCategory: false, disableSelect: true };
       if (this.programId) {
         componentProps.programId = this.programId;
       }

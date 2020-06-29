@@ -15,7 +15,7 @@
   </ion-grid>
   <ion-item lines="none" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
     <ion-label>Show Admin View When Possible</ion-label>
-    <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)"></ion-toggle>
+    <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)" [disabled]="!userData.defaultProgram"></ion-toggle>
   </ion-item>
   <ion-item lines="none">
     <ion-label>Choose Your Home Page:</ion-label>

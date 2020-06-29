@@ -139,7 +139,7 @@ export class FeaturePlansPage extends EditfeaturePage implements OnInit {
       this.router.navigate(['/app/manage/activity/' + this.moment._id + '/newplan/', componentProps ], { replaceUrl: false });
     }
   }
-  
+
   async loadSample(event) {
     if (event && event.detail && event.detail.value) {
       this.selectedSample = await this.momentService.load(event.detail.value);

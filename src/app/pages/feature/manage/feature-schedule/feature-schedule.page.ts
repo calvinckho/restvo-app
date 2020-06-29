@@ -120,13 +120,15 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       } else { // if creating new schedule
           this.schedule = this.scheduleObj;
       }
-      this.parentCategoryId = this.parentCategoryId || this.route.snapshot.paramMap.get('parentCategoryId');
-      this.schedule.parent_moments = [this.programId]; // for Plan's and Relationship's schedule, parent_moments is used
-      this.recurrenceStartDate = new Date(this.schedule.startDate);
-      this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
-      this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
-      this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
-      this.touchPlanTimeline();
+      if (this.schedule) {
+        this.parentCategoryId = this.parentCategoryId || this.route.snapshot.paramMap.get('parentCategoryId');
+        this.schedule.parent_moments = [this.programId]; // for Plan's and Relationship's schedule, parent_moments is used
+        this.recurrenceStartDate = new Date(this.schedule.startDate);
+        this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
+        this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
+        this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
+        this.touchPlanTimeline();
+      }
     }
   }
 
@@ -306,7 +308,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
     } else {
       componentProps.modalPage = true;
-      console.log("b4", componentProps, this.categoryId, this.momentId)
       const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
       await modal.present();
       const {data: moments} = await modal.onDidDismiss();

@@ -38,6 +38,7 @@ import {CalendarService} from "../../services/calendar.service";
 import {EditparticipantsPage} from "../feature/editparticipants/editparticipants.page";
 import {ManagefeaturePage} from "../feature/manage/managefeature.page";
 import {ProgramsPage} from "../user/programs/programs.page";
+import {FeatureCreatorPage} from "../feature/manage/feature-creator/feature-creator.page";
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -192,21 +193,7 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.startEventSubscription();
           }
           if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-              const result: any = await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
-              this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-              this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-              const activityId = await this.storage.get('currentManageActivityId');
-              if (activityId && this.userData.activitiesWithAdminAccess.length) {
-                  if (this.userData.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
-                      this.userData.currentManageActivityId = activityId;
-                  } else {
-                      this.userData.currentManageActivityId = this.userData.activitiesWithAdminAccess[0]._id;
-                      this.storage.set('currentManageActivityId', this.userData.currentManageActivityId);
-                  }
-              } else if (this.userData.activitiesWithAdminAccess.length) {
-                  this.userData.currentManageActivityId = this.userData.activitiesWithAdminAccess[0]._id;
-                  this.storage.set('currentManageActivityId', this.userData.currentManageActivityId);
-              }
+              await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
           }
       }
   }
@@ -602,7 +589,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.router.navigate(['/app/manage/activity/' + data.moment._id + '/profile/' + data.moment._id]);
             }
         });
-
         this.subscriptions['openOnboarding'] = this.authService.openOnboarding$.subscribe( async (data) => {
             if (data) {
                 const modal = await this.modalCtrl.create({component: OnboardfeaturePage, componentProps: data});
@@ -621,6 +607,12 @@ export class MainTabPage implements OnInit, OnDestroy {
         this.subscriptions['editParticipants'] = this.momentService.editParticipants$.subscribe(async (data) => {
             if (data) {
                 const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: data});
+                await modal.present();
+            }
+        });
+        this.subscriptions['openCreator'] = this.momentService.openCreator$.subscribe( async (data) => {
+            if (data) {
+                const modal = await this.modalCtrl.create({component: FeatureCreatorPage, componentProps: data});
                 await modal.present();
             }
         });

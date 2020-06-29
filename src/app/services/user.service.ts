@@ -38,11 +38,10 @@ export class UserData {
     showDownloadLink = true;
     splitPaneState: any = 'md';
     defaultProgram: any;
-    UIAdminMode = false;
+    UIAdminMode = false; // Landing page displaying Admin Insight view instead of Profile view
     UIrestStatus = "active"; // user's current UI rest status: active or away
     videoChatRoomId = ''; // the current video chat ID if one is in session
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
-    UIready = false; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
     versions = { // current app's version that will be used to compare with labels loaded from the database
         'Activity Components': 19, // this is the current activity components version used by this code
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
@@ -240,9 +239,6 @@ export class UserData {
         }
         this.defaultProgram = await this.storage.get('defaultProgram');
         this.UIAdminMode = await this.storage.get('UIAdminMode');
-        setTimeout(() => {
-            this.UIready = true; // give app.component.html time to render correct UI params (e.g. UIAdminMode) before enabling it
-        }, 500);
     }
 
     // filter the info based on churches selection
@@ -266,7 +262,22 @@ export class UserData {
     }
 
     async checkAdminAccess(communityId) {
-        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
+        const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
+        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+        const activityId = await this.storage.get('currentManageActivityId');
+        if (activityId && this.activitiesWithAdminAccess.length) {
+            if (this.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
+                this.currentManageActivityId = activityId;
+            } else {
+                this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
+                this.storage.set('currentManageActivityId', this.currentManageActivityId);
+            }
+        } else if (this.activitiesWithAdminAccess.length) {
+            this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
+            this.storage.set('currentManageActivityId', this.currentManageActivityId);
+        }
+        return result;
     }
 
     initializeUser() {
@@ -765,7 +776,6 @@ export class UserData {
         this.showDownloadLink = true;
         this.defaultProgram = null;
         this.UIAdminMode = false;
-        this.UIready = false;
         this.authService.logout();
         // deviceToken is not removed because it needs to be used when another user sign in.
         // that is because the deviceToken is only fetched when the app is loaded for the first time

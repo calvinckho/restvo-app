@@ -91,13 +91,13 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
       this.id = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       this.loadSchedules();
       await this.setup();
-      // load the component logic
     }
   };
 
   async loadSchedules() {
     // check to see if it has any schedules
     this.schedules = await this.momentService.loadActivitySchedules(this.id);
+    this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
@@ -114,7 +114,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureCurriculumPage,
-        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: this.schedules.length ? this.schedules[0]._id : null } // sends in the parent category ID
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: this.schedules.length ? this.schedules.find((c) => c.options && c.options.recurrence)._id : null } // sends in the parent category ID
       },
       {
         url: 'schedule',

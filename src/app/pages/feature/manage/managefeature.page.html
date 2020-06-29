@@ -91,18 +91,18 @@
             <ion-label class="menu-label">Groups</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': router.url.includes('programs')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')"  [ngClass]="{ 'selected': (selectedMenuOption === 'programs')}" (click)="clickManageMenu('programs', null)">
+        <ion-col [ngClass]="{'selected': router.url.includes('programs')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')" (click)="clickManageMenu('programs', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('programs') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
             <ion-label class="menu-label">Programs</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': router.url.includes('plan')}" (click)="clickManageMenu('plans', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--if Community or Program-->
+        <!--<ion-col [ngClass]="{'selected': router.url.includes('plan')}" (click)="clickManageMenu('plans', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> &lt;!&ndash;if Community or Program&ndash;&gt;
           <ion-item class="ion-no-padding" [color]="router.url.includes('plan') ? 'primary' : 'secondary'" lines="none" >
             <ion-icon class="ion-no-margin" slot="start" name="paper-plane"></ion-icon>
             <ion-label class="menu-label">Plans</ion-label>
           </ion-item>
-        </ion-col>
+        </ion-col>-->
         <ion-col [ngClass]="{'selected': router.url.includes('creator')}" (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('creator') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="paper-plane"></ion-icon>
@@ -175,11 +175,11 @@
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Programs</ion-label>
     </ion-item>
-    <!--plan is shown only in Community and Program-->
-    <ion-item (click)="clickManageMenu('plans', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> <!--if Community or Program-->
+<!--    &lt;!&ndash;plan is shown only in Community and Program&ndash;&gt;
+    <ion-item (click)="clickManageMenu('plans', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348'))"> &lt;!&ndash;if Community or Program&ndash;&gt;
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Plans</ion-label>
-    </ion-item>
+    </ion-item>-->
     <!--curriculum is shown only in journey and relationship-->
     <ion-item (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
