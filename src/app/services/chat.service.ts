@@ -4,16 +4,13 @@ import { AlertController, Platform } from '@ionic/angular';
 import {Badge} from "@ionic-native/badge/ngx";
 import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 import io from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Chat {
@@ -247,9 +244,15 @@ export class Chat {
         });
     };
 
-    getAllUserConversationIds(){
+    getAllUserConversationIds() {
         return this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
             .toPromise();
+        /*return new Promise((resolve) => {
+            this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
+                .map((result) => {
+                    resolve(result);
+                });
+        });*/
     }
 
     async getAllUserConversations() {

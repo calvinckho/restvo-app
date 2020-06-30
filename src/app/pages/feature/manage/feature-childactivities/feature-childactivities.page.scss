@@ -72,4 +72,13 @@ app-feature-childactivities {
     top: 0;
     right: 2px;
   }
+
+  .category-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 300px;
+    text-align: center;
+  }
 }

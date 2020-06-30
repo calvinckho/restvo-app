@@ -9,7 +9,7 @@ import { Resource } from './resource.service';
 import { UserData } from './user.service'
 import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -61,6 +61,7 @@ export class Moment {
     private _manageMoment: BehaviorSubject<any> = new BehaviorSubject(null);
     private _openPreferences: BehaviorSubject<any> = new BehaviorSubject(null);
     private _editParticipants: BehaviorSubject<any> = new BehaviorSubject(null);
+    private _openCreator: BehaviorSubject<any> = new BehaviorSubject(null);
 
     public readonly openMoment$: Observable<any> = this._openMoment.asObservable();
     public readonly editMoment$: Observable<any> = this._editMoment.asObservable()
@@ -68,6 +69,7 @@ export class Moment {
     public readonly manageMoment$: Observable<any> = this._manageMoment.asObservable();
     public readonly openPreferences$: Observable<any> = this._openPreferences.asObservable();
     public readonly editParticipants$: Observable<any> = this._editParticipants.asObservable();
+    public readonly openCreator$: Observable<any> = this._openCreator.asObservable();
 
     constructor(private http: HttpClient,
                 private router: Router,
@@ -109,6 +111,10 @@ export class Moment {
 
     editParticipants(data) {
         this._editParticipants.next(data);
+    }
+
+    openCreator(data) {
+        this._openCreator.next(data);
     }
 
     async createMomentSocket() {
@@ -329,6 +335,10 @@ export class Moment {
                     id: data.momentId
                 });
             });
+            // if leaving the admin role, reload the check Admin Access data
+            if (data.user_lists.includes('user_list_2') && this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
+                await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+            }
         }
         this.calendarService.getUserCalendar();
         this.chatService.getAllUserConversations();
@@ -605,6 +615,10 @@ export class Moment {
             await this.calendarService.getUserCalendar();
             await this.chatService.getAllUserConversations();
             this.userData.refreshAppPages();
+            // reload the check Admin Access data
+            if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
+                await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+            }
             return promise;
         }, duration);
     }

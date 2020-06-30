@@ -31,8 +31,15 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   activityAscending = true;
   typeAscending = true;
   shareAscending = false;
-  planPage = 'createOrChoose';
-  actionType: any;
+  view = '1';
+  selectedSample: any;
+  newActivityName: any;
+  categorySampleMap = [
+    { categoryLabel: 'Journey', categoryId: '5e9f46e1c8bf1a622fec69d5', sampleId: '5ea350d2dede5c7f29cf8490' },
+    { categoryLabel: 'Group', categoryId: '5e9fe35cc8bf1a622fec69d7', sampleId: '5ea398fadede5c7f29cf85c4' },
+    { categoryLabel: 'Mentoring', categoryId: '5e9fe372c8bf1a622fec69d8', sampleId: '5df88e7669f2546c0a26a7f3' },
+    { categoryLabel: 'Program', categoryId: '5c915475e172e4e64590e348', sampleId: '5ea1fa876240cd58bb82a694' }
+  ];
 
   constructor(
       public route: ActivatedRoute,
@@ -67,7 +74,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
         this.moment.categories = this.moment.categories.map((c) => c._id);
       }
       this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
-      this.categoryLabel = this.resourceService.categories.find((c) => c._id === this.categoryId)['en-US'].value[0] + 's';
+      this.categoryLabel = this.resourceService.categories.find((c) => c._id === this.categoryId)['en-US'].value[0];
       this.loadChildActivities();
     }
   }
@@ -213,6 +220,94 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
         }}, { text: 'Cancel' }]
     });
     await alert.present();
+  }
+
+  // allow the user to choose to clone an Activity from the marketplace
+  async chooseFromMarketplace() {
+    let componentProps: any;
+    componentProps = {title: 'Choose from Available Templates', categoryId: this.categoryId, allowCreate: false, allowSwitchCategory: false, disableSelect: true };
+    if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
+      componentProps.programId = this.moment._id;
+    } else { // pick other activities
+      componentProps.parent_programId = this.moment._id;
+    }
+    if (this.modalPage) {
+      componentProps.modalPage = true;
+      const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: componentProps});
+      await modal.present();
+      const {data: moments} = await modal.onDidDismiss();
+      if (moments && moments.length) {
+        const sampleMoments = moments.filter((c) => c.cloned === 'new');
+        if (sampleMoments && sampleMoments.length) {
+          for (const moment of sampleMoments) {
+            // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+            moment.calendar = { // reset the calendar
+              title: moment.matrix_string[0][0],
+              location: '',
+              notes: '',
+              startDate: new Date().toISOString(),
+              endDate: new Date().toISOString(),
+              options: {
+                firstReminderMinutes: 0,
+                secondReminderMinutes: 0,
+                reminders: []
+              }
+            };
+            moment.parent_programs = [this.moment._id];
+          }
+          const clonedMoments: any = await this.momentService.clone(sampleMoments, null); // clone the array of selected activities from Picker
+          for (const clonedMoment of clonedMoments) {
+            const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
+            if (index > -1) {
+              clonedMoment.resource = moments[index].resource; // clone the populated resource
+            }
+          }
+          this.activities.push(...clonedMoments);
+        }
+      }
+    } else {
+      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/newplan/', componentProps ], { replaceUrl: false });
+    }
+  }
+
+  async loadSample() {
+    this.selectedSample = await this.momentService.load(this.categorySampleMap.find((c) => c.categoryId === this.categoryId).sampleId);
+  }
+
+  async createPlan() {
+    this.ionSpinner = true;
+    this.selectedSample.matrix_string[0][0] = this.newActivityName;
+    // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
+    this.selectedSample.calendar = { // reset the calendar
+      title: this.selectedSample.matrix_string[0][0],
+      location: '',
+      notes: '',
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
+      options: {
+        firstReminderMinutes: 0,
+        secondReminderMinutes: 0,
+        reminders: []
+      }
+    };
+    this.selectedSample.parent_programs = [this.moment._id];
+    const clonedMoments: any = await this.momentService.clone([this.selectedSample], 'admin'); // clone and do not add admin as participants
+    this.ionSpinner = false;
+    if (clonedMoments && clonedMoments.length) {
+      if (this.platform.width() >= 768) {
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + clonedMoments[0]._id + '/overview/' + clonedMoments[0]._id, { visibleComponents: '10000,10010,10050,10300' }]);
+      } else {
+        this.momentService.openCreator({ moment: clonedMoments[0], modalPage: true });
+      }
+    }
+  }
+
+  back() {
+    if (this.view === '2') {
+      this.view = '1';
+    } else {
+      this.closeModal();
+    }
   }
 
   closeModal() {

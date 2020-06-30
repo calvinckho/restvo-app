@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 
 @Injectable({ providedIn: 'root' })
 export class CalendarService {

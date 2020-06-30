@@ -1,14 +1,14 @@
 <ion-header>
-  <ion-toolbar *ngIf="modalPage">
+  <ion-toolbar *ngIf="modalPage || view === '2'">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="back()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{this.categoryLabel}}</ion-title>
+    <ion-title>{{this.categoryLabel}}<span [hidden]="view === '2'">s</span></ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="activities"> <!--Show always except in Plans-->
+  <ion-toolbar *ngIf="activities && view === '1'"> <!--Show always except in Plans-->
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
       <div class="select-col"></div>
-      <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+      <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}s<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
       <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
       <div class="actions-col column-label">Actions</div>
     </ion-item>
@@ -16,7 +16,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="view === '1'">
     <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
       <ion-buttons class="select-col">
         <ion-button (click)="selectActivity($event, activity)" fill="clear" *ngIf="!activity.select">
@@ -52,4 +52,56 @@
       </ion-buttons>
     </ion-item>
   </ion-list>
+  <ion-grid *ngIf="view === '1'">
+    <ion-row class="grid-row ion-align-items-center">
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="view = '2'">
+          <ion-card-content>
+            <img src="assets/icon/create.svg" alt="Create Plan Icon">
+            <br>
+            <strong>Create your own {{categoryLabel}}</strong>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="chooseFromMarketplace()">
+          <ion-card-content>
+            <img src="assets/icon/template.svg" alt="Select Template Icon">
+            <br>
+            <strong>Select from available templates</strong>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!--In the create step, show a form to collect basic info about a new Plan-->
+  <ion-card>
+    <ion-grid class="full-height" *ngIf="view === '2'">
+      <ion-row class="ion-justify-content-center ion-align-items-center full-height form-container">
+        <ion-col>
+          <ion-item lines="none">
+            <div class="moment-label" slot="start">Create Your Own {{categoryLabel}}</div>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="stacked">{{categoryLabel}} Name</ion-label>
+            <ion-input class="ion-text-start" type="text" [(ngModel)]="newActivityName" placeholder="Type a name here" (ionFocus)="loadSample()"></ion-input>
+          </ion-item>
+   <!--       <ion-item class="ion-margin-vertical">
+            <ion-label position="stacked">Select the type of {{categoryLabel}}</ion-label>
+            <ion-select (ionChange)="loadSample($event)" [placeholder]="categoryLabel + ' Type'">
+              <ion-select-option value="5ea350d2dede5c7f29cf8490">Journey</ion-select-option>
+              <ion-select-option value="5ea398fadede5c7f29cf85c4">Group</ion-select-option>
+              <ion-select-option value="5df88e7669f2546c0a26a7f3">Mentoring</ion-select-option>
+              <ion-select-option value="5ea1fa876240cd58bb82a694">Program</ion-select-option>
+            </ion-select>
+          </ion-item>-->
+          <ion-row class="ion-margin-vertical">
+            <ion-button style="width: 100%;" [disabled]="!newActivityName || !selectedSample" expand="full" shape="round" (click)="createPlan()">
+              <div>Create new {{categoryLabel}}</div>
+            </ion-button>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
 </ion-content>

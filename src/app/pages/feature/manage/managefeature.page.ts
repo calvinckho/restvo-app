@@ -121,7 +121,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'people',
         label: 'People',
         component: EditparticipantsPage,
-        params: {}
+        params: { title: 'People' }
       },
       {
         url: 'programs',
@@ -375,7 +375,11 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
             if (this.modalPage) {
               this.closeModal(true);
             } else {
-              this.router.navigate(['/app/me'], { replaceUrl: true });
+              if (this.moment.parent_programs && this.moment.parent_programs.length) {
+                this.upOneLevel(this.moment.parent_programs[0]._id);
+              } else {
+                this.router.navigate(['/app/me'], { replaceUrl: true });
+              }
               //this.location.back();
             }
           });
