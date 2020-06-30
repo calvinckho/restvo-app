@@ -1,6 +1,6 @@
 app-main-tab {
   ion-tab-bar {
-    padding-top: 5px;
-    padding-bottom: 10px;
+    //padding-top: 5px;
+    padding-bottom: var(--ion-safe-area-bottom, 0);
   }
 }

@@ -101,6 +101,15 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
+    let curriculumId = null;
+    if (this.schedules.length) {
+      let curriculum = this.schedules.find((c) => c.options && c.options.recurrence);
+      if (curriculum && curriculum._id) {
+        curriculumId = curriculum._id;
+      } else {
+        curriculumId = this.schedules[0]._id;
+      }
+    }
     this.menu = [
       {
         url: 'overview',
@@ -114,7 +123,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureCurriculumPage,
-        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: this.schedules.length ? this.schedules.find((c) => c.options && c.options.recurrence)._id : null } // sends in the parent category ID
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: curriculumId } // sends in the parent category ID
       },
       {
         url: 'schedule',
