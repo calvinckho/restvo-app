@@ -121,7 +121,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         url: 'people',
         label: 'People',
         component: EditparticipantsPage,
-        params: {}
+        params: { title: 'People' }
       },
       {
         url: 'programs',
