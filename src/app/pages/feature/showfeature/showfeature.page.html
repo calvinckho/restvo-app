@@ -168,7 +168,7 @@
       </ion-item>
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">
-          <div class="moment-label"><ion-icon class="side-icon" color="tertiary" name="calendar"></ion-icon></div>
+          <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
           <ion-label color="tertiary" class="moment-label" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
           <ion-datetime color="tertiary" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
         </ion-item>
@@ -219,10 +219,10 @@
       </ion-item-group>
       <ion-item (click)="select.open($event)" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="warning" name="pricetag"></ion-icon></div>
-        <div class="moment-input">
-          <span color="warning" *ngFor="let goal of parentRelationshipListOfGoals">{{ goal[5] }}, </span>
+        <div class="moment-input" *ngIf="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.length">
+          <ion-badge [ngStyle]="{'--background': goal[3] }" *ngFor="let goal of parentRelationshipListOfGoals" [hidden]="!(parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0]))">{{ goal[5] }}</ion-badge>
         </div>
-        <ion-label hidden="true">Goals</ion-label>
+        <ion-label color="grey" [hidden]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.length">Assign to Goals</ion-label>
         <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end" hidden>
           <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [class.selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
         </ion-select>

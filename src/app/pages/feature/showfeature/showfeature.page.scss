@@ -89,6 +89,7 @@ app-showfeature {
   .new-calendar-item-title {
     --placeholder-font-style: italic;
   }
+
   .moment-photo-frame {
     margin: 10px auto;
     width: 90%;
@@ -111,16 +112,12 @@ app-showfeature {
     margin-right: 10px;
   }
 
-  .module-number {
-    padding-left: 2%;
-    width: 8%;
-    min-width: 20px;
-  }
-
   .moment-label {
     width: 25px;
     height: 25px;
+    margin-top: auto;
     margin-right: 20px;
+    margin-bottom: auto;
   }
 
   .moment-input {
