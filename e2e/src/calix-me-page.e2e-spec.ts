@@ -55,11 +55,7 @@ describe('navigate around the maintab', () => {
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-        await browser.sleep(6000); // wait
-    });
-
-    beforeEach(async () => {
-        await browser.waitForAngular();
+        await maintab.waitUntilVisible();
     });
 
     it('should log in successfully', async () => {
@@ -68,22 +64,19 @@ describe('navigate around the maintab', () => {
 
     it('should load the news page', async () => {
         await maintab.clickTabButton('#tab-button-news');
-        await browser.sleep(2000); // wait
-        //browser.waitForAngular();
+        await news.waitUntilVisible();
         expect(await app.currentUrl()).toContain('app/news');
     });
 
     it('should load the Me page', async () => {
         await maintab.clickTabButton('#tab-button-me');
-        await browser.sleep(2000); // wait
-        //browser.waitForAngular();
+        await me.waitUntilVisible();
         expect(await app.currentUrl()).toContain('app/me');
     });
 
     it('should load the edit profile page', async () => {
         await maintab.clickTabButton('#edit-profile-button');
-        await browser.sleep(2000); // wait
-        //await browser.waitForAngular();
+        await about.waitUntilVisible();
         expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
     });
 

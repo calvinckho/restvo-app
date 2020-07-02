@@ -18,22 +18,26 @@ class PageObjectBase {
     }
 
     waitUntilInvisible() {
-        browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 10000);
+        return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 10000);
     }
 
     waitUntilPresent() {
-        browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
+        return browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
     }
 
     waitUntilNotPresent() {
-        browser.wait(
+        return browser.wait(
             ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
             10000
         );
     }
 
+    waitUntilUrlContains() {
+        return browser.wait(ExpectedConditions.urlContains(this.path), 10000);
+    }
+
     waitUntilVisible() {
-        browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
+        return browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
     }
 
     getTitle() {
@@ -149,8 +153,8 @@ export class RegisterPage extends PageObjectBase {
         await this.enterInputText('#password', '123456');
     }
 
-    submitLoginForm() {
-        this.clickButton('#login-button');
+    async submitLoginForm() {
+        await this.clickButton('#login-button');
     }
 
     currentUrl() {
