@@ -48,36 +48,36 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        await showfeature.navigateTo();
-        await showfeature.waitUntilPresent();
+        await showfeature.navigateTo(); // navigate to '/'
+        await showfeature.waitUntilPresent(); // wait until showfeature is present
         await showfeature.clickSigninButton('#signin');
-        await browser.waitForAngular();
-        await register.fillEmail();
-        await register.fillPassword();
-        await register.submitLoginForm();
-        await maintab.waitUntilVisible();
+        await browser.waitForAngular(); // wait for angular to stabilize
+        await register.fillEmail(); // fill email
+        await register.fillPassword(); // fill password
+        await register.submitLoginForm(); // submit form
+        await maintab.waitUntilVisible(); // wait until maintab is visible
     });
 
     it('should log in successfully', async () => {
-        expect(await app.currentUrl()).toContain('app');
+        expect(await app.currentUrl()).toContain('app'); // it should contain /app in url
     });
 
     it('should load the news page', async () => {
-        await maintab.clickTabButton('#tab-button-news');
-        await news.waitUntilVisible();
-        expect(await app.currentUrl()).toContain('app/news');
+        await maintab.clickTabButton('#tab-button-news'); // click on the News tab
+        await news.waitUntilVisible(); // wait for news to be visible
+        expect(await app.currentUrl()).toContain('app/news'); // it should contain /news in url
     });
 
     it('should load the Me page', async () => {
-        await maintab.clickTabButton('#tab-button-me');
-        await me.waitUntilVisible();
+        await maintab.clickTabButton('#tab-button-me'); // click on the Me tab
+        await me.waitUntilVisible(); // wait for me to be visible
         expect(await app.currentUrl()).toContain('app/me');
     });
 
     it('should load the edit profile page', async () => {
-        await maintab.clickTabButton('#edit-profile-button');
-        await about.waitUntilVisible();
-        expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
+        await maintab.clickTabButton('#edit-profile-button'); // click on edit profile
+        await about.waitUntilVisible(); // wait until about page is visible
+        expect(app.headerIsPresent('#about-me-header')).toBeTruthy(); // the about me header is present
     });
 
 });
