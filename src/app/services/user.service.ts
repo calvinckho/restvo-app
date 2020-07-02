@@ -709,7 +709,6 @@ export class UserData {
                 const userTokens = JSON.parse(JSON.stringify(this.user.deviceTokens));
                 userTokens.forEach((deviceToken, index) => {
                     if (deviceToken.hasOwnProperty('endpoint') && (deviceToken.endpoint === this.pushSubscription.endpoint)) {
-                        console.log("removing current push object from database", deviceToken);
                         this.user.deviceTokens.splice(index, 1);
                     }
                 });
@@ -719,7 +718,6 @@ export class UserData {
                 const userTokens = JSON.parse(JSON.stringify(this.user.deviceTokens));
                 userTokens.forEach((deviceToken, index) => {
                     if (typeof deviceToken === 'string' && deviceToken === this.deviceToken) {
-                        console.log("removing device token from database", deviceToken);
                         this.user.deviceTokens.splice(index, 1);
                     }
                 });
@@ -740,6 +738,9 @@ export class UserData {
             }
             if (this.electronService.isElectronApp) {
                 this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', 0);
+            }
+            if (this.router.url.includes('(sub:')) {
+                this.router.navigate([{ outlets: { sub: null }, replaceUrl: true }]);
             }
             setTimeout(async () => {
                 await this.resetUserData();
