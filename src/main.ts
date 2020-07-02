@@ -15,7 +15,8 @@ if (environment.production) {
 
 platformBrowserDynamic()
     .bootstrapModule(AppModule)
-    .then(moduleInstance => {
+// the follow code is used to diagnose ngZone blocking issues with Protractor
+    /*.then(moduleInstance => {
 
       const ngZone = moduleInstance.injector.get(NgZone);
       setInterval(() => {
@@ -29,5 +30,5 @@ platformBrowserDynamic()
           console.log("ZONE pending tasks=", tasks);
         }
       }, 1000);
-  })
+  })*/
   .catch(err => console.log(err));

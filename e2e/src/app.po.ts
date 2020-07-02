@@ -18,43 +18,49 @@ class PageObjectBase {
     }
 
     waitUntilInvisible() {
-        browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 3000);
+        browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 10000);
     }
 
     waitUntilPresent() {
-        browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 3000);
+        browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
     }
 
     waitUntilNotPresent() {
         browser.wait(
             ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
-            3000
+            10000
         );
     }
 
     waitUntilVisible() {
-        browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 3000);
+        browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
     }
 
     getTitle() {
         return element(by.css(`${this.tag} ion-title`)).getText();
     }
 
-    protected enterInputText(sel: string, text: string) {
+    protected async enterInputText(sel: string, text: string) {
         const el = element(by.css(`${this.tag} ${sel}`));
+        await browser.wait(ExpectedConditions.presenceOf(el), 10000);
         const inp = el.element(by.css('input'));
-        inp.sendKeys(text);
+        for (let i = 0; i < text.length; i++) {
+            inp.sendKeys(text.charAt(i));
+        }
     }
 
-    protected enterTextareaText(sel: string, text: string) {
+    protected async enterTextareaText(sel: string, text: string) {
         const el = element(by.css(`${this.tag} ${sel}`));
+        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
         const inp = el.element(by.css('textarea'));
-        inp.sendKeys(text);
+        for (let i = 0; i < text.length; i++) {
+            inp.sendKeys(text.charAt(i));
+        }
     }
 
-    protected clickButton(sel: string) {
+    protected async clickButton(sel: string) {
         const el = element(by.css(`${this.tag} ${sel}`));
-        browser.wait(ExpectedConditions.elementToBeClickable(el));
+        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
         el.click();
     }
 
@@ -105,8 +111,12 @@ export class ShowfeaturePage extends PageObjectBase {
         super('app-showfeature', '/');
     }
 
-    async navigateTo() {
+    navigateTo() {
         return this.load();
+    }
+
+    contentIsPresent() {
+        return element(by.id('#showfeature-content')).isPresent();
     }
 
     clickSigninButton(button) {
@@ -160,13 +170,13 @@ export class NewsPage extends PageObjectBase {
 
 export class ChatPage extends PageObjectBase {
     constructor() {
-        super('app-myconversations', 'app/myconversations')
+        super('app-myconversations', 'app/myconversations');
     }
 }
 
 export class DiscoverPage extends PageObjectBase {
     constructor() {
-        super('app-discover', 'app/discover/map');
+        super('app-discover', 'app/discover');
     }
 
     headerIsPresent() {

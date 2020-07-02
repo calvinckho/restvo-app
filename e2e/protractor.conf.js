@@ -4,16 +4,13 @@
 const { SpecReporter } = require('jasmine-spec-reporter');
 
 exports.config = {
-  allScriptsTimeout: 1100000, getPageTimeout: 60000,
+  allScriptsTimeout: 110000,
   specs: [
-    //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-      './src/calix-me-page.e2e-spec.ts' // run this specific script
+    './src/**/*.e2e-spec.ts' // run all the testing scripts
+      //'./src/calix-me-page.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
-    'browserName': 'chrome',
-    'chromeOptions': {
-      args: ['--disable-browser-side-navigation']
-    }
+    'browserName': 'chrome'
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
