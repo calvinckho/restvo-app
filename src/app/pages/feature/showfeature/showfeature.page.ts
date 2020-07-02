@@ -176,7 +176,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   programs = [];
   programPageNum = 0;
   categoryIds = [];
-  
+
   //Slider Button
     peopleSlidesOptions = {
         slidesPerView: 1.1,
@@ -267,7 +267,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      console.log("refresh user handler", data, this.mediaList);
       // if there are players loaded and one of them is playing or is being paused
       if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
           // do nothing
@@ -590,7 +589,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
                 if (results && results.hasOrganizerLeaderAccess) {
-                    console.log("access", this.hasOrganizerAccess, results.hasOrganizerLeaderAccess)
                     this.hasOrganizerAccess = this.hasOrganizerAccess || results.hasOrganizerLeaderAccess;
                 }
                 for (const response of this.responses) {
@@ -1267,7 +1265,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.responseObj.matrix_string.push([interactableId.toString(), event.text, JSON.stringify(event.content), JSON.stringify(event.delta)]);
         }
         this.timeoutHandle = setTimeout(async () => {
-            console.log("sending responsObj", this.responseObj);
             // server update only happens every 3 secs
             const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
             if (response) {
@@ -1323,27 +1320,29 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   async loadPeople() {
     if (this.loadStatus !== 'loading') {
-        setTimeout(() => {
-            if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
-                this.infiniteScroll.disabled = false;
-            }
-            this.reachedEnd = false;
-            this.matchedPeople = [];
-            this.pageNum = 0;
-            if (this.moment._id) {
-                this.loadMorePeople({target: this.infiniteScroll});
-            }
-        }, 50);
+        if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
+            this.infiniteScroll.disabled = false;
+        }
+        this.reachedEnd = false;
+        this.matchedPeople = [];
+        this.pageNum = 0;
+        if (this.moment._id) {
+            this.loadMorePeople({target: this.infiniteScroll});
+        }
     }
   }
 
   async loadMorePeople(event) {
     this.pageNum++;
     if (!this.reachedEnd && !this.loadAPIBusy) { // loadAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the loadMorePeople function
-      this.loadAPIBusy = true;
-      setTimeout(() => {
-        this.loadAPIBusy = false;
-      }, 10000);
+        this.loadAPIBusy = true;
+        this.zone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.zone.run(() => {
+                    this.loadAPIBusy = false;
+                });
+            }, 10000);
+        });
       const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', this.searchKeyword, this.pageNum);
       console.log("matched", results);
       this.loadAPIBusy = false;
@@ -1783,12 +1782,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // Plans Slider
   async loadPrograms() {
-    setTimeout(() => {
       this.programsReachedEnd = false;
       this.programs = [];
       this.programPageNum = 0;
       this.loadMorePrograms();
-    }, 50);
   }
 
   async loadMorePrograms() {

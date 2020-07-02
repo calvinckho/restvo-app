@@ -562,7 +562,7 @@ export class RegisterPage implements OnInit {
             password: this.emailPassForm.get('password').value,
             mobile_phone: this.mobileForm.get('mobile_calling_code').value + this.mobileForm.get('mobile_sig_number').value,
         };
-        try{
+        try {
             const result = await this.authService.registerMobile(data);
             loading.dismiss();
             if (result.success) {

@@ -14,7 +14,6 @@ import {
     PreferencesPage
 } from './calix-me-page.po';
 import { browser } from 'protractor';
-import {disc} from "ionicons/icons";
 
 describe('navigate around the maintab', () => {
     let app: AppPage;
@@ -35,7 +34,7 @@ describe('navigate around the maintab', () => {
         // testing on mobile sized screen
         const width = 600;
         const height = 968;
-        browser.driver.manage().window().setSize(width, height);
+        await browser.driver.manage().window().setSize(width, height);
         app = new AppPage();
         maintab = new MaintabPage();
         register = new RegisterPage();
@@ -49,36 +48,43 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
         await showfeature.navigateTo();
-        await browser.sleep(500); // wait
-        showfeature.clickSigninButton('#signin');
-        await browser.sleep(1500); // wait
+        await showfeature.waitUntilPresent();
+        await showfeature.clickSigninButton('#signin');
+        await browser.waitForAngular();
         await register.fillEmail();
-        //await register.fillPhoneNumber();
         await register.fillPassword();
-        await browser.sleep(500); // wait
-        register.submitLoginForm();
+        await register.submitLoginForm();
+        await browser.sleep(6000); // wait
     });
 
-    beforeEach(() => {
-        browser.waitForAngularEnabled(false); // prevent an unknown async function from blocking protractor
+    beforeEach(async () => {
+        await browser.waitForAngular();
     });
 
-    it('should load the discover page', async () => {
-            await browser.sleep(6000); // wait 1 second
-            expect(discover.headerIsPresent()).toBeTruthy();
+    it('should log in successfully', async () => {
+        expect(await app.currentUrl()).toContain('app');
+    });
+
+    it('should load the news page', async () => {
+        await maintab.clickTabButton('#tab-button-news');
+        await browser.sleep(2000); // wait
+        //browser.waitForAngular();
+        expect(await app.currentUrl()).toContain('app/news');
     });
 
     it('should load the Me page', async () => {
-        maintab.clickTabButton('#tab-button-me');
-        await browser.sleep(3000); // wait 3 sec
+        await maintab.clickTabButton('#tab-button-me');
+        await browser.sleep(2000); // wait
+        //browser.waitForAngular();
         expect(await app.currentUrl()).toContain('app/me');
     });
 
     it('should load the edit profile page', async () => {
-      maintab.clickTabButton('#edit-profile-button');
-      await browser.sleep(5000); // wait 5 sec
-      expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
+        await maintab.clickTabButton('#edit-profile-button');
+        await browser.sleep(2000); // wait
+        //await browser.waitForAngular();
+        expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
     });
+
 });
