@@ -89,7 +89,12 @@ export class GroupinfoPage implements OnInit, OnDestroy {
       this.leaderIds = [];
       //check if the current user is a leader
       this.leaderIds = this.chatService.currentChatProps[this.propIndex].group.leaders.map((c) => c._id);
-      this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || (this.chatService.currentChatProps[this.propIndex].group.churchId ? await this.userData.hasAdminAccess(this.chatService.currentChatProps[this.propIndex].group.churchId) : false));
+      let hasAdminAccess = false;
+      if (this.chatService.currentChatProps[this.propIndex].group.churchId) {
+          const result: any = await this.userData.checkAdminAccess(this.chatService.currentChatProps[this.propIndex].group.churchId);
+          hasAdminAccess = result ? result.hasPlatformAdminAccess : false;
+      }
+      this.editMemberTag = ((this.leaderIds.includes(this.userData.user._id)) || hasAdminAccess);
       this.reloadDirectory();
   }
 

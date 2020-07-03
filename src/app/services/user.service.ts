@@ -12,11 +12,11 @@ import { Auth } from './auth.service';
 import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import {User} from '../interfaces/user';
 import {Capacitor, Plugins} from "@capacitor/core";
 import {Router} from "@angular/router";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserData {
@@ -26,8 +26,10 @@ export class UserData {
     communitiesboards: any; // [CommunitiesBoards];
     socket: io;
     currentCommunityIndex: number; // Update page community carousel slide actual index, it can go beyond the total number of slides (x+1 = 0)
+    currentManageActivityId: string;
     loginAt: any;
-    currentCommunityAdminStatus: boolean = false;
+    hasPlatformAdminAccess: boolean = false;
+    activitiesWithAdminAccess: any = [];
     developerModeClick: number = 0;
     deviceToken: string;
     pushSubscription: any;
@@ -36,24 +38,25 @@ export class UserData {
     showDownloadLink = true;
     splitPaneState: any = 'md';
     defaultProgram: any;
-    UIMentoringMode = false;
+    UIAdminMode = false; // Landing page displaying Admin Insight view instead of Profile view
     UIrestStatus = "active"; // user's current UI rest status: active or away
     videoChatRoomId = ''; // the current video chat ID if one is in session
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
-    UIready = false; // give app.component.html time to render correct UI params (e.g. UIMentoringMode) before enabling it
     versions = { // current app's version that will be used to compare with labels loaded from the database
-        'Activity Components': 18, // this is the current activity components version used by this code
+        'Activity Components': 19, // this is the current activity components version used by this code
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
     };
     private _refreshUserStatus: BehaviorSubject<any> = new BehaviorSubject(null);
     private _openUserPrograms: BehaviorSubject<any> = new BehaviorSubject(null);
     private _enablePushNotification: BehaviorSubject<boolean> = new BehaviorSubject(false);
     private _refreshMyConversations: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private _refreshBoards: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     public readonly refreshUserStatus$: Observable<any> = this._refreshUserStatus.asObservable();
     public readonly openUserPrograms$: Observable<any> = this._openUserPrograms.asObservable();
     public readonly enablePushNotification$: Observable<boolean> = this._enablePushNotification.asObservable();
     public readonly refreshMyConversations$: Observable<boolean> = this._refreshMyConversations.asObservable();
+    public readonly refreshBoards$: Observable<boolean> = this._refreshBoards.asObservable();
 
     constructor(private http: HttpClient,
                 private router: Router,
@@ -90,6 +93,10 @@ export class UserData {
         this._refreshMyConversations.next(data);
     }
 
+    refreshBoards(data) {
+        this._refreshBoards.next(data);
+    }
+
     async createUserSocket() {
         if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
             // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
@@ -105,7 +112,15 @@ export class UserData {
             console.log("got refresh");
             if (this.user._id === userId) { //only if user status update is for current user
                 if (data.type === 'update admin') {
-                    this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                    if (this.router.url.includes('/app/manage')) { // if user switches to a community where he is no longer an admin
+                        this.router.navigateByUrl('/app/me');
+                    } else {
+                        this.refreshAppPages();
+                    }
                 } else if (data.type === 'connect conversation') {
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 } else if (data.type === 'disconnect conversation') {
@@ -116,16 +131,24 @@ export class UserData {
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshUserStatus({ type: 'refresh community board page' }); //when a user join a group with board
+                    //this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshBoards({ type: 'refresh community board page' }); //when a user join a group with board
                 } else if (data.type === 'leave group') {
                     //update user's group participation,
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
                     this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshUserStatus({ type: 'refresh community board page' }); // when a user leave a group with board
+                    //this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshBoards({ type: 'refresh community board page' }); // when a user leave a group with board
+                    // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
+                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                    if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
+                        this.router.navigateByUrl('/app/me');
+                    }
                 } else if (data.type === 'update church participation') {
                     await this.load();
                 } else if (data.type === 'update moment and calendar participation') {
@@ -144,7 +167,7 @@ export class UserData {
 
     refreshAppPages() {
         // broadcast signal to refresh main tab pages
-        this.refreshUserStatus({ type: 'refresh community board page' });
+        this.refreshBoards({ type: 'refresh community board page' });
         this.refreshMyConversations({action: 'render', data: null});
         this.refreshMyConversations({action: 'reload chat view'});
         this.refreshUserStatus({ type: 'change aux data' });
@@ -194,14 +217,6 @@ export class UserData {
         this.currentCommunityIndex = 0;
         const restvoIndex = this.user.churches.map((c) => c._id).indexOf('5ab62be8f83e2c1a8d41f894');
         if (this.user.churches && this.user.churches.length) { //  && restvoIndex > -1 ensure the user has joined Restvo
-            /*const index = await this.storage.get('currentCommunityIndex');
-            if (index && index.length) {
-                // in the event index is larger than the total number of communities, i.e. the user left a community since the last session
-                this.currentCommunityIndex = (parseInt(index, 10) > this.user.churches.length - 1) ? (this.user.churches.length - 1) : parseInt(index, 10);
-                this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
-            } else {
-                this.storage.set('currentCommunityIndex', restvoIndex.toString());
-            }*/
             // always returning Restvo as the default index
             this.currentCommunityIndex = restvoIndex;
         } else { // a safeguard against app crashes before the user finishes the onboarding process and got assigned to Restvo as the default community
@@ -223,10 +238,7 @@ export class UserData {
             this.stripeService.setKey('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
         }
         this.defaultProgram = await this.storage.get('defaultProgram');
-        this.UIMentoringMode = await this.storage.get('UIMentoringMode');
-        setTimeout(() => {
-            this.UIready = true; // give app.component.html time to render correct UI params (e.g. UIMentoringMode) before enabling it
-        }, 500);
+        this.UIAdminMode = await this.storage.get('UIAdminMode');
     }
 
     // filter the info based on churches selection
@@ -234,9 +246,11 @@ export class UserData {
         event.stopPropagation();
         //this.menuCtrl.close();
         //this.currentCommunityIndex = index; // this will always be smaller than churches.length
-        this.storage.set("currentCommunityIndex", this.currentCommunityIndex.toString());
-        this.currentCommunityAdminStatus = await this.hasAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
-        if (this.router.url.indexOf('/app/manage') > -1 && !this.currentCommunityAdminStatus) { // if user switches to a community where he is no longer an admin
+        this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
+        const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+        if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
             this.router.navigateByUrl('/app/discover');
         } else {
             this.refreshAppPages();
@@ -247,8 +261,23 @@ export class UserData {
         return this.http.put(this.networkService.domain + '/api/auth/devicetoken', JSON.stringify(data), this.authService.httpAuthOptions);
     }
 
-    async hasAdminAccess(communityId) {
-        return this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId, this.authService.httpAuthOptions).toPromise();
+    async checkAdminAccess(communityId) {
+        const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
+        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+        const activityId = await this.storage.get('currentManageActivityId');
+        if (activityId && this.activitiesWithAdminAccess.length) {
+            if (this.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
+                this.currentManageActivityId = activityId;
+            } else {
+                this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
+                this.storage.set('currentManageActivityId', this.currentManageActivityId);
+            }
+        } else if (this.activitiesWithAdminAccess.length) {
+            this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
+            this.storage.set('currentManageActivityId', this.currentManageActivityId);
+        }
+        return result;
     }
 
     initializeUser() {
@@ -364,13 +393,12 @@ export class UserData {
         let data = await this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
-        if(group.conversation) {
+        if (group.conversation) {
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation._id, group: group});
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation._id, data: {action: 'update group member list'}});
 
-        }
-        else if(group.board) {
-            this.refreshUserStatus({ type: 'load user community boards' });
+        } else if (group.board) {
+            //this.refreshUserStatus({ type: 'load user community boards' });
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
         }
         return data;
@@ -385,7 +413,7 @@ export class UserData {
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
 
             } else if (group.board) {
-                this.refreshUserStatus({ type: 'load user community boards' });
+                //this.refreshUserStatus({ type: 'load user community boards' });
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
             }
             return data;
@@ -551,10 +579,6 @@ export class UserData {
         });
     }
 
-    checkIfEmailExists(email) {
-        return this.http.get(this.networkService.domain + '/api/auth/checkifexist/' + email, this.authService.httpAuthOptions).toPromise();
-    }
-
     async leaveGroup(group) {
         let promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
@@ -685,7 +709,6 @@ export class UserData {
                 const userTokens = JSON.parse(JSON.stringify(this.user.deviceTokens));
                 userTokens.forEach((deviceToken, index) => {
                     if (deviceToken.hasOwnProperty('endpoint') && (deviceToken.endpoint === this.pushSubscription.endpoint)) {
-                        console.log("removing current push object from database", deviceToken);
                         this.user.deviceTokens.splice(index, 1);
                     }
                 });
@@ -695,7 +718,6 @@ export class UserData {
                 const userTokens = JSON.parse(JSON.stringify(this.user.deviceTokens));
                 userTokens.forEach((deviceToken, index) => {
                     if (typeof deviceToken === 'string' && deviceToken === this.deviceToken) {
-                        console.log("removing device token from database", deviceToken);
                         this.user.deviceTokens.splice(index, 1);
                     }
                 });
@@ -717,11 +739,13 @@ export class UserData {
             if (this.electronService.isElectronApp) {
                 this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', 0);
             }
+            if (this.router.url.includes('(sub:')) {
+                this.router.navigate([{ outlets: { sub: null }, replaceUrl: true }]);
+            }
             setTimeout(async () => {
                 await this.resetUserData();
                 this.menuCtrl.enable(false);
                 this.router.navigate(['/activity/5d5785b462489003817fee18']);
-                //this.router.navigate(['/register', { slide : '0', exitType: 'slide' }]);
                 loading.dismiss();
             }, 500);
         } catch (err) {
@@ -739,8 +763,10 @@ export class UserData {
 
     async resetUserData() {
         this.user = {};
-        this.currentCommunityAdminStatus = false;
+        this.hasPlatformAdminAccess = false;
+        this.activitiesWithAdminAccess = [];
         this.currentCommunityIndex = 0;
+        this.currentManageActivityId = '';
         this.developerModeClick = 0;
         this.delayPushNotificationReminder = 0;
         this.delayImportContactListReminder = 0;
@@ -750,8 +776,7 @@ export class UserData {
         this.readyToControlVideoChat = true;
         this.showDownloadLink = true;
         this.defaultProgram = null;
-        this.UIMentoringMode = false;
-        this.UIready = false;
+        this.UIAdminMode = false;
         this.authService.logout();
         // deviceToken is not removed because it needs to be used when another user sign in.
         // that is because the deviceToken is only fetched when the app is loaded for the first time

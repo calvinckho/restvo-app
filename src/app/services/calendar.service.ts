@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 
 @Injectable({ providedIn: 'root' })
 export class CalendarService {
@@ -22,20 +22,32 @@ export class CalendarService {
     };
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 public storage: Storage,
                 public authService: Auth,
                 public networkService: NetworkService) {
         this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
         this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
-        setInterval(() => {
-            this.calendar.currentDate = new Date();
-            this.calendar.currentViewDate = new Date();
-        }, 3600000); // calculate the currentDate and currentViewDate every hour
+        this.zone.runOutsideAngular(() => {
+            setInterval(() => {
+                this.zone.run(() => {
+                    this.calendar.currentDate = new Date();
+                    this.calendar.currentViewDate = new Date();
+                });
+            }, 3600000); // calculate the currentDate and currentViewDate every hour
+        });
     }
 
-    loadRelationshipContentCalendars(relationshipId) {
-        return this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
-            .toPromise();
+    async loadRelationshipContentCalendars(relationshipId, authenticationStrategy) {
+        let promise: any;
+        if (authenticationStrategy && this.authService.token) {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
+                .toPromise();
+        } else {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/publiccontentcalendars/' + relationshipId, this.authService.httpOptions)
+                .toPromise();
+        }
+        return promise;
     }
 
     getAllUserCalendarItemIds(){
@@ -53,7 +65,6 @@ export class CalendarService {
             this.calendarItems = calendarItems || [];
         } catch (err) {
             this.calendarItems = [];
-            console.log("cannot load calendarItems from storage");
         }
         const lastUpdatedAt = this.findLatestTimeStamp(this.calendarItems);
         try {

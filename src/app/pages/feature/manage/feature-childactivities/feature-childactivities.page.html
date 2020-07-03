@@ -1,72 +1,107 @@
-<ion-header *ngIf="modalPage">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar *ngIf="modalPage || view === '2'">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="back()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{this.categoryLabel}}</ion-title>
+    <ion-title>{{this.categoryLabel}}<span [hidden]="view === '2'">s</span></ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="activities && view === '1'"> <!--Show always except in Plans-->
+    <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
+      <div class="select-col"></div>
+      <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}s<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+      <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+      <div class="actions-col column-label">Actions</div>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--non Plan child Activities-->
-      <ion-label>New Mentoring {{this.categoryLabel}} (Available in Library)</ion-label>
-    </ion-list-header>
-    <ion-list-header *ngIf="categoryId === '5c915476e172e4e64590e349' && moment.categories.includes('5dfdbb547b00ea76b75e5a70')"> <!--Plan shown in Relationship-->
-      <ion-label>Adopted {{this.categoryLabel}}</ion-label>
-    </ion-list-header>
-    <ion-list-header *ngIf="categoryId === '5c915476e172e4e64590e349' && !moment.categories.includes('5dfdbb547b00ea76b75e5a70')"> <!--Plan shown in non-Relationship-->
-      <ion-label>Available {{this.categoryLabel}}</ion-label>
-    </ion-list-header>
-    <ion-grid class="program-grid">
-      <ion-row class="program-row">
-        <ion-col class="ion-align-self-center" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3">
-          <ion-card class="program-card" (click)="chooseChildActivity()" id="create-new-moment">
-            <ion-card-header class="ion-no-padding" color="lightgrey">
-              <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
-                <ion-icon name="add" color="darkgrey"></ion-icon>
-              </ion-row>
-            </ion-card-header>
-            <div class="program-name dark">Add</div>
-          </ion-card>
-        </ion-col>
-        <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity(sample)">
-            <ion-card-header class="ion-no-padding">
-              <div class="program-photo-container">
-                <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
-              </div>
-            </ion-card-header>
-            <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
-            <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-            <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openActivity($event, sample)" fill="clear" size="small">
-              <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
-            </ion-button>-->
-            <ion-button class="info-moment ion-no-padding ion-no-margin" (click)="removeActivity($event, sample)" fill="clear" size="small" *ngIf="categoryId === '5c915476e172e4e64590e349'">
-              <ion-icon name="close" color="primary"></ion-icon>
-            </ion-button>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ion-list-header *ngIf="categoryId !== '5c915476e172e4e64590e349'"> <!--Only show for non-Plan child Activities-->
-      <ion-label>All Mentoring {{this.categoryLabel}}</ion-label>
-    </ion-list-header>
-    <ion-grid class="program-grid">
-      <ion-row class="program-row">
-        <ion-col class="ion-align-self-center" *ngFor="let sample of samples; index as i" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="3" [hidden]="!((sample.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || sample.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1) && !sample.array_boolean[1])">
-          <ion-card class="program-card" (click)="openChildActivity(sample)">
-            <ion-card-header class="ion-no-padding">
-              <div class="program-photo-container">
-                <ion-img class="program-photo" [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
-              </div>
-            </ion-card-header>
-            <div class="program-type"><ion-badge color="button1">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
-            <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <ion-list *ngIf="view === '1'">
+    <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
+      <ion-buttons class="select-col">
+        <ion-button (click)="selectActivity($event, activity)" fill="clear" *ngIf="!activity.select">
+          <ion-icon color="tertiary" name="radio-button-off"></ion-icon>
+        </ion-button>
+        <ion-button (click)="unselectActivity($event, activity)" fill="clear" *ngIf="activity.select" >
+          <ion-icon color="tertiary" name="checkmark-circle"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <div class="user-col" *ngIf="platform.width() < 992">
+        <ion-avatar class="user-avatar">
+          <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
+        </ion-avatar>
+        <ion-label class="name-label ion-text-center ion-text-wrap">
+          {{activity.matrix_string[0][0]}}
+        </ion-label>
+      </div>
+      <div class="avatar-col" *ngIf="platform.width() >= 992">
+        <ion-avatar class="user-avatar">
+          <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
+        </ion-avatar>
+      </div>
+      <div class="name-col" *ngIf="platform.width() >= 992">
+        <ion-label class="name-label ion-text-wrap">
+          {{activity.matrix_string[0][0]}}
+        </ion-label>
+      </div>
+      <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share in Marketplace</span></div>
+      <ion-buttons class="actions-col ion-justify-content-evenly">
+        <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="key-outline"></ion-icon></ion-button>
+        <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>
+        <ion-button (click)="pushToMessagePage($event, activity)" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
+      </ion-buttons>
+    </ion-item>
   </ion-list>
-
+  <ion-grid *ngIf="view === '1'">
+    <ion-row class="grid-row ion-align-items-center">
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="view = '2'">
+          <ion-card-content>
+            <img src="assets/icon/create.svg" alt="Create Plan Icon">
+            <br>
+            <strong>Create your own {{categoryLabel}}</strong>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-xs="12" size-sm="6">
+        <ion-card class="category-card" mode="md" (click)="chooseFromMarketplace()">
+          <ion-card-content>
+            <img src="assets/icon/template.svg" alt="Select Template Icon">
+            <br>
+            <strong>Select from available templates</strong>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!--In the create step, show a form to collect basic info about a new Plan-->
+  <ion-card>
+    <ion-grid class="full-height" *ngIf="view === '2'">
+      <ion-row class="ion-justify-content-center ion-align-items-center full-height form-container">
+        <ion-col>
+          <ion-item lines="none">
+            <div class="moment-label" slot="start">Create Your Own {{categoryLabel}}</div>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="stacked">{{categoryLabel}} Name</ion-label>
+            <ion-input class="ion-text-start" type="text" [(ngModel)]="newActivityName" placeholder="Type a name here" (ionFocus)="loadSample()"></ion-input>
+          </ion-item>
+   <!--       <ion-item class="ion-margin-vertical">
+            <ion-label position="stacked">Select the type of {{categoryLabel}}</ion-label>
+            <ion-select (ionChange)="loadSample($event)" [placeholder]="categoryLabel + ' Type'">
+              <ion-select-option value="5ea350d2dede5c7f29cf8490">Journey</ion-select-option>
+              <ion-select-option value="5ea398fadede5c7f29cf85c4">Group</ion-select-option>
+              <ion-select-option value="5df88e7669f2546c0a26a7f3">Mentoring</ion-select-option>
+              <ion-select-option value="5ea1fa876240cd58bb82a694">Program</ion-select-option>
+            </ion-select>
+          </ion-item>-->
+          <ion-row class="ion-margin-vertical">
+            <ion-button style="width: 100%;" [disabled]="!newActivityName || !selectedSample" expand="full" shape="round" (click)="createPlan()">
+              <div>Create new {{categoryLabel}}</div>
+            </ion-button>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
 </ion-content>

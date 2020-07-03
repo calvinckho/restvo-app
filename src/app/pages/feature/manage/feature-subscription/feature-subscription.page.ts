@@ -102,6 +102,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       state: ['', [Validators.required]],
       postal_code: ['', [Validators.required]],
       country: ['', [Validators.required]],
+      coupon: ['']
     });
     const loadResource = this.resourceService.load('en-US', 'Restvo Plans');
     const resource = this.cache.loadFromDelayedObservable('loadResource: Restvo Plans', loadResource, 'resource', 1, 'none');
@@ -233,12 +234,14 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       delete owner.state;
       delete owner.postal_code;
       delete owner.country;
+      delete owner.coupon;
       this.stripeService.createSource(this.card, {
         type: 'card',
         currency: 'usd',
         owner: owner,
       }).subscribe(async (result) => {
         if (result.source) {
+          owner.coupon = this.billingForm.value.coupon;
           const updateResult = await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], owner, result.source);
           this.ionSpinner = false;
           if (updateResult === 'success') {

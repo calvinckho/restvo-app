@@ -1,7 +1,11 @@
 app-groupchat {
 
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
   ion-infinite-scroll {
-    height: 0;
+    //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
   }
 
   .titles {
@@ -50,8 +54,8 @@ app-groupchat {
 
 
   .chat-list {
-    //padding-top: 5%;
-    min-height: 100%;
+    padding-top: 5%;
+    //min-height: 100%;
   }
 
   //time stamp
@@ -242,6 +246,10 @@ app-groupchat {
   .quote-bubble.left {
     border-radius: 5px;
     padding: 5px 6px 5px 6px;
+    background-color: var(--ion-color-primary);
+    .message {
+      color: var(--ion-color-secondary);
+    }
     a:link {
       color: lightskyblue;
     }
@@ -253,9 +261,9 @@ app-groupchat {
   .quote-bubble.right {
     border-radius: 5px;
     padding: 5px 6px 5px 6px;
-    background-color:var(--ion-color-light);
+    background-color: var(--ion-color-light);
     p {
-      color:var(--ion-color-dark);
+      color: var(--ion-color-dark);
     }
   }
 
@@ -491,7 +499,6 @@ app-groupchat {
     bottom: 10px;
     right: 8px;
     font-size: 15px;
-    
   }
 
 
@@ -500,7 +507,6 @@ app-groupchat {
   }
 
   .message-form {
-
     display: flex;
     border-color: var(--ion-color-lightgrey);
     border-style: solid;
@@ -518,7 +524,7 @@ app-groupchat {
 
     ion-icon {
       margin: 0;
-      padding-left: 0px;
+      padding-left: 0;
       padding-right: 0;
     }
 
@@ -662,8 +668,8 @@ app-groupchat {
   }
 
   .program-card {
-    height: 100%;
-    width: 100%;
+    height: 100px;
+    width: 133px;
     object-fit: contain;
     margin: 0 3%;
   }
@@ -675,7 +681,7 @@ app-groupchat {
   }
 
   .program-photo-container {
-    height: 80px;
+    height: 100px;
     overflow: hidden;
   }
 
@@ -819,6 +825,7 @@ app-groupchat {
   }
 
   .program-slide {
+    height: 100px;
     max-width: 150px;
   }
 }

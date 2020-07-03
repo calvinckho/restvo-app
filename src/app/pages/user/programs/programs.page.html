@@ -3,17 +3,26 @@
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Mentoring</ion-title>
+    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-item lines="none" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
+    <ion-label>Show Admin View When Possible</ion-label>
+    <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)" [disabled]="!userData.defaultProgram"></ion-toggle>
+  </ion-item>
   <ion-item lines="none">
-    <ion-label>Choose Your Default Mentoring:</ion-label>
+    <ion-label>Choose Your Home Page:</ion-label>
   </ion-item>
   <ion-grid class="program-grid">
     <ion-row class="program-row">
-      <ion-col class="ion-align-self-center" *ngFor="let program of programs" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+      <ion-col class="ion-align-self-center" *ngFor="let program of programs" size="auto">
         <ion-card class="program-card" (click)="selectDefault($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
           <ion-card-header class="ion-no-padding">
             <div class="program-photo-container" [ngClass]="{'opacity': program._id !== (userData.defaultProgram && userData.defaultProgram._id) }">

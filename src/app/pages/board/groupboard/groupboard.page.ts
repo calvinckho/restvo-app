@@ -3,7 +3,7 @@ import {CacheService} from 'ionic-cache';
 import { Router } from '@angular/router';
 import {Storage} from '@ionic/storage';
 import { CallNumber } from "@ionic-native/call-number/ngx";
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import {
     AlertController,
@@ -56,7 +56,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
     pageNum: number = 0;
     reachedEnd = false;
     isGroupLeader = false;
-    hasAdminAccess = false;
+    hasPlatformAdminAccess = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
     // group
     groupLoaded = false;
@@ -91,7 +91,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                 public userData: UserData) { }
 
   ngOnInit() {
-      this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshBoardHandler);
+      this.subscriptions['refreshBoards'] = this.userData.refreshBoards$.subscribe(this.refreshBoardHandler);
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.refreshHandler);
   }
@@ -120,7 +120,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
             //check if the current user is a leader
             this.leaderIds = this.group.leaders.map((c) => {return c._id;});
             if(this.userData.user){
-                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+                this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasPlatformAdminAccess);
             }
             this.reloadDirectory();
         }
@@ -243,10 +243,11 @@ export class GroupboardPage implements OnInit, OnDestroy {
             this.boardposts = [];
             this.pageNum = 0;
             if(this.userData.user && this.group.leaders){
-                this.isGroupLeader = this.group.leaders.map((c)=>{return c._id;}).indexOf(this.userData.user._id) > -1;
+                this.isGroupLeader = this.group.leaders.map((c) => c._id).indexOf(this.userData.user._id) > -1;
             }
-            if (this.userData.user && this.group.churchId){
-                this.hasAdminAccess = await this.userData.hasAdminAccess(this.group.churchId);
+            if (this.userData.user && this.group.churchId) {
+                const result: any = await this.userData.checkAdminAccess(this.group.churchId);
+                this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
             }
             this.listcommunityboardposts({target: this.infiniteScroll});
         }, 50);
@@ -351,7 +352,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
     }
 
     async openPost(post){
-        let showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: this.group.board, post: post, isGroupLeader: this.isGroupLeader, hasAdminAccess: this.hasAdminAccess }});
+        let showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: this.group.board, post: post, isGroupLeader: this.isGroupLeader, hasPlatformAdminAccess: this.hasPlatformAdminAccess }});
         await showBoardPage.present();
     }
 
@@ -468,7 +469,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
                             const navTransition = alert.dismiss();
                             navTransition.then(() => {
                                 this.authService.refreshGroupStatus({conversationId: this.group.conversation, data: this.group})
-                                this.userData.refreshUserStatus({ type: 'refresh community board page' });
+                                this.userData.refreshBoards({ type: 'refresh community board page' });
                             });
                         }
                     }],
@@ -718,7 +719,7 @@ export class GroupboardPage implements OnInit, OnDestroy {
             if (res.conversationId === this.group.conversation) {
                 if (res.data.action === 'update leader status') {
                     this.leaderIds = res.data.leaders.map((c) => c._id);
-                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasAdminAccess);
+                    this.editMemberTag = ((this.leaderIds.indexOf(this.userData.user._id) > -1) || this.hasPlatformAdminAccess);
                 }
                 this.reloadDirectory();
             } else if (res.data._id === this.group._id){
@@ -735,6 +736,6 @@ export class GroupboardPage implements OnInit, OnDestroy {
     ngOnDestroy(){
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         this.subscriptions['refreshGroupStatus'].unsubscribe(this.refreshHandler);
-        this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshBoardHandler);
+        this.subscriptions['refreshBoards'].unsubscribe(this.refreshBoardHandler);
     }
 }

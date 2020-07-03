@@ -45,7 +45,7 @@ export class DevelopmentPage implements OnInit, OnDestroy {
       private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    if (this.userData && this.userData.currentCommunityAdminStatus) {
+    if (this.userData && this.userData.hasPlatformAdminAccess) {
       this.setupManageActivities();
     }
 
@@ -122,7 +122,6 @@ export class DevelopmentPage implements OnInit, OnDestroy {
     this.ionSpinner = false;
     const {data: moment} = await editActivity.onDidDismiss();
     if (moment) {
-      this.momentService.share(moment);
       this.setupManageActivities();
     }
   }

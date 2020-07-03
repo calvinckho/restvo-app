@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild, ElementRef} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
-import { Plyr } from "plyr";
+import * as Plyr from "plyr";
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 //const { Keyboard } = Plugins;
@@ -41,6 +41,7 @@ import {ProfilePage} from "../../user/profile/profile.page";
 import {GroupinfoPage} from "../groupinfo/groupinfo.page";
 import {CalendarService} from "../../../services/calendar.service";
 import {Auth} from "../../../services/auth.service";
+import {Location} from "@angular/common";
 
 @Component({
     selector: 'app-groupchat',
@@ -54,6 +55,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     @Input() modalPage: any; //optionally sent if it is a modal page
 
+    subpanel = false;
     subscriptions: any = {};
     propIndex: any;
     // chat
@@ -78,7 +80,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     constructor(
         private zone: NgZone,
+        private route: ActivatedRoute,
         public router: Router,
+        private location: Location,
         private electronService: ElectronService,
         private cache: CacheService,
         private storage: Storage,
@@ -104,6 +108,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.awsService.sessionAllowedCount = 10; // allow up to 10 files upload per session
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);
@@ -120,7 +125,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (res) {
             if (res.action === 'reload chat view') {
                 if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
-                    await this.cleanup(this.chatService.currentChatProps.badge);
+                    await this.cleanup(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].badge);
                     await this.setup();
                     this.reloadChatView();
                 }
@@ -214,6 +219,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
             this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
         }
+        if (this.subpanel) { // because subpanel is narrow, turn off moreMediaOptions on page load
+            this.moreMediaOptions = false;
+        }
         this.reloadChatView();
     }
 
@@ -239,7 +247,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.chatAPIBusy = true;
                 const result: Conversation = await this.chatService.getConversationById(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatPageNum);
                 this.chatAPIBusy = false;
-                if (this.chatPageNum === 1){
+                if (this.chatPageNum === 1) {
                     this.messages = []; // if this is the first page load, empty the view first
                 }
                 const momentIds = [];
@@ -394,12 +402,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
         // next process Moments
+        console.log("send moment", this.selectedMoments);
         if (this.selectedMoments.length) {
             let promises = this.selectedMoments.map( async (moment) => {
                 if (moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Poll') {
                     this.momentService.socket.emit('join moment', moment._id); // join the moment socket.io to receive real-time update for voting
                 }
-                await this.momentService.share(moment);
+                await this.momentService.share(moment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
             await Promise.all(promises);
             this.selectedMoments = []; // empty the selected moments array
@@ -709,11 +718,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async openPickFeature() {
         try {
-            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId}});
+            // limit to modalPage usage because subpanel view picker will only clone Recent activities.
+            // because we want to enable referencing of Recent activities in Picker, we are limited to only using picker modal
+            const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose from Library', conversationId: this.chatService.currentChatProps[this.propIndex].conversationId, allowSwitchCategory: true, modalPage: true}});
             await modal.present();
             const {data: moments} = await modal.onDidDismiss();
             if (moments && moments.length) {
-                const sampleMoments = moments.filter((c) => c.type === 'new');
+                const sampleMoments = moments.filter((c) => c.cloned === 'new');
                 if (sampleMoments && sampleMoments.length) {
                     for (const sampleMoment of sampleMoments) {
                         sampleMoment.calendar = { // reset the calendar
@@ -732,7 +743,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     const clonedMoments: any = await this.momentService.clone(sampleMoments, null); // user will be participanting in the Activity
                     if (clonedMoments) {
                         for (const clonedMoment of clonedMoments) {
-                            clonedMoment.type = 'new';
+                            clonedMoment.cloned = 'new';
                             const index = moments.map((moment) => moment.resource._id).indexOf(clonedMoment.resource);
                             if (index > -1) {
                                 clonedMoment.resource = moments[index].resource; // clone the populated resource
@@ -741,14 +752,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         }
                     }
                 }
-                for (const moment of moments) {
-                    const index = this.calendarService.calendarItems.map((c) => c.moment && c.moment._id).indexOf(moment._id);
-                    if (index > -1) {
-                        this.selectedMoments.push(this.calendarService.calendarItems[index].moment);
-                    } else {
-                        console.log("Cannot find Activity in Calendar")
-                    }
-                }
+                this.selectedMoments.push(...moments);
                 this.moreMediaOptions = false;
                 await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
             }
@@ -772,8 +776,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     async resetBadge(conversationId, refreshMyConversations) {
         // set the badge count to 0
         let count = 0;
-        const badge = this.chatService.currentChatProps && this.chatService.currentChatProps.length > this.propIndex && this.chatService.currentChatProps[this.propIndex].badge;
-        if (this.networkService.hasNetwork && badge) {
+        const badge = this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && this.chatService.currentChatProps[this.propIndex].badge;
+        if (await this.networkService.hasNetwork && badge) {
             count = await this.chatService.resetBadgeCount(conversationId);
             this.chatService.currentChatProps[this.propIndex].badge = 0;
             if (refreshMyConversations) {
@@ -790,49 +794,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
         return count;
     }
-
-
-    async seeMoreInfo() {
-        if (this.chatService.currentChatProps[this.propIndex].group) {
-            if (this.modalPage) {
-                const groupinfoModal = await this.modalCtrl.create({component: GroupinfoPage, componentProps: {modalPage: true}} );
-                await groupinfoModal.present();
-                const {data: refreshNeeded} = await groupinfoModal.onDidDismiss();
-                if (refreshNeeded) {
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/group'], { skipLocationChange: true });
-            }
-        } else if (this.chatService.currentChatProps[this.propIndex].moment) {
-            if (this.modalPage) {
-                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: { _id: this.chatService.currentChatProps[this.propIndex].moment._id}, modalPage: true}} );
-                await modal.present();
-                const {data: refreshNeeded} = await modal.onDidDismiss();
-                if (refreshNeeded) {
-                    this.closeModal(true);
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
-            }
-        } else {
-            if (this.modalPage) {
-                const recipientModal = await this.modalCtrl.create({
-                    component: ShowrecipientinfoPage,
-                    componentProps: {recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true}} );
-                await recipientModal.present();
-                const {data: closeMessage} = await recipientModal.onDidDismiss();
-                if (closeMessage) {
-                    console.log("close modal");
-                    setTimeout(() => {
-                        this.closeModal(true);
-                    }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
-                }
-            } else {
-                this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
-            }
-        }
-    }
-
 
     async presentPopover(event) {
         event.stopPropagation();
@@ -881,11 +842,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 serverData.resource = result[0]._id;
                 const createdMoment: any = await this.momentService.create(serverData); //create feature
                 createdMoment.resource = result[0]; // repopulate resource
-                const index = this.chatService.conversations.map((c) => {return c.conversation._id;}).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
-                if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
-                }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
 
         }).catch(async (err) => {
@@ -941,9 +898,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 createdMoment.resource = result[0]; // repopulate resource
                 const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
                 if (index > -1){
-                    createdMoment.conversations = [this.chatService.conversations[index]];
+                    createdMoment.conversations = [this.chatService.conversations[index].conversation];
                 }
-                await this.momentService.share(createdMoment);
+                await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
         } catch (err) {
             const networkAlert = await this.alertCtrl.create({
@@ -959,18 +916,70 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async seeUserInfo(event, recipient) {
-        event.stopPropagation();
-        if (recipient._id) {
-            if (!this.modalPage && this.platform.width() >= 768) {
-                this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
+      event.stopPropagation();
+      if (recipient._id) {
+        if (!this.modalPage && this.platform.width() >= 992) {
+            this.router.navigate([{ outlets: { sub: ['user', recipient._id, { subpanel: true } ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
+            this.router.navigate(['/app/myconversations/person/' + recipient._id], { replaceUrl: false });
+        } else {
+          const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: recipient, modalPage: true}} );
+          await recipientModal.present();
+          const {data: closeMessage} = await recipientModal.onDidDismiss();
+          if (closeMessage) {
+              setTimeout(() => {
+                  this.closeModal(true);
+              }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
+          }
+        }
+      }
+    }
+
+    async seeMoreInfo() {
+        if (this.chatService.currentChatProps[this.propIndex].group) { // group chat
+            if (this.modalPage) {
+                const groupinfoModal = await this.modalCtrl.create({component: GroupinfoPage, componentProps: {modalPage: true}} );
+                await groupinfoModal.present();
+                const {data: refreshNeeded} = await groupinfoModal.onDidDismiss();
+                if (refreshNeeded) {
+                }
             } else {
-                const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: recipient, modalPage: true}} );
+                this.router.navigate(['/app/myconversations/group'], { skipLocationChange: true });
+            }
+        } else if (this.chatService.currentChatProps[this.propIndex].moment) { // moment chat
+            if (this.modalPage) {
+                const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: { _id: this.chatService.currentChatProps[this.propIndex].moment._id}, modalPage: true}} );
+                await modal.present();
+                const {data: refreshNeeded} = await modal.onDidDismiss();
+                if (refreshNeeded) {
+                    this.closeModal(true);
+                }
+            } else {
+                if (this.platform.width() >= 992) {
+                    this.router.navigate([{ outlets: { sub: ['details', this.chatService.currentChatProps[this.propIndex].moment._id, { subpanel: true } ] }}]);
+                } else {
+                    this.router.navigate(['/app/myconversations/activity/' + this.chatService.currentChatProps[this.propIndex].moment._id], { skipLocationChange: true });
+                }
+            }
+        } else { // 1-1 connect chat
+            if (this.modalPage) {
+                const recipientModal = await this.modalCtrl.create({
+                    component: ShowrecipientinfoPage,
+                    componentProps: {recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true}} );
                 await recipientModal.present();
                 const {data: closeMessage} = await recipientModal.onDidDismiss();
                 if (closeMessage) {
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.closeModal(true);
                     }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
+                }
+            } else {
+                if (this.platform.width() >= 992) {
+                    this.router.navigate([{ outlets: { sub: ['user', this.chatService.currentChatProps[this.propIndex].recipient._id, { subpanel: true } ] }}]);
+                } else if (this.platform.width() >= 768) {
+                    this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id], { replaceUrl: false });
+                } else {
+                this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
                 }
             }
         }
@@ -1020,8 +1029,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async removeMoment(i) {
-        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].type === 'new') {
-            console.log("remove cloned Activity");
+        if (this.selectedMoments[i] && this.selectedMoments[i]._id && this.selectedMoments[i].cloned === 'new') {
             this.removedMoments.push(this.selectedMoments[i]);
         }
         this.selectedMoments.splice(i, 1);
@@ -1175,11 +1183,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
                 this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});
-            } else {
+            } else if (!this.subpanel) {
                 setTimeout(() => {
                     this.router.navigate(['/app/myconversations/chat']);
                     this.userData.refreshMyConversations({action: 'reload chat view'});
                 }, 500);
+            } else {
+                this.location.back();
             }
         } catch (err) {
             console.log(err);

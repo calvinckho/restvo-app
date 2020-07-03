@@ -1,19 +1,16 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlertController, Platform } from '@ionic/angular';
 import {Badge} from "@ionic-native/badge/ngx";
 import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 import io from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Chat {
@@ -41,6 +38,7 @@ export class Chat {
 
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private alertCtrl: AlertController,
                 private authService: Auth,
@@ -70,13 +68,15 @@ export class Chat {
         this._chatMessage.next(res);
     }
 
-    async createConversationSocket(){
-        if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
-            // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-            this.socket = io(this.networkService.domain, { transports: ['websocket']}); // only for mobile apps
-        } else {
-            this.socket = io(this.networkService.domain);
-        }
+    async createConversationSocket() {
+        this.zone.runOutsideAngular(() => {
+            if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
+                // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
+                this.socket = io(this.networkService.domain, {transports: ['websocket']}); // only for mobile apps
+            } else {
+                this.socket = io(this.networkService.domain);
+            }
+        });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
             let conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
@@ -247,9 +247,15 @@ export class Chat {
         });
     };
 
-    getAllUserConversationIds(){
+    getAllUserConversationIds() {
         return this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
             .toPromise();
+        /*return new Promise((resolve) => {
+            this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
+                .map((result) => {
+                    resolve(result);
+                });
+        });*/
     }
 
     async getAllUserConversations() {
@@ -347,9 +353,9 @@ export class Chat {
                     });
                 }
             });
-            churches.forEach((church)=>{
+            churches.forEach((church) => {
                 this.userData.user.churches.forEach((userChurch) => {
-                    if (userChurch._id === church._id){
+                    if (userChurch._id === church._id) {
                         userChurch.badge = church.badge;
                     }
                 });
@@ -369,7 +375,6 @@ export class Chat {
         return this.http.get<any>(this.networkService.domain + '/api/chat/check/' + recipientId + (returnRecipientData ? '?version=2' : '' + (programId ? '&programId=' + programId : '')), this.authService.httpAuthOptions)
             .toPromise();
     };
-
 
     getConversationById(conversationId, pageNum) {
         return this.http.get<Conversation>(this.networkService.domain + '/api/chat/' + conversationId + '?pageNum=' + pageNum, this.authService.httpAuthOptions)

@@ -11,8 +11,8 @@ app-feature-schedule {
   }
 
   .moment-input {
-    width: 90%;
-    float: left;
+    //width: 90%;
+    //float: left;
     opacity: 0.5;
     padding: 5px 0;
   }
@@ -52,8 +52,8 @@ app-feature-schedule {
   }
 
   .content-count {
-    padding-left: 2%;
-    width: 8%;
+    margin: 0 10px;
+    width: 10%;
   }
 
   .content-date {
@@ -71,7 +71,7 @@ app-feature-schedule {
   }
 
   .program-card {
-    width: auto;
+    width: 133px;
     object-fit: contain;
     margin: 0 3%;
   }
@@ -140,5 +140,9 @@ app-feature-schedule {
     position: absolute;
     top: 0;
     right: 2px;
+  }
+
+  .message-label {
+    margin: 0 auto;
   }
 }

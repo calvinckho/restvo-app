@@ -38,6 +38,7 @@ import {CalendarService} from "../../services/calendar.service";
 import {EditparticipantsPage} from "../feature/editparticipants/editparticipants.page";
 import {ManagefeaturePage} from "../feature/manage/managefeature.page";
 import {ProgramsPage} from "../user/programs/programs.page";
+import {FeatureCreatorPage} from "../feature/manage/feature-creator/feature-creator.page";
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -192,7 +193,7 @@ export class MainTabPage implements OnInit, OnDestroy {
               this.startEventSubscription();
           }
           if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-              this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+              await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
           }
       }
   }
@@ -220,7 +221,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await this.userData.load();
                 await this.userData.loadStoredCommunity();
                 if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                    this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                    const result: any = await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                    this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                    this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
                 }
                 // hasSetupEventListeners is true if setupDevice() was run successfully on startup.
                 // therefore, on network status change detection, if setupDevice() was not carried up successfully on start up, run setupDevice() again
@@ -375,7 +378,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                     this.userData.loginAt = new Date();
                     try {
                         if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                            this.userData.currentCommunityAdminStatus = await this.userData.hasAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                            const result: any = await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
+                            this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                            this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
                         }
                     } catch (err) {
                         console.log('failed to check admin access');
@@ -445,7 +450,11 @@ export class MainTabPage implements OnInit, OnDestroy {
                             params.modalPage = true;
                             this.momentService.openMoment(params);
                         } else {
-                            this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
+                            if (this.router.url.includes('video')) { // if already in a video tab, open the chat in a new tab
+                                window.open(window.location.protocol + '//' + window.location.host + '/app/myconversations/chat', "_blank");
+                            } else {
+                                this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
+                            }
                         }
                     }
                 });
@@ -545,8 +554,10 @@ export class MainTabPage implements OnInit, OnDestroy {
             if (data && data.modalPage) {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: data});
                 await modal.present();
+            } else if (data && data.momentId && data.subpanel) {
+                this.router.navigate([{ outlets: { sub: ['details', data.momentId, data ]}}]);
             } else if (data && data.momentId) {
-                this.router.navigate(['/app/activity/' + data.momentId]);
+                this.router.navigate(['/app/activity/' + data.momentId, data ]);
             }
         });
         this.subscriptions['openUserPrograms'] = this.userData.openUserPrograms$.subscribe(async (data) => {
@@ -578,7 +589,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.router.navigate(['/app/manage/activity/' + data.moment._id + '/profile/' + data.moment._id]);
             }
         });
-
         this.subscriptions['openOnboarding'] = this.authService.openOnboarding$.subscribe( async (data) => {
             if (data) {
                 const modal = await this.modalCtrl.create({component: OnboardfeaturePage, componentProps: data});
@@ -597,6 +607,12 @@ export class MainTabPage implements OnInit, OnDestroy {
         this.subscriptions['editParticipants'] = this.momentService.editParticipants$.subscribe(async (data) => {
             if (data) {
                 const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: data});
+                await modal.present();
+            }
+        });
+        this.subscriptions['openCreator'] = this.momentService.openCreator$.subscribe( async (data) => {
+            if (data) {
+                const modal = await this.modalCtrl.create({component: FeatureCreatorPage, componentProps: data});
                 await modal.present();
             }
         });
@@ -659,7 +675,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.author.first_name + ' ' + data.author.last_name,
-                    page:   'chat',
+                    page: 'chat',
                     badge: true,
                     modalPage: true,
                     recipient: data.author,
@@ -676,11 +692,17 @@ export class MainTabPage implements OnInit, OnDestroy {
                     cssClass: 'level-10'
                 });
             }
-            const messagePage = await this.modalCtrl.create({
-                component: GroupchatPage,
-                componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-            });
-            await messagePage.present();
+            if (data.subpanel) {
+                this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+                // if it is displaying the chat view, it will reload the chat data
+                this.userData.refreshMyConversations({action: 'reload chat view'});
+            } else {
+                const messagePage = await this.modalCtrl.create({
+                    component: GroupchatPage,
+                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+                });
+                await messagePage.present();
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Auth } from './auth.service';
-import 'rxjs/add/operator/map'; import 'rxjs/add/operator/timeout'; import 'rxjs/add/operator/toPromise';
+
 import { NetworkService } from './network-service.service';
 
 @Injectable({
@@ -24,11 +24,11 @@ export class Response {
     }
 
     submit(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     };
 
     submitDependentResponse(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     };
 
     deleteResponse(responseId) {

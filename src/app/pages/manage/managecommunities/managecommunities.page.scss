@@ -1,5 +1,9 @@
 app-managecommunities {
 
+  ion-item {
+    cursor: pointer;
+  }
+
   ion-menu-toggle {
     ion-badge {
       position: relative;
@@ -11,11 +15,6 @@ app-managecommunities {
       }*/
       z-index: 5;
     }
-  }
-
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
   }
 
   ion-grid {
@@ -73,15 +72,6 @@ app-managecommunities {
     background: none;
   }
 
-  //.discover-card-title {
-  //  position: absolute;
-  //  top: 36%;
-  //  font-size: 2.0em;
-  //  width: 100%;
-  //  font-weight: bold;
-  //  color: #fff;
-  //}
-
   .discover-card-subtitle {
     font-size: 1.0em;
     position: absolute;
@@ -89,6 +79,7 @@ app-managecommunities {
     width: 100%;
     color: #fff;
   }
+<<<<<<< HEAD
 
   .overlay {
     position: fixed;
@@ -127,4 +118,6 @@ app-managecommunities {
   ion-item{
     cursor: pointer;
   }
+=======
+>>>>>>> e36473bbc70d746c11cd79e54799a83ead6935a5
 }

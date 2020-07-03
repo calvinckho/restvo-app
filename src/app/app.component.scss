@@ -1,5 +1,20 @@
 app-root {
 
+  .split-pane-narrow {
+    width: 70%;
+    border-right: var(--border);
+  }
+
+  #sub-panel {
+    width: 30%;
+    position: absolute;
+    left: 70%;
+  }
+
+  ion-item {
+    cursor: pointer;
+  }
+
   .title-container {
     padding-top: var(--ion-safe-area-top);
   }

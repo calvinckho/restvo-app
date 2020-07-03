@@ -6,11 +6,6 @@ app-createfeature {
     user-select: text;
   }
 
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
-  }
-
   ion-slides {
     height: 100%;
   }
@@ -234,7 +229,7 @@ app-createfeature {
 
   .program-card {
     height: 100%;
-    width: 100%;
+    width: 133px;
     object-fit: contain;
     margin: 0 3%;
   }

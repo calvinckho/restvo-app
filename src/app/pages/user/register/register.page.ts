@@ -359,9 +359,11 @@ export class RegisterPage implements OnInit {
     }
 
     async nextSlide() {
-        await this.slides.lockSwipes(false);
-        await this.slides.slideNext();
-        await this.slides.lockSwipes(true);
+        if (!this.nameForm.get('first_name').errors && !this.nameForm.get('last_name').errors) { // ensure first name and last name have no error
+            await this.slides.lockSwipes(false);
+            await this.slides.slideNext();
+            await this.slides.lockSwipes(true);
+        }
     }
 
     async goToSlide(number) {
@@ -424,7 +426,7 @@ export class RegisterPage implements OnInit {
                 setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
                     this.userData.refreshAppPages();
                 }, 4000);
-                if (this.platform.is('cordova')){
+                if (this.platform.is('cordova')) {
                     StatusBar.show();
                 }
                 loading.dismiss();
@@ -560,7 +562,7 @@ export class RegisterPage implements OnInit {
             password: this.emailPassForm.get('password').value,
             mobile_phone: this.mobileForm.get('mobile_calling_code').value + this.mobileForm.get('mobile_sig_number').value,
         };
-        try{
+        try {
             const result = await this.authService.registerMobile(data);
             loading.dismiss();
             if (result.success) {
@@ -626,46 +628,60 @@ export class RegisterPage implements OnInit {
     }
 
     async registerEmail() {
-        const loading = await this.loadingCtrl.create({
-            message: 'Processing...'
-        });
-        loading.present();
-        const data = {
-            type: 'register',
-            email: this.emailPassForm.get('email').value,
-            password: this.emailPassForm.get('passwordConfirmation').value,
-            first_name: this.nameForm.get('first_name').value,
-            last_name: this.nameForm.get('last_name').value,
-            deviceToken: this.deviceToken,
-            serializedRouteParams: null,
-            routeId: this.authService.cachedRouteParams ? this.authService.cachedRouteParams.id : null
-        };
-        if (this.router.url.includes(';')) {
-            data.serializedRouteParams = this.router.url.slice(this.router.url.indexOf(';'), this.router.url.length);
-        }
-        try {
-            const result: any = await this.authService.registerEmail(data);
-            loading.dismiss();
-            if (result.success) {
+        if(this.emailPassForm.get('email').value &&this.emailPassForm.get('passwordConfirmation').value && this.emailPassForm.get('password').value == this.emailPassForm.get('passwordConfirmation').value){
+            const loading = await this.loadingCtrl.create({
+                message: 'Processing...'
+            });
+            loading.present();
+            const data = {
+                type: 'register',
+                email: this.emailPassForm.get('email').value,
+                password: this.emailPassForm.get('passwordConfirmation').value,
+                first_name: this.nameForm.get('first_name').value,
+                last_name: this.nameForm.get('last_name').value,
+                deviceToken: this.deviceToken,
+                serializedRouteParams: null,
+                routeId: this.authService.cachedRouteParams ? this.authService.cachedRouteParams.id : null
+            };
+            if (this.router.url.includes(';')) {
+                data.serializedRouteParams = this.router.url.slice(this.router.url.indexOf(';'), this.router.url.length);
+            }
+            try {
+                const result: any = await this.authService.registerEmail(data);
+                loading.dismiss();
+                if (result.success) {
+                    const alert = await this.alertCtrl.create({
+                        header: 'Success',
+                        subHeader: result.msg,
+                        buttons: [{ text: 'Ok',
+                            handler: () => {
+                                const navTransition = alert.dismiss();
+                                navTransition.then(() => {
+                                    this.loginMode = 'email';
+                                    this.view = 'signin'; // back to sign in slide
+                                    this.loginForm.controls.email.setValue(data.email);
+                                });
+                            }}],
+                        cssClass: 'level-15'
+                    });
+                    alert.present();
+                } else {
+                    const alert = await this.alertCtrl.create({
+                        header: 'Create Account Failed',
+                        subHeader: result.msg,
+                        buttons: [{ text: 'Ok',
+                            handler: () => {
+                                alert.dismiss();
+                            }}],
+                        cssClass: 'level-15'
+                    });
+                    await alert.present();
+                }
+            } catch (err) {
+                loading.dismiss();
                 const alert = await this.alertCtrl.create({
-                    header: 'Success',
-                    subHeader: result.msg,
-                    buttons: [{ text: 'Ok',
-                        handler: () => {
-                            const navTransition = alert.dismiss();
-                            navTransition.then(() => {
-                                this.loginMode = 'email';
-                                this.view = 'signin'; // back to sign in slide
-                                this.loginForm.controls.email.setValue(data.email);
-                            });
-                        }}],
-                    cssClass: 'level-15'
-                });
-                alert.present();
-            } else {
-                const alert = await this.alertCtrl.create({
-                    header: 'Create Account Failed',
-                    subHeader: result.msg,
+                    header: 'There is a Problem...',
+                    subHeader: 'We are not able to process your request. Please try again later',
                     buttons: [{ text: 'Ok',
                         handler: () => {
                             alert.dismiss();
@@ -673,20 +689,8 @@ export class RegisterPage implements OnInit {
                     cssClass: 'level-15'
                 });
                 await alert.present();
+                console.log(err);
             }
-        } catch (err) {
-            loading.dismiss();
-            const alert = await this.alertCtrl.create({
-                header: 'There is a Problem...',
-                subHeader: 'We are not able to process your request. Please try again later',
-                buttons: [{ text: 'Ok',
-                    handler: () => {
-                        alert.dismiss();
-                    }}],
-                cssClass: 'level-15'
-            });
-            await alert.present();
-            console.log(err);
         }
     }
 

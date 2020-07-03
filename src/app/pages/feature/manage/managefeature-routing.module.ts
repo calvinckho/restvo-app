@@ -8,23 +8,13 @@ const routes: Routes = [
         component: ManagefeaturePage,
         children: [
             {
-                path: 'insight',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule'
-                    },
-                ]
+                path: 'insight/:id',
+                loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule',
             },
             {
-                path: 'profile',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: '../showfeature/showfeature.module#ShowfeaturePageModule'
-                    },
-                ]
-            },
+                path: 'profile/:id',
+                loadChildren: '../showfeature/showfeature.module#ShowfeaturePageModule',
+                },
             {
                 path: 'people',
                 children: [
@@ -35,91 +25,71 @@ const routes: Routes = [
                 ]
             },
             {
-                path: 'programs',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
-                    },
-                ]
+                path: 'programs/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
             },
             {
-                path: 'relationships',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
-                    },
-                ]
+                path: 'relationships/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+            },
+            {
+                path: 'groups/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+            },
+            {
+                path: 'journey/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+            },
+            {
+                path: 'mentoring/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
             },
             {
                 path: 'plans',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
-                    },
-                ]
+                loadChildren: () => import('./feature-plans/feature-plans.module').then( m => m.FeaturePlansPageModule),
             },
             {
-                path: 'contents',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule'
-                    },
-                ]
+                path: 'creator',
+                loadChildren: () => import('./feature-creator/feature-creator.module').then( m => m.FeatureCreatorPageModule),
+            },
+            {
+                path: 'newplan',
+                loadChildren: () => import('../pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule),
+            },
+            {
+                path: 'contents/:id',
+                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
             },
             {
                 path: 'schedule',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule'
-                    },
-                ]
+                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
             },
             {
                 path: 'new-schedule',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule'
-                    },
-                ]
+                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
             },
             {
-                path: 'onboarding',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule'
-                    },
-                ]
+                path: 'onboarding/:id',
+                loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule',
             },
             {
-                path: 'subscription',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: () => import('./feature-subscription/feature-subscription.module')
-                            .then( m => m.FeatureSubscriptionPageModule)
-                    },
-                ]
+                path: 'subscription/:id',
+                loadChildren: () => import('./feature-subscription/feature-subscription.module').then( m => m.FeatureSubscriptionPageModule),
             },
             {
-                path: 'billing',
-                children: [
-                    {
-                        path: ':id',
-                        loadChildren: () => import('./feature-billing/feature-billing.module')
-                            .then( m => m.FeatureBillingPageModule)
-
-                    },
-                ]
+                path: 'billing/:id',
+                loadChildren: () => import('./feature-billing/feature-billing.module').then( m => m.FeatureBillingPageModule),
             },
         ]
     },
+  {
+    path: 'feature-curriculum',
+    loadChildren: () => import('./feature-curriculum/feature-curriculum.module').then( m => m.FeatureCurriculumPageModule)
+  },
+  {
+    path: 'feature-plans',
+    loadChildren: () => import('./feature-plans/feature-plans.module').then( m => m.FeaturePlansPageModule)
+  },
     ];
 
 @NgModule({

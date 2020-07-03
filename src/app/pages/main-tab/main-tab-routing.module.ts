@@ -94,6 +94,10 @@ const routes: Routes = [
                 path: 'me',
                 children: [
                     {
+                        path: 'choose',
+                        loadChildren: () => import('../feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule)
+                    },
+                    {
                         path: '',
                         loadChildren: '../user/dashboard/dashboard.module#DashboardPageModule'
                     },
@@ -195,19 +199,27 @@ const routes: Routes = [
                 loadChildren: '../user/completeprofile/completeprofile.module#CompleteprofilePageModule'
             },
             {
+                path: 'invite',
+                loadChildren: () => import('../feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule)
+            },
+            {
                 path: 'video/:id',
                 loadChildren: () => import('../connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
             },
             {
+                path: 'designsystem',
+                loadChildren: () => import('../manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
+            },
+            {
                 path: '',
-                redirectTo: '/app/discover',
+                redirectTo: '/app/me',
                 pathMatch: 'full'
             }
         ]
     },
     {
         path: '',
-        redirectTo: '/app/discover',
+        redirectTo: '/app/me',
         pathMatch: 'full'
     }
 ];

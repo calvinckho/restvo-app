@@ -7,9 +7,7 @@ import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { CalendarService } from './calendar.service';
 import * as io from 'socket.io-client';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
+
 import { NetworkService } from './network-service.service';
 
 @Injectable({ providedIn: 'root' })
@@ -40,7 +38,7 @@ export class Board {
             console.log("board socket id: ", this.socket.id);
         });
         this.socket.on('refresh board', async (boardId, data) => {
-            this.userData.refreshUserStatus({ type: 'refresh board', boardId: boardId, data: data });
+            this.userData.refreshBoards({ type: 'refresh board', boardId: boardId, data: data });
         });
         if (!this.subscriptions.hasOwnProperty('refreshUserStatus')) {
             this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(() => {
@@ -81,7 +79,7 @@ export class Board {
         data.post.author = this.userData.user._id; //depopulate author
         let post = await this.http.post(this.networkService.domain + '/api/board/createpost', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshBoards({ type: 'refresh community board page' });
         this.socket.emit('refresh board', boardId, {action: 'create post', post: post});
         return post;
     };
@@ -95,7 +93,7 @@ export class Board {
         let promise = await this.http.put(this.networkService.domain + '/api/board/updatepost', JSON.stringify(serverData),this.authService.httpAuthOptions)
             .toPromise();
         //post.author = this.userData.user; //populate author
-        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshBoards({ type: 'refresh community board page' });
         this.userData.refreshUserStatus({ type: 'refresh manage page' });
         this.socket.emit('refresh board', boardId, {action: 'update post', post: post});
         return promise;
@@ -111,7 +109,7 @@ export class Board {
     async deletePost(boardId, bucketId, postId){
         let promise = await this.http.delete(this.networkService.domain + '/api/board/deletepost/' + bucketId + '?postId=' + postId,this.authService.httpAuthOptions)
             .toPromise();
-        this.userData.refreshUserStatus({ type: 'refresh community board page' });
+        this.userData.refreshBoards({ type: 'refresh community board page' });
         this.socket.emit('refresh board', boardId, {action: 'delete post', bucketId: bucketId, postId: postId});
         return promise;
     }
@@ -171,9 +169,9 @@ export class Board {
         }
     }
 
-    async explainPostAbuse(event, hasAdminAccess) {
+    async explainPostAbuse(event, hasPlatformAdminAccess) {
         event.stopPropagation();
-        if (hasAdminAccess) {
+        if (hasPlatformAdminAccess) {
             const alert = await this.alertCtrl.create({
                 header: "Action Required", // this post has been reported
                 message: "This post has been reported by a user. Please review its content and take the appropriate actions. If no action is taken, Restvo may remove this post and suspend its author.",

@@ -1,47 +1,43 @@
 app-feature-childactivities {
 
-  .program-row {
-    max-height: 70%;
-    overflow: scroll;
+  .column-label {
+    text-align: center;
   }
 
-  .program-card {
-    width: auto;
-    object-fit: contain;
-    margin: 0 3%;
+  .select-col {
+    width: 8%;
   }
 
-  .program-photo-container {
-    height: 80px;
-    overflow: hidden;
+  .user-col {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 40%;
   }
 
-  .program-photo {
-    object-fit: cover;
-    cursor: pointer;
-    //opacity: 50%;
-    height: 100%;
-    //width: 100%;
-    margin: auto;
-    display: block;
-    //max-height: 200px;
+  .avatar-col {
+    width: 10%
   }
 
-  .program-type {
-    position: absolute;
-    top: 2%;
-    left: 2%;
+  .name-col {
+    width: 30%;
+  }
+
+  .user-avatar {
+    margin: 0 auto;
+  }
+
+  .name-label {
+    margin: 5px auto 0 auto;
+    color: grey;
     font-size: 12px;
-    cursor: pointer;
   }
 
-  .program-name {
-    position: absolute;
-    bottom: 2%;
-    left: 2%;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 15;
+  .status-col {
+    width: 20%;
+  }
+
+  .actions-col {
+    width: 30%;
   }
 
   .remove-moment {
@@ -75,5 +71,14 @@ app-feature-childactivities {
     position: absolute;
     top: 0;
     right: 2px;
+  }
+
+  .category-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 300px;
+    text-align: center;
   }
 }

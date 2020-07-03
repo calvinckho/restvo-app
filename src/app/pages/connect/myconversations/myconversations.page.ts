@@ -65,10 +65,11 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 await this.loadMyConversations(true);
             } else if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
                 this.datas.forEach((obj: any) => {
-                    if (data.conversationId === obj.conversation._id){
+                    if (data.conversationId === obj.conversation._id) {
                         obj.data.badge = 0;
                     }
                 });
+                await this.chatService.refreshTabBadges();
                 await this.renderConversations();
             } else if (data.action === 'render') { // e.g. socket.io event informing change in online status
                 await this.renderConversations();
@@ -196,6 +197,9 @@ export class MyconversationsPage implements OnInit, OnDestroy {
             });
             await groupPage.present();
         }
+        if (this.electronService.isElectronApp) { // since electron doesn't detect appStateChange, manually refreshTabBadges at every pushToMessage()
+            this.chatService.refreshTabBadges();
+        }
         // reorder the list
         this.searchKeyword = '';
         object.data.badge = 0;
@@ -203,7 +207,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
 
     async seeUserInfo(event, object) {
         event.stopPropagation();
-        object.data.participant.name = object.data.participant.first_name + ' ' + object.data.participant.last_name;
+        object.data.participant.name = `${object.data.participant.first_name} ${object.data.participant.last_name}`;
         if (this.platform.width() >= 768) {
             this.router.navigate(['/app/myconversations/person/' + object.data.participant._id], { replaceUrl: true });
         } else {

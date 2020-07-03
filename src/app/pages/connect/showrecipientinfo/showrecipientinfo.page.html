@@ -1,15 +1,23 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar" lines="none">
+    <ion-buttons class="header-buttons" slot="start">
+      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{recipient.first_name}} {{recipient.last_name}}</ion-title>
+    <ion-buttons class="header-buttons" slot="end">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subpanel">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list class="ion-no-padding">
-    <ion-toolbar class="header-toolbar" lines="none">
-      <ion-buttons class="header-buttons" slot="start">
-        <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
-      </ion-buttons>
-    </ion-toolbar>
+  <ion-list class="ion-no-padding" *ngIf="loadCompleted">
     <div *ngIf="recipient">
       <div>
         <ion-item lines="none">
@@ -18,12 +26,12 @@
             <img *ngIf="!recipient.avatar" src="assets/img/avatar-default.jpg"/>
           </div>
         </ion-item>
-        <ion-item lines="none">
+        <!--<ion-item lines="none">
           <p class="name ion-text-center ion-text-md-uppercase">{{recipient.first_name}} {{recipient.last_name}} <span *ngIf="recipient.role === 'Contact' || recipient.role === 'Pending'">{{recipient.name}}</span></p>
-        </ion-item>
-        <ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
+        </ion-item>-->
+        <!--<ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
           <ion-badge shape="round">{{recipient.role}}</ion-badge>
-        </ion-row>
+        </ion-row>-->
         <div *ngFor="let program of result.programs">
           <div *ngIf="program._id === '5d5785b462489003817fee18'">
             <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
@@ -45,7 +53,7 @@
         </ion-item>
         <ion-grid class="program-grid">
           <ion-row class="program-row">
-            <ion-col class="ion-align-self-center" *ngFor="let program of result.programs" size-xs="6" size-sm="4" size-md="3" size-lg="3" size-xl="2" [hidden]="program._id === '5d5785b462489003817fee18'">
+            <ion-col class="ion-align-self-center" *ngFor="let program of result.programs" size="auto" [hidden]="program._id === '5d5785b462489003817fee18'">
               <ion-card class="program-card" (click)="selectedProgram = program._id">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header class="ion-no-padding">
                   <div class="program-photo-container" [ngClass]="{'opacity': program._id !== selectedProgram }">
@@ -74,7 +82,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="userData.currentCommunityAdminStatus && recipient.reportStatus?.length">
+        <div *ngIf="userData.hasPlatformAdminAccess && recipient.reportStatus?.length">
           <ion-item class="ion-text-wrap">
             <ion-label class="label-title" color="danger">Abuse Report Status</ion-label>
             <ion-badge color="primary">{{recipient.reportStatus}}</ion-badge>
@@ -134,7 +142,7 @@
         <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 
-      <div style="margin-top: 5px;" *ngIf="userData.currentCommunityAdminStatus && manageMode">
+      <div style="margin-top: 5px;" *ngIf="userData.hasPlatformAdminAccess && manageMode">
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Management</ion-label>
         </ion-item>

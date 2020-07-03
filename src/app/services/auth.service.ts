@@ -2,15 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
 import { Storage } from '@ionic/storage';
-import {Capacitor, Plugins} from '@capacitor/core';
+import {Plugins} from '@capacitor/core';
 import {LoadingController, Platform} from '@ionic/angular';
 
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
 import { NetworkService } from './network-service.service';
 import 'capacitor-share-extension';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class Auth {
@@ -179,18 +176,18 @@ export class Auth {
             if (this.cachedRouteParams) {
                 this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve'});
             } else {
-                this.router.navigate([activityURL]);
+                this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
             }
         } else if (this.router.url.includes('discover/home') || this.router.url.includes('dashboard')) { // if loading landing page /discover/home or /dashboard
             const defaultProgram: any = await this.storage.get('defaultProgram');
             if (defaultProgram) {
                 activityURL = '/app/discover/home/' + defaultProgram._id;
             }
-            const UIMentoringMode: any = await this.storage.get('UIMentoringMode');
-            if (UIMentoringMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
+            const UIAdminMode: any = await this.storage.get('UIAdminMode');
+            if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
                 activityURL = '/app/dashboard/insight/' + defaultProgram._id;
             }
-            this.router.navigate([activityURL]);
+            this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
         }
         this.checkIncompleteOnboarding(false);
     }

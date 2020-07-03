@@ -18,6 +18,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
   subscriptions: any = {};
   resources: any;
   programs: any;
+  ionSpinner = false;
 
   constructor(
       private router: Router,
@@ -37,8 +38,13 @@ export class ProgramsPage implements OnInit, OnDestroy {
     };
 
   async loadPrograms() {
-      this.userData.defaultProgram = await this.storage.get('defaultProgram');
+      this.ionSpinner = true;
+      const defaultProgram = await this.storage.get('defaultProgram');
+      if (defaultProgram) {
+          this.userData.defaultProgram = defaultProgram;
+      }
       this.programs = await this.userData.loadPrograms(false);
+      this.ionSpinner = false;
     this.programs.forEach((program) => {
         if (program.user_list_1.includes(this.userData.user._id)) {
           program.isParticipant = true;
@@ -62,13 +68,24 @@ export class ProgramsPage implements OnInit, OnDestroy {
       }
   }
 
+    async toggleAdminMode(event) {
+        await this.storage.set('UIAdminMode', event.detail.checked);
+        let activityURL;
+        const program = this.userData.defaultProgram;
+        if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
+            activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
+        } else {
+            activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
+        }
+        this.router.navigate([activityURL]);
+      }
+
     selectDefault(event, program) {
       event.stopPropagation();
       this.userData.defaultProgram = program;
-      this.userData.UIMentoringMode = true;
       this.storage.set('defaultProgram', this.userData.defaultProgram);
       let activityURL;
-        if (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id)) {
+        if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
             activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
         } else {
             activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;

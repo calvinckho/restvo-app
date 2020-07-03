@@ -32,11 +32,6 @@ app-register {
 
   }
 
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
-  }
-
   ion-slide {
     height: 100%;
   }
@@ -200,8 +195,8 @@ app-register {
     margin: 2vh auto;
     --background: var(--ion-color-lightgrey);// rgba(255, 255, 255, .3);
     //--color: var(--ion-color-secondary);
-    --color-checked: var(--ion-color-secondary);
-    --color-disabled: var(--ion-color-primary);
+    //--color-checked: var(--ion-color-secondary);
+    //--color-disabled: var(--ion-color-primary);
   }
 
   ion-segment-button {

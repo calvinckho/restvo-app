@@ -13,15 +13,6 @@ app-dashboard {
     }
   }
 
-  ion-spinner {
-    position: absolute;
-    margin: 48%;
-  }
-
-/*  ion-list-header, ion-item, ion-card {
-    background: transparent !important;
-  }*/
-
   ion-card-header, ion-card-content {
     font-size: 14px;
   }
@@ -56,6 +47,17 @@ app-dashboard {
     background-size: cover;
     max-width: 600px;
     margin: 0 auto;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding-bottom: 10px;
+
+    & img {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 15px;
+    }
   }
 
   .transparent {
@@ -529,6 +531,7 @@ app-dashboard {
   .section {
     --min-height: 26px;
     --background: transparent;
+    --inner-padding-end: 0;
 
     .section-label {
       font-size: 15px;

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import 'rxjs/add/operator/toPromise';
+
 import { Platform, ToastController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 const { Network } = Plugins;

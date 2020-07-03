@@ -41,7 +41,6 @@ export class MapService {
   resultListHeight = 100;
   autoZoomState = 'in';
   filterSelections = [true, false, true, true, true];
-  UIready = true;
   ionSpinner = false;
   loadAPIBusy = false;
 

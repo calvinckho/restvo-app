@@ -14,7 +14,7 @@
 
 <ion-content>
   <ion-grid style="height: 100%" *ngIf="!loadCompleted">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 100%">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
@@ -27,7 +27,7 @@
       <div class="post-author-container">
         <div class="post-author ion-text-wrap" >
           {{post.author.first_name}} {{post.author.last_name}}
-          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
+          <ion-icon name="alert-circle" *ngIf="post.status === 'review'" (click)="boardService.explainPostAbuse($event, (hasPlatformAdminAccess || isGroupLeader) && post.author._id !== userData.user._id)" color="grey"></ion-icon>
         </div>
       </div>
       <ion-col slot="end" class="note-col">
@@ -40,7 +40,8 @@
       <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
       <a [href]="post.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
       <a [href]="post.attachments[0]" *ngIf="(['pdf']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-      <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+      <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
       <div plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'video/' + (post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
     </div>
     <div class="photo-frame" *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)">
@@ -128,7 +129,7 @@
           <ion-icon name="share"></ion-icon>Share</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="hasAdminAccess || isGroupLeader || post.author._id === userData.user._id">
+    <ion-row *ngIf="hasPlatformAdminAccess || isGroupLeader || post.author._id === userData.user._id">
       <ion-col>
         <ion-button fill="clear" size="small" (click)="editPost()">
           <ion-icon name="cog"></ion-icon>
@@ -163,7 +164,8 @@
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['pdf']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <a [href]="lv1_comment.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="lv1_comment.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
+            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
             <div plyr [plyrSources]="[{ 'src': lv1_comment.attachments[0], 'type': 'video/' + (lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
           </div>
           <div class="photo-frame" *ngIf="lv1_comment.media?.length" (click)="resourceService.clickVideo($event, lv1_comment.media[0].sources)">
