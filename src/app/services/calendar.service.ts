@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
@@ -22,15 +22,20 @@ export class CalendarService {
     };
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 public storage: Storage,
                 public authService: Auth,
                 public networkService: NetworkService) {
         this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
         this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
-        setInterval(() => {
-            this.calendar.currentDate = new Date();
-            this.calendar.currentViewDate = new Date();
-        }, 3600000); // calculate the currentDate and currentViewDate every hour
+        this.zone.runOutsideAngular(() => {
+            setInterval(() => {
+                this.zone.run(() => {
+                    this.calendar.currentDate = new Date();
+                    this.calendar.currentViewDate = new Date();
+                });
+            }, 3600000); // calculate the currentDate and currentViewDate every hour
+        });
     }
 
     async loadRelationshipContentCalendars(relationshipId, authenticationStrategy) {

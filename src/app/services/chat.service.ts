@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlertController, Platform } from '@ionic/angular';
 import {Badge} from "@ionic-native/badge/ngx";
@@ -38,6 +38,7 @@ export class Chat {
 
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private alertCtrl: AlertController,
                 private authService: Auth,
@@ -67,13 +68,15 @@ export class Chat {
         this._chatMessage.next(res);
     }
 
-    async createConversationSocket(){
-        if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
-            // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-            this.socket = io(this.networkService.domain, { transports: ['websocket']}); // only for mobile apps
-        } else {
-            this.socket = io(this.networkService.domain);
-        }
+    async createConversationSocket() {
+        this.zone.runOutsideAngular(() => {
+            if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
+                // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
+                this.socket = io(this.networkService.domain, {transports: ['websocket']}); // only for mobile apps
+            } else {
+                this.socket = io(this.networkService.domain);
+            }
+        });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
             let conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
