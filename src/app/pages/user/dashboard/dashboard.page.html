@@ -105,7 +105,7 @@
     <ion-grid class="content-grid" *ngIf="view === 'profile'">
       <ion-row>
         <!--List My Journey-->
-        <ion-col [size]="(platform.width() >= 768) && (journeys.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (journeys?.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
@@ -150,7 +150,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentors-->
-        <ion-col [size]="(platform.width() >= 768) && (myMentors.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (myMentors?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
@@ -227,7 +227,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentees-->
-        <ion-col [size]="(platform.width() >= 768) && (myMentees.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (myMentees?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
@@ -304,7 +304,7 @@
           </ion-card>
         </ion-col>
         <!--List My Groups-->
-        <ion-col [size]="(platform.width() >= 768) && (groups.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col [size]="(platform.width() >= 768) && (groups?.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Groups</ion-label>
