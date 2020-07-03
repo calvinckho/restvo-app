@@ -164,7 +164,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
       if (this.parentCategoryId === '5c915476e172e4e64590e349') {
-        // for Plan, auto re-populate the timeline and save the changes
+        // for Plan, auto re-populate the timeline and save the changes (obsolete in 1.8.15+)
         this.schedule.operation = operation;
         this.touchPlanTimeline();
         schedule = await this.momentService.touchSchedule(this.schedule);
@@ -188,7 +188,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     }
   }
 
-  // repopulate the Timeline (Plan only)
+  // repopulate the Timeline (for Plan Category only and it is is obsolete in 1.8.15+)
   touchPlanTimeline() {
     if (this.parentCategoryId === '5c915476e172e4e64590e349' && this.schedule.child_moments && this.schedule.child_moments.length) {
       this.timeline = [];
