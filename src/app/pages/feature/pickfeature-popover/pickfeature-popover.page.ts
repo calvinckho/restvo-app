@@ -309,7 +309,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 this.renderRecentList();
             }
         } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned Activity)
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned) {
                 if (this.selectedMoments[0].categories.includes('5e9f46e1c8bf1a622fec69d5')) { // journey
                     this.categoryId = '5e9f46e1c8bf1a622fec69d5';
                 } else if (this.selectedMoments[0].categories.includes('5e9fe372c8bf1a622fec69d8')) { // mentoring

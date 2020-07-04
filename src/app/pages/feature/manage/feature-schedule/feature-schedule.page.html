@@ -82,10 +82,7 @@
       <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
         <span>Create Schedule</span>
       </ion-button>
-      <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && this.parentCategoryId === '5c915476e172e4e64590e349'"> <!--Plan's Schedule-->
-        <span>Save</span>
-      </ion-button>
-      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
+      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
         <span>Repopulate Timeline</span>
       </ion-button>
     </ion-row>
@@ -180,7 +177,7 @@
       <div class="moment-input">Settings</div>
     </ion-item>
     <ion-item-group class="ion-margin-left" lines="full">
-      <ion-item lines="none" [disabled]="this.parentCategoryId !== '5c915476e172e4e64590e349'"> <!--Only enable for Plan-->
+      <ion-item lines="none">
         <ion-label class="ion-margin-left">Floating Start Date</ion-label>
         <ion-checkbox [(ngModel)]="schedule.array_boolean[0]"></ion-checkbox>
       </ion-item>

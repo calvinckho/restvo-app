@@ -1541,8 +1541,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               }
           });
       }
-      // add to calendar option is hidden for category Content, Onboarding Process, Plan
-      if (!this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && !this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71') && !this.moment.categories.map((c) => c._id).includes('5c915476e172e4e64590e349')) {
+      // add to calendar option is hidden for category Content, Onboarding Process
+      if (!this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && !this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71')) {
           if (!this.hasAddedToCalendar) {
               buttons.push({
                   text: this.resource['en-US'].value[13], // Add to Calendar

@@ -322,16 +322,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.addComponent(10500); // People
                   this.addComponent(11000); // Chat
                   this.editTemplate = true;
-              } else if (this.categoryId === '5c915476e172e4e64590e349') { // Plan
-                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Plan';
-                  this.moment.categories = ['5c915476e172e4e64590e349'];
-                  this.addComponent(10000); // add the "Plan Name"
-                  this.addComponent(20000); // Visibility
-                  this.addComponent(10300); // Upload Media
-                  this.addComponent(10050); // section header
-                  this.addComponent(10010); // Description
-                  this.addComponent(10210); // Schedule
-                  this.editTemplate = true;
               } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
                   this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
                   this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];

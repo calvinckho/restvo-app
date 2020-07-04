@@ -31,7 +31,6 @@ import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscripti
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
 import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
-import {FeaturePlansPage} from "./feature-plans/feature-plans.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -157,15 +156,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         component: FeatureChildActivitiesPage,
         params: {
           categoryId: '5e9fe35cc8bf1a622fec69d7',
-        }
-      },
-      {
-        url: 'plans',
-        label: 'Plans',
-        //categoryId: '5c915476e172e4e64590e349', // plan's category ID
-        component: FeaturePlansPage,
-        params: {
-          //categoryId: '5c915476e172e4e64590e349',
         }
       },
       {
