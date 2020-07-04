@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {
     ActionSheetController,
     AlertController,
@@ -100,12 +100,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     };
 
     async loadSamples() {
-        setTimeout(async () => {
-            this.reachedEnd = false;
-            this.samples = [];
-            this.pageNum = 0;
-            this.loadMoreSamples();
-        }, 50);
+        this.reachedEnd = false;
+        this.samples = [];
+        this.pageNum = 0;
+        this.loadMoreSamples();
     }
 
     async loadMoreSamples() {
@@ -307,7 +305,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step++;
             this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
             if (this.step === 1) {
-                await this.loadSamples();
+                this.loadSamples();
+                this.renderRecentList();
             }
         } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned Activity)
             if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {

@@ -1407,9 +1407,9 @@
       </ion-grid>
     </ion-slide>
   </ion-slides>
-  <div *ngIf="categoryIds.indexOf('5c915324e172e4e64590e346') > -1 || categoryIds.indexOf('5c915475e172e4e64590e348') > -1">
-    <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Communities/Programs Section Header-->
-      <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured Communities</ion-label>
+  <div *ngIf="categoryIds.includes('5c915324e172e4e64590e346') || categoryIds.includes('5c915475e172e4e64590e348')">
+    <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Section Header-->
+      <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured</ion-label>
     </ion-item>
     <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{grabCursor: true, updateOnWindowResize: true}">
       <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">

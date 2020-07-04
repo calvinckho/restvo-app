@@ -105,8 +105,8 @@
         <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
         <!--<span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>-->
         <ion-buttons slot="end" class="ion-no-margin">
-          <ion-button fill="clear" color="grey" (click)="openChildActivity($event, calendaritem.moment, 'edit')" *ngIf="calendaritem.moment.user_list_2 && calendaritem.moment.user_list_2.includes(userData.user._id)"><ion-icon name="cog"></ion-icon></ion-button>
           <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
+          <ion-button fill="clear" color="grey" (click)="openChildActivity($event, calendaritem.moment, 'edit')" *ngIf="calendaritem.moment.user_list_2 && calendaritem.moment.user_list_2.includes(userData.user._id)"><ion-icon name="cog"></ion-icon></ion-button>
           <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
         </ion-buttons>
       </ion-item>
@@ -167,7 +167,8 @@
           <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
           <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
           <ion-buttons slot="end" class="ion-no-margin">
-            <ion-button fill="clear" color="grey" (click)="openChildActivity($event, content, 'edit')"><ion-icon name="cog"></ion-icon></ion-button>
+            <ion-button fill="clear" color="grey" (click)="openChildActivity($event, content, 'view')"><ion-icon name="open-outline"></ion-icon></ion-button>
+            <ion-button fill="clear" color="grey" (click)="openChildActivity($event, content, 'edit')" *ngIf="content.user_list_2 && content.user_list_2.includes(userData.user._id)"><ion-icon name="cog"></ion-icon></ion-button>
             <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
