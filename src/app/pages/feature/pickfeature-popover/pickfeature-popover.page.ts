@@ -27,6 +27,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Journey', 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
     // onboarding process parameters
     @Input() programId: string; // the program
+    @Input() type: any; // the process type 2 (participant), 3 (organizer), 4 (leader)
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
     // relationship: joinAs
@@ -70,10 +71,21 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.setup();
+        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
+    }
+
+    ionViewWillEnter() {
+        // re-entering subpanel view
+        this.setup();
+    }
+
+    setup() {
         this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
         this.programId = this.programId || this.route.snapshot.paramMap.get('programId');
+        this.type = parseInt(this.type || this.route.snapshot.paramMap.get('type') || '0', 10);
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
@@ -89,7 +101,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else {
             this.categoryId = '5e9f46e1c8bf1a622fec69d5'; // default choice is a Journey
         }
-        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -280,6 +291,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         if (this.programId) {
             data.programId = this.programId;
         }
+        if (this.type) {
+            data.type = this.type;
+        }
         if (this.parent_programId) {
             data.parent_programId = this.parent_programId;
         }
@@ -357,6 +371,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 };
                 if (this.parent_programId) { // if parent program Id is provided, also update it
                     this.selectedMoments[0].parent_programs = [this.parent_programId];
+                }
+                if (this.programId) {
+                    this.selectedMoments[0].program = [this.programId];
+                }
+                if (this.type && this.selectedMoments[0].array_boolean.length > this.type) {
+                    this.selectedMoments[0].array_boolean[this.type] = true;
                 }
                 const clonedMoments: any = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {

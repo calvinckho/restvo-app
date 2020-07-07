@@ -17,9 +17,9 @@
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
           <ion-icon name="list"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
+<!--        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
           <ion-icon name="albums"></ion-icon>
-        </ion-button>
+        </ion-button>-->
       </div>
       <div *ngIf="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--if content calendar and show Content Edit Controls to Users-->
         <ion-button (click)="deleteCalendarItem($event)" class="ion-margin-end">

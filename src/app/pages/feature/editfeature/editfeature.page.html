@@ -99,7 +99,7 @@
         <!--title-->
         <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10000" lines="none">
           <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-          <ion-textarea [(ngModel)]="moment.matrix_string[i][0]" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="moment.resource['en-US'].value[0] + ' ' + resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]" ></ion-textarea>
+          <ion-textarea class="moment-input" [(ngModel)]="moment.matrix_string[i][0]" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="moment.resource['en-US'].value[0] + ' ' + resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]"></ion-textarea>
         </ion-item>
         <!--section header-->
         <ion-item color="lightgrey" *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10050" lines="none">
@@ -400,8 +400,8 @@
         </ion-item-group>
         <!--Textarea + Media-->
         <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010" lines="none">
-          <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-          <ion-textarea rows="4" [minRows]="1" [maxRows]="6" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
+          <ion-reorder class="moment-label" slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
+          <ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
           <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
           </ion-buttons>
