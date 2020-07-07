@@ -72,7 +72,9 @@ app-editfeature {
   .moment-label {
     width: 25px;
     height: 25px;
+    margin-top: auto;
     margin-right: 20px;
+    margin-bottom: auto;
   }
 
   .option-number {
@@ -150,10 +152,13 @@ app-editfeature {
   }
 
   .moment-input {
-    width: 90%;
+    /*width: 90%;
     float: left;
     opacity: 0.5;
-    padding: 5px 0;
+    padding: 5px 0;*/
+    float: left;
+    opacity: 0.5;
+    margin-left: 10px;
   }
 
   .small-font {

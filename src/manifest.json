@@ -1,7 +1,7 @@
 {
   "name": "Restvo",
   "short_name": "Restvo",
-  "description": "Restvo is designed for spiritual communities that wanted to build their own repository of processes, people, and tools to foster spiritual growth in their leaders and members.",
+  "description": "Restvo helps organizations build community with our fun and easy to use mentoring & learning platform",
   "theme_color": "#E2666A",
   "background_color": "#fafafa",
   "display": "standalone",
@@ -9,43 +9,23 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "assets/icons/icon-72x72.png",
+      "src": "assets/icon/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-96x96.png",
+      "src": "assets/icon/icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/icon-144x144.png",
+      "src": "assets/icon/icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/icon-192x192.png",
+      "src": "assets/icon/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/icon-512x512.png",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ]

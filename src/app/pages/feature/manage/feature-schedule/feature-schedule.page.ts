@@ -113,9 +113,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           if (!this.schedule.hasOwnProperty('array_boolean')) {
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
           }
-          if (this.parentCategoryId !== '5c915476e172e4e64590e349') { // only fetch calendar items for non-Plan
-            this.timeline = result.calendaritems;
-          }
+          this.timeline = result.calendaritems;
         }
       } else { // if creating new schedule
           this.schedule = this.scheduleObj;
@@ -127,7 +125,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
-        this.touchPlanTimeline();
       }
     }
   }
@@ -163,16 +160,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
-      if (this.parentCategoryId === '5c915476e172e4e64590e349') {
-        // for Plan, auto re-populate the timeline and save the changes
-        this.schedule.operation = operation;
-        this.touchPlanTimeline();
-        schedule = await this.momentService.touchSchedule(this.schedule);
-      } else {
-        // for Activity, either create schedule or send to the backend to repopulate the timeline
-        this.schedule.operation = operation;
-        schedule = await this.momentService.touchSchedule(this.schedule);
-      }
+      // for Activity, either create schedule or send to the backend to repopulate the timeline
+      this.schedule.operation = operation;
+      schedule = await this.momentService.touchSchedule(this.schedule);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
         if (this.modalPage) {
@@ -185,50 +175,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           });
         }
       }
-    }
-  }
-
-  // repopulate the Timeline (Plan only)
-  touchPlanTimeline() {
-    if (this.parentCategoryId === '5c915476e172e4e64590e349' && this.schedule.child_moments && this.schedule.child_moments.length) {
-      this.timeline = [];
-      let i = 0;
-      const newContentCalendar = JSON.parse(JSON.stringify(this.calendarObj));
-      newContentCalendar.startDateObj = new Date(this.schedule.startDate);
-      newContentCalendar.endDateObj = new Date(this.schedule.endDate);
-
-      do {
-        newContentCalendar.moment = this.schedule.child_moments[i % this.schedule.child_moments.length];
-        newContentCalendar.title = newContentCalendar.moment.matrix_string[0][0];
-        newContentCalendar.startDate = newContentCalendar.startDateObj.toISOString();
-        newContentCalendar.endDate = newContentCalendar.endDateObj.toISOString();
-        this.timeline.push(JSON.parse(JSON.stringify(newContentCalendar)));
-        // increment up
-        switch (this.schedule.options.recurrence) {
-          case 'daily':
-            newContentCalendar.startDateObj.setDate(newContentCalendar.startDateObj.getDate() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setDate(newContentCalendar.endDateObj.getDate() + this.schedule.options.recurrenceInterval);
-            break;
-          case 'weekly':
-            newContentCalendar.startDateObj.setDate(newContentCalendar.startDateObj.getDate() + (7 * this.schedule.options.recurrenceInterval));
-            newContentCalendar.endDateObj.setDate(newContentCalendar.endDateObj.getDate() + (7 * this.schedule.options.recurrenceInterval));
-            break;
-          case 'monthly':
-            newContentCalendar.startDateObj.setMonth(newContentCalendar.startDateObj.getMonth() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setMonth(newContentCalendar.endDateObj.getMonth() + this.schedule.options.recurrenceInterval);
-            break;
-          case 'yearly':
-            newContentCalendar.startDateObj.setFullYear(newContentCalendar.startDateObj.getFullYear() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setFullYear(newContentCalendar.endDateObj.getFullYear() + this.schedule.options.recurrenceInterval);
-            break;
-          default:
-            newContentCalendar.startDateObj = new Date(this.schedule.startDate);
-            newContentCalendar.endDateObj = new Date(this.schedule.endDate);
-            i = 730; // break out from the do while loop
-            break;
-        }
-        i++;
-      } while ((newContentCalendar.startDateObj.getTime() <= new Date(this.schedule.options.recurrenceEndDate).getTime()) && (i <= 730));
     }
   }
 
@@ -251,9 +197,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     }
     this.calendarService.updateViewCalendar();
-    if (this.parentCategoryId === '5c915476e172e4e64590e349') { // only auto populate for Plans
-      this.touchSchedule('update schedule');
-    }
   }
 
   async deleteSchedule() {
@@ -294,12 +237,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, scheduleId: this.scheduleId };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
-    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
-      componentProps.parent_programId = this.momentId;
-      componentProps.maxMomentCount = 1;
-      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
-        componentProps.allowCreate = false;
-      }
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
     }
@@ -365,12 +302,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, disableSelect: true };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
-    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
-      componentProps.parent_programId = this.momentId;
-      componentProps.maxMomentCount = 1;
-      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
-        componentProps.allowCreate = false;
-      }
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
     }
