@@ -161,13 +161,14 @@
 
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
-              <ion-thumbnail>
-                <ion-skeleton-text animated></ion-skeleton-text>
-              </ion-thumbnail>
-              <img src="assets/img/mentors.svg" alt="" />
+              <!-- <img src="assets/img/mentors.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" class="underline">
                 <ion-skeleton-text animated></ion-skeleton-text>
-                You don't have any mentors yet. Discover some today.</a>
+                You don't have any mentors yet. Discover some today.</a> -->
+              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
+              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
+              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
+              <ion-skeleton-text width="60%" animated></ion-skeleton-text>
             </div>
             <!--Mentors Mobile View-->
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="myMentors && myMentors.length && platform.width() < 768">
