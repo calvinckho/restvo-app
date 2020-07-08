@@ -150,6 +150,16 @@
           </ion-card>
         </ion-col>
         <!--List My Mentors-->
+        <ng-template #skeleton>
+          <ion-list>
+            <ion-item *ngFor="let item of myMentors.length">
+              <h1>hi</h1>
+              <p [ngStyle]="{ width: '100%' }">
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </p>
+            </ion-item>
+          </ion-list>
+        </ng-template>
         <ion-col [size]="(platform.width() >= 768) && (myMentors?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
@@ -158,13 +168,6 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
-            <!-- Skeleton Text -->
-            <div *ngIf="!(myMentors && myMentors.length) && (myMentors && myMentors.length)">
-              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-            </div>
 
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
