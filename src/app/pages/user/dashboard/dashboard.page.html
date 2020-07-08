@@ -158,6 +158,14 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+            <!-- Skeleton Text -->
+            <div *ngIf="!(myMentors && myMentors.length) && (myMentors && myMentors.length)">
+              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+            </div>
+
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
               <img src="assets/img/mentors.svg" alt="" />
