@@ -21,6 +21,7 @@ let useSplashScreen = false;
 
 const name = app.getName();
 app.setAppUserModelId('RestvoApp'); //MS Windows: Changes the Application User Model ID to id.
+// app.allowRendererProcessReuse = true; // require in electron@9+
 
 // Create simple menu for easy devtools access, and for demo
 const menuTemplateDev = [{

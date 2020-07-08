@@ -35,7 +35,6 @@ import {Moment} from '../../services/moment.service';
 import {Systemlog} from '../../services/systemlog.service';
 import {Auth} from '../../services/auth.service';
 import {Resource} from '../../services/resource.service';
-import {get} from 'scriptjs';
 import 'capacitor-jitsi-meet';
 import {PreferencesPage} from "../discover/preferences/preferences.page";
 import {OnboardfeaturePage} from "../feature/onboardfeature/onboardfeature.page";
@@ -46,8 +45,6 @@ import {EditparticipantsPage} from "../feature/editparticipants/editparticipants
 import {ManagefeaturePage} from "../feature/manage/managefeature.page";
 import {ProgramsPage} from "../user/programs/programs.page";
 import {FeatureCreatorPage} from "../feature/manage/feature-creator/feature-creator.page";
-
-declare var JitsiMeetExternalAPI: any;
 
 @Component({
   selector: 'app-main-tab',
