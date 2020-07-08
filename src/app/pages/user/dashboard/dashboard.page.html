@@ -116,12 +116,22 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+
+            <!-- Loading skeleton text -->
+            <div class="empty-state" *ngIf="loading">
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </div>
+
             <!--Journey Empty State-->
-            <div class="empty-state" *ngIf="!(journeys && journeys.length)">
+            <div class="empty-state" *ngIf="!(journeys && journeys.length) && !loading">
               <img src="assets/img/journey.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" class="underline">
                 You don't have any journeys yet. Discover some today.</a>
             </div>
+
             <!--Journey Mobile View-->
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="journeys && journeys.length && platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
@@ -162,6 +172,14 @@
               </ion-button>
             </ion-item>
 
+            <!-- Loading skeleton text -->
+            <div class="empty-state" *ngIf="loading">
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </div>
+
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
               <img src="assets/img/mentors.svg" alt="" />
@@ -169,12 +187,6 @@
                 You don't have any mentors yet. Discover some today.</a>
             </div>
 
-            <div class="empty-state" *ngIf="loading">
-              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
-              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
-              <ion-skeleton-text width="80%" animated></ion-skeleton-text>
-              <ion-skeleton-text width="60%" animated></ion-skeleton-text>
-            </div>
             <!--Mentors Mobile View-->
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="myMentors && myMentors.length && platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -246,12 +258,22 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+
+            <!-- Loading skeleton text -->
+            <div class="empty-state" *ngIf="loading">
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </div>
+
             <!--Mentees Empty State-->
-            <div class="empty-state" *ngIf="!(myMentees && myMentees.length)">
+            <div class="empty-state" *ngIf="!(myMentees && myMentees.length) && !loading">
               <img src="assets/img/mentees.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any mentees yet. Discover some today.</a>
             </div>
+
             <!--Mentees Mobile View-->
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 2.8, grabCursor: true, updateOnWindowResize: true}" *ngIf="myMentees && myMentees.length && platform.width() < 768">
               <ion-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -323,12 +345,22 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
+
+            <!-- Loading skeleton text -->
+            <div class="empty-state" *ngIf="loading">
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </div>
+
             <!--Group Empty State-->
-            <div class="empty-state" *ngIf="!(groups && groups.length)">
+            <div class="empty-state" *ngIf="!(groups && groups.length) && !loading">
               <img src="assets/img/groups.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe35cc8bf1a622fec69d7'}]" class="underline">
                 You don't have any groups yet. Discover some today.</a>
             </div>
+
             <!--Group Mobile View-->
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="groups && groups.length && platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
