@@ -150,16 +150,6 @@
           </ion-card>
         </ion-col>
         <!--List My Mentors-->
-        <ng-template #skeleton>
-          <ion-list>
-            <ion-item *ngFor="let item of myMentors.length">
-              <h1>hi</h1>
-              <p [ngStyle]="{ width: '100%' }">
-                <ion-skeleton-text animated></ion-skeleton-text>
-              </p>
-            </ion-item>
-          </ion-list>
-        </ng-template>
         <ion-col [size]="(platform.width() >= 768) && (myMentors?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
@@ -171,8 +161,12 @@
 
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
+              <ion-thumbnail>
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </ion-thumbnail>
               <img src="assets/img/mentors.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" class="underline">
+                <ion-skeleton-text animated></ion-skeleton-text>
                 You don't have any mentors yet. Discover some today.</a>
             </div>
             <!--Mentors Mobile View-->
