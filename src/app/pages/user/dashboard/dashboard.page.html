@@ -106,7 +106,10 @@
       <ion-row>
         <!--List My Journey-->
         <ion-col [size]="(platform.width() >= 768) && (journeys?.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
-          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+          <ion-card *ngIf="loading">
+
+          </ion-card>
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="!loading">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" fill="clear">

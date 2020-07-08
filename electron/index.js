@@ -1,17 +1,14 @@
-const { app, dialog, ipcMain, BrowserWindow, Menu, Notification } = require('electron');
+const { app, dialog, ipcMain, shell, BrowserWindow, Menu, Notification } = require('electron');
 const isDevMode = require('electron-is-dev');
 const { CapacitorSplashScreen, configCapacitor } = require('@capacitor/electron');
 const log = require('electron-log');
 const path = require('path');
-const os = require('os');
 const { autoUpdater } = require("electron-updater");
 const { setup: setupPushReceiver } = require('electron-push-receiver');
 
-/*
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
-*/
 
 // Place holders for our windows so they don't get garbage collected.
 let mainWindow = null;
@@ -189,15 +186,21 @@ async function createWindow () {
   } else {
       mainWindow.loadURL(`file://${__dirname}/app/index.html`);
 
-      //mainWindow.loadURL(await injectCapacitor(`file://${__dirname}/app/index.html`), {baseURLForDataURL: `file://${__dirname}/app/`});
-    mainWindow.webContents.on('dom-ready', () => {
-        mainWindow.show();
+      mainWindow.webContents.on('dom-ready', () => {
+          mainWindow.show();
+      });
 
-        mainWindow.on('close', function () {
-            mainWindow = null;
-        });
-    });
+      mainWindow.on('close', function () {
+          mainWindow = null;
+      });
+      //mainWindow.loadURL(await injectCapacitor(`file://${__dirname}/app/index.html`), {baseURLForDataURL: `file://${__dirname}/app/`});
   }
+
+    mainWindow.webContents.on('new-window', (event, url) => {
+        log.info('opening url in browser', url);
+        event.preventDefault();
+        shell.openExternal(url);
+    });
 }
 
 let updateVersion = "";
