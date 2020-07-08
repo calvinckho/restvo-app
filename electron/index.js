@@ -175,7 +175,7 @@ async function createWindow () {
         // Set our above template to the Menu Object if we are in development mode, dont want users having the devtools.
         Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplateDev));
         // If we are developers we might as well open the devtools by default.
-        // mainWindow.webContents.openDevTools();
+        //mainWindow.webContents.openDevTools();
     } else {
         Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
     }
@@ -193,7 +193,6 @@ async function createWindow () {
       mainWindow.on('close', function () {
           mainWindow = null;
       });
-      //mainWindow.loadURL(await injectCapacitor(`file://${__dirname}/app/index.html`), {baseURLForDataURL: `file://${__dirname}/app/`});
   }
 
     mainWindow.webContents.on('new-window', (event, url) => {
@@ -230,9 +229,10 @@ autoUpdater.on('update-downloaded', async (info) => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some Electron APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+//app.on('ready', createWindow);
 
 app.on('ready', function() {
+    createWindow();
     if (!isDevMode) {
         setInterval(async () => {
             const result = await autoUpdater.checkForUpdates();
