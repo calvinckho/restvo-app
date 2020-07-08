@@ -5,7 +5,6 @@ import { CacheService } from 'ionic-cache';
 import * as Plyr from "plyr";
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
-//const { Keyboard } = Plugins;
 import { Storage } from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
 import { SpeechRecognition } from "@ionic-native/speech-recognition/ngx";

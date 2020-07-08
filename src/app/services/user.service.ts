@@ -173,7 +173,7 @@ export class UserData {
         this.refreshUserStatus({ type: 'change aux data' });
     }
 
-    //get data from the server if connected
+    // get data from the server if connected
     async load() {
         this.user = await this.loadUser();
         this.processLoadedUserData();
@@ -781,7 +781,9 @@ export class UserData {
         // deviceToken is not removed because it needs to be used when another user sign in.
         // that is because the deviceToken is only fetched when the app is loaded for the first time
         this.authService.chatSocketMessage({topic: 'disconnect chat socket'});
-        this.socket.close();
+        if (this.socket) {
+            this.socket.close();
+        }
         if (this.platform.is('ios')) {
             const { ShareExtension } = Plugins;
             try {

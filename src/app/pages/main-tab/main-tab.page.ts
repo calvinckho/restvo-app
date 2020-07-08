@@ -87,6 +87,7 @@ export class MainTabPage implements OnInit, OnDestroy {
         console.log('platform info:', this.platform.platforms());
         this.processAuth();
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
+            console.log("refresh maintab", data)
             if (data && data.type === 'setup device') {
                 this.setupDevice();
             }
@@ -118,6 +119,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     async ionViewWillEnter() {
         try {
+            await this.storage.ready();
             const user: any = await this.storage.get('user');
             if (user && user._id) {
                 // turn on menu in most cases except when showing video on desktop
@@ -164,8 +166,10 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async setupDevice() {
-      if (await this.networkService.hasNetwork()) {
-          // defer iOS push notification permission request until later (after finished onboarding)
+        console.log("setup device")
+        if (await this.networkService.hasNetwork()) {
+            console.log("has network")
+            // defer iOS push notification permission request until later (after finished onboarding)
           if (this.platform.is('ios') && !this.userData.user.enablePushNotification) {
           } else { // automatically set up Push Notification for all device type except iOS mobile web
               this.initPushNotification();
@@ -763,7 +767,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                             this.jitsi = new JitsiMeetExternalAPI(domain, options);
                         });
                     } else { // on desktop web, open another tab and run external API
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
                     }
                 } catch (err) {
                     this.userData.readyToControlVideoChat = true;
@@ -792,7 +796,7 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     onJitsiLoaded = async (params) => {
-        console.log('loaded Jitsi');
+        console.log('loaded Jitsi', params.videoChatRoomSubject);
         this.userData.readyToControlVideoChat = true;
         this.userData.videoChatRoomId = this.pendingVideoChatRoomId;
         if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }

@@ -122,10 +122,7 @@ export class Resource {
                             await versionAlert.present();
                         }
                     }
-                    console.log("resource", this.resource);
-
                     if (result && result.length) {
-                        console.log("cached res", result);
                         resolve(result);
                     }
                 });
