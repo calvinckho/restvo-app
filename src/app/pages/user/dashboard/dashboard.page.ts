@@ -30,7 +30,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     numberOfNotifications: number = 0;
     noSystemMessage: boolean = true;
     deviceToken: any;
-    loading: any;
+    loading: any = true;
     activities: any;
     journeys: any;
     myMentors: any;
@@ -372,6 +372,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     async loadPrograms() {
         this.activities = await this.userData.loadPrograms(true);
         this.journeys = [];
+        this.loading = false;
         this.myMentors = [];
         this.myMentees = [];
         this.groups = [];

@@ -160,11 +160,13 @@
             </ion-item>
 
             <!--Mentors Empty State-->
-            <div class="empty-state" *ngIf="!(myMentors && myMentors.length)">
-              <!-- <img src="assets/img/mentors.svg" alt="" />
+            <div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
+              <img src="assets/img/mentors.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" class="underline">
-                <ion-skeleton-text animated></ion-skeleton-text>
-                You don't have any mentors yet. Discover some today.</a> -->
+                You don't have any mentors yet. Discover some today.</a>
+            </div>
+
+            <div class="empty-state" *ngIf="loading">
               <ion-skeleton-text width="80%" animated></ion-skeleton-text>
               <ion-skeleton-text width="80%" animated></ion-skeleton-text>
               <ion-skeleton-text width="80%" animated></ion-skeleton-text>
