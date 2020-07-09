@@ -1578,17 +1578,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async moreOrganizerActions() {
         let actionSheet: any;
         let buttons = [];
-        buttons = buttons.concat([
-            {
-                text: this.resource['en-US'].value[43] + ' ' + this.moment.resource['en-US'].value[0], // Manage Community or Program
-                icon: 'bulb',
-                handler: () => {
-                    const navTransition = actionSheet.dismiss();
-                    navTransition.then( async () => {
-                        this.momentService.manageMoment({ moment: this.moment, modalPage: this.modalPage });
-                    });
-                },
-            }]);
+        buttons = buttons.concat([{
+            text: this.resource['en-US'].value[43] + ' ' + this.moment.resource['en-US'].value[0], // Manage Community or Program
+            icon: 'bulb',
+            handler: () => {
+                const navTransition = actionSheet.dismiss();
+                navTransition.then( async () => {
+                    this.momentService.manageMoment({ moment: this.moment, modalPage: this.modalPage });
+                });
+            },
+        }]);
         if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
             buttons = buttons.concat([
                 {
@@ -1658,7 +1657,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 });
             }
         }
-        buttons = buttons.concat([{
+        if (this.moment.user_list_2.includes(this.userData.user._id)) {
+            buttons = buttons.concat([{
                 text: 'Leave as ' + this.organizerLabel,
                 icon: 'log-out',
                 handler: () => {
@@ -1667,12 +1667,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         this.leaveProgramWithPrivileges('user_list_2');
                     });
                 }
-            },
-            {
-                text: this.resource['en-US'].value[33], // Cancel
-                icon: 'close-circle',
-                role: 'cancel',
             }]);
+        }
+        buttons = buttons.concat([{
+            text: this.resource['en-US'].value[33], // Cancel
+            icon: 'close-circle',
+            role: 'cancel',
+        }]);
         actionSheet = await this.actionSheetCtrl.create({
             header: this.moment.matrix_string[0][0],
             buttons: buttons,
