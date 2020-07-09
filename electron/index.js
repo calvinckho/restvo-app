@@ -209,7 +209,7 @@ let declinedVersion = "";
 autoUpdater.on('update-downloaded', async (info) => {
     if (updateVersion !== declinedVersion) {
         declinedVersion = updateVersion;
-        dialog.showMessageBox(
+        const results = await dialog.showMessageBox(
             mainWindow,
             {
                 title: 'Update Available',
@@ -217,13 +217,11 @@ autoUpdater.on('update-downloaded', async (info) => {
                 buttons: ['Restart', 'Cancel'],
                 defaultId: 0,
                 cancelId: 1
-            },
-            function callback(response) {
-                if (response === 0) {
-                    autoUpdater.quitAndInstall();
-                    app.exit();
-                }
             });
+        if (results && results.response === 0) {
+            autoUpdater.quitAndInstall();
+            app.exit();
+        }
     }
 });
 
