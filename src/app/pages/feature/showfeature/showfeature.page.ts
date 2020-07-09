@@ -1657,7 +1657,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 });
             }
         }
-        if (this.moment.user_list_2.includes(this.userData.user._id)) {
+        if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
             buttons = buttons.concat([{
                 text: 'Leave as ' + this.organizerLabel,
                 icon: 'log-out',
