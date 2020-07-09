@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.7.19",
+  "version": "1.7.20",
   "description": "Connect with Mentors",
   "main": "index.js",
   "private": true,
@@ -8,7 +8,7 @@
     "electron:start": "electron ./",
     "pack": "electron-builder --dir",
     "dist": "electron-builder -mw --x64 --ia32",
-    "publish": "build -mw --x64 --ia32 -p always"
+    "publish": "electron-builder -mw --x64 --ia32 -p always"
   },
   "build": {
     "appId": "com.restvo.electron",
