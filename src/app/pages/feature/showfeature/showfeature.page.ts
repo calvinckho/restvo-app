@@ -932,6 +932,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }, this.token); // a valid token is not required, but provided in case of future change of specs
           if (!this.modalPage) {
             this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
+            //work here testtesttest
+            
+            let test = await this.userData.loadPrograms(true)
+            console.log(test)
+            await this.setDefaultProgram()
+            // await this.setDefaultProgram()
           }
           this.chatService.socket.emit('leave conversation', this.moment.conversation); // inform the socket.io server this user is leaving this room
             this.userData.refreshMyConversations({action: 'disconnect chat view', conversationId: this.moment.conversation});
@@ -948,6 +954,33 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.anyChangeMade = false;
     }
   }
+
+  async setDefaultProgram() {
+    const activities = await this.userData.loadPrograms(true);
+    // activities is an Array like object
+    const newActivities = Array.prototype.slice.call(activities);
+    // newActivities is now an array
+    console.log(this.userData.defaultProgram)
+    console.log(newActivities)
+    if (newActivities.length === 2) {
+        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+        // activity should now be an object of the new Activity
+        // update the userData default program to equal the object
+        if (activity) {
+            this.userData.defaultProgram = activity;
+            this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
+            this.storage.set('defaultProgram', activity);
+        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
+    }
+    else if (newActivities.length < 2) {
+        const activity = newActivities.find((n) => n._id === '5d5785b462489003817fee18')
+        if (activity) {
+            this.userData.defaultProgram = activity;
+            this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
+            this.storage.set('defaultProgram', activity);
+        }
+    }
+}
 
   async inviteToJoin() {
       if (this.authService.token) {

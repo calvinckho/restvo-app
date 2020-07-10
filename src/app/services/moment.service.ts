@@ -447,20 +447,7 @@ export class Moment {
                 // IF they successfully joined the community
                 // AND it is the second community they have joined (the first is the default Restvo Community)
                 if (result === 'success') {
-                    const activities = await this.userData.loadPrograms(true);
-                    // activities is an Array like object
-                    const newActivities = Array.prototype.slice.call(activities);
-                    // newActivities is now an array
-                    if (newActivities.length === 2) {
-                        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
-                        // activity should now be an object of the new Activity
-                        // update the userData default program to equal the object
-                        if (activity) {
-                            this.userData.defaultProgram = activity;
-                            this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
-                            this.storage.set('defaultProgram', activity);
-                        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
-                    }
+                    await this.setDefaultProgram()
                 }
                 return result;
             } catch (err) {
@@ -469,6 +456,27 @@ export class Moment {
             }
         }
     }
+
+    async setDefaultProgram() {
+        const activities = await this.userData.loadPrograms(true);
+        // activities is an Array like object
+        const newActivities = Array.prototype.slice.call(activities);
+        // newActivities is now an array
+        if (newActivities.length === 2) {
+            const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
+            // activity should now be an object of the new Activity
+            // update the userData default program to equal the object
+            if (activity) {
+                this.userData.defaultProgram = activity;
+                this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
+                this.storage.set('defaultProgram', activity);
+            }
+            else {
+                // this.userData.defaultProgram = '5d5785b462489003817fee18'
+            } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
+        }
+    }
+
 
     // decide whether to open the participants edit mode (for organizer) or select from the PeoplePicker and add as participant to an Activity
     async initiateParticipantsView(moment, loading) {

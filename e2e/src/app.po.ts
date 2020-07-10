@@ -1,4 +1,5 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions, WebDriver } from 'protractor';
+import { protractor } from 'protractor/built/ptor';
 
 class PageObjectBase {
     private path: string;
@@ -104,13 +105,23 @@ export class ShowfeaturePage extends PageObjectBase {
     constructor() {
         super('app-showfeature', '/');
     }
-
+    waitForClickBlock(){
+        // WebDriver waits = new WebDriver;
+        // let clickBlock = element(by.css('.click-block-active'))
+        // console.log(clickBlock)
+        browser.wait(ExpectedConditions.presenceOf(element(by.id('signin')))).then(() => {
+            browser.wait(ExpectedConditions.elementToBeClickable(element(by.id('signin'))), 20000);
+        })
+    }
+    getSigninButton() {
+        return element(by.id('signin'))
+    }
     async navigateTo() {
         return this.load();
     }
 
-    clickSigninButton(button) {
-        this.clickButton(button);
+    async clickSigninButton(button) {
+        await this.clickButton(button);
     }
 }
 
@@ -139,8 +150,8 @@ export class RegisterPage extends PageObjectBase {
         await this.enterInputText('#password', '123456');
     }
 
-    submitLoginForm() {
-        this.clickButton('#login-button');
+    async submitLoginForm() {
+        await this.clickButton('#login-button');
     }
 
     currentUrl() {

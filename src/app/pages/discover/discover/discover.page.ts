@@ -33,6 +33,7 @@ export class DiscoverPage  {
         } else {
             const modal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
             await modal.present();
-        }
+        }    
     }
 }
+
