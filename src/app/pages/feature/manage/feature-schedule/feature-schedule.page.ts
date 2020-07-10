@@ -37,6 +37,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   recurrenceEndDate = new Date();
   recurrenceStartTime: string;
   recurrenceEndTime: string;
+  recurrenceByDay = [];
   allDay = false;
   dateType = ''; // specifies if user is changing start date or end date
 
@@ -125,6 +126,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
+        if (this.schedule.options.recurrenceByDay) {
+          this.recurrenceByDay = this.schedule.options.recurrenceByDay.split(',');
+        } else {
+          this.recurrenceByDay = [this.getWeekDay(this.recurrenceStartDate)];
+        }
       }
     }
   }
@@ -156,7 +162,8 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   async touchSchedule(operation) {
     let schedule;
-    if (operation === 'create schedule' || this.schedule._id) {
+    this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
+    if (this.schedule._id || operation === 'create schedule') {
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
@@ -381,8 +388,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'View', // View
-        //role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -392,8 +397,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'Edit', // Edit
-        //role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -404,7 +407,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       {
         text: 'Delete', // Delete
         role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -441,6 +443,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       cssClass: 'level-15'
     });
     alert.present();
+  }
+
+  getWeekDay(dateObj) {
+    const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+    return days[dateObj.getDay()];
   }
 
 // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction
