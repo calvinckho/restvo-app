@@ -106,10 +106,7 @@
       <ion-row>
         <!--List My Journey-->
         <ion-col [size]="(platform.width() >= 768) && (journeys?.length <= 6) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
-          <ion-card *ngIf="loading">
-
-          </ion-card>
-          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="!loading">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Journey</ion-label>
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" fill="clear">
@@ -118,12 +115,24 @@
             </ion-item>
 
             <!-- Loading skeleton text -->
-            <div class="empty-state" *ngIf="loading">
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </div>
+            <ion-grid *ngIf="loading && platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
 
             <!--Journey Empty State-->
             <div class="empty-state" *ngIf="!(journeys && journeys.length) && !loading">
@@ -148,7 +157,7 @@
             <!--Journey Desktop View-->
             <ion-grid *ngIf="journeys && journeys.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center grid-col" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
+                <ion-col class="ion-align-self-center" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
                   <ion-card class="grid-program-card" (click)="openProgram($event, journey)">
                     <ion-card-header class="ion-no-padding">
                       <div class="program-photo-container">
@@ -173,12 +182,24 @@
             </ion-item>
 
             <!-- Loading skeleton text -->
-            <div class="empty-state" *ngIf="loading">
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </div>
+            <ion-grid *ngIf="loading && platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
 
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
@@ -260,12 +281,24 @@
             </ion-item>
 
             <!-- Loading skeleton text -->
-            <div class="empty-state" *ngIf="loading">
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </div>
+            <ion-grid *ngIf="loading && platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
 
             <!--Mentees Empty State-->
             <div class="empty-state" *ngIf="!(myMentees && myMentees.length) && !loading">
@@ -346,13 +379,24 @@
               </ion-button>
             </ion-item>
 
-            <!-- Loading skeleton text -->
-            <div class="empty-state" *ngIf="loading">
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </div>
+            <ion-grid *ngIf="loading && platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <div class="program-photo-container">
+                      <ion-skeleton-text animated></ion-skeleton-text>
+                    </div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
 
             <!--Group Empty State-->
             <div class="empty-state" *ngIf="!(groups && groups.length) && !loading">
@@ -377,7 +421,7 @@
             <!--Group Desktop View-->
             <ion-grid *ngIf="groups && groups.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center grid-col" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
+                <ion-col class="ion-align-self-center" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
                   <ion-card class="grid-program-card" (click)="openProgram($event, group)">
                     <ion-card-header class="ion-no-padding">
                       <div class="program-photo-container">
@@ -414,7 +458,7 @@
             </ion-slides>
             <ion-grid *ngIf="platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center grid-col" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
+                <ion-col class="ion-align-self-center" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">
                   <ion-card class="grid-program-card" (click)="openProgram($event, program)">
                     <ion-card-header class="ion-no-padding">
                       <div class="program-photo-container">

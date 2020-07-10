@@ -428,7 +428,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 default:
                     type = 'journey';
             }
-            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new plan
+            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new activity
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
             } else if (this.router.url.includes('invite') || this.router.url.includes('choose')) { // else, in invite flow,  send user to the addParticipant page if the user is an organizer, or to the

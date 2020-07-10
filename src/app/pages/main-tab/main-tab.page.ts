@@ -355,7 +355,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         this.userData.pushSubscription = pushSubscription;
                         this.userData.user.enablePushNotification = true;
                         this.userData.refreshUserStatus({});
-                        console.log('push sub obj', this.userData.pushSubscription);
+                        console.log('Web Push Subscription Obj', this.userData.pushSubscription);
                     }, (err) => {
                         console.log('cannot store push subscription object in database.');
                     });

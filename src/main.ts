@@ -14,7 +14,11 @@ if (environment.production) {
 }
 
 platformBrowserDynamic()
-    .bootstrapModule(AppModule)
+    .bootstrapModule(AppModule).then(() => {
+  if ('serviceWorker' in navigator && environment.production) {
+    navigator.serviceWorker.register('./ngsw-worker.js');
+  }
+})
 // the follow code is used to diagnose ngZone blocking issues with Protractor
     /*.then(moduleInstance => {
 

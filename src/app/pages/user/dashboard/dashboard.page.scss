@@ -561,14 +561,12 @@ app-dashboard {
   .grid-program-card {
     width: 133px;
     object-fit: contain;
-    margin: 0 3%;
+    margin: 0;
   }
 
   .program-photo-container {
     height: 100px;
     overflow: hidden;
-    //border-radius: 50%;
-    //margin: 5% auto;
   }
 
   .program-photo {
