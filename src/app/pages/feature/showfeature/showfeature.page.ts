@@ -749,7 +749,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async setupPermission() {
-    if (this.momentService.socket) {
+      if (this.momentService.socket) {
         if (this.relationshipId && this.calendarId && this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) {
           this.momentService.socket.emit('join moment', this.calendarId); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
         } else if (this.relationshipId) {
@@ -776,33 +776,33 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
         this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
-      this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
-      // if Activity's organizer
+          this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
+          // if Activity's organizer
         if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
           this.hasOrganizerAccess = true;
-      // if Restvo staff
-      } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
-          this.hasOrganizerAccess = true;
-      // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
-      } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
-          const promises = this.moment.parent_programs.map( async (parent_program) => {
-              if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
-                  this.hasOrganizerAccess = true;
-              }
-              if (parent_program.parent_programs && parent_program.parent_programs.length) {
-                  const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
-                      if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
-                          this.hasOrganizerAccess = true;
-                      }
-                  });
-                  await Promise.all(promises2);
-              }
-          });
-          await Promise.all(promises);
-      }
-      this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
-      this.setupPermissionCompleted = true;
+          // if Restvo staff
+          } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+              this.hasOrganizerAccess = true;
+          // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
+          } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
+              const promises = this.moment.parent_programs.map( async (parent_program) => {
+                  if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
+                      this.hasOrganizerAccess = true;
+                  }
+                  if (parent_program.parent_programs && parent_program.parent_programs.length) {
+                      const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
+                          if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
+                              this.hasOrganizerAccess = true;
+                          }
+                      });
+                      await Promise.all(promises2);
+                  }
+              });
+              await Promise.all(promises);
+        }
+        this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
     }
+      this.setupPermissionCompleted = true;
   }
 
   async setupPollDisplay(interactableId, componentIndex) {

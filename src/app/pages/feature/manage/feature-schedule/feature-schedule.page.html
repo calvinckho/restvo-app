@@ -97,6 +97,9 @@
       <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
         <span>Repopulate Timeline</span>
       </ion-button>
+      <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && !this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
+        <span>Save</span>
+      </ion-button>
     </ion-row>
     <ion-item-divider></ion-item-divider>
     <ion-item *ngIf="this.schedule._id && !timeline.length">
@@ -129,7 +132,7 @@
               <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
             </ion-buttons>
             <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
-              <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])" (click)="openContent($event, calendaritem)">
+              <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
                 <span class="content-count">{{j+1}}.</span>
                 <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
                 <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
@@ -155,7 +158,7 @@
             <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
           </ion-buttons>
           <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
-            <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])" (click)="openContent($event, calendaritem)">
+            <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
               <span class="content-count">{{j+1}}.</span>
               <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
               <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
@@ -176,7 +179,7 @@
           <ion-label class="ion-margin-start" >Uncategorized</ion-label>
         </ion-item>
         <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
-          <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length" (click)="openContent($event, calendaritem)">
+          <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">
             <span class="content-count">{{j+1}}.</span>
             <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
             <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
