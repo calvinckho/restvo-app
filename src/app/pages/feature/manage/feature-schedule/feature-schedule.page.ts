@@ -1,7 +1,8 @@
 import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {ActionSheetController, AlertController, IonContent, ModalController, Platform} from "@ionic/angular";
-import {Moment} from "../../../../services/moment.service";
+import {ActionSheetController, AlertController, IonContent, IonSelect, ModalController, Platform} from "@ionic/angular";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Moment} from "../../../../services/moment.service"
+import {Response} from "../../../../services/response.service";
 import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
 import {UserData} from "../../../../services/user.service";
@@ -19,6 +20,7 @@ import {Location} from "@angular/common";
 })
 export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit {
   @ViewChild(IonContent, {static: false}) content: IonContent;
+  @ViewChild('SelectGoals', {static: false}) select: IonSelect;
 
   @Input() modalPage: any;
   @Input() moment: any; // the program object
@@ -29,9 +31,21 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   ionSpinner = false;
   searchKeyword = '';
   view = 'timeline';
+  resource: any = {};
 
   timeline = [];
   calendaritems = [];
+  responses = [];
+  responseTemplate = {
+    matrix_string: [],
+    matrix_number: [],
+    moment: '',
+    array_number: []
+  };
+  responseObj: any = this.responseTemplate;
+  listOfDisplayGoals = [];
+  selectCalendarItem: any = { goals: [] };
+  timeoutHandle: any;
 
   recurrenceStartDate = new Date();
   recurrenceEndDate = new Date();
@@ -83,6 +97,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public modalCtrl: ModalController,
       public actionSheetCtrl: ActionSheetController,
       public calendarService: CalendarService,
+      public responseService: Response
   ) {
     super(route, router, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl);
@@ -115,6 +130,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
           }
           this.timeline = result.calendaritems;
+          for (const calendaritem of this.timeline) {
+            calendaritem.goals = [];
+          }
         }
       } else { // if creating new schedule
           this.schedule = this.scheduleObj;
@@ -132,6 +150,50 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           this.recurrenceByDay = [this.getWeekDay(this.recurrenceStartDate)];
         }
       }
+      this.loadGoals();
+    }
+  }
+
+  async loadGoals() {
+    const result: any = await this.resourceService.loadSystemResources();
+    this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
+    const results: any = await this.responseService.findResponsesByMomentId(this.programId, null, null);
+    if (results && results.responses) {
+      this.responses = results.responses;
+    }
+    for (const response of this.responses) {
+      if (response.user._id === this.userData.user._id) {
+        this.responseObj = JSON.parse(JSON.stringify(response)); // load the response object with backend data
+      }
+    }
+    if (this.responses.length) {
+      this.refreshCalendarDisplay();
+      const latestResponse = this.responses[this.responses.length - 1];
+      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
+      // update this.responseObj with the latest goals data
+      this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
+      this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
+    }
+    console.log("responses", this.responses, this.responseObj)
+  }
+
+  refreshCalendarDisplay() {
+    for (const response of this.responses) {
+      for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+        // content calendar list
+        for (const calendarItem of this.timeline) {
+          if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+            calendarItem.goals = interactable.slice(10); // grab the goal attributes
+          }
+        }
+        // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+        if (index >= 0) {
+          this.responseObj.matrix_string.splice(index, 1, interactable);
+        } else {
+          this.responseObj.matrix_string.push(interactable);
+        }
+      }
     }
   }
 
@@ -147,7 +209,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async promptTouchSchedule() {
-    //await this.touchSchedule('update schedule');
     const alert = await this.alertCtrl.create({
       header: 'Re-populate Timeline',
       subHeader: 'You are about to delete your timeline items between the start and end dates and re-populate them. Are you sure you want to proceed?',
@@ -373,6 +434,87 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     await this.momentService.touchContentCalendarItems(momentId, {operation: 'delete calendar items',  calendaritems: [calendaritem]});
   }
 
+  async promptEditContentCalendar(event, calendaritem) {
+    event.stopPropagation();
+    let actionSheet: any;
+    let buttons = [];
+    if (calendaritem.moment.user_list_2 && calendaritem.moment.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+      buttons = buttons.concat([
+        {
+          text: 'Edit',
+          handler: () => {
+            const navTransition = actionSheet.dismiss();
+            navTransition.then( async () => {
+              this.openChildActivity(event, calendaritem.moment, 'edit');
+            });
+          }
+        }]);
+    }
+    if (this.listOfDisplayGoals.length) {
+      buttons = buttons.concat([
+        {
+          text: 'Assign To',
+          handler: () => {
+            const navTransition = actionSheet.dismiss();
+            navTransition.then( async () => {
+              this.select.disabled = true;
+              this.selectCalendarItem = calendaritem;
+              setTimeout(() => {
+                this.select.disabled = false;
+                this.select.open(event);
+              }, 50);
+            });
+          }
+        }]);
+    }
+    buttons = buttons.concat([
+      {
+        text: 'Cancel', // Cancel
+        role: 'cancel',
+      }]);
+    actionSheet = await this.actionSheetCtrl.create({
+      header: calendaritem.moment.matrix_string[0][0],
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
+  }
+
+  async assignGoal() {
+    if (!this.select.disabled) {
+      if (this.listOfDisplayGoals && this.listOfDisplayGoals.length) {
+        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(this.selectCalendarItem);
+        if (index >= 0) {
+          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+          this.responseObj.matrix_string[index].push(...this.selectCalendarItem.goals);
+        } else {
+          const interactableObj = new Array(10);
+          interactableObj[0] = this.selectCalendarItem._id;
+          if (this.selectCalendarItem.goals) {
+            interactableObj.push(...this.selectCalendarItem.goals);
+          }
+          this.responseObj.matrix_string.push(interactableObj);
+        }
+        // save the Goal attributes via Response
+        await this.momentService.submitResponse({ _id: this.programId }, this.responseObj, false);
+        let socketData: any;
+        socketData = {
+          calendarId: this.selectCalendarItem._id,
+          interactable: this.responseObj.matrix_string.find((c) => c[0] === this.selectCalendarItem._id),
+          goals: this.selectCalendarItem.goals,
+          author: {
+            _id: this.userData.user._id,
+            first_name: this.userData.user.first_name,
+            last_name: this.userData.user.last_name,
+            avatar: this.userData.user.avatar
+          }
+        };
+        // signal parent relationship to update data via socket.io
+        this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+      }
+    }
+  }
+
   async defaultContentAction(event, content) {
     let actionSheet: any;
     let buttons = [];
@@ -416,7 +558,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'Cancel', // Cancel
-        //icon: 'close-circle',
         role: 'cancel',
       }]);
     actionSheet = await this.actionSheetCtrl.create({
@@ -443,6 +584,146 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       cssClass: 'level-15'
     });
     alert.present();
+  }
+
+  async promptNewGoalName(event) {
+    event.stopPropagation();
+    //await this.fabButtons.close();
+    const alert = await this.alertCtrl.create({
+      header: 'Enter Goal Name',
+      inputs: [{
+        name: 'goalName',
+        type: 'text',
+        placeholder: 'Goal Name'
+      }],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel Create Goal');
+            return;
+          }
+        }, {
+          text: 'Ok',
+          handler: data => {
+            this.addGoal(data.goalName);
+          }
+        }
+      ],
+      cssClass: 'level-15'
+    });
+    await alert.present();
+  }
+
+  async addGoal(goalName) {
+    for (const color_option of this.resourceService.color_arrays) {
+      for (const goal of this.listOfDisplayGoals) {
+        if (color_option.color === goal[3]) {
+          color_option.status = 'used';
+        }
+      }
+    }
+    const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName];
+    this.listOfDisplayGoals.push(goalData);
+    this.responseObj.matrix_string.push(goalData);
+    this.momentService.submitResponse(this.moment, this.responseObj, false);
+    const socketData = {
+      goal: goalData,
+      author: {
+        _id: this.userData.user._id,
+        first_name: this.userData.user.first_name,
+        last_name: this.userData.user.last_name,
+        avatar: this.userData.user.avatar
+      }
+    };
+    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    this.content.scrollToBottom(50);
+  }
+
+  async removeGoal(goal) {
+    let index = this.listOfDisplayGoals.map((c) => c[0]).indexOf(goal[0]);
+    if (index >= 0) {
+      this.listOfDisplayGoals.splice(index, 1);
+    }
+    index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(goal[0]);
+    if (index >= 0) {
+      this.responseObj.matrix_string.splice(index, 1);
+    }
+    this.momentService.submitResponse(this.moment, this.responseObj, false);
+    const socketData = {
+      goal: goal,
+      action: 'delete',
+      author: {
+        _id: this.userData.user._id,
+        first_name: this.userData.user.first_name,
+        last_name: this.userData.user.last_name,
+        avatar: this.userData.user.avatar
+      }
+    };
+    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    // free up the color palette
+    for (const color_option of this.resourceService.color_arrays) {
+      if (color_option.color === goal[3]) {
+        color_option.status = null;
+      }
+    }
+  }
+
+  async touchGoal(goal, type) {
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(() => {
+      let updatedExistingGoal = false;
+      for (const responseInteractable of this.responseObj.matrix_string) {
+        if (goal[0] === responseInteractable[0]) {
+          if (type === 'text') {
+            responseInteractable[5] = goal[5];
+          } else if (type === 'master toggle') {
+            responseInteractable[1] = goal[1];
+          } else if (type === 'assign to master goal') {
+            responseInteractable[4] = goal[4];
+          }
+          updatedExistingGoal = true;
+        }
+      }
+      if (!updatedExistingGoal) {
+        this.responseObj.matrix_string.push(goal);
+      }
+      this.momentService.submitResponse(this.moment, this.responseObj, false);
+      const socketData = {
+        goal: goal,
+        author: {
+          _id: this.userData.user._id,
+          first_name: this.userData.user.first_name,
+          last_name: this.userData.user.last_name,
+          avatar: this.userData.user.avatar
+        }
+      };
+      this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+
+    }, type === 'text' ? 500 : 0);
+  }
+
+  async moreGoalFunctions(event, goal) {
+    event.stopPropagation();
+    let buttons = [];
+    buttons = buttons.concat([
+      {
+        text: 'Delete', // Delete Goal
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.removeGoal(goal);
+          });
+        }
+      }
+    ]);
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Actions',
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
   }
 
   getWeekDay(dateObj) {

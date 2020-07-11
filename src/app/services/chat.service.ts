@@ -70,8 +70,8 @@ export class Chat {
 
     async createConversationSocket() {
         this.zone.runOutsideAngular(() => {
-            if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
-                // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                // this.platform.is('cordova') turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
                 this.socket = io(this.networkService.domain, {transports: ['websocket']}); // only for mobile apps
             } else {
                 this.socket = io(this.networkService.domain);

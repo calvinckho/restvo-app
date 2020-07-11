@@ -16,6 +16,19 @@ import {UserData} from "./user.service";
 @Injectable({ providedIn: 'root' })
 export class Resource {
 
+    color_arrays: any = [
+        { name: 'Periwinkle', color: '#cec2ff' },
+        { name: 'Bleu de France', color: '#3C91E6' },
+        { name: 'Tuscan', color: '#fbd1a2' },
+        { name: 'Shadow Blue', color: '#777da7' },
+        { name: 'Pearl Aqua', color: '#7DCFB6' },
+        { name: 'Light Red', color: '#F65374' },
+        { name: 'Dark Grey', color: '#86888f' },
+        { name: 'Yellow', color: '#e0b500' },
+        { name: 'Light Blue', color: '#4A90E2' },
+        { name: 'Dark Green', color: '#0ec254' },
+        { name: 'Orange', color: '#f6c653' },
+    ];
     fields: any = [];
     controls = [
         'play-large', // The large play button in the center

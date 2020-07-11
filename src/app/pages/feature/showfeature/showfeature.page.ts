@@ -123,7 +123,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     };
     listOfDisplayGoals = [];
     selectedGoal = null;
-    editGoals = false;
     progressView = '';
 
   // 10500 Manage Participants
@@ -197,19 +196,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     parentRelationshipListOfGoals = [];
     parentRelationshipGoalAttributes = [];
     parentRelationshipResponseObj: any = this.responseTemplate; // a user can respond to the Content's Relationship
-    color_arrays: any = [
-        { name: 'Periwinkle', color: '#cec2ff' },
-        { name: 'Bleu de France', color: '#3C91E6' },
-        { name: 'Tuscan', color: '#fbd1a2' },
-        { name: 'Shadow Blue', color: '#777da7' },
-        { name: 'Pearl Aqua', color: '#7DCFB6' },
-        { name: 'Light Red', color: '#F65374' },
-        { name: 'Dark Grey', color: '#86888f' },
-        { name: 'Yellow', color: '#e0b500' },
-        { name: 'Light Blue', color: '#4A90E2' },
-        { name: 'Dark Green', color: '#0ec254' },
-        { name: 'Orange', color: '#f6c653' },
-    ];
 
   constructor(
       public zone: NgZone,
@@ -1895,14 +1881,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async addGoal(goalName) {
-        for (let color_option of this.color_arrays) {
-            for (let goal of this.listOfDisplayGoals) {
+        for (const color_option of this.resourceService.color_arrays) {
+            for (const goal of this.listOfDisplayGoals) {
                 if (color_option.color === goal[3]) {
                     color_option.status = 'used';
                 }
             }
         }
-        const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.color_arrays.find((c) => !c.status).color, null, goalName];
+        const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName];
         this.listOfDisplayGoals.push(goalData);
         this.responseObj.matrix_string.push(goalData);
         this.momentService.submitResponse(this.moment, this.responseObj, false);
@@ -1940,22 +1926,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             }
         };
         this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-        this.editGoals = false;  // reset the edit mode
-    }
-
-    async filterGoal(goal) {
-      if (this.selectedGoal === goal[0]) {
-          this.selectedGoal = null;
-      } else {
-          this.selectedGoal = goal[0];
-      }
+        // free up the color palette
+        for (const color_option of this.resourceService.color_arrays) {
+            if (color_option.color === goal[3]) {
+                color_option.status = null;
+            }
+        }
     }
 
     async touchGoal(goal, type) {
         clearTimeout(this.timeoutHandle);
         this.timeoutHandle = setTimeout(() => {
             let updatedExistingGoal = false;
-            for (let responseInteractable of this.responseObj.matrix_string) {
+            for (const responseInteractable of this.responseObj.matrix_string) {
                 if (goal[0] === responseInteractable[0]) {
                     if (type === 'text') {
                         responseInteractable[5] = goal[5];

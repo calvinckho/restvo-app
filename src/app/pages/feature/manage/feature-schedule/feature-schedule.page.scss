@@ -147,4 +147,15 @@ app-feature-schedule {
   .message-label {
     margin: 0 auto;
   }
+
+  .goal-content {
+    background: var(--ion-color-secondary);
+    margin-left: 15px;
+  }
+
+  .more-goal-options {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
 }

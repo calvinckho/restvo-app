@@ -504,7 +504,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.pageNum = 0;
         this.reachedEnd = false;
         this.selectedMoments = [];
-        this.step = 0;
+        this.setup(); // reset the page to the entry state
     }
 
     ngOnDestroy(): void {

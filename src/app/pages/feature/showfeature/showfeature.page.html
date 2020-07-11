@@ -164,7 +164,7 @@
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-        <ion-textarea class="moment-input" autocapitalize="true" [autofocus]="true" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize autocorrect="on" [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
+        <ion-textarea class="moment-input" autocapitalize="true" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
       </ion-item>
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">
@@ -217,13 +217,14 @@
           </div>
         </ion-list>
       </ion-item-group>
-      <ion-item (click)="select.open($event)" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
+      <!--Assign to Goals-->
+      <ion-item (click)="select.open($event); anyChangeMade = true" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="warning" name="pricetag"></ion-icon></div>
         <div class="moment-input" *ngIf="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.length">
           <ion-badge [ngStyle]="{'--background': goal[3] }" *ngFor="let goal of parentRelationshipListOfGoals" [hidden]="!(parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0]))">{{ goal[5] }}</ion-badge>
         </div>
         <ion-label color="grey" [hidden]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.length">Assign to Goals</ion-label>
-        <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="action-sheet" (ionBlur)="anyChangeMade = true" multiple="true" slot="end" hidden>
+        <ion-select [(ngModel)]="parentRelationshipGoalAttributes" interface="alert" multiple="true" slot="end" hidden>
           <ion-select-option *ngFor="let goal of parentRelationshipListOfGoals" [value]="goal[0]" [class.selected]="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0])">{{goal[5]}}</ion-select-option>
         </ion-select>
       </ion-item>
@@ -331,7 +332,7 @@
               <div class="progress">
                 <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
               </div>
-              <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i)" fill="clear" size="small">
+              <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i)" fill="clear" size="small">
                 <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
               </ion-buttons>
             </ion-card-content>
@@ -348,7 +349,7 @@
                 <!--<div class="progress">
                   <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
                 </div>-->
-                <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
+                <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
                   <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
                 </ion-buttons>
                 <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
@@ -389,7 +390,7 @@
               <!--<div class="progress">
                 <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
               </div>-->
-              <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
+              <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal, i)" fill="clear" size="small">
                 <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
               </ion-buttons>
               <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
@@ -1141,7 +1142,7 @@
                     <div class="progress">
                       <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
                     </div>
-                    <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                    <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
                       <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
                     </ion-buttons>
                   </ion-card-content>
@@ -1154,7 +1155,7 @@
                       <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                         <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                       </ion-item>
-                      <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                      <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
                         <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
                       </ion-buttons>
                       <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
@@ -1194,7 +1195,7 @@
                     <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                       <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 4 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
                     </ion-item>
-                    <ion-buttons *ngIf="!editGoals" class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
+                    <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" fill="clear" size="small">
                       <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
                     </ion-buttons>
                     <div *ngFor="let section of (moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">

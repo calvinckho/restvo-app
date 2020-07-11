@@ -6,6 +6,7 @@ import {Chat} from "../../../../services/chat.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {UserData} from "../../../../services/user.service";
 import {Moment} from "../../../../services/moment.service";
+import {Response} from "../../../../services/response.service";
 import {Resource} from "../../../../services/resource.service";
 import {FeatureSchedulePage} from "../feature-schedule/feature-schedule.page";
 import {Location} from "@angular/common";
@@ -31,10 +32,11 @@ export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit
       public userData: UserData,
       public momentService: Moment,
       public resourceService: Resource,
-      public modalCtrl: ModalController
+      public modalCtrl: ModalController,
+      public responseService: Response
   ) {
     super(route, router, location, platform, alertCtrl, authService, chatService,
-        userData, momentService, resourceService, modalCtrl, actionSheetCtrl, calendarService);
+        userData, momentService, resourceService, modalCtrl, actionSheetCtrl, calendarService, responseService);
   }
 
   async ngOnInit() {
