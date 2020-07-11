@@ -458,22 +458,36 @@ export class Moment {
     }
 
     async setDefaultProgram() {
-        const activities = await this.userData.loadPrograms(true);
-        // activities is an Array like object
-        const newActivities = Array.prototype.slice.call(activities);
-        // newActivities is now an array
+        const defProg = this.userData.defaultProgram //users current default program
+        const activities = await this.userData.loadPrograms(true); // activities is an Array like object of all their activities
+        const newActivities = Array.prototype.slice.call(activities); // newActivities is now an array listing all the activities that the user is a part of
+        
+        let found = false;  //helper variable to find if their default program is not in their list of activites   
+        //this checks to see if the user just left the activity that was their defaultActivity
+        for(let i = 0; i < newActivities.length; i++){
+            if(newActivities[i]._id === defProg._id){
+                found = true
+                break;
+            }
+        }
+        //if current defaultProgram is not found, then automatically switch it to restvo activity
+        if(!found){
+            const activity = newActivities.find((n) => n._id === '5d5785b462489003817fee18'); // finding Restvo activity object
+            if(activity){
+                this.userData.defaultProgram = activity; //sets the defaultProgram to Restvo Mentoring
+                this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
+                this.storage.set('defaultProgram', activity);  //resets the localstorage to update the page
+            }
+          }
+        //check if user is only signed up for two programs (one being restvo) if so, then switch the default to the other program (not restvo)
         if (newActivities.length === 2) {
             const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
             // activity should now be an object of the new Activity
-            // update the userData default program to equal the object
             if (activity) {
-                this.userData.defaultProgram = activity;
+                this.userData.defaultProgram = activity; //this sets the defaultProgram to the "other" activity that isn't restvo mentoring
                 this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
-                this.storage.set('defaultProgram', activity);
+                this.storage.set('defaultProgram', activity); //resets the localstorage to update the page
             }
-            else {
-                // this.userData.defaultProgram = '5d5785b462489003817fee18'
-            } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
         }
     }
 
