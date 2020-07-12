@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { CalendarService } from '../../../services/calendar.service';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
+import {Response} from "../../../services/response.service";
 import {UserData} from "../../../services/user.service";
 
 @Component({
@@ -33,7 +34,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     // relationship: joinAs
     @Input() joinAs; // join createCalendaras user_list_1 (participant) or user_list_3 (leader)
     // create Content Calandar
-    @Input() scheduleId: any;
+    @Input() scheduleId: any; // schedule the Content Calendar belongs to
+    @Input() goalId: string; // whether the newly created Content Calendar is under a Goal
     @Input() disableSelect: any;
 
     @Input() allowCreate = false;
@@ -52,6 +54,16 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     step = 0;
     loading: any;
 
+    // Content Calendar creation
+    responseTemplate = {
+        matrix_string: [],
+        matrix_number: [],
+        moment: '',
+        array_number: []
+    };
+    parentRelationshipResponseObj: any = this.responseTemplate; // a user can respond to the Content's Relationship
+
+
     subscriptions: any = {};
 
     constructor(
@@ -67,7 +79,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         private loadingCtrl: LoadingController,
         private momentService: Moment,
         private userData: UserData,
-        public calendarService: CalendarService
+        public calendarService: CalendarService,
+        public responseService: Response
     ) {}
 
     async ngOnInit() {
@@ -89,6 +102,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
+        this.goalId = this.goalId || this.route.snapshot.paramMap.get('goalId');
 
         this.disableSelect = this.disableSelect || this.route.snapshot.paramMap.get('disableSelect') === 'true';
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
@@ -392,7 +406,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             }
 
             // if scheduleId is provided by Admin - Schedule view, also create Content Calendar
-            if (this.scheduleId) {
+            if (this.scheduleId && this.parent_programId) {
                 const newCalendarItem: any = {
                     moment: selectedProgram._id,
                     title: selectedProgram.matrix_string[0][0],
@@ -407,7 +421,35 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 };
                 const result: any = await this.momentService.loadSchedule(this.scheduleId);
                 newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
-                await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+                const createdContentCalendar = await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+
+                // if Goal is provided, also create a response to put Content Calendar under the goal
+                if (this.goalId && createdContentCalendar) {
+                    console.log("before", this.goalId, createdContentCalendar._id)
+                    this.parentRelationshipResponseObj.moment = this.parent_programId;
+                    const results: any = await this.responseService.findResponsesByMomentId(this.parent_programId, null, null);
+                    if (results && results.responses && results.responses.length) {
+                        // parentRelationshipResponseObj can only be correctly populated if there is at least 1 response returned
+                        this.parentRelationshipResponseObj = JSON.parse(JSON.stringify(results.responses[results.responses.length - 1]));
+                        delete this.parentRelationshipResponseObj._id; // the latest response id is erased, since it may be saved as a new doc
+                    }
+                    const interactableObj = Array(10);
+                    interactableObj[0] = createdContentCalendar._id;
+                    interactableObj.push(this.goalId);
+                    this.parentRelationshipResponseObj.matrix_string.push(interactableObj);
+                    console.log("before 2", this.parentRelationshipResponseObj);
+                    this.momentService.submitResponse({ _id: this.parent_programId }, this.parentRelationshipResponseObj, false);
+                    const socketData = {
+                        goal: [this.goalId],
+                        author: {
+                            _id: this.userData.user._id,
+                            first_name: this.userData.user.first_name,
+                            last_name: this.userData.user.last_name,
+                            avatar: this.userData.user.avatar
+                        }
+                    };
+                    this.momentService.socket.emit('refresh moment', this.parent_programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+                }
             }
             // route user upon completing all operation
             // if Admin portal - New Plan, send the user to the category page

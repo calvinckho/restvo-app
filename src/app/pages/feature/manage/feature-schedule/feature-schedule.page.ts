@@ -31,7 +31,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   ionSpinner = false;
   searchKeyword = '';
   view = 'timeline';
-  resource: any = {};
+  resource: any;
 
   timeline = [];
   calendaritems = [];
@@ -46,6 +46,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   listOfDisplayGoals = [];
   selectCalendarItem: any = { goals: [] };
   timeoutHandle: any;
+  loadCompleted = false;
 
   recurrenceStartDate = new Date();
   recurrenceEndDate = new Date();
@@ -110,6 +111,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
   reloadChildActivitiesHandler = async () => {
+    this.loadCompleted = false;
     this.setupSchedulePage();
     this.setupChildActivitiesPage();
   };
@@ -129,7 +131,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           if (!this.schedule.hasOwnProperty('array_boolean')) {
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
           }
-          this.timeline = result.calendaritems;
+          this.timeline = result.calendaritems; // timeline is already sorted in backend, in ascending order
           for (const calendaritem of this.timeline) {
             calendaritem.goals = [];
           }
@@ -150,8 +152,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           this.recurrenceByDay = [this.getWeekDay(this.recurrenceStartDate)];
         }
       }
-      this.loadGoals();
+      await this.loadGoals();
     }
+    setTimeout(() => {
+      this.loadCompleted = true;
+    }, 100);
   }
 
   async loadGoals() {
@@ -167,14 +172,13 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
     }
     if (this.responses.length) {
-      this.refreshCalendarDisplay();
+      await this.refreshCalendarDisplay();
       const latestResponse = this.responses[this.responses.length - 1];
       this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
       // update this.responseObj with the latest goals data
       this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
       this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
     }
-    console.log("responses", this.responses, this.responseObj)
   }
 
   refreshCalendarDisplay() {
@@ -288,6 +292,20 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     await alert.present();
   }
 
+  async changeContentCalendarItem(calendaritem, type) {
+    if (this.loadCompleted) {
+      if (type === 'date') {
+        calendaritem.endDate = calendaritem.startDate;
+        this.timeline.sort((a, b) => {
+          const e: any = new Date(a.startDate);
+          const f: any = new Date(b.startDate);
+          return (e - f);
+        });
+      }
+      this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
+    }
+  }
+
   reorderContents(event) {
     this.schedule.child_moments = event.detail.complete(this.schedule.child_moments);
     this.schedule.operation = 'update schedule';
@@ -300,13 +318,16 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     return array;
   }
 
-  async addContenCalendar() {
+  async addContenCalendar(goal) {
     let componentProps: any;
     componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, scheduleId: this.scheduleId };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
+    }
+    if (goal && goal.length) {
+      componentProps.goalId = goal[0];
     }
     if (this.platform.width() >= 992) {
       componentProps.subpanel = true;
@@ -601,7 +622,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           text: 'Cancel',
           role: 'cancel',
           handler: () => {
-            console.log('Cancel Create Goal');
             return;
           }
         }, {

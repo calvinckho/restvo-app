@@ -1970,6 +1970,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async touchGoal(goal, type) {
+      // if Goal is disabled, do not proceed
+        if ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]) return;
         clearTimeout(this.timeoutHandle);
         this.timeoutHandle = setTimeout(() => {
             let updatedExistingGoal = false;
