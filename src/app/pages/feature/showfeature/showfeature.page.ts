@@ -404,33 +404,49 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                   }
               } else if (data.calendarId) {
-                  if (!this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id)) {
-                      // update user's calendar items array
-                      for (const calendarItem of this.calendarService.calendarItems) {
-                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                              if (data.state) {
-                                  calendarItem.completed = data.state;
-                              } else if (data.goals) {
-                                  calendarItem.goals = data.goals;
-                              }
+                  // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+                  const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id);
+                  // in the event that Goals is turned off, but there are still Goal update, it must be sent by an admin so we can grant permission
+                  const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
+
+                  // update user's calendar items array
+                  for (const calendarItem of this.calendarService.calendarItems) {
+                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                          if (todosPrivacyPermission && data.state) {
+                              calendarItem.completed = data.state;
+                          } else if (goalsPrivacyPermission && data.goals) {
+                              calendarItem.goals = data.goals;
                           }
                       }
-                      // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
-                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                              if (data.hasOwnProperty('state')) {
-                                  calendarItem.completed = data.state;
-                              } else if (data.goals) {
-                                  calendarItem.goals = data.goals;
-                              }
+                  }
+                  // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
+                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                          if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                              calendarItem.completed = data.state;
+                          } else if (goalsPrivacyPermission && data.goals) {
+                              calendarItem.goals = data.goals;
                           }
                       }
-                      // keep the responseObj fresh
-                      let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                  }
+                  // keep the responseObj fresh
+                  if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                      const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                       if (index >= 0) {
                           this.responseObj.matrix_string.splice(index, 1, data.interactable);
                       } else {
                           this.responseObj.matrix_string.push(data.interactable);
+                      }
+                  } else if (goalsPrivacyPermission && data.goals) {
+                      const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                      if (index >= 0) {
+                          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                          this.responseObj.matrix_string[index].push(...data.goals);
+                      } else {
+                          let interactableObj = Array(10);
+                          interactableObj[0] = data.calendarId;
+                          interactableObj.push(...data.goals);
+                          this.responseObj.matrix_string.push(interactableObj);
                       }
                   }
               } else if (data.goal) {
@@ -505,33 +521,50 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
           calendarItem.completed = false;
       }
+
       for (const response of this.responses) {
-          if (!this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id))  {
-              for (const interactable of response.matrix_string) { // process the interactable and schedule responses
-                  // regular user calendar items list
-                  for (const calendarItem of this.calendarService.calendarItems) {
-                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                          calendarItem.completed = interactable[5]; // check-in state
-                      }
-                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                      }
+          // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+          const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id);
+          // in the event that Goals is turned off, but there are still Goals, so it is goals created by Admins so Admins can view them
+          const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8] && this.hasOrganizerAccess);
+          for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+              // regular user calendar items list
+              for (const calendarItem of this.calendarService.calendarItems) {
+                  if (todosPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                      calendarItem.completed = interactable[5]; // check-in state
                   }
-                  // super admin's calendar items list
-                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
-                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                          calendarItem.completed = interactable[5]; // check-in state
-                      }
-                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                      }
+                  if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
                   }
-                  // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+              }
+              // super admin's calendar items list
+              for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                  if (todosPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                      calendarItem.completed = interactable[5]; // check-in state
+                  }
+                  if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                  }
+              }
+              // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+              if (todosPrivacyPermission && interactable.length > 5) { // if it has to-dos permission
                   const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
                   if (index >= 0) {
                       this.responseObj.matrix_string.splice(index, 1, interactable);
                   } else {
                       this.responseObj.matrix_string.push(interactable);
+                  }
+              }
+              if (goalsPrivacyPermission && interactable.length > 10) { // if it has goals permission
+                  const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+                  if (index >= 0) {
+                      this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                      this.responseObj.matrix_string[index].push(...interactable.slice(10));
+                  } else {
+                      let interactableObj = Array(10);
+                      interactableObj[0] = interactable[0];
+                      interactableObj.push(...interactable.slice(10));
+                      this.responseObj.matrix_string.push(interactableObj);
                   }
               }
           }
@@ -584,6 +617,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
+            console.log("responses", this.responses)
             // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
@@ -610,6 +644,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.setupPermission(); // TODO: investigate if this is required
                 }
                 this.refreshCalendarDisplay();
+                console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
             }
             // if show participants is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10500)) {

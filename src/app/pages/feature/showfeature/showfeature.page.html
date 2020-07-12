@@ -340,7 +340,7 @@
           <!--Goals tagged under the Favorite Goal-->
           <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
             <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
-              <ion-card-content class="ion-no-padding goal-content" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+              <ion-card-content class="ion-no-padding goal-content">
                 <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
                 <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                   <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
@@ -381,7 +381,7 @@
         <!--Goals with no valid Favorite Goal Tags-->
         <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy" >
           <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
-            <ion-card-content class="goal-content ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
+            <ion-card-content class="goal-content ion-no-padding">
               <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
               <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                 <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
