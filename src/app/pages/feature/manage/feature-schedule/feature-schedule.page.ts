@@ -611,11 +611,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     event.stopPropagation();
     //await this.fabButtons.close();
     const alert = await this.alertCtrl.create({
-      header: 'Enter Goal Name',
+      header: 'Enter Section Name',
       inputs: [{
         name: 'goalName',
         type: 'text',
-        placeholder: 'Goal Name'
+        placeholder: 'Section Name'
       }],
       buttons: [
         {
@@ -658,7 +658,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
     };
     this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-    this.content.scrollToBottom(50);
+    //this.content.scrollToBottom(50);
   }
 
   async removeGoal(goal) {
