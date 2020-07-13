@@ -38,16 +38,4 @@ export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit
     super(route, router, location, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl, actionSheetCtrl, calendarService, responseService);
   }
-
-  async ngOnInit() {
-    await super.ngOnInit();
-    this.setupSchedulePage();
-  }
-
-  // because this component extends feature-schedule.page.ts, the following handler overrides the handler with the same name in the parent component
-  reloadChildActivitiesHandler = async () => {
-    this.setupSchedulePage();
-    this.setupChildActivitiesPage();
-  };
-
 }

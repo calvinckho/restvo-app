@@ -190,7 +190,7 @@
       </ion-card-content>
     </ion-card>
     <!--Uncategorized-->
-    <ion-card style="background: var(--ion-color-lightgrey)" mode="md" *ngIf="timeline | calendar: 'calendaritemuncategorized'">
+    <ion-card style="background: var(--ion-color-lightgrey)" mode="md" *ngIf="loadCompleted && (timeline | calendar: 'calendaritemuncategorized')">
       <ion-card-content class="goal-content overall ion-no-padding">
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
           <ion-label class="ion-margin-start" >Uncategorized</ion-label>

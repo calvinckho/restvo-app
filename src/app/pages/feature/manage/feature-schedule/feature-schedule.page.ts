@@ -26,6 +26,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   @Input() moment: any; // the program object
   @Input() schedule: any; // the schedule object
   @Input() parentCategoryId: any; // the category ID
+  loadCompleted = false;
   scheduleId: any;
   programId: any;
   ionSpinner = false;
@@ -110,6 +111,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
   reloadChildActivitiesHandler = async () => {
+    this.loadCompleted = false;
     this.setupSchedulePage();
     await this.setupChildActivitiesPage();
     if (this.moment) {
@@ -155,6 +157,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       await this.loadGoals();
     }
+    setTimeout(() => {
+      this.loadCompleted = true;
+    }, 500);
   }
 
   async loadGoals() {
@@ -169,19 +174,15 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.responseObj = JSON.parse(JSON.stringify(response)); // load the response object with backend data
       }
     }
-    if (this.responses.length) {
-      await this.refreshCalendarDisplay();
-      const latestResponse = this.responses[this.responses.length - 1];
-      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
-      // update this.responseObj with the latest goals data
-      this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
-      this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
-    }
+    await this.refreshCalendarDisplay();
   }
 
   refreshCalendarDisplay() {
-    for (const response of this.responses) {
-      for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+    if (this.responses.length) {
+      const latestResponse = this.responses[this.responses.length - 1];
+      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
+
+      for (const interactable of latestResponse.matrix_string) { // process the interactable and schedule responses
         // content calendar list
         for (const calendarItem of this.timeline) {
           if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
@@ -196,6 +197,10 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           this.responseObj.matrix_string.push(interactable);
         }
       }
+
+      // update this.responseObj with the latest goals data
+      this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
+      this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));
     }
   }
 
@@ -697,7 +702,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     if (index >= 0) {
       this.responseObj.matrix_string.splice(index, 1);
     }
-    this.momentService.submitResponse(this.moment, this.responseObj, false);
+    await this.momentService.submitResponse(this.moment, this.responseObj, false);
     const socketData = {
       goal: goal,
       action: 'delete',
@@ -715,6 +720,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         color_option.status = null;
       }
     }
+    this.refreshCalendarDisplay();
   }
 
   async touchGoal(goal, type) {
