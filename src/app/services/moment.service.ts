@@ -118,9 +118,8 @@ export class Moment {
     }
 
     async createMomentSocket() {
-        if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
-            // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-            this.socket = io(this.networkService.domain + '/moments-namespace', { transports: ['websocket']}); // only for mobile apps
+        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+            this.socket = io(this.networkService.domain + '/moments-namespace', { transports: ['websocket']});
         } else {
             this.socket = io(this.networkService.domain + '/moments-namespace');
         }

@@ -71,8 +71,7 @@ export class Chat {
     async createConversationSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                // this.platform.is('cordova') turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-                this.socket = io(this.networkService.domain, {transports: ['websocket']}); // only for mobile apps
+                this.socket = io(this.networkService.domain, {transports: ['websocket']});
             } else {
                 this.socket = io(this.networkService.domain);
             }
@@ -519,7 +518,6 @@ export class Chat {
 
             } else {
                 if (await this.userData.checkRestExpired()) { // when switching from active to away
-                    console.log("to away");
                     let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
                     await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                     this.userData.UIrestStatus = 'away';
@@ -527,7 +525,6 @@ export class Chat {
                         this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
                     });
                 } else { // when switching from rest to active
-                    console.log("to active");
                     let expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
                     await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                     this.userData.UIrestStatus = 'active';
