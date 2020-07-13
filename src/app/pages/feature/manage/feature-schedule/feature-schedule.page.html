@@ -134,8 +134,8 @@
             <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
               <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
                 <span class="content-count">{{j+1}}.</span>
-                <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
-                <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
+                <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+                <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
                 <ion-buttons slot="end" class="ion-no-margin">
                   <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
                   <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
@@ -165,8 +165,8 @@
           <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
             <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
               <span class="content-count">{{j+1}}.</span>
-              <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
-              <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
+              <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+              <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
               <ion-buttons slot="end" class="ion-no-margin">
                 <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
                 <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
@@ -190,7 +190,7 @@
       </ion-card-content>
     </ion-card>
     <!--Uncategorized-->
-    <ion-card style="background: var(--ion-color-lightgrey)" mode="md" [hidden]="!loadCompleted">
+    <ion-card style="background: var(--ion-color-lightgrey)" mode="md">
       <ion-card-content class="goal-content overall ion-no-padding">
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
           <ion-label class="ion-margin-start" >Uncategorized</ion-label>
@@ -198,8 +198,8 @@
         <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
           <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">
             <span class="content-count">{{j+1}}.</span>
-            <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
-            <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionChange)="changeContentCalendarItem(calendaritem, 'title')"></ion-input>
+            <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+            <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')"></ion-input>
             <ion-buttons slot="end" class="ion-no-margin">
               <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
               <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>

@@ -46,7 +46,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   listOfDisplayGoals = [];
   selectCalendarItem: any = { goals: [] };
   timeoutHandle: any;
-  loadCompleted = false;
 
   recurrenceStartDate = new Date();
   recurrenceEndDate = new Date();
@@ -111,7 +110,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
   reloadChildActivitiesHandler = async () => {
-    this.loadCompleted = false;
     this.setupSchedulePage();
     this.setupChildActivitiesPage();
   };
@@ -154,9 +152,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       await this.loadGoals();
     }
-    setTimeout(() => {
-      this.loadCompleted = true;
-    }, 100);
+    console.log("line", this.timeline, this.responses)
   }
 
   async loadGoals() {
@@ -187,7 +183,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         // content calendar list
         for (const calendarItem of this.timeline) {
           if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-            calendarItem.goals = interactable.slice(10); // grab the goal attributes
+            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((c) => c[0]).includes(c)); // grab the goal attributes
           }
         }
         // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
@@ -293,17 +289,15 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async changeContentCalendarItem(calendaritem, type) {
-    if (this.loadCompleted) {
-      if (type === 'date') {
-        calendaritem.endDate = calendaritem.startDate;
-        this.timeline.sort((a, b) => {
-          const e: any = new Date(a.startDate);
-          const f: any = new Date(b.startDate);
-          return (e - f);
-        });
-      }
-      this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
+    if (type === 'date') {
+      calendaritem.endDate = calendaritem.startDate;
+      this.timeline.sort((a, b) => {
+        const e: any = new Date(a.startDate);
+        const f: any = new Date(b.startDate);
+        return (e - f);
+      });
     }
+    this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
   }
 
   reorderContents(event) {
