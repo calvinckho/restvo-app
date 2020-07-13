@@ -228,7 +228,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
-      if (this.relationshipId) { // if relationship context is provided, also assign it to the responseObj property
+      if (this.relationshipId) { // if relationship context is provided (hence it is a Content Calendar), assign it to the responseObj property
           this.responseObj.relationship = this.relationshipId;
           this.parentRelationshipResponseObj.moment = this.relationshipId;
       }

@@ -111,7 +111,10 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
   reloadChildActivitiesHandler = async () => {
     this.setupSchedulePage();
-    this.setupChildActivitiesPage();
+    await this.setupChildActivitiesPage();
+    if (this.moment) {
+      this.responseObj.moment = this.moment._id;
+    }
   };
 
   async setupSchedulePage() {
@@ -152,7 +155,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       await this.loadGoals();
     }
-    console.log("line", this.timeline, this.responses)
   }
 
   async loadGoals() {
@@ -298,6 +300,10 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       });
     }
     this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
+    if (this.schedule.options.recurrence) {
+      this.schedule.options.recurrence = '';
+      this.touchSchedule('update schedule');
+    }
   }
 
   reorderContents(event) {
@@ -374,7 +380,34 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           },
           uniqueAnswersPerCalendar: this.schedule.array_boolean[1]
         };
-        await this.momentService.touchContentCalendarItems(this.momentId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+        const createdContentCalendar: any = await this.momentService.touchContentCalendarItems(this.momentId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+
+        // if Goal is provided, also create a response to put Content Calendar under the goal
+        if (goal.length && createdContentCalendar) {
+          console.log("before", goal, createdContentCalendar._id)
+          const results: any = await this.responseService.findResponsesByMomentId(this.momentId, null, null);
+          if (results && results.responses && results.responses.length) {
+            // parentRelationshipResponseObj can only be correctly populated if there is at least 1 response returned
+            this.responseObj = JSON.parse(JSON.stringify(results.responses[results.responses.length - 1]));
+            delete this.responseObj._id; // the latest response id is erased, since it may be saved as a new doc
+          }
+          const interactableObj = Array(10);
+          interactableObj[0] = createdContentCalendar._id;
+          interactableObj.push(goal[0]);
+          this.responseObj.matrix_string.push(interactableObj);
+          console.log("before 2", this.responseObj);
+          this.momentService.submitResponse({ _id: this.momentId }, this.responseObj, false);
+          const socketData = {
+            goal: interactableObj,
+            author: {
+              _id: this.userData.user._id,
+              first_name: this.userData.user.first_name,
+              last_name: this.userData.user.last_name,
+              avatar: this.userData.user.avatar
+            }
+          };
+          this.momentService.socket.emit('refresh moment', this.momentId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+        }
       }
     }
   }

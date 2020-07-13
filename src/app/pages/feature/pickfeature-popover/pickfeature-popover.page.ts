@@ -421,7 +421,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 };
                 const result: any = await this.momentService.loadSchedule(this.scheduleId);
                 newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
-                const createdContentCalendar = await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+                const createdContentCalendar: any = await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
 
                 // if Goal is provided, also create a response to put Content Calendar under the goal
                 if (this.goalId && createdContentCalendar) {
@@ -440,7 +440,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     console.log("before 2", this.parentRelationshipResponseObj);
                     this.momentService.submitResponse({ _id: this.parent_programId }, this.parentRelationshipResponseObj, false);
                     const socketData = {
-                        goal: [this.goalId],
+                        goal: interactableObj,
                         author: {
                             _id: this.userData.user._id,
                             first_name: this.userData.user.first_name,
