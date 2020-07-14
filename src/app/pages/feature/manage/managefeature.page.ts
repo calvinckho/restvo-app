@@ -248,10 +248,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   }
 
   async upOneLevel(momentId) {
-    this.userData.currentManageActivityId = momentId;
     if (this.modalPage) {
       this.modalCtrl.dismiss();
     } else if (this.userData.activitiesWithAdminAccess.find((c) => c._id === momentId)) {
+      this.userData.currentManageActivityId = momentId;
       this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
     } else {
       this.router.navigate(['/app/activity/' + momentId]);

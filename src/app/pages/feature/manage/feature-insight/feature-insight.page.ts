@@ -96,19 +96,22 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
 
   async loadInsight() {
     if (this.moment._id) { // angular router may not have moment._id ready yet
-      const results: any = await this.momentService.loadProgramInsight(this.moment._id);
-      if (results && results.relationship_completion) {
-        this.relationshipCompletion = results.relationship_completion;
-        console.log(this.relationshipCompletion)
-        let objects = {};
-        this.listOfPrograms = this.relationshipCompletion.map((c) => c.program).filter((program) => {
-          if (objects[program._id]) {
-            return false;
-          }
-          objects[program._id] = true;
-          return true;
-        });
-        console.log("list", this.listOfPrograms);
+      try {
+        const results: any = await this.momentService.loadProgramInsight(this.moment._id);
+        if (results && results.relationship_completion) {
+          this.relationshipCompletion = results.relationship_completion;
+          console.log(this.relationshipCompletion)
+          const objects = {};
+          this.listOfPrograms = this.relationshipCompletion.map((c) => c.program).filter((program) => {
+            if (objects[program._id]) {
+              return false;
+            }
+            objects[program._id] = true;
+            return true;
+          });
+        }
+      } catch (err) {
+        this.router.navigate(['/app/me']);
       }
     }
   }

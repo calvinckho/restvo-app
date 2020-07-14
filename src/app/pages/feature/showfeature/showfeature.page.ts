@@ -1803,7 +1803,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  // Plans Slider
+  // References Slider
   async loadPrograms() {
       this.programsReachedEnd = false;
       this.programs = [];
