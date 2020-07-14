@@ -126,8 +126,8 @@ export class MainTabPage implements OnInit, OnDestroy {
             await this.storage.ready();
             const user: any = await this.storage.get('user');
             if (user && user._id) {
-                // turn on menu in most cases except when showing video on desktop
-                if (this.router.url.includes('/app/video') && this.platform.is('desktop')) {
+                // turn on menu in most cases except when showing video on desktop or tablet
+                if (this.router.url.includes('/app/video') && (this.platform.is('desktop') || this.platform.is('tablet'))) {
                     // menu remains disabled
                 } else {
                     this.menuCtrl.enable(true);
@@ -732,7 +732,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-                    } else if (this.platform.is('mobileweb')) { // mobile web, display download app page
+                    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
                     } else if (this.electronService.isElectronApp) { // eletron app, open in browser window
                         window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
