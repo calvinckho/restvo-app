@@ -42,8 +42,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     // for Onboarding Activity
     @Input() programId: any; //  program Id the onboarding activity is associated with
     @Input() type = 2; // type 2: participant onboarding, 3: organizer onboarding, 4: leader onboarding
-    // for child Activity
+    // for Child Activity
     @Input() parent_programId: any; // parent Program ID
+    // for Content (which is a child Activity)
+    @Input() scheduleId: string; // if Content created will be associated with a content calendar (managed by Schedule)
+    @Input() goalId: string; // if Content Calendar created is affliated withe a Goal ID
 
     @Input() visibleComponents: any;
 
@@ -230,11 +233,13 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
           }
 
-          if (!this.modalPage) { // if angular routing, load moment id
+          if (!this.modalPage) { // if angular routing, load the params
               this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
-              this.parent_programId = this.route.snapshot.paramMap.get('parent_programId'); // the program ID
               this.type = parseInt(this.route.snapshot.paramMap.get('type'), 10); // 2: participants, 3: organizers, 4: leaders
               this.categoryId = this.route.snapshot.paramMap.get('categoryId'); // get the categoryId
+              this.parent_programId = this.route.snapshot.paramMap.get('parent_programId'); // the program ID
+              this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
+              this.goalId = this.goalId || this.route.snapshot.paramMap.get('goalId');
 
               if (this.route.snapshot.paramMap.get('id')) {
                   this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
@@ -550,7 +555,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (i > -1) {
           this.resource.matrix_number[1][i]++;
       }
-      console.log("count", this.resource.matrix_number[1]);
       // remove component id, max count, and inputed value from moment object
       this.moment.matrix_number.splice(index, 1); // input field
       this.moment.matrix_string.splice(index, 1); // input field
@@ -1090,7 +1094,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           return;
       }
       if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
-          console.log("updating template", this.templateChanged)
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
           this.editTemplate = false; // turn edit mode off
@@ -1098,7 +1101,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
       // for all day events, start time is set to 12a on selected date and end time is set to 12a the following day
       if (this.moment.resource.matrix_number[0].includes(10200)) {
-            if ( this.allDay ) {
+            if (this.allDay) {
                 this.startDate = new Date( this.calendarService.calendar.selectedDate.getFullYear(), this.calendarService.calendar.selectedDate.getMonth(), this.calendarService.calendar.selectedDate.getDate(), 0, 0, 0 );
                 this.endDate = new Date( this.calendarService.calendar.selectedDate.getFullYear(), this.calendarService.calendar.selectedDate.getMonth(), this.calendarService.calendar.selectedDate.getDate() + 1, 0, 0);
             } else {
@@ -1136,7 +1139,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.moment.calendar.endDate = this.endDate.toISOString();
 
       // process reminder data
-      if (this.moment.resource.matrix_number[0].indexOf(10400) > -1) {
+      if (this.moment.resource.matrix_number[0].includes(10400)) {
           this.moment.calendar.options.reminders = []; // if it is to update the record, empty it first
           this.reminders.sort((a, b) => {
               return parseInt(b, 10) - parseInt(a, 10);
@@ -1159,7 +1162,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           }
       }
 
-      if (this.moment.resource.matrix_number[0].indexOf(10370) > -1) { // processing references
+      if (this.moment.resource.matrix_number[0].includes(10370)) { // processing references
           this.moment.array_moment = this.referenceActivities.map((c) => c._id);
       }
 
@@ -1197,8 +1200,29 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.responseService.submitDependentResponse({class: 1000, dependentMomentId: this.moment._id, responses: responseObj});
       }
       // process matching config settings
-      if (this.moment.resource.matrix_number[0].indexOf(50000) > -1) {
+      if (this.moment.resource.matrix_number[0].includes(50000)) {
           await this.responseService.submitDependentResponse({class: 50000, dependentMomentId: this.moment._id, responses: this.match_configs});
+      }
+      if (this.moment._id && this.parent_programId && this.scheduleId) {
+          const newCalendarItem: any = {
+              moment: this.moment._id,
+              title: this.moment.matrix_string[0][0],
+              schedule: this.scheduleId,
+              startDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+              endDateObj: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()), // cache datetime info for computation only. backend datetime format is in ISOString
+              startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+              endDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(), // cache datetime info for computation only. backend datetime format is in ISOString
+              options: { // the details of the repeating schedule
+                  firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
+              }
+          };
+          //const result: any = await this.momentService.loadSchedule(this.scheduleId);
+          //newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
+          const data: any = { operation: 'create calendar item', calendaritem: newCalendarItem };
+          if (this.goalId) {
+              data.goalId = this.goalId;
+          }
+          await this.momentService.touchContentCalendarItems(this.parent_programId, data);
       }
       await this.loading.dismiss();
       if (closeModal) { // for editFeature.ts

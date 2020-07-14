@@ -77,7 +77,7 @@ export class Chat {
             }
         });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
-            let conversations = await this.storage.get('conversations');
+            const conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
             console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
             if (this.conversations.length){
@@ -90,7 +90,7 @@ export class Chat {
         this.socket.on('reconnect', async () => {
             console.log('reconnect', this.socket.id);
             if (this.conversations.length) {
-                for(let i = 0; i < this.conversations.length; i++) {
+                for (let i = 0; i < this.conversations.length; i++) {
                     // join conversation rooms in socket.io, also send online status if enabled
                     this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
                 }
