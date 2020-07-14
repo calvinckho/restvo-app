@@ -44,12 +44,12 @@ app-managefeature {
   }
 
   .selected {
-    background-color: #e2666a !important;
+    background-color: var(--ion-color-primary) !important;
   }
 
   .selected * {
     color: white;
-    background-color: #e2666a !important;
+    background-color: var(--ion-color-primary) !important;
   }
 
   ion-router-outlet {

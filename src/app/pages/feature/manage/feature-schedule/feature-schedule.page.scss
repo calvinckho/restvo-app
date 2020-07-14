@@ -153,6 +153,14 @@ app-feature-schedule {
     margin-left: 15px;
   }
 
+  .goal-content.favorite {
+    padding-top: 15px;
+  }
+
+  .goal-label {
+    --background: var(--ion-color-secondary);
+  }
+
   .more-goal-options {
     position: absolute;
     top: 5px;

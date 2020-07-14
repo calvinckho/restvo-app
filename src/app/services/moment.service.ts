@@ -656,7 +656,6 @@ export class Moment {
     }
 
     async touchContentCalendarItems(momentId, data) {
-        console.log("change content cal")
         const promise = await this.http.put(this.networkService.domain + '/api/moment/contentcalendaritems/touch', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         const socketData = {

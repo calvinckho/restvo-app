@@ -38,7 +38,7 @@
         <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
           <ion-card-content class="ion-no-padding goal-content">
             <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
-              <ion-textarea class=" ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+              <ion-textarea class=" ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
             </ion-item>
             <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
               <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
@@ -57,7 +57,6 @@
             </div>
             <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
               <span class="content-count"><ion-icon name="add"></ion-icon></span>
-              <div class="content-date ion-text-wrap"></div>
               <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
             </ion-item>
           </ion-card-content>
