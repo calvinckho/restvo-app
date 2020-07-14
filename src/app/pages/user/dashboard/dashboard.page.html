@@ -136,7 +136,7 @@
 
             <!--Journey Empty State-->
             <div class="empty-state" *ngIf="!(journeys && journeys.length) && !loading">
-              <img src="assets/img/journey.svg" />
+              <img src="assets/img/journey.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" class="underline">
                 You don't have any journeys yet. Discover some today.</a>
             </div>
@@ -203,7 +203,7 @@
 
             <!--Mentors Empty State-->
             <div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
-              <img src="assets/img/mentors.svg" />
+              <img src="assets/img/mentors.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" class="underline">
                 You don't have any mentors yet. Discover some today.</a>
             </div>
@@ -302,7 +302,7 @@
 
             <!--Mentees Empty State-->
             <div class="empty-state" *ngIf="!(myMentees && myMentees.length) && !loading">
-              <img src="assets/img/mentees.svg" />
+              <img src="assets/img/mentees.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any mentees yet. Discover some today.</a>
             </div>
@@ -400,7 +400,7 @@
 
             <!--Group Empty State-->
             <div class="empty-state" *ngIf="!(groups && groups.length) && !loading">
-              <img src="assets/img/groups.svg" />
+              <img src="assets/img/groups.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe35cc8bf1a622fec69d7'}]" class="underline">
                 You don't have any groups yet. Discover some today.</a>
             </div>
