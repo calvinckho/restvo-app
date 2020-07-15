@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
 const { StatusBar, SplashScreen } = Plugins;
@@ -272,6 +272,7 @@ export class RegisterPage implements OnInit {
         {name:"+998 UZ",value:"+998"}];
 
     constructor(private router: Router,
+                private zone: NgZone,
                 private location: Location,
                 private storage: Storage,
                 public platform: Platform,
@@ -426,9 +427,13 @@ export class RegisterPage implements OnInit {
                 }
                 await this.authService.routeNewlyLoggedInUser();
                 // refreshes app pages because ionViewWillEnter() is not called after navigateByURL()
-                setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
-                    this.userData.refreshAppPages();
-                }, 4000);
+                this.zone.runOutsideAngular(() => {
+                    setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
+                        this.zone.run(() => {
+                            this.userData.refreshAppPages();
+                        });
+                    }, 4000);
+                });
                 if (this.platform.is('cordova')) {
                     StatusBar.show();
                 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
 import { Aws } from './aws.service';
@@ -72,6 +72,7 @@ export class Moment {
     public readonly openCreator$: Observable<any> = this._openCreator.asObservable();
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private storage: Storage,
                 private platform: Platform,
@@ -118,11 +119,13 @@ export class Moment {
     }
 
     async createMomentSocket() {
-        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-            this.socket = io(this.networkService.domain + '/moments-namespace', { transports: ['websocket']});
-        } else {
-            this.socket = io(this.networkService.domain + '/moments-namespace');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/moments-namespace', {transports: ['websocket']});
+            } else {
+                this.socket = io(this.networkService.domain + '/moments-namespace');
+            }
+        });
         this.socket.on('connect', () => {
         });
         this.socket.on('refresh moment', async (momentId, data) => {

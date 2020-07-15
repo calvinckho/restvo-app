@@ -69,12 +69,14 @@ export class Chat {
     }
 
     async createConversationSocket() {
-        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-            this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
-        } else {
-            console.log("initiating chat socket io", this.socket ? this.socket.id : null)
-            this.socket = io(this.networkService.domain + '/');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
+            } else {
+                console.log("initiating chat socket io", this.socket ? this.socket.id : null)
+                this.socket = io(this.networkService.domain + '/');
+            }
+        });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
             const conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
