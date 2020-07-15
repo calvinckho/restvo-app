@@ -5,6 +5,7 @@ import { Plugins } from '@capacitor/core';
 const { Network } = Plugins;
 import { SwUpdate } from '@angular/service-worker';
 import {ElectronService} from 'ngx-electron';
+import {Router} from "@angular/router";
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService {
@@ -21,6 +22,7 @@ export class NetworkService {
 
     constructor(
                 public platform: Platform,
+                private router: Router,
                 private zone: NgZone,
                 private electronService: ElectronService,
                 private swUpdate: SwUpdate,
@@ -28,13 +30,17 @@ export class NetworkService {
         this.onDevice = this.platform.is('cordova');
         if (!this.electronService.isElectronApp && this.swUpdate.isEnabled) {
             this.swUpdate.available.subscribe(evt => {
-                window.location.reload();
+                if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
+                    window.location.reload();
+                }
             });
             this.zone.runOutsideAngular(() => {
                 setInterval(() => {
                     this.zone.run(() => {
                         this.swUpdate.available.subscribe(evt => {
-                            window.location.reload();
+                            if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
+                                window.location.reload();
+                            }
                         });
                     });
                 }, 3600000); // check for update every hour
