@@ -50,22 +50,6 @@ export class Chat {
                 private storage: Storage) {
         console.log('Hello Chat Provider');
         this.connectTabBadge = 0;
-        // chat socket message observable
-        this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
-            if (res) {
-                if (res.topic === 'chat socket emit') {
-                    this.socket.emit('update status', res.conversationId, res.data);
-                } else if (res.topic === 'disconnect chat socket') {
-                    // reset variables and close socket
-                    this.onlineUsersSockets = [];
-                    this.onlineUsers = [];
-                    this.currentChatProps = []; // empty chat Props
-                    if (this.socket) {
-                        this.socket.close();
-                    }
-                }
-            }
-        });
     }
 
     openChat(data) {

@@ -622,6 +622,22 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await modal.present();
             }
         });
+        // chat socket message observable
+        this.subscriptions['chatSocketMessage'] = this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
+            if (res) {
+                if (res.topic === 'chat socket emit') {
+                    this.chatService.socket.emit('update status', res.conversationId, res.data);
+                } else if (res.topic === 'disconnect chat socket') {
+                    // reset variables and close socket
+                    this.chatService.onlineUsersSockets = [];
+                    this.chatService.onlineUsers = [];
+                    this.chatService.currentChatProps = []; // empty chat Props
+                    if (this.chatService.socket) {
+                        this.chatService.socket.close();
+                    }
+                }
+            }
+        });
         if (this.electronService.isElectronApp) {
             this.electronService.ipcRenderer.on('CHAT:::OPEN', async (_, data) => {
                 this.openGroupChat(data);
@@ -860,6 +876,21 @@ export class MainTabPage implements OnInit, OnDestroy {
             this.subscriptions['toggleVideoChat'].unsubscribe('toggleVideoChat', (params) => {
                 this.toggleVideoChat(params);
                 this.pendingVideoChatRoomId = params.videoChatRoomId;
+            });
+            this.subscriptions['chatSocketMessage'].unsubscribe(res => {//'chat socket emit', async (conversationId, data) => {
+                if (res) {
+                    if (res.topic === 'chat socket emit') {
+                        this.chatService.socket.emit('update status', res.conversationId, res.data);
+                    } else if (res.topic === 'disconnect chat socket') {
+                        // reset variables and close socket
+                        this.chatService.onlineUsersSockets = [];
+                        this.chatService.onlineUsers = [];
+                        this.chatService.currentChatProps = []; // empty chat Props
+                        if (this.chatService.socket) {
+                            this.chatService.socket.close();
+                        }
+                    }
+                }
             });
         }
     }
