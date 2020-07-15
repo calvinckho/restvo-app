@@ -404,8 +404,11 @@ export class RegisterPage implements OnInit {
         }
 
         try {
+            // log in using credentials
             this.userData.user = await this.authService.login(this.credentials);
-            // this is for updating the user document
+            // if authenticated, the authService.token will be stored in local storage and will be loaded from storage when entering maintab
+
+            // this is for updating the user document, so upon logout and logging back in, the user profile document is updated
             this.userData.refreshUserStatus({type: 'user updated', user: this.userData.user});
 
             this.loginStatus = '';

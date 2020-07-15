@@ -89,10 +89,10 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         console.log('platform info:', this.platform.platforms());
-        this.processAuth();
+        this.processAuth(); // first-time loading app and entering authentication section
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
             console.log("refresh maintab", data)
-            if (data && data.type === 'setup device') {
+            if (data && data.type === 'setup device') { // from recover page, or from re-logging in
                 this.setupDevice();
             }
             // if authentication takes a long time, this listen to when user data is ready and can be used to update the Jitsi

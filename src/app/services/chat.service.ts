@@ -6,7 +6,7 @@ import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import io from 'socket.io-client';
+import * as io from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
@@ -50,6 +50,22 @@ export class Chat {
                 private storage: Storage) {
         console.log('Hello Chat Provider');
         this.connectTabBadge = 0;
+        // chat socket message observable
+        this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
+            if (res) {
+                if (res.topic === 'chat socket emit') {
+                    this.socket.emit('update status', res.conversationId, res.data);
+                } else if (res.topic === 'disconnect chat socket') {
+                    // reset variables and close socket
+                    this.onlineUsersSockets = [];
+                    this.onlineUsers = [];
+                    this.currentChatProps = []; // empty chat Props
+                    if (this.socket) {
+                        this.socket.close();
+                    }
+                }
+            }
+        });
     }
 
     openChat(data) {
@@ -69,13 +85,12 @@ export class Chat {
     }
 
     async createConversationSocket() {
-        this.zone.runOutsideAngular(() => {
-            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                this.socket = io(this.networkService.domain, {transports: ['websocket']});
-            } else {
-                this.socket = io(this.networkService.domain);
-            }
-        });
+        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+            this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
+        } else {
+            console.log("initiating chat socket io", this.socket ? this.socket.id : null)
+            this.socket = io(this.networkService.domain + '/');
+        }
         this.socket.on('connect', async () => { //callback after successful socket.io connection
             const conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
@@ -88,7 +103,7 @@ export class Chat {
             }
         });
         this.socket.on('reconnect', async () => {
-            console.log('reconnect', this.socket.id);
+            console.log('reconnect chat id', this.socket.id);
             if (this.conversations.length) {
                 for (let i = 0; i < this.conversations.length; i++) {
                     // join conversation rooms in socket.io, also send online status if enabled
@@ -228,20 +243,6 @@ export class Chat {
                 await this.userData.load();
                 this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-            }
-        });
-        //user-data provider requesting to send a chat socket emit
-        this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
-            if (res) {
-                if (res.topic === 'chat socket emit') {
-                    this.socket.emit('update status', res.conversationId, res.data);
-                } else if (res.topic === 'disconnect chat socket') {
-                    // reset variables and close socket
-                    this.onlineUsersSockets = [];
-                    this.onlineUsers = [];
-                    this.currentChatProps = []; // empty chat Props
-                    this.socket.close();
-                }
             }
         });
     };
