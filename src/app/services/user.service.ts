@@ -1,4 +1,4 @@
-import { Injectable, ViewChild } from '@angular/core';
+import {Injectable, NgZone, ViewChild} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ElectronService } from 'ngx-electron';
 import {AlertController, LoadingController, MenuController, Platform} from '@ionic/angular';
@@ -59,6 +59,7 @@ export class UserData {
     public readonly refreshBoards$: Observable<boolean> = this._refreshBoards.asObservable();
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private stripeService: StripeService,
                 private electronService: ElectronService,
@@ -98,11 +99,13 @@ export class UserData {
     }
 
     async createUserSocket() {
-        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-            this.socket = io(this.networkService.domain + '/users-namespace', { transports: ['websocket']});
-        } else {
-            this.socket = io(this.networkService.domain + '/users-namespace');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/users-namespace', {transports: ['websocket']});
+            } else {
+                this.socket = io(this.networkService.domain + '/users-namespace');
+            }
+        });
         this.socket.on('connect', () => {
             console.log("user socket id: ", this.socket.id);
             this.socket.emit('enter user', this.user._id);

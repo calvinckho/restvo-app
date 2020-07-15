@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {AlertController, Platform} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -17,6 +17,7 @@ export class Board {
     subscriptions: any = {};
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private platform: Platform,
                 private storage: Storage,
                 private alertCtrl: AlertController,
@@ -28,11 +29,13 @@ export class Board {
     }
 
     async createBoardSocket() {
-        if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-            this.socket = io(this.networkService.domain + '/boards-namespace', { transports: ['websocket']});
-        } else {
-            this.socket = io(this.networkService.domain + '/boards-namespace');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/boards-namespace', {transports: ['websocket']});
+            } else {
+                this.socket = io(this.networkService.domain + '/boards-namespace');
+            }
+        });
         this.socket.on('connect', () => {
             console.log("board socket id: ", this.socket.id);
         });
