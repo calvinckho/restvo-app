@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 
 import { Platform, ToastController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
@@ -21,6 +21,7 @@ export class NetworkService {
 
     constructor(
                 public platform: Platform,
+                private zone: NgZone,
                 private electronService: ElectronService,
                 private swUpdate: SwUpdate,
                 private toastCtrl: ToastController) {
@@ -29,11 +30,15 @@ export class NetworkService {
             this.swUpdate.available.subscribe(evt => {
                 window.location.reload();
             });
-            setInterval(() => {
-                this.swUpdate.available.subscribe(evt => {
-                    window.location.reload();
-                });
-            }, 3600000); // check for update every hour
+            this.zone.runOutsideAngular(() => {
+                setInterval(() => {
+                    this.zone.run(() => {
+                        this.swUpdate.available.subscribe(evt => {
+                            window.location.reload();
+                        });
+                    });
+                }, 3600000); // check for update every hour
+            });
         }
     }
 
