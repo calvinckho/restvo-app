@@ -1237,7 +1237,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         // if there is no tab component
-        } else {
+        } else if (this.moment && this.moment.resource) {
             // check if needed to load notes (12000)
             if (this.moment.resource.matrix_number[0].find((c) => c === 12000)) {
                 const result: any = await this.momentService.loadNotes(this.moment._id, null);
