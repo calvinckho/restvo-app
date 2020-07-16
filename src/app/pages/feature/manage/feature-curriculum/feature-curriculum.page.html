@@ -92,7 +92,7 @@
         </ion-card-content>
       </ion-card>
     </div>
-    <ion-card mode="md" (click)="promptNewGoalName($event)">
+    <ion-card mode="md" (click)="promptNewGoalName($event)" *ngIf="this.schedule._id">
       <ion-card-content class="goal-content ion-no-padding">
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
           <ion-icon name="add"></ion-icon>
