@@ -255,7 +255,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   loadAndProcessMomentHandler = async (data) => {
       // if there are players loaded and one of them is playing or is being paused
-      if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
+      if (this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.currentTime > 0))))) {
           // do nothing
       } else { // otherwise refresh
           this.setup(data);
@@ -430,17 +430,24 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       }
                   }
                   // keep the responseObj fresh
+                  // if it is to toggle the to-do state
                   if (todosPrivacyPermission && data.hasOwnProperty('state')) {
                       const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                       if (index >= 0) {
-                          this.responseObj.matrix_string.splice(index, 1, data.interactable);
+                          this.responseObj.matrix_string[index].splice(0, 5);
+                          this.responseObj.matrix_string[index].unshift(...data.interactable.slice(0, 6));
                       } else {
-                          this.responseObj.matrix_string.push(data.interactable);
+                          this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(data.interactable)));
                       }
+                      // if it is to change a content calendar's goal attributes
                   } else if (goalsPrivacyPermission && data.goals) {
                       const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                       if (index >= 0) {
-                          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                          if (this.responseObj.matrix_string[index].length < 10) {
+                              this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+                          } else if (this.responseObj.matrix_string[index].length > 10) {
+                              this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                          }
                           this.responseObj.matrix_string[index].push(...data.goals);
                       } else {
                           let interactableObj = Array(10);
@@ -525,8 +532,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       for (const response of this.responses) {
           // if to-dos are not private (collaborative), or if it is private and the response is created by the user
           const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id);
-          // in the event that Goals is turned off, but there are still Goals, so it is goals created by Admins so Admins can view them
-          const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8] && this.hasOrganizerAccess);
+          // in the event that Goals is turned off, but there are still Goals, so it is goals created by Admins so they are public goals
+          const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
           for (const interactable of response.matrix_string) { // process the interactable and schedule responses
               // regular user calendar items list
               for (const calendarItem of this.calendarService.calendarItems) {
@@ -546,19 +553,27 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       calendarItem.goals = interactable.slice(10); // grab the goal attributes
                   }
               }
-              // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
-              if (todosPrivacyPermission && interactable.length > 5) { // if it has to-dos permission
+              // prepare the responseObj
+              // responses is iterated in ascending updatedAt order, so the responseObj will have the latest response data
+
+              // update the response Obj with to-dos data (index 0 - 5)
+              if (todosPrivacyPermission && (interactable.length >= 6) && (interactable[1] === null)) { // if it has to-dos data
                   const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
                   if (index >= 0) {
-                      this.responseObj.matrix_string.splice(index, 1, interactable);
+                      this.responseObj.matrix_string[index].splice(0, 5);
+                      this.responseObj.matrix_string[index].unshift(...interactable.slice(0, 6));
                   } else {
-                      this.responseObj.matrix_string.push(interactable);
+                      this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactable)));
                   }
               }
-              if (goalsPrivacyPermission && interactable.length > 10) { // if it has goals permission
+              if (goalsPrivacyPermission && (interactable.length > 10) && interactable[1] === 'goal') { // if it has goals permission
                   const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
                   if (index >= 0) {
-                      this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                      if (this.responseObj.matrix_string[index].length < 10) {
+                          this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+                      } else if (this.responseObj.matrix_string[index].length > 10) {
+                          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                      }
                       this.responseObj.matrix_string[index].push(...interactable.slice(10));
                   } else {
                       let interactableObj = Array(10);
@@ -644,7 +659,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.setupPermission(); // TODO: investigate if this is required
                 }
                 this.refreshCalendarDisplay();
-                console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
+                //console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
             }
             // if show participants is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10500)) {
@@ -1136,24 +1151,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async touchCalendarItemResponse(event, selectedCalendarItem, type) {
         event.stopPropagation();
         const newState = selectedCalendarItem.completed ? null : 'completed';
-        let updatedExistingResponse = false;
-        this.responseObj.matrix_string.forEach((interactable) => { // each interactable is an array of user choices for each question
-            if (interactable[0] === selectedCalendarItem._id) { // interactable[0] is a String
-                if (type === 'check-in') {
-                    interactable[5] = newState;
-                } else if (type === 'goal attributes') {
-                    if (selectedCalendarItem.goals && selectedCalendarItem.goals.length) {
-                        selectedCalendarItem.goals.forEach((goal, j) => {
-                            interactable[10 + j] = goal;
-                        });
-                    } else {
-                        interactable.splice(10, interactable.length - 1);
-                    }
+        const interactable = this.responseObj.matrix_string.find((c) => c[0] === selectedCalendarItem._id);
+        if (interactable) { // if response already exists
+            if (type === 'check-in') {
+                interactable[5] = newState;
+            } else if (type === 'goal attributes') {
+                if (interactable.length < 10) { // if shorter than 10, pad it with 0
+                    interactable.fill(null, interactable.length, 11);
+                } else if (interactable.length > 10) { // if longer than 10, replace the goal attributes
+                    interactable.splice(10, interactable.length - 1); // remove existing goal attributes
                 }
-                updatedExistingResponse = true;
+                interactable.push(...selectedCalendarItem.goals); // push onto array
             }
-        });
-        if (!updatedExistingResponse) { // add a new entry to array
+        } else { // response does not exist. add a new entry to array
             if (type === 'check-in') {
                 this.responseObj.matrix_string.push([selectedCalendarItem._id, null, null, null, null, newState]);
             } else if (type === 'goal attributes') {

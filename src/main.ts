@@ -20,7 +20,7 @@ platformBrowserDynamic()
   }
 
   // the follow code is used to diagnose ngZone blocking issues with Protractor
-  const ngZone = moduleInstance.injector.get(NgZone);
+  /*const ngZone = moduleInstance.injector.get(NgZone);
   setInterval(() => {
     const taskTrackingZone = (<any>ngZone)._inner.getZoneWith("TaskTrackingZone");
     if (!taskTrackingZone) {
@@ -31,7 +31,7 @@ platformBrowserDynamic()
     if (_.size(tasks) > 0) {
       console.log("ZONE pending tasks=", tasks);
     }
-  }, 1000);
+  }, 1000);*/
 })
 
   .catch(err => console.log(err));
