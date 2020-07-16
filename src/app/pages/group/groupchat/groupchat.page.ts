@@ -597,8 +597,11 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 params.relationshipId = this.chatService.currentChatProps[this.propIndex].moment._id;
                 componentProps.relationshipId = this.chatService.currentChatProps[this.propIndex].moment._id;
             }
-            if (this.platform.width() >= 768) {
-                this.router.navigate(['/app/activity/' + moment._id, params ], { replaceUrl: false });
+            if (this.platform.width() >= 992) {
+                params.subpanel = true;
+                this.router.navigate([{ outlets: { sub: ['details', moment._id, params] }}]);
+            } else if (this.platform.width() >= 768) {
+                this.router.navigate(['/app/myconversations/activity/' + moment._id, params], { skipLocationChange: true });
             } else {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
                 await modal.present();
