@@ -96,7 +96,7 @@
       <ion-list-header>
           <ion-label>Unused</ion-label>
       </ion-list-header>
-      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
           <ion-thumbnail slot="start">
               <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
               <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
@@ -123,7 +123,7 @@
   </ion-list>
     <!--About Me-->
     <ion-list *ngIf="!organizer">
-        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)">
+        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')">
             <ion-thumbnail slot="start">
                 <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
                 <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>

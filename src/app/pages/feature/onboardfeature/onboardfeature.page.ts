@@ -93,8 +93,10 @@ export class OnboardfeaturePage {
             this.type = this.type || parseInt(this.route.snapshot.paramMap.get('type'), 10);
             this.token = this.token || this.route.snapshot.paramMap.get('token');
         }
+        console.log("programId", this.programId)
         if (this.programId === '5d5785b462489003817fee18') {
             this.completedDefaultOnboarding = true;
+            this.programId = null;
         }
         await this.loadActivities();
     }
@@ -118,6 +120,7 @@ export class OnboardfeaturePage {
                     versionUpToDate = false;
                 }
             });
+            console.log("'check", isIncomplete, versionUpToDate)
             return (isIncomplete && versionUpToDate) ? process : null; // if it has incomplete question and the version is up to date, return the process for display
         });
         if (this.authService.incompleteOnboardProcess) {
