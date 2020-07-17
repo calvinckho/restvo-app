@@ -408,7 +408,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             }
             // in invite flow, if joinAs is provided, add user accordingly
             if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
-                await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
+                await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false, true);
             }
 
             // if scheduleId is provided by Admin - Schedule view, also create Content Calendar

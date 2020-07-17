@@ -900,7 +900,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         conversations: listOfConversations,
         users: listOfUsers,
         calendarId: this.moment.calendar._id
-            }, this.token); // a valid token is not required, but provided in case of future change of specs
+            }, this.token, true); // a valid token is not required, but provided in case of future change of specs
       this.anyChangeMade = true;
       this.setupPermission();
       return result;
@@ -917,7 +917,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         operation: 'remove from calendar',
         users: [this.userData.user._id],
         calendarId: this.moment.calendar._id
-            }, this.token); // a valid token is not required, but provided in case of future change of specs
+            }, this.token, true); // a valid token is not required, but provided in case of future change of specs
       this.anyChangeMade = true;
       this.setupPermission();
     } catch (err) {
@@ -961,7 +961,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             user_lists: [user_list],
             users: [this.userData.user._id],
             momentId: this.moment._id
-          }, this.token); // a valid token is not required, but provided in case of future change of specs
+          }, this.token, true); // a valid token is not required, but provided in case of future change of specs
           if (!this.modalPage) {
             this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
           }

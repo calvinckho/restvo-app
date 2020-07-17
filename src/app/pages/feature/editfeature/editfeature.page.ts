@@ -725,7 +725,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 user_lists: listOfNames,
                 users: listOfUserIds,
                 momentId: this.moment._id
-            }, null);
+            }, null, true);
             if (response === 'success') {
                 this.anyChangeMade = true;
                 this.reloadMomentUserLists();
