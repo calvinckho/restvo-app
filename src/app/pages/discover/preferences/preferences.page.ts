@@ -132,19 +132,27 @@ export class PreferencesPage implements OnInit, OnDestroy {
     this.loadPreferences();
   }
 
-  async openOnboardingProcess(moment) {
-    if (this.modalPage || this.platform.width() < 768) { // if regular user, show feature
-      const modal = await this.modalCtrl.create({ component: ShowfeaturePage, componentProps: { moment: moment, modalPage: true } });
-      await modal.present();
-      const {data: refreshNeeded} = await modal.onDidDismiss();
-      if (refreshNeeded) {
-        this.setup();
+  async openOnboardingProcess(event, moment, viewType) {
+    event.stopPropagation();
+    if (!this.modalPage && this.platform.width() >= 992) {
+      if (viewType === 'edit') { // edit
+        this.router.navigate([{ outlets: { sub: ['edit', moment._id, { subpanel: true }] }}]);
+      } else { // view
+        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true }] }}]);
+      }
+    } else if (!this.modalPage && this.platform.width() >= 768) {
+      if (viewType === 'edit') { // edit
+        this.router.navigate(['/app/edit/' + moment._id], { replaceUrl: false });
+      } else if (this.router.url.includes('app/user')) { // if opened from User -> About Me
+        this.router.navigate(['/app/user/activity/' + moment._id], { replaceUrl: false });
+      } else { // opening from admin view
+        this.router.navigate(['/app/activity/' + moment._id]);
       }
     } else {
-      if (this.router.url.includes('app/user')) { // if opened from User -> About Me
-        this.router.navigate(['/app/user/activity/' + moment._id], { replaceUrl: false });
-      } else { // such case does not exist yet. User should always open from the User -> About Me
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+      if (viewType === 'edit') { // edit
+        this.momentService.editMoment({ moment: moment, modalPage: true });
+      } else { // view
+        this.momentService.openMoment( { moment: moment, modalPage: true });
       }
     }
   }

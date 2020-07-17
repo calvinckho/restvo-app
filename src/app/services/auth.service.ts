@@ -77,6 +77,7 @@ export class Auth {
                             this.routeNewlyLoggedInUser();
                         } else { // if log in with token from storage, more quickly route authenticated user
                             this.routeAuthenticatedUser();
+                            this.checkIncompleteOnboarding(false);
                         }
                         this.storage.set('token', this.token);
                         return res;
@@ -88,6 +89,7 @@ export class Auth {
                 } else {
                     this.networkService.showNoNetworkAlert();
                     this.routeAuthenticatedUser();
+                    this.checkIncompleteOnboarding(false);
                     console.log('Found existing login token. Offline mode allowed.');
                     return {content: 'Offline mode'};
                 }
@@ -153,6 +155,7 @@ export class Auth {
         } else {  // redirect the user back to the cached url
             if (this.cachedRouteUrl.includes('activity')) {
                 this.routeAuthenticatedUser();
+                this.checkIncompleteOnboarding(true);
             } else {
                 await this.router.navigate([this.cachedRouteUrl, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
                 this.checkIncompleteOnboarding(true);
@@ -189,7 +192,6 @@ export class Auth {
             }
             this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
         }
-        this.checkIncompleteOnboarding(false);
     }
 
     async checkIncompleteOnboarding(openOnboarding) {

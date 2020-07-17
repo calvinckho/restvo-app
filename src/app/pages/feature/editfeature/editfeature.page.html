@@ -654,7 +654,7 @@
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
             <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div>
-            <div style="width: 100px" *ngIf="['owner','admin','staff'].indexOf(userData.user.role) > -1">
+            <div style="width: 100px" slot="end" *ngIf="['owner','admin','staff'].indexOf(userData.user.role) > -1">
               <ion-input color="grey" style="font-size: 10px" [(ngModel)]="moment.resource.matrix_number[2][i]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-input>
             </div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
@@ -691,7 +691,7 @@
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="help"></ion-icon></div>
             <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div>
-            <div style="width: 100px" *ngIf="['owner','admin','staff'].includes(userData.user.role)" >
+            <div style="width: 100px" slot="end" *ngIf="['owner','admin','staff'].includes(userData.user.role)" >
               <ion-input color="grey" style="font-size: 10px" [(ngModel)]="moment.resource.matrix_number[2][i]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-input>
             </div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
@@ -736,7 +736,7 @@
             <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="checkmark-circle-outline"></ion-icon></div>
             <div class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</div>
-            <div style="width: 100px" *ngIf="['owner','admin','staff'].indexOf(userData.user.role) > -1" >
+            <div style="width: 100px" slot="end" *ngIf="['owner','admin','staff'].indexOf(userData.user.role) > -1" >
               <ion-input color="grey" style="font-size: 10px" [(ngModel)]="moment.resource.matrix_number[2][i]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-input>
             </div>
             <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
