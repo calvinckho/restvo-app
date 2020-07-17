@@ -126,6 +126,10 @@ export class ShowfeaturePage extends PageObjectBase {
     clickSigninButton(button) {
         this.clickButton(button);
     }
+
+    clickTitle(el) {
+      this.clickElement(el);
+    }
 }
 
 export class RegisterPage extends PageObjectBase {
