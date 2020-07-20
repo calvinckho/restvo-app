@@ -146,7 +146,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     async fillEmail() {
-        await this.enterInputText('#email', 'pianokai@yahoo.com');
+        await this.enterInputText('#email', 'calvin+3@restvo.com');
     }
 
     async fillPhoneNumber() {
