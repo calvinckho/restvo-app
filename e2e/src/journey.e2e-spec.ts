@@ -75,7 +75,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should leave the journey', async () => {
-        await showfeature.clickTitle('#more-info');
+        await showfeature.clickTitle('#show-event-title');
         await me.waitUntilVisible();
     });
 });
