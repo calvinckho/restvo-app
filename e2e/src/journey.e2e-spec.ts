@@ -77,7 +77,5 @@ describe('navigate around the maintab', () => {
     it('should leave the journey', async () => {
         await showfeature.clickTitle('#more-info');
         await me.waitUntilVisible();
-        // await maintab.clickElement('#participant-dropdown');
-        // await me.waitUntilVisible();
     });
 });
