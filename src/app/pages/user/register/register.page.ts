@@ -375,7 +375,9 @@ export class RegisterPage implements OnInit {
 
     async loadRegisterSlides() {
         this.ionSpinner = true;
-        this.view = 'register';
+        setTimeout(() => {
+            this.view = 'register';
+        }, 2000);
     }
 
     async registerSlidesLoaded() {
