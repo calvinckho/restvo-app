@@ -1519,16 +1519,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
         });
       } else {
-        buttons.push(...[{
-          text: this.resource['en-US'].value[16], // Leave Activity
-          icon: 'log-out',
-          handler: () => {
-              const navTransition = actionSheet.dismiss();
-              navTransition.then( async () => {
-                  this.removeFromUserList('user_list_1');
-              });
+          if (this.moment._id !== '5d5785b462489003817fee18') { // for all Activities except Restvo
+              buttons.push(...[{
+                  text: this.resource['en-US'].value[16], // Leave Activity
+                  icon: 'log-out',
+                  handler: () => {
+                      const navTransition = actionSheet.dismiss();
+                      navTransition.then( async () => {
+                          this.removeFromUserList('user_list_1');
+                      });
+                  }
+              }]);
           }
-        }, {
+        buttons.push(...[{
             text: this.resource['en-US'].value[35], // View Onboarding Answers
             icon: 'list',
             handler: () => {

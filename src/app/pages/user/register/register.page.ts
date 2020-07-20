@@ -501,7 +501,7 @@ export class RegisterPage implements OnInit {
                 if (result && result.success) {
                     const alert = await this.alertCtrl.create({
                         header: 'Password Recovery Email Sent',
-                        subHeader: 'An email with a recovery link has been sent to ' + this.loginForm.get('email').value + '.',
+                        subHeader: 'An email with a verification link has been sent to ' + this.loginForm.get('email').value + '.',
                         buttons: [{ text: 'Ok',
                             handler: () => {
                                 const navTransition = alert.dismiss();
