@@ -75,6 +75,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should leave the journey', async () => {
+        await browser.sleep(3000);
         await showfeature.clickTitle('#show-event-title');
         await me.waitUntilVisible();
         await browser.sleep(5000);

@@ -128,7 +128,7 @@ export class ShowfeaturePage extends PageObjectBase {
     }
 
     clickTitle(el) {
-      this.clickElement(el);
+      this.clickButton(el);
     }
 }
 
