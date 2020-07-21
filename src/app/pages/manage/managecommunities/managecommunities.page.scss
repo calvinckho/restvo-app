@@ -79,45 +79,4 @@ app-managecommunities {
     width: 100%;
     color: #fff;
   }
-<<<<<<< HEAD
-
-  .overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 9;
-    top: 0;
-    left: 0;
-    overflow:hidden;
-  }
-
-  .walkthrough {
-    color: white;
-    font-size: large;
-    position: absolute;
-  }
-
-  .walkthrough.people {
-    width: 70%;
-    top: 30%;
-    left: 15%;
-  }
-
-  .walkthrough.topics {
-    width: 70%;
-    top: 30%;
-    left: 15%;
-  }
-  .walkthrough.communities {
-    width: 70%;
-    top: 30%;
-    right: 5%;
-  }
-
-  ion-item{
-    cursor: pointer;
-  }
-=======
->>>>>>> e36473bbc70d746c11cd79e54799a83ead6935a5
 }
