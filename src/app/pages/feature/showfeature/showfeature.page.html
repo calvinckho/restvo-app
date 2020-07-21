@@ -1,4 +1,4 @@
-<ion-header *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
+<ion-header id="showfeature-header" *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
   <ion-toolbar>
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
