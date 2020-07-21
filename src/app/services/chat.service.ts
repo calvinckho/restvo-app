@@ -6,7 +6,7 @@ import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import io from 'socket.io-client';
+import * as io from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
@@ -70,15 +70,15 @@ export class Chat {
 
     async createConversationSocket() {
         this.zone.runOutsideAngular(() => {
-            if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) { // the later for debugging purpose only: socket.io disconnects regularly with localhost
-                // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-                this.socket = io(this.networkService.domain, {transports: ['websocket']}); // only for mobile apps
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
             } else {
-                this.socket = io(this.networkService.domain);
+                console.log("initiating chat socket io", this.socket ? this.socket.id : null)
+                this.socket = io(this.networkService.domain + '/');
             }
         });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
-            let conversations = await this.storage.get('conversations');
+            const conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
             console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
             if (this.conversations.length){
@@ -89,9 +89,9 @@ export class Chat {
             }
         });
         this.socket.on('reconnect', async () => {
-            console.log('reconnect', this.socket.id);
+            console.log('reconnect chat id', this.socket.id);
             if (this.conversations.length) {
-                for(let i = 0; i < this.conversations.length; i++) {
+                for (let i = 0; i < this.conversations.length; i++) {
                     // join conversation rooms in socket.io, also send online status if enabled
                     this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
                 }
@@ -229,20 +229,6 @@ export class Chat {
                 await this.userData.load();
                 this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                 this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-            }
-        });
-        //user-data provider requesting to send a chat socket emit
-        this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
-            if (res) {
-                if (res.topic === 'chat socket emit') {
-                    this.socket.emit('update status', res.conversationId, res.data);
-                } else if (res.topic === 'disconnect chat socket') {
-                    // reset variables and close socket
-                    this.onlineUsersSockets = [];
-                    this.onlineUsers = [];
-                    this.currentChatProps = []; // empty chat Props
-                    this.socket.close();
-                }
             }
         });
     };
@@ -519,7 +505,6 @@ export class Chat {
 
             } else {
                 if (await this.userData.checkRestExpired()) { // when switching from active to away
-                    console.log("to away");
                     let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
                     await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                     this.userData.UIrestStatus = 'away';
@@ -527,7 +512,6 @@ export class Chat {
                         this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
                     });
                 } else { // when switching from rest to active
-                    console.log("to active");
                     let expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
                     await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                     this.userData.UIrestStatus = 'active';

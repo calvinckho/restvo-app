@@ -1,6 +1,13 @@
 import {Component, OnInit, ViewEncapsulation, ViewChild, OnDestroy} from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import { ElectronService } from 'ngx-electron';
+import {
+    START_NOTIFICATION_SERVICE,
+    NOTIFICATION_SERVICE_STARTED,
+    NOTIFICATION_SERVICE_ERROR,
+    NOTIFICATION_RECEIVED as ON_NOTIFICATION_RECEIVED,
+    TOKEN_UPDATED,
+} from 'electron-push-receiver/src/constants';
 import { Capacitor, Plugins, AppState, PushNotificationToken } from '@capacitor/core';
 const { App, Network, LocalNotifications, Toast } = Plugins;
 import { CacheService } from 'ionic-cache';
@@ -28,7 +35,6 @@ import {Moment} from '../../services/moment.service';
 import {Systemlog} from '../../services/systemlog.service';
 import {Auth} from '../../services/auth.service';
 import {Resource} from '../../services/resource.service';
-import {get} from 'scriptjs';
 import 'capacitor-jitsi-meet';
 import {PreferencesPage} from "../discover/preferences/preferences.page";
 import {OnboardfeaturePage} from "../feature/onboardfeature/onboardfeature.page";
@@ -39,8 +45,6 @@ import {EditparticipantsPage} from "../feature/editparticipants/editparticipants
 import {ManagefeaturePage} from "../feature/manage/managefeature.page";
 import {ProgramsPage} from "../user/programs/programs.page";
 import {FeatureCreatorPage} from "../feature/manage/feature-creator/feature-creator.page";
-
-declare var JitsiMeetExternalAPI: any;
 
 @Component({
   selector: 'app-main-tab',
@@ -85,9 +89,10 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         console.log('platform info:', this.platform.platforms());
-        this.processAuth();
+        this.processAuth(); // first-time loading app and entering authentication section
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
-            if (data && data.type === 'setup device') {
+            console.log("refresh maintab", data)
+            if (data && data.type === 'setup device') { // from recover page, or from re-logging in
                 this.setupDevice();
             }
             // if authentication takes a long time, this listen to when user data is ready and can be used to update the Jitsi
@@ -118,10 +123,11 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     async ionViewWillEnter() {
         try {
+            await this.storage.ready();
             const user: any = await this.storage.get('user');
             if (user && user._id) {
-                // turn on menu in most cases except when showing video on desktop
-                if (this.router.url.includes('/app/video') && this.platform.is('desktop')) {
+                // turn on menu in most cases except when showing video on desktop or tablet
+                if (this.router.url.includes('/app/video') && (this.platform.is('desktop') || this.platform.is('tablet'))) {
                     // menu remains disabled
                 } else {
                     this.menuCtrl.enable(true);
@@ -164,8 +170,8 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async setupDevice() {
-      if (await this.networkService.hasNetwork()) {
-          // defer iOS push notification permission request until later (after finished onboarding)
+        if (await this.networkService.hasNetwork()) {
+            // defer iOS push notification permission request until later (after finished onboarding)
           if (this.platform.is('ios') && !this.userData.user.enablePushNotification) {
           } else { // automatically set up Push Notification for all device type except iOS mobile web
               this.initPushNotification();
@@ -196,7 +202,7 @@ export class MainTabPage implements OnInit, OnDestroy {
               await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
           }
       }
-  }
+    }
 
     async requestBadgePermission() {
         try {
@@ -311,7 +317,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 if (this.electronService.isElectronApp) { // electron
                     console.log('trying to set up electron Web Push');
                     if (!this.pushHandler) {
-                        this.electronService.ipcRenderer.on('PUSH_RECEIVER:::TOKEN_UPDATED', (_, deviceToken) => {
+                        this.electronService.ipcRenderer.on(TOKEN_UPDATED, (_, deviceToken) => {
                             console.log('electron device token ->', deviceToken);
                             this.userData.addDeviceToken({token: deviceToken}).subscribe(() => {
                                 this.userData.deviceToken = deviceToken; // FCM token doesn't need to be modified
@@ -321,7 +327,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                                 console.log('cannot store device token in database.');
                             });
                         });
-                        this.electronService.ipcRenderer.on('PUSH_RECEIVER:::NOTIFICATION_SERVICE_STARTED', (_, deviceToken) => {
+                        this.electronService.ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, deviceToken) => {
                             console.log('electron loading previous token', deviceToken);
                             this.userData.addDeviceToken({token: deviceToken}).subscribe(() => {
                                 this.userData.deviceToken = deviceToken; // FCM token doesn't need to be modified
@@ -331,15 +337,15 @@ export class MainTabPage implements OnInit, OnDestroy {
                                 console.log('cannot store device token in database.');
                             });
                         });
-                        this.electronService.ipcRenderer.on('PUSH_RECEIVER:::NOTIFICATION_SERVICE_ERROR', (_, error) => {
+                        this.electronService.ipcRenderer.on(NOTIFICATION_SERVICE_ERROR, (_, error) => {
                             console.log('electron push notification setup error', error);
                         });
-                        this.pushHandler = this.electronService.ipcRenderer.on('PUSH_RECEIVER:::NOTIFICATION_RECEIVED', (_, notification) => {
+                        this.pushHandler = this.electronService.ipcRenderer.on(ON_NOTIFICATION_RECEIVED, (_, notification) => {
                             console.log('electron receiving notification', notification);
                             this.electronService.ipcRenderer.send('SYSTEM_NOTIFICATION:::DISPLAY_INCOMING_NOTIFICATION', notification);
                         }); // display notification);
                     }
-                    this.electronService.ipcRenderer.send('PUSH_RECEIVER:::START_NOTIFICATION_SERVICE', 'AAAA0J-WxVY:APA91bHHjlrBbQi60NW1KJAmWHhN-1OabdfQ-mgJzbOVA8vK-WKTQHBDumHKGsu2_RVuR6kDBrv2VVBsIIAY-SmvBw3KWFVoJfJlJZ5ixxxbFw6UdmW3JiYHEQDsZISVfvAb6rvLwl0M');
+                    this.electronService.ipcRenderer.send(START_NOTIFICATION_SERVICE, 'AAAA0J-WxVY:APA91bHHjlrBbQi60NW1KJAmWHhN-1OabdfQ-mgJzbOVA8vK-WKTQHBDumHKGsu2_RVuR6kDBrv2VVBsIIAY-SmvBw3KWFVoJfJlJZ5ixxxbFw6UdmW3JiYHEQDsZISVfvAb6rvLwl0M');
                 } else if (this.swPush.isEnabled) { // Chrome's Web Push
                     console.log('trying to set up Web Push');
                     const pushSubscription = await this.swPush.requestSubscription({
@@ -349,7 +355,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         this.userData.pushSubscription = pushSubscription;
                         this.userData.user.enablePushNotification = true;
                         this.userData.refreshUserStatus({});
-                        console.log('push sub obj', this.userData.pushSubscription);
+                        console.log('Web Push Subscription Obj', this.userData.pushSubscription);
                     }, (err) => {
                         console.log('cannot store push subscription object in database.');
                     });
@@ -616,6 +622,22 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await modal.present();
             }
         });
+        // chat socket message observable
+        this.subscriptions['chatSocketMessage'] = this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
+            if (res) {
+                if (res.topic === 'chat socket emit') {
+                    this.chatService.socket.emit('update status', res.conversationId, res.data);
+                } else if (res.topic === 'disconnect chat socket') {
+                    // reset variables and close socket
+                    this.chatService.onlineUsersSockets = [];
+                    this.chatService.onlineUsers = [];
+                    this.chatService.currentChatProps = []; // empty chat Props
+                    if (this.chatService.socket) {
+                        this.chatService.socket.close();
+                    }
+                }
+            }
+        });
         if (this.electronService.isElectronApp) {
             this.electronService.ipcRenderer.on('CHAT:::OPEN', async (_, data) => {
                 this.openGroupChat(data);
@@ -726,44 +748,12 @@ export class MainTabPage implements OnInit, OnDestroy {
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-                    } else if (this.platform.is('mobileweb')) { // mobile web, display download app page
+                    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
-                    } else if (this.electronService.isElectronApp) { // eletron app, open in same window
-                        get('https://meet.jit.si/external_api.js', () => {
-                            const domain = videoEndpoint.url;
-                            const options = {
-                                roomName: params.videoChatRoomId,
-                                width: '100%',
-                                height: 400,
-                                parentNode: document.querySelector('#videoSpace'),
-                                configOverwrite: {
-                                    channelLastN: parseInt(params.channelLastN || '-1', 10),
-                                    startWithAudioMuted: params.startWithAudioMuted,
-                                    startWithVideoMuted: params.startWithVideoMuted
-                                },
-                                interfaceConfigOverwrite: {
-                                    APP_NAME: 'Restvo Video',
-                                    NATIVE_APP_NAME: 'Restvo',
-                                    SHOW_JITSI_WATERMARK: false,
-                                    SHOW_BRAND_WATERMARK: true,
-                                    BRAND_WATERMARK_LINK: 'https://wee.nyc3.cdn.digitaloceanspaces.com/app/icon_email.png',
-                                    DEFAULT_REMOTE_DISPLAY_NAME: 'Restvo friend',
-                                    ENABLE_FEEDBACK_ANIMATION: false,
-                                    TOOLBAR_BUTTONS: [
-                                        'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                                        'fodeviceselection', 'hangup', 'profile', 'info', 'recording',
-                                        'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                                        'videoquality', 'filmstrip', 'invite', 'stats', 'shortcuts',
-                                        'tileview'
-                                    ],
-                                    MOBILE_APP_PROMO: false
-                                },
-                                onload: this.onJitsiLoaded(params)
-                            };
-                            this.jitsi = new JitsiMeetExternalAPI(domain, options);
-                        });
+                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window
+                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
                     } else { // on desktop web, open another tab and run external API
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted, "_blank");
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
                     }
                 } catch (err) {
                     this.userData.readyToControlVideoChat = true;
@@ -886,6 +876,21 @@ export class MainTabPage implements OnInit, OnDestroy {
             this.subscriptions['toggleVideoChat'].unsubscribe('toggleVideoChat', (params) => {
                 this.toggleVideoChat(params);
                 this.pendingVideoChatRoomId = params.videoChatRoomId;
+            });
+            this.subscriptions['chatSocketMessage'].unsubscribe(res => {//'chat socket emit', async (conversationId, data) => {
+                if (res) {
+                    if (res.topic === 'chat socket emit') {
+                        this.chatService.socket.emit('update status', res.conversationId, res.data);
+                    } else if (res.topic === 'disconnect chat socket') {
+                        // reset variables and close socket
+                        this.chatService.onlineUsersSockets = [];
+                        this.chatService.onlineUsers = [];
+                        this.chatService.currentChatProps = []; // empty chat Props
+                        if (this.chatService.socket) {
+                            this.chatService.socket.close();
+                        }
+                    }
+                }
             });
         }
     }

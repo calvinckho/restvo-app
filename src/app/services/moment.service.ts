@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
 import { Aws } from './aws.service';
@@ -72,6 +72,7 @@ export class Moment {
     public readonly openCreator$: Observable<any> = this._openCreator.asObservable();
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private storage: Storage,
                 private platform: Platform,
@@ -118,12 +119,13 @@ export class Moment {
     }
 
     async createMomentSocket() {
-        if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
-            // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-            this.socket = io(this.networkService.domain + '/moments-namespace', { transports: ['websocket']}); // only for mobile apps
-        } else {
-            this.socket = io(this.networkService.domain + '/moments-namespace');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/moments-namespace', {transports: ['websocket']});
+            } else {
+                this.socket = io(this.networkService.domain + '/moments-namespace');
+            }
+        });
         this.socket.on('connect', () => {
         });
         this.socket.on('refresh moment', async (momentId, data) => {
@@ -273,7 +275,7 @@ export class Moment {
                     data.operation = 'add to lists and calendar';
                     data.user_lists = ['user_list_1', 'user_list_2'];
                 }
-                result = await this.updateMomentUserLists(data, null);
+                result = await this.updateMomentUserLists(data, null, true);
             } else {
                 result = 'success'; // for feature that doesn't require adding users to the calendar
             }
@@ -323,7 +325,7 @@ export class Moment {
         }
     }
 
-    async updateMomentUserLists(data, token) {
+    async updateMomentUserLists(data, token, refreshAppPages) {
         const promise = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
@@ -340,10 +342,12 @@ export class Moment {
                 await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
             }
         }
-        this.calendarService.getUserCalendar();
-        this.chatService.getAllUserConversations();
-        this.userData.refreshAppPages();
-        this.authService.checkIncompleteOnboarding(false);
+        if (refreshAppPages) {
+            this.calendarService.getUserCalendar();
+            this.chatService.getAllUserConversations();
+            this.userData.refreshAppPages();
+            this.authService.checkIncompleteOnboarding(false);
+        }
         return promise;
     }
 
@@ -366,7 +370,6 @@ export class Moment {
     async submitResponse(moment, serverData, enableSocketIO) { // need to keep this as a moment service to utilize the moment's socket.io object
         try {
             const response = await this.responseService.submit(serverData);
-            console.log("from server", response)
             if (response && response.status === 'success' && response._id) { // response example: { _id: xxx, status: 'success' }
                 const responseToBeReturned = JSON.parse(JSON.stringify(serverData));
                 responseToBeReturned._id = response._id;
@@ -397,7 +400,7 @@ export class Moment {
     }
 
     // user actively joins an Activity (from Onboarding Slideshow)
-    async addUserToProgramUserList(moment, user_list, token, notifyUser) {
+    async addUserToProgramUserList(moment, user_list, token, notifyUser, refreshAppPages) {
         if (moment && moment._id && !moment.resource) {
             const result: any = await this.load(moment._id);
             moment = JSON.parse(JSON.stringify(result));
@@ -410,7 +413,7 @@ export class Moment {
                     users: [this.userData.user._id],
                     momentId: moment._id,
                     calendarId: moment.calendar._id
-                }, token);
+                }, token, refreshAppPages);
                 if (notifyUser) { // open modal box to notify user of status of joining the program
                     if (result === 'success') {
                         if (user_list === 'user_list_1') { // participant
@@ -572,7 +575,7 @@ export class Moment {
                 users: userObjectIds,
                 momentId: moment._id,
                 calendarId: moment.calendar._id
-            }, null);
+            }, null, true);
         }
         this.ionSpinner = false;
         if (response === 'success') { // only if the users are successfully added do we prepare to send out notifications

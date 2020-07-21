@@ -78,15 +78,27 @@
       <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
       <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
     </ion-item>
+    <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence === 'weekly'">
+      <ion-label style="width: 90%" class="ion-margin-left" slot="start">Days of the Week</ion-label>
+      <ion-select [(ngModel)]="recurrenceByDay" slot="end" [multiple]="true">
+        <ion-select-option value='MO'>Monday</ion-select-option>
+        <ion-select-option value='TU'>Tuesday</ion-select-option>
+        <ion-select-option value='WE'>Wednesday</ion-select-option>
+        <ion-select-option value='TH'>Thursday</ion-select-option>
+        <ion-select-option value='FR'>Friday</ion-select-option>
+        <ion-select-option value='SA'>Saturday</ion-select-option>
+        <ion-select-option value='SU'>Sunday</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-row class="ion-justify-content-center">
       <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
         <span>Create Schedule</span>
       </ion-button>
-      <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && this.parentCategoryId === '5c915476e172e4e64590e349'"> <!--Plan's Schedule-->
-        <span>Save</span>
-      </ion-button>
-      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.parentCategoryId !== '5c915476e172e4e64590e349' && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
+      <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
         <span>Repopulate Timeline</span>
+      </ion-button>
+      <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id && !this.schedule.options.recurrence" shape="round"> <!--Only available for non-Plan child Activity-->
+        <span>Save</span>
       </ion-button>
     </ion-row>
     <ion-item-divider></ion-item-divider>
@@ -96,27 +108,116 @@
     <ion-item *ngIf="!this.schedule._id">
       <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
     </ion-item>
-    <ion-virtual-scroll [items]="timeline" approxItemHeight="48px" *ngIf="timeline.length">
-      <ion-item *virtualItem="let calendaritem; let j = index;">
-        <ion-reorder slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-        <span class="content-count">{{j+1}}.</span>
-        <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="calendaritem.endDate = calendaritem.startDate; momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-datetime>
-        <!--<span class="content-date">{{calendaritem.startDate | datetime: 'm:s,d:n,y:n'}}</span>-->
-        <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ionBlur)="momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem })" [disabled]="!calendaritem._id"></ion-input>
-        <!--<span class="moment-input" *ngIf="calendaritem.moment._id">{{calendaritem.title}}</span>-->
-        <ion-buttons slot="end" class="ion-no-margin">
-          <ion-button fill="clear" color="grey" (click)="openChildActivity($event, calendaritem.moment, 'edit')" *ngIf="calendaritem.moment.user_list_2 && calendaritem.moment.user_list_2.includes(userData.user._id)"><ion-icon name="cog"></ion-icon></ion-button>
-          <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
-          <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
-        </ion-buttons>
-      </ion-item>
-    </ion-virtual-scroll>
-    <ion-row class="ion-justify-content-center" *ngIf="this.schedule._id">
-      <ion-button (click)="addContenCalendar()" shape="round" color="primary" fill="solid" expand="full">
-        <ion-icon name="add"></ion-icon>
-        <ion-label>Add New</ion-label>
-      </ion-button>
-    </ion-row>
+    <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
+      <!--Favorite Goals-->
+      <ion-card mode="md" class="ion-no-padding">
+        <ion-card-content class="goal-content favorite ion-no-padding">
+          <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
+          <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
+            <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
+          </ion-item>
+          <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal)" fill="clear" size="small">
+            <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-card-content>
+      </ion-card>
+      <!--Goals tagged under the Favorite Goal-->
+      <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
+        <ion-card *ngIf="favoriteGoal[1] === 'master goal' && goal[1] === 'goal' && favoriteGoal[0] === goal[4]" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+          <ion-card-content class="ion-no-padding goal-content">
+            <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
+              <ion-textarea class=" ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+            </ion-item>
+            <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
+              <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
+            </ion-buttons>
+            <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
+              <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
+                <span class="content-count">{{j+1}}.</span>
+                <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+                <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
+                <ion-buttons slot="end" class="ion-no-margin">
+                  <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
+                  <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
+                  <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+                </ion-buttons>
+              </ion-item>
+            </div>
+            <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
+              <span class="content-count"><ion-icon name="add"></ion-icon></span>
+              <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+    <!--Goals with no valid Favorite Goal Tags-->
+    <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
+      <ion-card *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })" [ngStyle]="{'background': (goal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: goal } : 'color') }" mode="md">
+        <ion-card-content class="goal-content ion-no-padding">
+          <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
+            <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
+          </ion-item>
+          <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
+            <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
+          </ion-buttons>
+          <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
+            <ion-item class="calendar-item ion-no-padding" *ngIf="calendaritem.goals && calendaritem.goals.includes(goal[0])">
+              <span class="content-count">{{j+1}}.</span>
+              <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+              <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')" ></ion-input>
+              <ion-buttons slot="end" class="ion-no-margin">
+                <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
+                <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
+                <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+              </ion-buttons>
+            </ion-item>
+          </div>
+          <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
+            <span class="content-count"><ion-icon name="add"></ion-icon></span>
+            <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <ion-card mode="md" (click)="promptNewGoalName($event)">
+      <ion-card-content class="goal-content ion-no-padding">
+        <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
+          <ion-icon name="add"></ion-icon>
+          <ion-label class="ion-margin-start" >Add New Section</ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+    <!--Uncategorized-->
+    <ion-card style="background: var(--ion-color-lightgrey)" mode="md" *ngIf="loadCompleted && (timeline | calendar: 'calendaritemuncategorized')">
+      <ion-card-content class="goal-content overall ion-no-padding">
+        <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
+          <ion-label class="ion-margin-start" >Uncategorized</ion-label>
+        </ion-item>
+        <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
+          <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">
+            <span class="content-count">{{j+1}}.</span>
+            <ion-datetime class="content-date ion-text-wrap" displayFormat="MMM D, YYYY" [(ngModel)]="calendaritem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ngModelChange)="changeContentCalendarItem(calendaritem, 'date')"></ion-datetime>
+            <ion-input class="moment-input" type="text" [(ngModel)]="calendaritem.title" (ngModelChange)="changeContentCalendarItem(calendaritem, 'title')"></ion-input>
+            <ion-buttons slot="end" class="ion-no-margin">
+              <ion-button fill="clear" color="grey" (click)="openContent($event, calendaritem)"><ion-icon name="open-outline"></ion-icon></ion-button>
+              <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
+              <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-item>
+        </div>
+        <!--<ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(null)">
+          <span class="content-count"><ion-icon name="add"></ion-icon></span>
+          <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
+        </ion-item>-->
+      </ion-card-content>
+    </ion-card>
+    <ion-item hidden>
+      <ion-label>Assign To</ion-label>
+      <ion-select #SelectGoals [(ngModel)]="selectCalendarItem.goals" (ionChange)="assignGoal()" interface="alert" multiple="true" slot="end">
+        <ion-select-option *ngFor="let goal of listOfDisplayGoals" [value]="goal[0]" [class.selected]="selectCalendarItem.goals && selectCalendarItem.goals.includes(goal[0])">{{goal[5]}}</ion-select-option>
+      </ion-select>
+    </ion-item>
   </ion-list>
     <ion-list *ngIf="view === 'content'">
       <ion-item lines="none">
@@ -138,6 +239,16 @@
               <div class="program-name dark">Add</div>
             </ion-card>
           </ion-col>
+          <!--<ion-col class="ion-align-self-center" size="auto">
+            <ion-card class="program-card" (click)="chooseContent({ _id: '5f08b9e831a2da27ef50bc78' })">
+              <ion-card-header class="ion-no-padding" color="lightgrey">
+                <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
+                  <ion-icon name="add" color="darkgrey"></ion-icon>
+                </ion-row>
+              </ion-card-header>
+              <div class="program-name dark">Content Placeholder</div>
+            </ion-card>
+          </ion-col>-->
           <ion-col class="ion-align-self-center" *ngFor="let content of activities; index as i" size="auto" [hidden]="!((content.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || content.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
             <ion-card class="program-card" (click)="defaultContentAction($event, content)">
               <ion-card-header class="ion-no-padding">
@@ -163,11 +274,12 @@
         <ion-item *ngFor="let content of schedule.child_moments; let j = index;">
           <ion-reorder slot="start" class="ion-no-margin"><ion-icon name="menu" color="grey"></ion-icon></ion-reorder>
           <div class="content-count">{{j+1}}.</div>
-          <ion-badge class="ion-margin-end">{{content.resource['en-US'].value[0]}}</ion-badge>
-          <ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>
-          <span class="moment-input" *ngIf="content._id">{{content.matrix_string[0][0]}}</span>
+          <ion-badge class="ion-margin-end" *ngIf="content.resource">{{content.resource['en-US'].value[0]}}</ion-badge>
+          <!--<ion-input class="moment-input" type="text" [(ngModel)]="content.matrix_string[0][0]" [hidden]="content._id"></ion-input>-->
+          <span class="moment-input" *ngIf="content.matrix_string">{{content.matrix_string[0][0]}}</span>
           <ion-buttons slot="end" class="ion-no-margin">
-            <ion-button fill="clear" color="grey" (click)="openChildActivity($event, content, 'edit')"><ion-icon name="cog"></ion-icon></ion-button>
+            <ion-button fill="clear" color="grey" (click)="openChildActivity($event, content, 'view')"><ion-icon name="open-outline"></ion-icon></ion-button>
+            <ion-button fill="clear" [color]="content.user_list_2 && content.user_list_2.includes(userData.user._id) ? 'grey' : 'lightgrey'" (click)="openChildActivity($event, content, 'edit')" *ngIf="content.user_list_2 && content.user_list_2.includes(userData.user._id) || ['owner', 'admin', 'staff'].includes(userData.user.role)"><ion-icon name="cog"></ion-icon></ion-button>
             <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
@@ -179,7 +291,7 @@
       <div class="moment-input">Settings</div>
     </ion-item>
     <ion-item-group class="ion-margin-left" lines="full">
-      <ion-item lines="none" [disabled]="this.parentCategoryId !== '5c915476e172e4e64590e349'"> <!--Only enable for Plan-->
+      <ion-item lines="none">
         <ion-label class="ion-margin-left">Floating Start Date</ion-label>
         <ion-checkbox [(ngModel)]="schedule.array_boolean[0]"></ion-checkbox>
       </ion-item>

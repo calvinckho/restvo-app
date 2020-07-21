@@ -373,7 +373,7 @@
         <div *ngIf="nextButtonReady">Next</div>
         <div *ngIf="!nextButtonReady">Saving ...</div>
       </ion-button>
-      <ion-button *ngIf="loadCompleted && reachedEnd" expand="full" shape="round" class="centered" (click)="addUserToProgramUserList(programId, type, token)">
+      <ion-button *ngIf="loadCompleted && reachedEnd" expand="full" shape="round" class="centered" (click)="addUserToProgramUserList(programId, type, token, true)">
         Let's Get Started <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-row>

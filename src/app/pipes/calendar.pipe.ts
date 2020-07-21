@@ -97,6 +97,8 @@ export class CalendarPipe implements PipeTransform {
         }
       }
       return task_count;
+    } else if (type === 'calendaritemuncategorized') {
+      return calendarItems.filter((c) => !c.goals.length).length;
     }
   }
 }

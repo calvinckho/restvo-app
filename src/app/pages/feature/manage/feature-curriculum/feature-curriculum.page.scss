@@ -14,4 +14,49 @@ app-feature-curriculum {
   .message-label {
     margin: 0 auto;
   }
+
+  .grid-row {
+    //align-items: center !important;
+    overflow: scroll;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  .moment-input {
+    //width: 90%;
+    //float: left;
+    opacity: 0.5;
+    padding: 5px 0;
+  }
+
+  .info-moment {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+
+  .message-label {
+    margin: 0 auto;
+  }
+
+  .goal-content {
+    background: var(--ion-color-secondary);
+    margin-left: 15px;
+  }
+
+  .goal-content.favorite {
+    padding-top: 15px;
+  }
+
+  .goal-label {
+    --background: var(--ion-color-secondary);
+  }
+
+  .more-goal-options {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
 }

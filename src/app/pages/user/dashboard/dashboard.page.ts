@@ -14,7 +14,6 @@ import {NetworkService} from "../../../services/network-service.service";
 import {AboutPage} from "../about/about.page";
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 import {Auth} from "../../../services/auth.service";
-import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +30,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     numberOfNotifications: number = 0;
     noSystemMessage: boolean = true;
     deviceToken: any;
-    loading: any;
+    loading: any = true;
     activities: any;
     journeys: any;
     myMentors: any;
@@ -373,6 +372,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     async loadPrograms() {
         this.activities = await this.userData.loadPrograms(true);
         this.journeys = [];
+        this.loading = false;
         this.myMentors = [];
         this.myMentees = [];
         this.groups = [];
@@ -436,7 +436,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         } else { // on mobile devices
             // if admin and opening community or program
             if (program.user_list_2.includes(this.userData.user._id) && (program.categories.includes('5c915324e172e4e64590e346') || program.categories.includes('5c915475e172e4e64590e348'))) {
-                //this.momentService.manageMoment({ moment: program, modalPage: true });
                 this.router.navigate(['/app/manage/activity/' + program._id + '/profile/' + program._id]);
             } else {
                 const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: { moment: { _id: program._id }, modalPage: true}} );

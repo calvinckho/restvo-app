@@ -93,8 +93,10 @@ export class OnboardfeaturePage {
             this.type = this.type || parseInt(this.route.snapshot.paramMap.get('type'), 10);
             this.token = this.token || this.route.snapshot.paramMap.get('token');
         }
+        console.log("programId", this.programId)
         if (this.programId === '5d5785b462489003817fee18') {
             this.completedDefaultOnboarding = true;
+            this.programId = null;
         }
         await this.loadActivities();
     }
@@ -137,7 +139,7 @@ export class OnboardfeaturePage {
             this.moment = null;
             if (!this.completedDefaultOnboarding) { // when finished all default processes, activate the non-default processes
                 this.ionSpinner = true;
-                await this.addUserToProgramUserList('5d5785b462489003817fee18', this.type || 2, this.token);
+                await this.addUserToProgramUserList('5d5785b462489003817fee18', this.type || 2, this.token, false);
                 this.completedDefaultOnboarding = true;
                 this.loadActivities();
                 // exit out the load animation after 8 secs. In case internet connection is lost
@@ -147,7 +149,7 @@ export class OnboardfeaturePage {
                         this.reachedEnd = true;
                         this.loadCompleted = true;
                     }
-                }, 8000);
+                }, 15000);
             } else { // when all is finished, the last slide is shown and the finish button will trigger join program (programId with token) API
                 this.authService.incompleteOnboardProcess = null;
                 this.ionSpinner = false;
@@ -400,7 +402,7 @@ export class OnboardfeaturePage {
         if (this.slides) {
             const currentSlideIndex = await this.slides.getActiveIndex();
             // if slide from the last slide
-            console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
+            //console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
             if (currentSlideIndex >= this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1) {
                 await this.loadActivities();
             }
@@ -427,7 +429,6 @@ export class OnboardfeaturePage {
     async createQuillEditor(event, interactableDisplay) {
         interactableDisplay.editor = event;
         interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
-        console.log("display", interactableDisplay);
     }
 
     joinVideoConference(event, moment) {
@@ -474,7 +475,7 @@ export class OnboardfeaturePage {
         return index;
     }
 
-    async addUserToProgramUserList(programId, type, token) {
+    async addUserToProgramUserList(programId, type, token, refreshAppPages) {
         if (programId) {
             let user_list = '';
             switch (type) {
@@ -491,7 +492,7 @@ export class OnboardfeaturePage {
                     user_list = 'user_list_1';
                     type = 2;
             }
-            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding);
+            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding, refreshAppPages);
             if (this.completedDefaultOnboarding) {
                 if (this.modalPage) { // onboarding is a popover by default
                     this.router.navigate([this.authService.cachedRouteUrl]); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl

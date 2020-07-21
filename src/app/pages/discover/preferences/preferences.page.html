@@ -24,7 +24,7 @@
       <ion-list-header>
           <ion-label>Participants</ion-label>
       </ion-list-header>
-        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[2]">
+        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[2]">
           <ion-thumbnail slot="start">
             <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
             <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
@@ -36,7 +36,11 @@
             </ion-label>
           </div>
 
-          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+            <ion-buttons *ngIf="!moment.response" slot="end">
+                <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
+                    <ion-icon name="cog"></ion-icon>
+                </ion-button>
+            </ion-buttons>
           <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
           <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
           <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
@@ -44,7 +48,7 @@
       <ion-list-header>
           <ion-label>Leaders</ion-label>
       </ion-list-header>
-      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[4]">
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[4]">
           <ion-thumbnail slot="start">
               <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
               <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
@@ -56,7 +60,11 @@
               </ion-label>
           </div>
 
-          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-buttons *ngIf="!moment.response" slot="end">
+              <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
+                  <ion-icon name="cog"></ion-icon>
+              </ion-button>
+          </ion-buttons>
           <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
           <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
           <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
@@ -64,7 +72,7 @@
       <ion-list-header>
           <ion-label>Organizers</ion-label>
       </ion-list-header>
-      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!moment.array_boolean[3]">
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[3]">
           <ion-thumbnail slot="start">
               <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
               <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
@@ -76,7 +84,11 @@
               </ion-label>
           </div>
 
-          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-buttons *ngIf="!moment.response" slot="end">
+              <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
+                  <ion-icon name="cog"></ion-icon>
+              </ion-button>
+          </ion-buttons>
           <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
           <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
           <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
@@ -84,7 +96,7 @@
       <ion-list-header>
           <ion-label>Unused</ion-label>
       </ion-list-header>
-      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
+      <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
           <ion-thumbnail slot="start">
               <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
               <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
@@ -96,7 +108,11 @@
               </ion-label>
           </div>
 
-          <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
+          <ion-buttons *ngIf="!moment.response" slot="end">
+              <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
+                  <ion-icon name="cog"></ion-icon>
+              </ion-button>
+          </ion-buttons>
           <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
           <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
           <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
@@ -105,8 +121,9 @@
       Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> Onboarding process</span><span *ngIf="moments.length > 1"> Onboarding processes</span>
     </ion-item-divider>
   </ion-list>
+    <!--About Me-->
     <ion-list *ngIf="!organizer">
-        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess(moment)">
+        <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')">
             <ion-thumbnail slot="start">
                 <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
                 <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>

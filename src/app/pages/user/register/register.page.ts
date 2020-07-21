@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
 const { StatusBar, SplashScreen } = Plugins;
@@ -272,6 +272,7 @@ export class RegisterPage implements OnInit {
         {name:"+998 UZ",value:"+998"}];
 
     constructor(private router: Router,
+                private zone: NgZone,
                 private location: Location,
                 private storage: Storage,
                 public platform: Platform,
@@ -374,7 +375,9 @@ export class RegisterPage implements OnInit {
 
     async loadRegisterSlides() {
         this.ionSpinner = true;
-        this.view = 'register';
+        setTimeout(() => {
+            this.view = 'register';
+        }, 2000);
     }
 
     async registerSlidesLoaded() {
@@ -404,8 +407,11 @@ export class RegisterPage implements OnInit {
         }
 
         try {
+            // log in using credentials
             this.userData.user = await this.authService.login(this.credentials);
-            // this is for updating the user document
+            // if authenticated, the authService.token will be stored in local storage and will be loaded from storage when entering maintab
+
+            // this is for updating the user document, so upon logout and logging back in, the user profile document is updated
             this.userData.refreshUserStatus({type: 'user updated', user: this.userData.user});
 
             this.loginStatus = '';
@@ -423,9 +429,13 @@ export class RegisterPage implements OnInit {
                 }
                 await this.authService.routeNewlyLoggedInUser();
                 // refreshes app pages because ionViewWillEnter() is not called after navigateByURL()
-                setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
-                    this.userData.refreshAppPages();
-                }, 4000);
+                this.zone.runOutsideAngular(() => {
+                    setTimeout(() => { // page has already been initiated in PWA fast load so needs to be refreshed
+                        this.zone.run(() => {
+                            this.userData.refreshAppPages();
+                        });
+                    }, 4000);
+                });
                 if (this.platform.is('cordova')) {
                     StatusBar.show();
                 }
@@ -491,7 +501,7 @@ export class RegisterPage implements OnInit {
                 if (result && result.success) {
                     const alert = await this.alertCtrl.create({
                         header: 'Password Recovery Email Sent',
-                        subHeader: 'An email with a recovery link has been sent to ' + this.loginForm.get('email').value + '.',
+                        subHeader: 'An email with a verification link has been sent to ' + this.loginForm.get('email').value + '.',
                         buttons: [{ text: 'Ok',
                             handler: () => {
                                 const navTransition = alert.dismiss();

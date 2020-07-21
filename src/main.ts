@@ -14,21 +14,24 @@ if (environment.production) {
 }
 
 platformBrowserDynamic()
-    .bootstrapModule(AppModule)
-// the follow code is used to diagnose ngZone blocking issues with Protractor
-    /*.then(moduleInstance => {
+    .bootstrapModule(AppModule).then((moduleInstance) => {
+  if ('serviceWorker' in navigator && environment.production) {
+    navigator.serviceWorker.register('./ngsw-worker.js');
+  }
 
-      const ngZone = moduleInstance.injector.get(NgZone);
-      setInterval(() => {
-        const taskTrackingZone = (<any>ngZone)._inner.getZoneWith("TaskTrackingZone");
-        if (!taskTrackingZone) {
-          throw new Error("'TaskTrackingZone' zone not found! Have you loaded 'node_modules/zone.js/dist/task-tracking.js'?");
-        }
-        let tasks: any[] = taskTrackingZone._properties.TaskTrackingZone.getTasksFor("macroTask");
-        tasks = _.clone(tasks);
-        if (_.size(tasks) > 0) {
-          console.log("ZONE pending tasks=", tasks);
-        }
-      }, 1000);
-  })*/
+  // the follow code is used to diagnose ngZone blocking issues with Protractor
+  /*const ngZone = moduleInstance.injector.get(NgZone);
+  setInterval(() => {
+    const taskTrackingZone = (<any>ngZone)._inner.getZoneWith("TaskTrackingZone");
+    if (!taskTrackingZone) {
+      throw new Error("'TaskTrackingZone' zone not found! Have you loaded 'node_modules/zone.js/dist/task-tracking.js'?");
+    }
+    let tasks: any[] = taskTrackingZone._properties.TaskTrackingZone.getTasksFor("macroTask");
+    tasks = _.clone(tasks);
+    if (_.size(tasks) > 0) {
+      console.log("ZONE pending tasks=", tasks);
+    }
+  }, 1000);*/
+})
+
   .catch(err => console.log(err));

@@ -31,7 +31,6 @@ import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscripti
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
 import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
-import {FeaturePlansPage} from "./feature-plans/feature-plans.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -160,15 +159,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         }
       },
       {
-        url: 'plans',
-        label: 'Plans',
-        //categoryId: '5c915476e172e4e64590e349', // plan's category ID
-        component: FeaturePlansPage,
-        params: {
-          //categoryId: '5c915476e172e4e64590e349',
-        }
-      },
-      {
         url: 'creator',
         label: 'Curriculum',
         component: FeatureCreatorPage,
@@ -258,10 +248,10 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   }
 
   async upOneLevel(momentId) {
-    this.userData.currentManageActivityId = momentId;
     if (this.modalPage) {
       this.modalCtrl.dismiss();
     } else if (this.userData.activitiesWithAdminAccess.find((c) => c._id === momentId)) {
+      this.userData.currentManageActivityId = momentId;
       this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
     } else {
       this.router.navigate(['/app/activity/' + momentId]);

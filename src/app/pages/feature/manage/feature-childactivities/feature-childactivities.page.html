@@ -17,7 +17,7 @@
 
 <ion-content>
   <ion-list *ngIf="view === '1'">
-    <ion-item *ngFor="let activity of activities; index as i" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || activity.resource['en-US'].value[0].toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1))">
+    <ion-item *ngFor="let activity of activities; index as i" [ngStyle]="{'opacity': activity.deletedAt ? '0.5' : '1'}" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || activity.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
       <ion-buttons class="select-col">
         <ion-button (click)="selectActivity($event, activity)" fill="clear" *ngIf="!activity.select">
           <ion-icon color="tertiary" name="radio-button-off"></ion-icon>
@@ -31,7 +31,7 @@
           <ion-img [src]="(activity.assets && activity.assets.length && activity.assets[0]) | background: activity._id"></ion-img>
         </ion-avatar>
         <ion-label class="name-label ion-text-center ion-text-wrap">
-          {{activity.matrix_string[0][0]}}
+          {{activity.matrix_string[0][0]}} <span *ngIf="activity.deletedAt">(Deleted)</span>
         </ion-label>
       </div>
       <div class="avatar-col" *ngIf="platform.width() >= 992">
@@ -41,7 +41,7 @@
       </div>
       <div class="name-col" *ngIf="platform.width() >= 992">
         <ion-label class="name-label ion-text-wrap">
-          {{activity.matrix_string[0][0]}}
+          {{activity.matrix_string[0][0]}} <span *ngIf="activity.deletedAt">(Deleted)</span>
         </ion-label>
       </div>
       <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share in Marketplace</span></div>

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {
     ActionSheetController,
     AlertController,
@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { CalendarService } from '../../../services/calendar.service';
 import {Resource} from "../../../services/resource.service";
 import {Moment} from "../../../services/moment.service";
+import {Response} from "../../../services/response.service";
 import {UserData} from "../../../services/user.service";
 
 @Component({
@@ -27,12 +28,14 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Journey', 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
     // onboarding process parameters
     @Input() programId: string; // the program
+    @Input() type: any; // the process type 2 (participant), 3 (organizer), 4 (leader)
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
     // relationship: joinAs
     @Input() joinAs; // join createCalendaras user_list_1 (participant) or user_list_3 (leader)
     // create Content Calandar
-    @Input() scheduleId: any;
+    @Input() scheduleId: any; // schedule the Content Calendar belongs to
+    @Input() goalId: string; // whether the newly created Content Calendar is under a Goal
     @Input() disableSelect: any;
 
     @Input() allowCreate = false;
@@ -51,6 +54,16 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     step = 0;
     loading: any;
 
+    // Content Calendar creation
+    responseTemplate = {
+        matrix_string: [],
+        matrix_number: [],
+        moment: '',
+        array_number: []
+    };
+    parentRelationshipResponseObj: any = this.responseTemplate; // a user can respond to the Content's Relationship
+
+
     subscriptions: any = {};
 
     constructor(
@@ -66,17 +79,30 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         private loadingCtrl: LoadingController,
         private momentService: Moment,
         private userData: UserData,
-        public calendarService: CalendarService
+        public calendarService: CalendarService,
+        public responseService: Response
     ) {}
 
     async ngOnInit() {
+        this.setup();
+        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
+    }
+
+    ionViewWillEnter() {
+        // re-entering subpanel view
+        this.setup();
+    }
+
+    setup() {
         this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
         this.programId = this.programId || this.route.snapshot.paramMap.get('programId');
+        this.type = parseInt(this.type || this.route.snapshot.paramMap.get('type') || '0', 10);
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
         this.joinAs = this.joinAs || this.route.snapshot.paramMap.get('joinAs');
         this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
+        this.goalId = this.goalId || this.route.snapshot.paramMap.get('goalId');
 
         this.disableSelect = this.disableSelect || this.route.snapshot.paramMap.get('disableSelect') === 'true';
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
@@ -89,7 +115,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else {
             this.categoryId = '5e9f46e1c8bf1a622fec69d5'; // default choice is a Journey
         }
-        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -100,12 +125,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     };
 
     async loadSamples() {
-        setTimeout(async () => {
-            this.reachedEnd = false;
-            this.samples = [];
-            this.pageNum = 0;
-            this.loadMoreSamples();
-        }, 50);
+        this.reachedEnd = false;
+        this.samples = [];
+        this.pageNum = 0;
+        this.loadMoreSamples();
     }
 
     async loadMoreSamples() {
@@ -282,8 +305,17 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         if (this.programId) {
             data.programId = this.programId;
         }
+        if (this.type) {
+            data.type = this.type;
+        }
         if (this.parent_programId) {
             data.parent_programId = this.parent_programId;
+        }
+        if (this.scheduleId) {
+            data.scheduleId = this.scheduleId;
+        }
+        if (this.goalId) {
+            data.goalId = this.goalId;
         }
         if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
             this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
@@ -307,10 +339,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step++;
             this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
             if (this.step === 1) {
-                await this.loadSamples();
+                this.loadSamples();
+                this.renderRecentList();
             }
         } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned Activity)
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.categoryId !== '5c915476e172e4e64590e349') {
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned) {
                 if (this.selectedMoments[0].categories.includes('5e9f46e1c8bf1a622fec69d5')) { // journey
                     this.categoryId = '5e9f46e1c8bf1a622fec69d5';
                 } else if (this.selectedMoments[0].categories.includes('5e9fe372c8bf1a622fec69d8')) { // mentoring
@@ -359,6 +392,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 if (this.parent_programId) { // if parent program Id is provided, also update it
                     this.selectedMoments[0].parent_programs = [this.parent_programId];
                 }
+                if (this.programId) {
+                    this.selectedMoments[0].program = [this.programId];
+                }
+                if (this.type && this.selectedMoments[0].array_boolean.length > this.type) {
+                    this.selectedMoments[0].array_boolean[this.type] = true;
+                }
                 const clonedMoments: any = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
                     clonedMoments[0].resource = this.selectedMoments[0].resource; // clone the populated resource
@@ -369,11 +408,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             }
             // in invite flow, if joinAs is provided, add user accordingly
             if (this.selectedMoments[0].cloned && this.joinAs) { // if it is a cloned item, join the Activity using the joinAs list
-                await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false);
+                await this.momentService.addUserToProgramUserList(selectedProgram, this.joinAs, null, false, true);
             }
 
             // if scheduleId is provided by Admin - Schedule view, also create Content Calendar
-            if (this.scheduleId) {
+            if (this.scheduleId && this.parent_programId) {
                 const newCalendarItem: any = {
                     moment: selectedProgram._id,
                     title: selectedProgram.matrix_string[0][0],
@@ -386,9 +425,13 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
                     }
                 };
-                const result: any = await this.momentService.loadSchedule(this.scheduleId);
-                newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
-                await this.momentService.touchContentCalendarItems(this.parent_programId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+                //const result: any = await this.momentService.loadSchedule(this.scheduleId);
+                //newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
+                const data: any = { operation: 'create calendar item', calendaritem: newCalendarItem };
+                if (this.goalId) {
+                    data.goalId = this.goalId;
+                }
+                await this.momentService.touchContentCalendarItems(this.parent_programId, data);
             }
             // route user upon completing all operation
             // if Admin portal - New Plan, send the user to the category page
@@ -409,7 +452,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 default:
                     type = 'journey';
             }
-            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new plan
+            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new activity
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
                 await this.loading.dismiss();
             } else if (this.router.url.includes('invite') || this.router.url.includes('choose')) { // else, in invite flow,  send user to the addParticipant page if the user is an organizer, or to the
@@ -485,7 +528,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.pageNum = 0;
         this.reachedEnd = false;
         this.selectedMoments = [];
-        this.step = 0;
+        this.setup(); // reset the page to the entry state
     }
 
     ngOnDestroy(): void {

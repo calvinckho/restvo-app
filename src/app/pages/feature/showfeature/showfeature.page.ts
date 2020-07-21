@@ -123,7 +123,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     };
     listOfDisplayGoals = [];
     selectedGoal = null;
-    editGoals = false;
     progressView = '';
 
   // 10500 Manage Participants
@@ -197,19 +196,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     parentRelationshipListOfGoals = [];
     parentRelationshipGoalAttributes = [];
     parentRelationshipResponseObj: any = this.responseTemplate; // a user can respond to the Content's Relationship
-    color_arrays: any = [
-        { name: 'Periwinkle', color: '#cec2ff' },
-        { name: 'Bleu de France', color: '#3C91E6' },
-        { name: 'Tuscan', color: '#fbd1a2' },
-        { name: 'Shadow Blue', color: '#777da7' },
-        { name: 'Pearl Aqua', color: '#7DCFB6' },
-        { name: 'Light Red', color: '#F65374' },
-        { name: 'Dark Grey', color: '#86888f' },
-        { name: 'Yellow', color: '#e0b500' },
-        { name: 'Light Blue', color: '#4A90E2' },
-        { name: 'Dark Green', color: '#0ec254' },
-        { name: 'Orange', color: '#f6c653' },
-    ];
 
   constructor(
       public zone: NgZone,
@@ -242,7 +228,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.authService.cachedRouteParams = this.route.snapshot.params;
       this.authService.cachedRouteUrl = this.router.url.split(';')[0];
       this.relationshipId = this.relationshipId || this.route.snapshot.paramMap.get('relationshipId');
-      if (this.relationshipId) { // if relationship context is provided, also assign it to the responseObj property
+      if (this.relationshipId) { // if relationship context is provided (hence it is a Content Calendar), assign it to the responseObj property
           this.responseObj.relationship = this.relationshipId;
           this.parentRelationshipResponseObj.moment = this.relationshipId;
       }
@@ -269,7 +255,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   loadAndProcessMomentHandler = async (data) => {
       // if there are players loaded and one of them is playing or is being paused
-      if (this.mediaList.length && this.mediaList.find((c) => c && c.player && (c.player.playing || (c.player.currentTime > 0)))) {
+      if (this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.currentTime > 0))))) {
           // do nothing
       } else { // otherwise refresh
           this.setup(data);
@@ -418,33 +404,56 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                   }
               } else if (data.calendarId) {
-                  if (!this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id)) {
-                      // update user's calendar items array
-                      for (const calendarItem of this.calendarService.calendarItems) {
-                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                              if (data.state) {
-                                  calendarItem.completed = data.state;
-                              } else if (data.goals) {
-                                  calendarItem.goals = data.goals;
-                              }
+                  // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+                  const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id);
+                  // in the event that Goals is turned off, but there are still Goal update, it must be sent by an admin so we can grant permission
+                  const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
+
+                  // update user's calendar items array
+                  for (const calendarItem of this.calendarService.calendarItems) {
+                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                          if (todosPrivacyPermission && data.state) {
+                              calendarItem.completed = data.state;
+                          } else if (goalsPrivacyPermission && data.goals) {
+                              calendarItem.goals = data.goals;
                           }
                       }
-                      // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                      for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
-                          if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                              if (data.hasOwnProperty('state')) {
-                                  calendarItem.completed = data.state;
-                              } else if (data.goals) {
-                                  calendarItem.goals = data.goals;
-                              }
+                  }
+                  // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
+                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                      if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                          if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                              calendarItem.completed = data.state;
+                          } else if (goalsPrivacyPermission && data.goals) {
+                              calendarItem.goals = data.goals;
                           }
                       }
-                      // keep the responseObj fresh
-                      let index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                  }
+                  // keep the responseObj fresh
+                  // if it is to toggle the to-do state
+                  if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                      const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                       if (index >= 0) {
-                          this.responseObj.matrix_string.splice(index, 1, data.interactable);
+                          this.responseObj.matrix_string[index].splice(0, 5);
+                          this.responseObj.matrix_string[index].unshift(...data.interactable.slice(0, 6));
                       } else {
-                          this.responseObj.matrix_string.push(data.interactable);
+                          this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(data.interactable)));
+                      }
+                      // if it is to change a content calendar's goal attributes
+                  } else if (goalsPrivacyPermission && data.goals) {
+                      const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                      if (index >= 0) {
+                          if (this.responseObj.matrix_string[index].length < 10) {
+                              this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+                          } else if (this.responseObj.matrix_string[index].length > 10) {
+                              this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                          }
+                          this.responseObj.matrix_string[index].push(...data.goals);
+                      } else {
+                          let interactableObj = Array(10);
+                          interactableObj[0] = data.calendarId;
+                          interactableObj.push(...data.goals);
+                          this.responseObj.matrix_string.push(interactableObj);
                       }
                   }
               } else if (data.goal) {
@@ -519,33 +528,58 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
           calendarItem.completed = false;
       }
+
       for (const response of this.responses) {
-          if (!this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id))  {
-              for (const interactable of response.matrix_string) { // process the interactable and schedule responses
-                  // regular user calendar items list
-                  for (const calendarItem of this.calendarService.calendarItems) {
-                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                          calendarItem.completed = interactable[5]; // check-in state
-                      }
-                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                      }
+          // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+          const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id);
+          // in the event that Goals is turned off, but there are still Goals, so it is goals created by Admins so they are public goals
+          const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
+          for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+              // regular user calendar items list
+              for (const calendarItem of this.calendarService.calendarItems) {
+                  if (todosPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                      calendarItem.completed = interactable[5]; // check-in state
                   }
-                  // super admin's calendar items list
-                  for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
-                      if (calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
-                          calendarItem.completed = interactable[5]; // check-in state
-                      }
-                      if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-                          calendarItem.goals = interactable.slice(10); // grab the goal attributes
-                      }
+                  if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
                   }
-                  // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+              }
+              // super admin's calendar items list
+              for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                  if (todosPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 5) { // interactable[0] is a String
+                      calendarItem.completed = interactable[5]; // check-in state
+                  }
+                  if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+                      calendarItem.goals = interactable.slice(10); // grab the goal attributes
+                  }
+              }
+              // prepare the responseObj
+              // responses is iterated in ascending updatedAt order, so the responseObj will have the latest response data
+
+              // update the response Obj with to-dos data (index 0 - 5)
+              if (todosPrivacyPermission && (interactable.length >= 6) && (interactable[1] === null)) { // if it has to-dos data
                   const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
                   if (index >= 0) {
-                      this.responseObj.matrix_string.splice(index, 1, interactable);
+                      this.responseObj.matrix_string[index].splice(0, 5);
+                      this.responseObj.matrix_string[index].unshift(...interactable.slice(0, 6));
                   } else {
-                      this.responseObj.matrix_string.push(interactable);
+                      this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactable)));
+                  }
+              }
+              if (goalsPrivacyPermission && (interactable.length > 10) && interactable[1] === 'goal') { // if it has goals permission
+                  const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+                  if (index >= 0) {
+                      if (this.responseObj.matrix_string[index].length < 10) {
+                          this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+                      } else if (this.responseObj.matrix_string[index].length > 10) {
+                          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                      }
+                      this.responseObj.matrix_string[index].push(...interactable.slice(10));
+                  } else {
+                      let interactableObj = Array(10);
+                      interactableObj[0] = interactable[0];
+                      interactableObj.push(...interactable.slice(10));
+                      this.responseObj.matrix_string.push(interactableObj);
                   }
               }
           }
@@ -598,6 +632,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
+            console.log("responses", this.responses)
             // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
@@ -624,6 +659,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.setupPermission(); // TODO: investigate if this is required
                 }
                 this.refreshCalendarDisplay();
+                //console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
             }
             // if show participants is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10500)) {
@@ -763,7 +799,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async setupPermission() {
-    if (this.momentService.socket) {
+      if (this.momentService.socket) {
         if (this.relationshipId && this.calendarId && this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) {
           this.momentService.socket.emit('join moment', this.calendarId); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
         } else if (this.relationshipId) {
@@ -790,33 +826,33 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
         this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
-      this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
-      // if Activity's organizer
+          this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
+          // if Activity's organizer
         if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
           this.hasOrganizerAccess = true;
-      // if Restvo staff
-      } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
-          this.hasOrganizerAccess = true;
-      // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
-      } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
-          const promises = this.moment.parent_programs.map( async (parent_program) => {
-              if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
-                  this.hasOrganizerAccess = true;
-              }
-              if (parent_program.parent_programs && parent_program.parent_programs.length) {
-                  const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
-                      if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
-                          this.hasOrganizerAccess = true;
-                      }
-                  });
-                  await Promise.all(promises2);
-              }
-          });
-          await Promise.all(promises);
-      }
-      this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
-      this.setupPermissionCompleted = true;
+          // if Restvo staff
+          } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+              this.hasOrganizerAccess = true;
+          // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
+          } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
+              const promises = this.moment.parent_programs.map( async (parent_program) => {
+                  if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
+                      this.hasOrganizerAccess = true;
+                  }
+                  if (parent_program.parent_programs && parent_program.parent_programs.length) {
+                      const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
+                          if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
+                              this.hasOrganizerAccess = true;
+                          }
+                      });
+                      await Promise.all(promises2);
+                  }
+              });
+              await Promise.all(promises);
+        }
+        this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
     }
+      this.setupPermissionCompleted = true;
   }
 
   async setupPollDisplay(interactableId, componentIndex) {
@@ -864,7 +900,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         conversations: listOfConversations,
         users: listOfUsers,
         calendarId: this.moment.calendar._id
-            }, this.token); // a valid token is not required, but provided in case of future change of specs
+            }, this.token, true); // a valid token is not required, but provided in case of future change of specs
       this.anyChangeMade = true;
       this.setupPermission();
       return result;
@@ -881,7 +917,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         operation: 'remove from calendar',
         users: [this.userData.user._id],
         calendarId: this.moment.calendar._id
-            }, this.token); // a valid token is not required, but provided in case of future change of specs
+            }, this.token, true); // a valid token is not required, but provided in case of future change of specs
       this.anyChangeMade = true;
       this.setupPermission();
     } catch (err) {
@@ -925,7 +961,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             user_lists: [user_list],
             users: [this.userData.user._id],
             momentId: this.moment._id
-          }, this.token); // a valid token is not required, but provided in case of future change of specs
+          }, this.token, true); // a valid token is not required, but provided in case of future change of specs
           if (!this.modalPage) {
             this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
           }
@@ -1115,24 +1151,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async touchCalendarItemResponse(event, selectedCalendarItem, type) {
         event.stopPropagation();
         const newState = selectedCalendarItem.completed ? null : 'completed';
-        let updatedExistingResponse = false;
-        this.responseObj.matrix_string.forEach((interactable) => { // each interactable is an array of user choices for each question
-            if (interactable[0] === selectedCalendarItem._id) { // interactable[0] is a String
-                if (type === 'check-in') {
-                    interactable[5] = newState;
-                } else if (type === 'goal attributes') {
-                    if (selectedCalendarItem.goals && selectedCalendarItem.goals.length) {
-                        selectedCalendarItem.goals.forEach((goal, j) => {
-                            interactable[10 + j] = goal;
-                        });
-                    } else {
-                        interactable.splice(10, interactable.length - 1);
-                    }
+        const interactable = this.responseObj.matrix_string.find((c) => c[0] === selectedCalendarItem._id);
+        if (interactable) { // if response already exists
+            if (type === 'check-in') {
+                interactable[5] = newState;
+            } else if (type === 'goal attributes') {
+                if (interactable.length < 10) { // if shorter than 10, pad it with 0
+                    interactable.fill(null, interactable.length, 11);
+                } else if (interactable.length > 10) { // if longer than 10, replace the goal attributes
+                    interactable.splice(10, interactable.length - 1); // remove existing goal attributes
                 }
-                updatedExistingResponse = true;
+                interactable.push(...selectedCalendarItem.goals); // push onto array
             }
-        });
-        if (!updatedExistingResponse) { // add a new entry to array
+        } else { // response does not exist. add a new entry to array
             if (type === 'check-in') {
                 this.responseObj.matrix_string.push([selectedCalendarItem._id, null, null, null, null, newState]);
             } else if (type === 'goal attributes') {
@@ -1206,7 +1237,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         // if there is no tab component
-        } else {
+        } else if (this.moment && this.moment.resource) {
             // check if needed to load notes (12000)
             if (this.moment.resource.matrix_number[0].find((c) => c === 12000)) {
                 const result: any = await this.momentService.loadNotes(this.moment._id, null);
@@ -1488,16 +1519,19 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
         });
       } else {
-        buttons.push(...[{
-          text: this.resource['en-US'].value[16], // Leave Activity
-          icon: 'log-out',
-          handler: () => {
-              const navTransition = actionSheet.dismiss();
-              navTransition.then( async () => {
-                  this.removeFromUserList('user_list_1');
-              });
+          if (this.moment._id !== '5d5785b462489003817fee18') { // for all Activities except Restvo
+              buttons.push(...[{
+                  text: this.resource['en-US'].value[16], // Leave Activity
+                  icon: 'log-out',
+                  handler: () => {
+                      const navTransition = actionSheet.dismiss();
+                      navTransition.then( async () => {
+                          this.removeFromUserList('user_list_1');
+                      });
+                  }
+              }]);
           }
-        }, {
+        buttons.push(...[{
             text: this.resource['en-US'].value[35], // View Onboarding Answers
             icon: 'list',
             handler: () => {
@@ -1541,8 +1575,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               }
           });
       }
-      // add to calendar option is hidden for category Content, Onboarding Process, Plan
-      if (!this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && !this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71') && !this.moment.categories.map((c) => c._id).includes('5c915476e172e4e64590e349')) {
+      // add to calendar option is hidden for category Content, Onboarding Process
+      if (!this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && !this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71')) {
           if (!this.hasAddedToCalendar) {
               buttons.push({
                   text: this.resource['en-US'].value[13], // Add to Calendar
@@ -1578,17 +1612,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     async moreOrganizerActions() {
         let actionSheet: any;
         let buttons = [];
-        buttons = buttons.concat([
-            {
-                text: this.resource['en-US'].value[43] + ' ' + this.moment.resource['en-US'].value[0], // Manage Community or Program
-                icon: 'bulb',
-                handler: () => {
-                    const navTransition = actionSheet.dismiss();
-                    navTransition.then( async () => {
-                        this.momentService.manageMoment({ moment: this.moment, modalPage: this.modalPage });
-                    });
-                },
-            }]);
+        buttons = buttons.concat([{
+            text: this.resource['en-US'].value[43] + ' ' + this.moment.resource['en-US'].value[0], // Manage Community or Program
+            icon: 'bulb',
+            handler: () => {
+                const navTransition = actionSheet.dismiss();
+                navTransition.then( async () => {
+                    this.momentService.manageMoment({ moment: this.moment, modalPage: this.modalPage });
+                });
+            },
+        }]);
         if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
             buttons = buttons.concat([
                 {
@@ -1658,7 +1691,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 });
             }
         }
-        buttons = buttons.concat([{
+        if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
+            buttons = buttons.concat([{
                 text: 'Leave as ' + this.organizerLabel,
                 icon: 'log-out',
                 handler: () => {
@@ -1667,12 +1701,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         this.leaveProgramWithPrivileges('user_list_2');
                     });
                 }
-            },
-            {
-                text: this.resource['en-US'].value[33], // Cancel
-                icon: 'close-circle',
-                role: 'cancel',
             }]);
+        }
+        buttons = buttons.concat([{
+            text: this.resource['en-US'].value[33], // Cancel
+            icon: 'close-circle',
+            role: 'cancel',
+        }]);
         actionSheet = await this.actionSheetCtrl.create({
             header: this.moment.matrix_string[0][0],
             buttons: buttons,
@@ -1781,7 +1816,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  // Plans Slider
+  // References Slider
   async loadPrograms() {
       this.programsReachedEnd = false;
       this.programs = [];
@@ -1894,14 +1929,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async addGoal(goalName) {
-        for (let color_option of this.color_arrays) {
-            for (let goal of this.listOfDisplayGoals) {
+        for (const color_option of this.resourceService.color_arrays) {
+            for (const goal of this.listOfDisplayGoals) {
                 if (color_option.color === goal[3]) {
                     color_option.status = 'used';
                 }
             }
         }
-        const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.color_arrays.find((c) => !c.status).color, null, goalName];
+        const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName];
         this.listOfDisplayGoals.push(goalData);
         this.responseObj.matrix_string.push(goalData);
         this.momentService.submitResponse(this.moment, this.responseObj, false);
@@ -1939,22 +1974,21 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             }
         };
         this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-        this.editGoals = false;  // reset the edit mode
-    }
-
-    async filterGoal(goal) {
-      if (this.selectedGoal === goal[0]) {
-          this.selectedGoal = null;
-      } else {
-          this.selectedGoal = goal[0];
-      }
+        // free up the color palette
+        for (const color_option of this.resourceService.color_arrays) {
+            if (color_option.color === goal[3]) {
+                color_option.status = null;
+            }
+        }
     }
 
     async touchGoal(goal, type) {
+      // if Goal is disabled, do not proceed
+        if ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]) return;
         clearTimeout(this.timeoutHandle);
         this.timeoutHandle = setTimeout(() => {
             let updatedExistingGoal = false;
-            for (let responseInteractable of this.responseObj.matrix_string) {
+            for (const responseInteractable of this.responseObj.matrix_string) {
                 if (goal[0] === responseInteractable[0]) {
                     if (type === 'text') {
                         responseInteractable[5] = goal[5];

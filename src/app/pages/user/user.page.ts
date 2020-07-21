@@ -12,8 +12,6 @@ import {NotificationsPage} from "./notifications/notifications.page";
 import {AboutPage} from "./about/about.page";
 import {Chat} from "../../services/chat.service";
 import {DashboardPage} from "./dashboard/dashboard.page";
-import {Resource} from "../../services/resource.service";
-import {Moment} from "../../services/moment.service";
 
 @Component({
   selector: 'app-user',

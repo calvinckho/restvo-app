@@ -32,7 +32,7 @@
         <ion-row class="ion-justify-content-center">
           <ion-label>No Chat Message to Display</ion-label>
         </ion-row>
-        <ion-row class="ion-justify-content-center">
+        <ion-row class="ion-justify-content-center" *ngIf="router.url.includes('(sub:')">
           <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" fill="clear">Close</ion-button>
         </ion-row>
       </div>

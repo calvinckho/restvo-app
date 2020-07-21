@@ -91,13 +91,17 @@ export class SettingsPage implements OnInit, OnDestroy {
     }
 
     async resetPassword(){
-        this.modalCtrl.dismiss();
+        if (this.modalPage) {
+            this.modalCtrl.dismiss();
+        }
         this.menuCtrl.enable(false);
         this.router.navigate(['/register', {slide: '6', exitType: 'dashboard'}]);
     }
 
     async changePhone() {
-        this.modalCtrl.dismiss();
+        if (this.modalPage) {
+            this.modalCtrl.dismiss();
+        }
         this.menuCtrl.enable(false);
         this.router.navigate(['/register', {slide: '3', exitType: 'dashboard'}]);
     }

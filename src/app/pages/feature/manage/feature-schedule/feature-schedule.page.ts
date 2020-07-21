@@ -1,7 +1,8 @@
 import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {ActionSheetController, AlertController, IonContent, ModalController, Platform} from "@ionic/angular";
-import {Moment} from "../../../../services/moment.service";
+import {ActionSheetController, AlertController, IonContent, IonSelect, ModalController, Platform} from "@ionic/angular";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Moment} from "../../../../services/moment.service"
+import {Response} from "../../../../services/response.service";
 import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
 import {UserData} from "../../../../services/user.service";
@@ -19,24 +20,40 @@ import {Location} from "@angular/common";
 })
 export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit {
   @ViewChild(IonContent, {static: false}) content: IonContent;
+  @ViewChild('SelectGoals', {static: false}) select: IonSelect;
 
   @Input() modalPage: any;
   @Input() moment: any; // the program object
   @Input() schedule: any; // the schedule object
   @Input() parentCategoryId: any; // the category ID
+  loadCompleted = false;
   scheduleId: any;
   programId: any;
   ionSpinner = false;
   searchKeyword = '';
   view = 'timeline';
+  resource: any;
 
   timeline = [];
   calendaritems = [];
+  responses = [];
+  responseTemplate = {
+    matrix_string: [],
+    matrix_number: [],
+    moment: '',
+    array_number: []
+  };
+  responseObj: any = this.responseTemplate;
+  listOfDisplayGoals = [];
+  selectCalendarItem: any = { goals: [] };
+  timeoutHandle: any;
+  toDosPrivate: any;
 
   recurrenceStartDate = new Date();
   recurrenceEndDate = new Date();
   recurrenceStartTime: string;
   recurrenceEndTime: string;
+  recurrenceByDay = [];
   allDay = false;
   dateType = ''; // specifies if user is changing start date or end date
 
@@ -82,6 +99,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       public modalCtrl: ModalController,
       public actionSheetCtrl: ActionSheetController,
       public calendarService: CalendarService,
+      public responseService: Response
   ) {
     super(route, router, platform, alertCtrl, authService, chatService,
         userData, momentService, resourceService, modalCtrl);
@@ -94,9 +112,22 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   // because this component extends feature-childactivities.page.ts, the following handler overrides the handler with the same name in the parent component
   reloadChildActivitiesHandler = async () => {
+    this.loadCompleted = false;
     this.setupSchedulePage();
-    this.setupChildActivitiesPage();
+    await this.setupChildActivitiesPage();
+    this.checkToDosPrivacySetting();
+    if (this.moment) {
+      this.responseObj.moment = this.moment._id;
+    }
   };
+
+  // get to-dos privacy setting
+  async checkToDosPrivacySetting() {
+    if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
+      const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
+      this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
+    }
+  }
 
   async setupSchedulePage() {
     if (this.userData && this.userData.user) {
@@ -113,8 +144,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           if (!this.schedule.hasOwnProperty('array_boolean')) {
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
           }
-          if (this.parentCategoryId !== '5c915476e172e4e64590e349') { // only fetch calendar items for non-Plan
-            this.timeline = result.calendaritems;
+          this.timeline = result.calendaritems; // timeline is already sorted in backend, in ascending order
+          for (const calendaritem of this.timeline) {
+            calendaritem.goals = [];
           }
         }
       } else { // if creating new schedule
@@ -127,7 +159,101 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
-        this.touchPlanTimeline();
+        if (this.schedule.options.recurrenceByDay) {
+          this.recurrenceByDay = this.schedule.options.recurrenceByDay.split(',');
+        } else {
+          this.recurrenceByDay = [this.getWeekDay(this.recurrenceStartDate)];
+        }
+      }
+      await this.loadGoals();
+    }
+    setTimeout(() => {
+      this.loadCompleted = true;
+    }, 500);
+  }
+
+  async loadGoals() {
+    const result: any = await this.resourceService.loadSystemResources();
+    this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
+    const results: any = await this.responseService.findResponsesByMomentId(this.programId, null, null);
+    if (results && results.responses) {
+      this.responses = results.responses;
+    }
+    for (const response of this.responses) {
+      if (response.user._id === this.userData.user._id) {
+        this.responseObj = JSON.parse(JSON.stringify(response)); // load the response object with backend data
+      }
+    }
+    await this.refreshCalendarDisplay();
+  }
+
+  refreshCalendarDisplay() {
+    if (this.responses.length) {
+      const latestResponse = this.responses[this.responses.length - 1];
+      console.log("last res", latestResponse)
+      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
+
+      /*for (const interactable of latestResponse.matrix_string) { // process the interactable and schedule responses
+        // content calendar list
+        for (const calendarItem of this.timeline) {
+          if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((c) => c[0]).includes(c)); // grab the goal attributes
+          }
+        }
+        // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
+        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+        if (index >= 0) {
+          this.responseObj.matrix_string.splice(index, 1, interactable);
+        } else {
+          this.responseObj.matrix_string.push(interactable);
+        }
+      }
+
+      // update this.responseObj with the latest goals data
+      this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
+      this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));*/
+    }
+    for (const response of this.responses) {
+      // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+      const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && response.user._id === this.userData.user._id);
+      // in the event that Goals is turned off, but there are still Goals, so it is goals created by Admins so they are public goals
+      const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
+      for (const interactable of response.matrix_string) { // process the interactable and schedule responses
+        // super admin's calendar items list
+        for (const calendarItem of this.timeline) {
+          if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
+            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((c) => c[0]).includes(c));
+          }
+        }
+        // prepare the responseObj
+        // responses is iterated in ascending updatedAt order, so the responseObj will have the latest response data
+
+        // update the response Obj with to-dos data (index 0 - 5)
+        if (todosPrivacyPermission && (interactable.length >= 6) && (interactable[1] === null)) { // if it has to-dos data
+          const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+          if (index >= 0) {
+            this.responseObj.matrix_string[index].splice(0, 5);
+            this.responseObj.matrix_string[index].unshift(...interactable.slice(0, 6));
+          } else {
+            this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactable)));
+          }
+        }
+        if (goalsPrivacyPermission && (interactable.length > 10) && interactable[1] === 'goal') { // if it has goals permission
+          const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
+          if (index >= 0) {
+            if (this.responseObj.matrix_string[index].length < 10) {
+              this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+            } else if (this.responseObj.matrix_string[index].length > 10) {
+              this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+            }
+            this.responseObj.matrix_string[index].push(...interactable.slice(10));
+          } else {
+            let interactableObj = Array(10);
+            interactableObj[0] = interactable[0];
+            interactableObj.push(...interactable.slice(10));
+            this.responseObj.matrix_string.push(interactableObj);
+          }
+        }
       }
     }
   }
@@ -144,7 +270,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async promptTouchSchedule() {
-    //await this.touchSchedule('update schedule');
     const alert = await this.alertCtrl.create({
       header: 'Re-populate Timeline',
       subHeader: 'You are about to delete your timeline items between the start and end dates and re-populate them. Are you sure you want to proceed?',
@@ -159,20 +284,14 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   async touchSchedule(operation) {
     let schedule;
-    if (operation === 'create schedule' || this.schedule._id) {
+    this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
+    if (this.schedule._id || operation === 'create schedule') {
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
-      if (this.parentCategoryId === '5c915476e172e4e64590e349') {
-        // for Plan, auto re-populate the timeline and save the changes
-        this.schedule.operation = operation;
-        this.touchPlanTimeline();
-        schedule = await this.momentService.touchSchedule(this.schedule);
-      } else {
-        // for Activity, either create schedule or send to the backend to repopulate the timeline
-        this.schedule.operation = operation;
-        schedule = await this.momentService.touchSchedule(this.schedule);
-      }
+      // for Activity, either create schedule or send to the backend to repopulate the timeline
+      this.schedule.operation = operation;
+      schedule = await this.momentService.touchSchedule(this.schedule);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
         if (this.modalPage) {
@@ -185,50 +304,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           });
         }
       }
-    }
-  }
-
-  // repopulate the Timeline (Plan only)
-  touchPlanTimeline() {
-    if (this.parentCategoryId === '5c915476e172e4e64590e349' && this.schedule.child_moments && this.schedule.child_moments.length) {
-      this.timeline = [];
-      let i = 0;
-      const newContentCalendar = JSON.parse(JSON.stringify(this.calendarObj));
-      newContentCalendar.startDateObj = new Date(this.schedule.startDate);
-      newContentCalendar.endDateObj = new Date(this.schedule.endDate);
-
-      do {
-        newContentCalendar.moment = this.schedule.child_moments[i % this.schedule.child_moments.length];
-        newContentCalendar.title = newContentCalendar.moment.matrix_string[0][0];
-        newContentCalendar.startDate = newContentCalendar.startDateObj.toISOString();
-        newContentCalendar.endDate = newContentCalendar.endDateObj.toISOString();
-        this.timeline.push(JSON.parse(JSON.stringify(newContentCalendar)));
-        // increment up
-        switch (this.schedule.options.recurrence) {
-          case 'daily':
-            newContentCalendar.startDateObj.setDate(newContentCalendar.startDateObj.getDate() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setDate(newContentCalendar.endDateObj.getDate() + this.schedule.options.recurrenceInterval);
-            break;
-          case 'weekly':
-            newContentCalendar.startDateObj.setDate(newContentCalendar.startDateObj.getDate() + (7 * this.schedule.options.recurrenceInterval));
-            newContentCalendar.endDateObj.setDate(newContentCalendar.endDateObj.getDate() + (7 * this.schedule.options.recurrenceInterval));
-            break;
-          case 'monthly':
-            newContentCalendar.startDateObj.setMonth(newContentCalendar.startDateObj.getMonth() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setMonth(newContentCalendar.endDateObj.getMonth() + this.schedule.options.recurrenceInterval);
-            break;
-          case 'yearly':
-            newContentCalendar.startDateObj.setFullYear(newContentCalendar.startDateObj.getFullYear() + this.schedule.options.recurrenceInterval);
-            newContentCalendar.endDateObj.setFullYear(newContentCalendar.endDateObj.getFullYear() + this.schedule.options.recurrenceInterval);
-            break;
-          default:
-            newContentCalendar.startDateObj = new Date(this.schedule.startDate);
-            newContentCalendar.endDateObj = new Date(this.schedule.endDate);
-            i = 730; // break out from the do while loop
-            break;
-        }
-        i++;
-      } while ((newContentCalendar.startDateObj.getTime() <= new Date(this.schedule.options.recurrenceEndDate).getTime()) && (i <= 730));
     }
   }
 
@@ -251,9 +326,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     }
     this.calendarService.updateViewCalendar();
-    if (this.parentCategoryId === '5c915476e172e4e64590e349') { // only auto populate for Plans
-      this.touchSchedule('update schedule');
-    }
   }
 
   async deleteSchedule() {
@@ -277,6 +349,22 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     await alert.present();
   }
 
+  async changeContentCalendarItem(calendaritem, type) {
+    if (type === 'date') {
+      calendaritem.endDate = calendaritem.startDate;
+      this.timeline.sort((a, b) => {
+        const e: any = new Date(a.startDate);
+        const f: any = new Date(b.startDate);
+        return (e - f);
+      });
+    }
+    this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
+    if (this.schedule.options.recurrence) {
+      this.schedule.options.recurrence = '';
+      this.touchSchedule('update schedule');
+    }
+  }
+
   reorderContents(event) {
     this.schedule.child_moments = event.detail.complete(this.schedule.child_moments);
     this.schedule.operation = 'update schedule';
@@ -289,19 +377,16 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     return array;
   }
 
-  async addContenCalendar() {
+  async addContenCalendar(goal) {
     let componentProps: any;
     componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, scheduleId: this.scheduleId };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
-    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
-      componentProps.parent_programId = this.momentId;
-      componentProps.maxMomentCount = 1;
-      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
-        componentProps.allowCreate = false;
-      }
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
+    }
+    if (goal && goal.length) {
+      componentProps.goalId = goal[0];
     }
     if (this.platform.width() >= 992) {
       componentProps.subpanel = true;
@@ -354,7 +439,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           },
           uniqueAnswersPerCalendar: this.schedule.array_boolean[1]
         };
-        await this.momentService.touchContentCalendarItems(this.momentId, {operation: 'create calendar item', calendaritem: newCalendarItem });
+        const data: any = { operation: 'create calendar item', calendaritem: newCalendarItem };
+        if (goal.length) {
+          data.goalId = goal[0];
+        }
+        await this.momentService.touchContentCalendarItems(this.momentId, data);
       }
     }
   }
@@ -365,12 +454,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     componentProps = {title: 'Choose from Library', categoryId: this.categoryId, allowCreate: true, allowSwitchCategory: false, disableSelect: true };
     if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Pick onboarding flows
       componentProps.programId = this.momentId;
-    } else if (this.categoryId === '5c915476e172e4e64590e349') { // pick plan
-      componentProps.parent_programId = this.momentId;
-      componentProps.maxMomentCount = 1;
-      if (this.moment.categories.includes('5dfdbb547b00ea76b75e5a70')) { // in relationships, disable create. Only choosing is allowed. It's because creation needs to take place on the program level in order that a Plan's parent_programs is registered correctly
-        componentProps.allowCreate = false;
-      }
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
     }
@@ -435,6 +518,87 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     await this.momentService.touchContentCalendarItems(momentId, {operation: 'delete calendar items',  calendaritems: [calendaritem]});
   }
 
+  async promptEditContentCalendar(event, calendaritem) {
+    event.stopPropagation();
+    let actionSheet: any;
+    let buttons = [];
+    if (calendaritem.moment.user_list_2 && calendaritem.moment.user_list_2.includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+      buttons = buttons.concat([
+        {
+          text: 'Edit',
+          handler: () => {
+            const navTransition = actionSheet.dismiss();
+            navTransition.then( async () => {
+              this.openChildActivity(event, calendaritem.moment, 'edit');
+            });
+          }
+        }]);
+    }
+    if (this.listOfDisplayGoals.length) {
+      buttons = buttons.concat([
+        {
+          text: 'Assign To',
+          handler: () => {
+            const navTransition = actionSheet.dismiss();
+            navTransition.then( async () => {
+              this.select.disabled = true;
+              this.selectCalendarItem = calendaritem;
+              setTimeout(() => {
+                this.select.disabled = false;
+                this.select.open(event);
+              }, 50);
+            });
+          }
+        }]);
+    }
+    buttons = buttons.concat([
+      {
+        text: 'Cancel', // Cancel
+        role: 'cancel',
+      }]);
+    actionSheet = await this.actionSheetCtrl.create({
+      header: calendaritem.moment.matrix_string[0][0],
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
+  }
+
+  async assignGoal() {
+    if (!this.select.disabled) {
+      if (this.listOfDisplayGoals && this.listOfDisplayGoals.length) {
+        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(this.selectCalendarItem);
+        if (index >= 0) {
+          this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+          this.responseObj.matrix_string[index].push(...this.selectCalendarItem.goals);
+        } else {
+          const interactableObj = new Array(10);
+          interactableObj[0] = this.selectCalendarItem._id;
+          if (this.selectCalendarItem.goals) {
+            interactableObj.push(...this.selectCalendarItem.goals);
+          }
+          this.responseObj.matrix_string.push(interactableObj);
+        }
+        // save the Goal attributes via Response
+        await this.momentService.submitResponse({ _id: this.programId }, this.responseObj, false);
+        let socketData: any;
+        socketData = {
+          calendarId: this.selectCalendarItem._id,
+          interactable: this.responseObj.matrix_string.find((c) => c[0] === this.selectCalendarItem._id),
+          goals: this.selectCalendarItem.goals,
+          author: {
+            _id: this.userData.user._id,
+            first_name: this.userData.user.first_name,
+            last_name: this.userData.user.last_name,
+            avatar: this.userData.user.avatar
+          }
+        };
+        // signal parent relationship to update data via socket.io
+        this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+      }
+    }
+  }
+
   async defaultContentAction(event, content) {
     let actionSheet: any;
     let buttons = [];
@@ -450,8 +614,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'View', // View
-        //role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -461,8 +623,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'Edit', // Edit
-        //role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -473,7 +633,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       {
         text: 'Delete', // Delete
         role: 'destructive',
-        //icon: 'trash',
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
@@ -483,7 +642,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       },
       {
         text: 'Cancel', // Cancel
-        //icon: 'close-circle',
         role: 'cancel',
       }]);
     actionSheet = await this.actionSheetCtrl.create({
@@ -510,6 +668,151 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       cssClass: 'level-15'
     });
     alert.present();
+  }
+
+  async promptNewGoalName(event) {
+    event.stopPropagation();
+    //await this.fabButtons.close();
+    const alert = await this.alertCtrl.create({
+      header: 'Enter Section Name',
+      inputs: [{
+        name: 'goalName',
+        type: 'text',
+        placeholder: 'Section Name'
+      }],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            return;
+          }
+        }, {
+          text: 'Ok',
+          handler: data => {
+            this.addGoal(data.goalName);
+          }
+        }
+      ],
+      cssClass: 'level-15'
+    });
+    await alert.present();
+  }
+
+  async addGoal(goalName) {
+    for (const color_option of this.resourceService.color_arrays) {
+      for (const goal of this.listOfDisplayGoals) {
+        if (color_option.color === goal[3]) {
+          color_option.status = 'used';
+        }
+      }
+    }
+    const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName];
+    this.listOfDisplayGoals.push(goalData);
+    this.responseObj.matrix_string.push(goalData);
+    this.momentService.submitResponse(this.moment, this.responseObj, false);
+    const socketData = {
+      goal: goalData,
+      author: {
+        _id: this.userData.user._id,
+        first_name: this.userData.user.first_name,
+        last_name: this.userData.user.last_name,
+        avatar: this.userData.user.avatar
+      }
+    };
+    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    //this.content.scrollToBottom(50);
+  }
+
+  async removeGoal(goal) {
+    let index = this.listOfDisplayGoals.map((c) => c[0]).indexOf(goal[0]);
+    if (index >= 0) {
+      this.listOfDisplayGoals.splice(index, 1);
+    }
+    index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(goal[0]);
+    if (index >= 0) {
+      this.responseObj.matrix_string.splice(index, 1);
+    }
+    await this.momentService.submitResponse(this.moment, this.responseObj, false);
+    const socketData = {
+      goal: goal,
+      action: 'delete',
+      author: {
+        _id: this.userData.user._id,
+        first_name: this.userData.user.first_name,
+        last_name: this.userData.user.last_name,
+        avatar: this.userData.user.avatar
+      }
+    };
+    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    // free up the color palette
+    for (const color_option of this.resourceService.color_arrays) {
+      if (color_option.color === goal[3]) {
+        color_option.status = null;
+      }
+    }
+    this.refreshCalendarDisplay();
+  }
+
+  async touchGoal(goal, type) {
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(() => {
+      let updatedExistingGoal = false;
+      for (const responseInteractable of this.responseObj.matrix_string) {
+        if (goal[0] === responseInteractable[0]) {
+          if (type === 'text') {
+            responseInteractable[5] = goal[5];
+          } else if (type === 'master toggle') {
+            responseInteractable[1] = goal[1];
+          } else if (type === 'assign to master goal') {
+            responseInteractable[4] = goal[4];
+          }
+          updatedExistingGoal = true;
+        }
+      }
+      if (!updatedExistingGoal) {
+        this.responseObj.matrix_string.push(goal);
+      }
+      this.momentService.submitResponse(this.moment, this.responseObj, false);
+      const socketData = {
+        goal: goal,
+        author: {
+          _id: this.userData.user._id,
+          first_name: this.userData.user.first_name,
+          last_name: this.userData.user.last_name,
+          avatar: this.userData.user.avatar
+        }
+      };
+      this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+
+    }, type === 'text' ? 500 : 0);
+  }
+
+  async moreGoalFunctions(event, goal) {
+    event.stopPropagation();
+    let buttons = [];
+    buttons = buttons.concat([
+      {
+        text: 'Delete', // Delete Goal
+        handler: () => {
+          const navTransition = actionSheet.dismiss();
+          navTransition.then( async () => {
+            this.removeGoal(goal);
+          });
+        }
+      }
+    ]);
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Actions',
+      buttons: buttons,
+      cssClass: 'level-15'
+    });
+    await actionSheet.present();
+  }
+
+  getWeekDay(dateObj) {
+    const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+    return days[dateObj.getDay()];
   }
 
 // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction

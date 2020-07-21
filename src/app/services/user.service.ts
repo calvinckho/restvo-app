@@ -1,4 +1,4 @@
-import { Injectable, ViewChild } from '@angular/core';
+import {Injectable, NgZone, ViewChild} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ElectronService } from 'ngx-electron';
 import {AlertController, LoadingController, MenuController, Platform} from '@ionic/angular';
@@ -59,6 +59,7 @@ export class UserData {
     public readonly refreshBoards$: Observable<boolean> = this._refreshBoards.asObservable();
 
     constructor(private http: HttpClient,
+                private zone: NgZone,
                 private router: Router,
                 private stripeService: StripeService,
                 private electronService: ElectronService,
@@ -98,12 +99,13 @@ export class UserData {
     }
 
     async createUserSocket() {
-        if (this.platform.is('cordova') || (this.networkService.domain !== 'https://server.restvo.com')) {
-            // turn off long polling for mobile apps. Without long polling, this will fail when connecting behind firewall
-            this.socket = io(this.networkService.domain + '/users-namespace', { transports: ['websocket']}); // only for mobile apps
-        } else {
-            this.socket = io(this.networkService.domain + '/users-namespace');
-        }
+        this.zone.runOutsideAngular(() => {
+            if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
+                this.socket = io(this.networkService.domain + '/users-namespace', {transports: ['websocket']});
+            } else {
+                this.socket = io(this.networkService.domain + '/users-namespace');
+            }
+        });
         this.socket.on('connect', () => {
             console.log("user socket id: ", this.socket.id);
             this.socket.emit('enter user', this.user._id);
@@ -173,7 +175,7 @@ export class UserData {
         this.refreshUserStatus({ type: 'change aux data' });
     }
 
-    //get data from the server if connected
+    // get data from the server if connected
     async load() {
         this.user = await this.loadUser();
         this.processLoadedUserData();
@@ -781,7 +783,9 @@ export class UserData {
         // deviceToken is not removed because it needs to be used when another user sign in.
         // that is because the deviceToken is only fetched when the app is loaded for the first time
         this.authService.chatSocketMessage({topic: 'disconnect chat socket'});
-        this.socket.close();
+        if (this.socket) {
+            this.socket.close();
+        }
         if (this.platform.is('ios')) {
             const { ShareExtension } = Plugins;
             try {
