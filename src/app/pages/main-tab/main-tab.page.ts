@@ -751,9 +751,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                     } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
                     } else if (this.electronService.isElectronApp) { // eletron app, open in browser window
-                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
+                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
                     } else { // on desktop web, open another tab and run external API
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
                     }
                 } catch (err) {
                     this.userData.readyToControlVideoChat = true;

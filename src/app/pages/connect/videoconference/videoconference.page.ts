@@ -134,7 +134,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         if (this.userData && this.userData.user && this.userData.user.avatar) {
           this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
         }
-        this.jitsi.executeCommand('subject', (this.videoChatRoomSubject || ' '));
+        this.jitsi.executeCommand('subject', (this.videoChatRoomSubject ? decodeURIComponent(this.videoChatRoomSubject) : ' '));
         this.jitsi.on('readyToClose', this.onJitsiUnloaded);
       }, 1000);
       if (this.authService.token && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId }); }
