@@ -30,7 +30,6 @@ import {OnboardfeaturePage} from "../onboardfeature/onboardfeature.page";
 import {RegisterPage} from "../../user/register/register.page";
 import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
 import {Badge} from "@ionic-native/badge/ngx";
-import {CreatefeaturePage} from "../createfeature/createfeature.page";
 import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
 
 @Component({
@@ -994,28 +993,21 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
   }
 
-  async editMoment(advanced) {
-    if (this.modalPage) {
-      let modal;
-      if (this.moment.categories.find((c) => c._id === '5c915324e172e4e64590e346') && !advanced) {
-          modal = await this.modalCtrl.create({component: CreatefeaturePage, componentProps: { moment: this.moment, modalPage: true }});
+  async editMoment() {
+      if (!this.modalPage && this.platform.width() >= 992) {
+          this.router.navigate([{ outlets: { sub: ['edit', this.moment._id, { subpanel: true }] }}]);
+      } else if (!this.modalPage && this.platform.width() >= 768) {
+          this.router.navigate(['/app/edit/' + this.moment._id]);
       } else {
-          modal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: { moment: this.moment, modalPage: true }});
-      }
-      await modal.present();
-      const {data: refreshNeeded} = await modal.onDidDismiss();
-      // activity is an a moment object see server/models/moment.js
-      // activity contains a resource with info on the activity see server/models/resource.js
-      if (refreshNeeded) {
-        this.loadMoment();
-        this.setupPermission();
-        this.anyChangeMade = true;
-      }
-    } else {
-        if (this.moment.categories.find((c) => c._id === '5c915324e172e4e64590e346') && !advanced) {
-            this.router.navigate(['/app/edit/community/' + this.moment._id]);
-        } else {
-            this.router.navigate(['/app/edit/' + this.moment._id]);
+        const modal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: { moment: this.moment, modalPage: true }});
+        await modal.present();
+        const {data: refreshNeeded} = await modal.onDidDismiss();
+        // activity is an a moment object see server/models/moment.js
+        // activity contains a resource with info on the activity see server/models/resource.js
+        if (refreshNeeded) {
+            this.loadMoment();
+            this.setupPermission();
+            this.anyChangeMade = true;
         }
     }
   }
@@ -1645,7 +1637,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
                             this.expandedPrivilegesView = false;
-                            this.editMoment(true);
+                            this.editMoment();
                         });
                     }
                 },
@@ -2022,19 +2014,35 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       event.stopPropagation();
       const masterGoalLabel = (this.moment.matrix_string[componentIndex].length && this.moment.matrix_string[componentIndex][0]) ? this.moment.matrix_string[componentIndex][0] : this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][6];
       let buttons = [];
-        buttons = buttons.concat([
-            {
-                text: goal[1] === 'goal' ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][9] + ' ' + masterGoalLabel : this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][11], // Set as Favorite Goal, Remove Favorite
-                handler: () => {
-                    goal[1] = goal[1] === 'goal' ? 'master goal' : 'goal';
-                    this.touchGoal(goal, 'master toggle');
-                }
-            }
-        ]);
-        if (goal[1] === 'goal' && this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1])).length) {
+      if (this.moment.matrix_number[componentIndex][1] && goal[1] === 'goal') { // if enabled Favorite Goal
+          buttons = buttons.concat([
+              {
+                  // Set as Favorite Goal
+                  text: this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][9] + ' ' + masterGoalLabel,
+                  handler: () => {
+                      goal[1] = 'master goal';
+                      this.touchGoal(goal, 'master toggle');
+                  }
+              }
+          ]);
+      }
+      if (goal[1] === 'master goal') { // if master goal, show unfavorite option
+          buttons = buttons.concat([
+              {
+                  // Set as Favorite Goal, Remove Favorite
+                  text: this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][11],
+                  handler: () => {
+                      goal[1] = 'goal';
+                      this.touchGoal(goal, 'master toggle');
+                  }
+              }
+          ]);
+      }
+        // Tag to a Favorite Goal
+        if (this.moment.matrix_number[componentIndex][1] && goal[1] === 'goal' && this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1])).length) {
             buttons = buttons.concat([
                 {
-                    text: this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][10] + ' ' + masterGoalLabel, // Tag to a Favorite Goal
+                    text: this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10210)][10] + ' ' + masterGoalLabel,
                     handler: () => {
                         const navTransition = actionSheet.dismiss();
                         navTransition.then( async () => {
