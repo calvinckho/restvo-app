@@ -302,6 +302,24 @@ export class UserData {
         return this.http.get(this.networkService.domain + '/api/auth/programs?loadParticipants=' + loadParticipants, this.authService.httpAuthOptions).toPromise();
     }
 
+    async refreshDefaultActivity(momentId) {
+        const activities: any = await this.loadPrograms(false);
+        // activities is an Array like object
+        // newActivities is now an array
+        if (activities) {
+            const activity = activities.find((n) => !['5d5785b462489003817fee18', momentId].includes(n._id)); // finding an Activity that is not Restvo Mentor nor the removed Program);
+            // activity should now be an object of the new Activity
+            // update the userData default program to equal the object
+            if (activity) {
+                this.defaultProgram = activity;
+                this.UIAdminMode = true; // toggling on the Mentoring Mode
+                this.storage.set('defaultProgram', activity);
+            } else {
+                this.defaultProgram = activities[0];
+            }
+        }
+    }
+
     loadMyChurches() {
         return this.http.get(this.networkService.domain + '/api/mychurch', this.authService.httpAuthOptions).toPromise();
     }

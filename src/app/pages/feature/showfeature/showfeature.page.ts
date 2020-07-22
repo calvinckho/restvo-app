@@ -964,7 +964,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           if (!this.modalPage) {
             this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
           }
-          this.chatService.socket.emit('leave conversation', this.moment.conversation); // inform the socket.io server this user is leaving this room
+            this.userData.refreshDefaultActivity(this.moment._id);
+            this.chatService.socket.emit('leave conversation', this.moment.conversation); // inform the socket.io server this user is leaving this room
             this.userData.refreshMyConversations({action: 'disconnect chat view', conversationId: this.moment.conversation});
             this.userData.refreshMyConversations({action: 'reload', conversationId: this.moment.conversation});
         }
@@ -1022,7 +1023,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           navTransition.then( async () => {
             // Remove the Moment
             await this.momentService.delete(this.moment);
-            this.anyChangeMade = true;
+              this.userData.refreshDefaultActivity(this.moment._id);
+              this.anyChangeMade = true;
             if (this.modalPage) {
               this.closeModal();
             } else {

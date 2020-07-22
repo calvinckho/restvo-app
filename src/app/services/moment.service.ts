@@ -458,23 +458,19 @@ export class Moment {
                         alert.present();
                     }
                 }
-                // This logic changes the userData.defaultProgram to equal the program just joined
-                // IF they successfully joined the community
-                // AND it is the second community they have joined (the first is the default Restvo Community)
+                // This logic changes the userData.defaultProgram to equal the activity just joined
+                // IF they successfully joined an Activity
+                // AND it is the second activity the user has joined (the first is the default Restvo Community)
                 if (result === 'success') {
-                    const activities = await this.userData.loadPrograms(true);
-                    // activities is an Array like object
-                    const newActivities = Array.prototype.slice.call(activities);
+                    const activities: any = await this.userData.loadPrograms(true);
                     // newActivities is now an array
-                    if (newActivities.length === 2) {
-                        const activity = newActivities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
-                        // activity should now be an object of the new Activity
-                        // update the userData default program to equal the object
+                    if (activities.length === 2) { // only do it if joining the first non-Restvo Activity
+                        const activity = activities.find((n) => n._id !== '5d5785b462489003817fee18'); // finding an Activity that is not Restvo Mentor);
                         if (activity) {
                             this.userData.defaultProgram = activity;
                             this.userData.UIAdminMode = true; // toggling on the Mentoring Mode
                             this.storage.set('defaultProgram', activity);
-                        } // if it is for some odd reason cannot find a new program that is not Restvo Mentoring, do nothing
+                        }
                     }
                 }
                 return result;
