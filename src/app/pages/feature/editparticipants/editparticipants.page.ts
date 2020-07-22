@@ -231,6 +231,14 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
         handler: async () => {
           alert.dismiss();
           this.removeFromUserLists(event.detail.value.map((c) => c.user_list), this.selectedParticipants.map((c) => c._id));
+          // if admin is removing herself, exit manage view
+          if (event.detail.value.find((c) => c.user_list === 'user_list_2') && this.selectedParticipants.find((c) => c._id === this.userData.user._id)) {
+            if (this.modalPage) {
+              this.closeModal(true);
+            } else {
+              this.router.navigate(['/app/activity/' + this.moment._id]);
+            }
+          }
           this.selectedParticipants = []; // empty the selected array
         }}, { text: 'Cancel' }]
     });
