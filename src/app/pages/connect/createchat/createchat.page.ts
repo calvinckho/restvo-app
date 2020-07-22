@@ -4,7 +4,6 @@ import { AlertController, IonContent, IonInfiniteScroll, ModalController, Platfo
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
-import { Groups } from '../../../services/group.service';
 import { Auth } from '../../../services/auth.service';
 import { Chat } from "../../../services/chat.service"
 import {GroupchatPage} from "../../group/groupchat/groupchat.page";
@@ -335,99 +334,6 @@ export class CreatechatPage implements OnInit {
         this.ionSpinner = false;
         this.modalCtrl.dismiss(true);
     }
-
-    /*async selectGroupType(type){
-        this.type = type;
-        let controlConfigs = {
-            name: [this.chatForm.value.name, Validators.required],
-            background: [''],
-            emailDisabled: [false],
-            smsDisabled: [false],
-            smsKeyword: [''],
-            churchId: [''],
-            published: [false],
-            flagged: [false],
-            public_group: [false],
-            details: [''],
-            meeting_day: [''],
-            meeting_frequency: [''],
-            beginAtISOString: [new Date().toISOString()],
-            endAtISOString: [new Date().toISOString()],
-            location: [''],
-            street: [''],
-            city: [''],
-            state: [''],
-            country: [''],
-            conversation: [''] // not a GUI element but required for group chat creation
-        };
-        this.churches = this.userData.user.churches.map((c) => { return { _id: c._id, name: c.name, selected: false }; });
-        this.churches.unshift({ _id: '', name: 'None', selected: false });
-        this.countries = this.country_list.map((c) => { return {name: c, selected: false }; });
-        this.days = this.day_list.map((c) => { return { name: c, selected: false }; });
-        this.frequencies = this.frequency_list.map((c) => { return { name: c, selected: false }; });
-        //populate the community info
-        if (this.type === 'community'){
-            this.title = 'Community Group';
-            controlConfigs.churchId[0] = this.userData.user.churches[this.userData.currentCommunityIndex]._id;
-            controlConfigs = await this.loadCommunityInfo(controlConfigs, this.churchId);
-            this.page = 3;
-        } else if (this.type === 'personal'){
-            // clear the settings
-            this.title = 'Personal Group';
-            controlConfigs.churchId[0] = '';
-            this.page = 3;
-        }
-        this.groupForm = this.formBuilder.group(controlConfigs);
-    }*/
-
-    /*async createGroupChat(){
-        try {
-            this.ionSpinner = true;
-            this.group = this.groupForm.value;
-            if (this.type === 'community'){
-                this.group.meeting_location = {
-                    location: this.group.location,
-                    street: this.group.street,
-                    city: this.group.city,
-                    state: this.group.state,
-                    country: this.group.country
-                };
-            } else if (this.type === 'personal') {
-                this.group.meeting_location = {location: '', street: '', city: '', state: '', country: ''};
-                this.group.churchId = '';
-            }
-            this.group.beginAt = new Date(new Date(this.group.beginAtISOString).getTime() + new Date().getTimezoneOffset()*60000).toISOString();
-            this.group.endAt = new Date(new Date(this.group.endAtISOString).getTime() + new Date().getTimezoneOffset()*60000).toISOString();
-            if (!this.group.background.length) {
-                delete this.group.background;
-            }
-            this.group.emailDisabled = !this.group.emailDisabled; // reverse the boolean of the toggle interface
-            this.group.smsDisabled = !this.group.smsDisabled; // reverse the boolean of the toggle interface
-            const createdGroup: any = await this.groupService.createGroupProfile(this.group);
-            this.userData.user.groups.push({_id: createdGroup._id, name: createdGroup.name, role: "Leader", churchId: createdGroup.churchId});
-            const data = { groups: [createdGroup], appUsers: this.selectedAppUsers };
-            await this.groupService.addNewAppUsers(data);
-            this.selectedAppUsers.forEach((appuser) => {
-                this.userData.socket.emit('refresh user status', appuser._id, {type: 'update group participation', conversationId: null});
-            });
-            this.chatService.currentChatProps.push({
-                conversationId: createdGroup.conversation,
-                name: createdGroup.name,
-                group: createdGroup,
-                page: 'chat',
-                badge: 0,
-                modalPage: this.platform.width() < 768
-            });
-            this.ionSpinner = false;
-            this.modalCtrl.dismiss(true);
-        } catch (err) {
-            if (err) {
-                console.log(JSON.stringify(err));
-                this.noNetworkConnection();
-                this.ionSpinner = false;
-            }
-        }
-    }*/
 
     backButton(){
         this.modalCtrl.dismiss(false);
