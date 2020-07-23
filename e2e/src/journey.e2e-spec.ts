@@ -48,36 +48,28 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        await showfeature.navigateTo();
+        // await showfeature.navigateTo();
+        await browser.get("/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY");
         await showfeature.waitUntilPresent();
-        await showfeature.clickSigninButton('#signin');
+        // await showfeature.clickSigninButton('#signin');
+        // await browser.waitForAngular();
+        // await register.fillEmail();
+        // await register.fillPassword();
+        // await register.submitLoginForm();
+        // await maintab.waitUntilVisible();
+    });
+
+    it('should render unauthenticated journey page', async () => {
+        expect(await app.headerIsPresent("#showfeature-header")).toBeTruthy();
+    });
+
+    it('should join the journey', async () => {
+        await showfeature.clickElement("#accept-invitation");
+        await me.waitUntilVisible();
+
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-        await maintab.waitUntilVisible();
-    });
-
-    it('should log in successfully', async () => {
-        expect(await app.currentUrl()).toContain('app');
-    });
-
-    it('should load the Me page', async () => {
-        await maintab.clickTabButton('#tab-button-me');
-        await me.waitUntilVisible();
-        expect(await app.currentUrl()).toContain('app/me');
-    });
-
-    it('should load the journey if exists', async () => {
-        await maintab.clickTabButton('#journey-card');
-        await me.waitUntilVisible();
-        expect(app.headerIsPresent('#showfeature-header')).toBeTruthy();
-    });
-
-    it('should leave the journey', async () => {
-        await browser.sleep(3000);
-        await showfeature.clickTitle('#show-event-title');
-        await me.waitUntilVisible();
-        await browser.sleep(5000);
     });
 });
