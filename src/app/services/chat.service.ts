@@ -179,33 +179,16 @@ export class Chat {
                 if (this.router.url.indexOf('/app/myconversations') < 0 || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
                     this.toastNotification({type: 'message', data: message});
                 }
-                this.conversations.forEach((data) => { // update respective badges
-                    if ((data.conversation._id === message.conversationId) && (data.conversation.type === "group")) {
-                        this.userData.user.churches.forEach((church) => {
-                            if (data.conversation.group.churchId && church._id === data.conversation.group.churchId.toString()) {
-                                church.badge++;
-                            }
-                        });
-                        if (!data.conversation.group.churchId) { //in private chat
-                            this.userData.user.churches.forEach((church) => {
-                                if (church._id === "5ab62be8f83e2c1a8d41f894") {
-                                    church.badge++; // increment the Restvo badge
-                                }
-                            });
-                        }
-                    } else if ((data.conversation._id === message.conversationId) && (data.conversation.type === "connect")) {
-                        this.userData.user.churches.forEach((church) => {
-                            if (church._id === "5ab62be8f83e2c1a8d41f894") {
-                                church.badge++; // increment the Restvo badge
-                            }
-                        });
-                    }
-                });
                 const index = this.conversations.map((c) => c.conversation._id).indexOf(message.conversationId);
                 if (index > -1) { // move the incoming message to top of list
                     const conversation = this.conversations[index];
                     this.conversations.splice(index, 1);
                     this.conversations.unshift(conversation);
+                }
+                const currentChatProp = this.currentChatProps.find((c) => c.conversationId === message.conversationId);
+                if (currentChatProp) {
+                    currentChatProp.badge++;
+                    console.log('chatProp badge...', currentChatProp.badge);
                 }
             }
         });
@@ -333,7 +316,7 @@ export class Chat {
                     });
                 } else { // increment Restvo badges
                     churches.forEach((church) => {
-                        if (church._id === "5ab62be8f83e2c1a8d41f894"){
+                        if (church._id === '5ab62be8f83e2c1a8d41f894'){
                             church.badge += obj.data.badge;
                         }
                     });

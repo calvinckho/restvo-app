@@ -782,7 +782,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (await this.networkService.hasNetwork && badge) {
             count = await this.chatService.resetBadgeCount(conversationId);
             this.chatService.currentChatProps[this.propIndex].badge = 0;
-            if (refreshMyConversations) {
+            if (refreshMyConversations) { // if true, reload my conversations
                 this.userData.refreshMyConversations({action: 'reload', data: conversationId});
             }
             if (count) {
@@ -1002,7 +1002,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    private async presentToast(text, duration) {
+    async presentToast(text, duration) {
         this.audioToast = await this.toastCtrl.create({
             message: text,
             duration: duration,
@@ -1011,7 +1011,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.audioToast.present();
     }
 
-    private async expandChatView(startVideoChat) { // can only happen in the desktop view
+    async expandChatView(startVideoChat) { // can only happen in the desktop view
         this.chatService.currentChatProps.push(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]);
         this.closeModal(false);
         setTimeout(() => {
