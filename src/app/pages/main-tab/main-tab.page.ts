@@ -683,6 +683,11 @@ export class MainTabPage implements OnInit, OnDestroy {
     async openGroupChat(data) {
         console.log('incoming data', data);
         if (data) {
+            // make sure conversation does not already exist in currentChatProps
+            const index = this.chatService.currentChatProps.map((c) => c.conversationId).indexOf(data.conversationId);
+            if (index > -1) { // if it is, remove it
+                this.chatService.currentChatProps.splice(index, 1);
+            }
             if (data.group) { // for a group chat
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,

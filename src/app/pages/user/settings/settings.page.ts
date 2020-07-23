@@ -95,7 +95,7 @@ export class SettingsPage implements OnInit, OnDestroy {
             this.modalCtrl.dismiss();
         }
         this.menuCtrl.enable(false);
-        this.router.navigate(['/register', {slide: '6', exitType: 'dashboard'}]);
+        this.router.navigate(['/register', {slide: '5', exitType: 'dashboard'}]); // password page
     }
 
     async changePhone() {
@@ -103,7 +103,7 @@ export class SettingsPage implements OnInit, OnDestroy {
             this.modalCtrl.dismiss();
         }
         this.menuCtrl.enable(false);
-        this.router.navigate(['/register', {slide: '3', exitType: 'dashboard'}]);
+        this.router.navigate(['/register', {slide: '2', exitType: 'dashboard'}]); // mobile phone page
     }
 
     async permanentlyEraseUser() {
@@ -139,7 +139,6 @@ export class SettingsPage implements OnInit, OnDestroy {
                             this.userData.resetUserData();
                             this.menuCtrl.enable(false);
                             this.router.navigate(['/activity/5d5785b462489003817fee18']);
-                            //this.router.navigate(['/register', { slide : '0', exitType: 'slide' }]);
                         }, 500);
                     }, async (err) => {
                         loading.dismiss();
