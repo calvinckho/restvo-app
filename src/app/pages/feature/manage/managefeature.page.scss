@@ -33,6 +33,8 @@ app-managefeature {
       padding: 5px;
       margin: 5px;
       border-radius: 10px;
+      background-color: var(--ion-color-secondary);
+
       ion-item {
         .menu-label {
           font-size: 12px !important;
