@@ -149,7 +149,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.chatAPIBusy = false;
             this.chatReachedEnd = false;
             this.chatPageNum = 0;
-            const currentChatId = this.chatService.currentChatProps[0].conversationId;
+            const currentChatId = this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId;
             this.awsService.sessionAssets[currentChatId] = [];
             this.selectedMoments = [];
             this.resetBadge(currentChatId, refreshMyConversations);

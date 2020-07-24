@@ -683,11 +683,6 @@ export class MainTabPage implements OnInit, OnDestroy {
     async openGroupChat(data) {
         console.log('incoming data', data);
         if (data) {
-            // make sure conversation does not already exist in currentChatProps
-            const index = this.chatService.currentChatProps.map((c) => c.conversationId).indexOf(data.conversationId);
-            if (index > -1) { // if it is, remove it
-                this.chatService.currentChatProps.splice(index, 1);
-            }
             if (data.group) { // for a group chat
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
@@ -755,7 +750,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
                     } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
-                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window
+                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
                         window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
                     } else { // on desktop web, open another tab and run external API
                         window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');

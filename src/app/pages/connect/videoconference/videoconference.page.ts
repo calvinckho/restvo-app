@@ -173,7 +173,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   }
 
   continueToApp() {
-    window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.videoChatRoomId + ';channelLastN=' + this.channelLastN + ';startWithAudioMuted=' + this.startWithAudioMuted + ';startWithVideoMuted=' + this.startWithVideoMuted + ';videoChatRoomSubject=' + this.videoChatRoomSubject);
+    if (this.platform.is('ios')) { // on iOS cannot open popup nor trigger deeplink from the same domain, so just go back in history
+      this.location.back();
+    } else { // android can trigger Universal Link from the same domain so no need to send to another domain
+      window.open('https://app.restvo.com/app/video/' + + this.videoChatRoomId + ';channelLastN=' + this.channelLastN + ';startWithAudioMuted=' + this.startWithAudioMuted + ';startWithVideoMuted=' + this.startWithVideoMuted + ';videoChatRoomSubject=' + this.videoChatRoomSubject);
+    }
   }
 
   ngOnDestroy(): void {
