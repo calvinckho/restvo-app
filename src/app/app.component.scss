@@ -1,5 +1,9 @@
 app-root {
 
+  #main-menu-toolbar {
+    cursor: pointer;
+  }
+
   .split-pane-narrow {
     width: 70%;
     border-right: var(--border);

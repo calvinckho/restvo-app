@@ -4,6 +4,10 @@ app-groupchat {
   display: flex;
   flex-direction: column;
 
+  ion-title {
+    cursor: pointer;
+  }
+
   ion-infinite-scroll {
     //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
   }
