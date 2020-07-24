@@ -176,7 +176,7 @@ export class Chat {
             this.broadcastChatMessage(message); // broadcast an incoming message
             if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
                 this.connectTabBadge++; //increment the Chat Tab badge count
-                if (this.router.url.indexOf('/app/myconversations') < 0 || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
+                if (!this.router.url.includes('/app/myconversations') || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
                     this.toastNotification({type: 'message', data: message});
                 }
                 const index = this.conversations.map((c) => c.conversation._id).indexOf(message.conversationId);
@@ -299,37 +299,14 @@ export class Chat {
     }
 
     async refreshTabBadges() {
-        let churches = [];
-        if (this.userData.user.churches && this.userData.user.churches.length) {
-            churches = this.userData.user.churches.map((c) => {return {_id: c._id, badge: 0}});
-        }
         let connectTabBadge = 0;
         const conversations = await this.getAllUserConversations();
         if (conversations) {
             conversations.forEach((obj) => {
-                if (obj.data && obj.data.badge) connectTabBadge += obj.data.badge;
-                if (obj.conversation.type === 'group' && obj.conversation.group.churchId){ // increment community badges
-                    churches.forEach((church) => {
-                        if (church._id === obj.conversation.group.churchId){
-                            church.badge += obj.data.badge;
-                        }
-                    });
-                } else { // increment Restvo badges
-                    churches.forEach((church) => {
-                        if (church._id === '5ab62be8f83e2c1a8d41f894'){
-                            church.badge += obj.data.badge;
-                        }
-                    });
+                if (obj.data && obj.data.badge) {
+                    connectTabBadge += obj.data.badge;
                 }
             });
-            churches.forEach((church) => {
-                this.userData.user.churches.forEach((userChurch) => {
-                    if (userChurch._id === church._id) {
-                        userChurch.badge = church.badge;
-                    }
-                });
-            });
-            // console.log("badge: ", this.connectTabBadge); //TODO:Uncomment
             this.connectTabBadge = connectTabBadge;
             if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
                 this.badge.set(this.connectTabBadge);

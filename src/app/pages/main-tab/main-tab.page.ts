@@ -691,27 +691,24 @@ export class MainTabPage implements OnInit, OnDestroy {
                     group: data.group,
                     badge: true,
                     modalPage: true,
-                    cssClass: 'level-10'
                 });
             } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.author.first_name + ' ' + data.author.last_name,
                     page: 'chat',
+                    recipient: data.author,
                     badge: true,
                     modalPage: true,
-                    recipient: data.author,
-                    cssClass: 'level-10'
                 });
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.moment.name,
-                    moment: data.moment,
                     page: 'chat',
+                    moment: data.moment,
                     badge: true,
                     modalPage: true,
-                    cssClass: 'level-10'
                 });
             }
             if (data.subpanel) {

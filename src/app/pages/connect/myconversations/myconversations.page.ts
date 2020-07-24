@@ -183,14 +183,13 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 modalPage: this.platform.width() < 768
             };
         }
+        this.chatService.currentChatProps.push(chatObj);
         if (this.platform.width() >= 768) {
-            this.chatService.currentChatProps.push(chatObj);
             // when clicking on a conversation, if it is displaying the group info, it will force it to get back to the chat view
             this.router.navigate(['/app/myconversations/chat'], { skipLocationChange: true });
             // if it is displaying the chat view, it will reload the chat data
             this.userData.refreshMyConversations({action: 'reload chat view'});
         } else {
-            this.chatService.currentChatProps.push(chatObj);
             const groupPage = await this.modalCtrl.create({
                 component: GroupchatPage,
                 componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
