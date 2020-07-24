@@ -633,7 +633,7 @@
         <ion-item lines="none" class="ion-margin-vertical">
           <!-- run respondToTextArea to update the currentSaveState display -->
           <quill-editor
-            (onEditorCreated)="createQuillEditor($event, interactableDisplay[moment.resource.matrix_number[2][i]])"
+            (onEditorCreated)="createQuillEditor($event, moment.resource.matrix_number[2][i])"
             (onContentChanged)="respondToTextArea($event, i)"
             [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
             [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].indexOf(userData.user.role) > -1) ? 42 : 0) + 'px'}" format="object">

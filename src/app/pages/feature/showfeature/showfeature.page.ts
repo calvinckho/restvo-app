@@ -297,6 +297,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // for refreshing moment either because of real-time interactables, or for refreshing participation
   refreshMomentHandler = async (res) => {
+      console.log("incoming refresh", res)
       if (res && res.momentId && res.data) {
           const momentId = res.momentId;
           const data = res.data;
@@ -399,6 +400,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   this.checkAndLoadNotes();
               } else if (data.delta && data.interactableId && this.interactableDisplay.hasOwnProperty(data.interactableId)) {
                   // update the interactable Display (private or collaborative view)
+                  console.log("delta", this.interactableDisplay)
                   if (this.interactableDisplay.hasOwnProperty(data.interactableId) && this.interactableDisplay[data.interactableId].editor) {
                       this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                   }
@@ -697,7 +699,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         this.setupInteractableDisplay(interactableId, componentIndex);
                     } else if (componentId === 40010) { // text answer. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
                         // setting the default values of the current interactableDisplay
-                        this.interactableDisplay[interactableId] = { editor: null, currentSaveState: "" };
+                        if (!this.interactableDisplay[interactableId]) {
+                            this.interactableDisplay[interactableId] = { editor: null, currentSaveState: '' };
+                        }
                         // first determine if it is collaborative or private
                         const isCollaborative = (this.moment.matrix_number[componentIndex].length > 1) && this.moment.matrix_number[componentIndex][1];
                         this.interactableDisplay[interactableId].collaborative = isCollaborative;
@@ -1213,9 +1217,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-    async createQuillEditor(event, interactableDisplay) {
-        interactableDisplay.editor = event;
-        interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
+    async createQuillEditor(event, interactableId) {
+        event.setContents(this.interactableDisplay[interactableId].content.ops, 'silent');
+        this.interactableDisplay[interactableId]['editor'] = event;
+        setTimeout(() => {
+            console.log("done setting up editor 2", this.interactableDisplay[interactableId].editor)
+        }, 5000)
     }
 
     async checkAndLoadNotes() {
@@ -1248,6 +1255,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async respondToTextArea(event, componentIndex) {
+      console.log("quill changed")
         this.anyChangeMade = true;
         // Showing the user that the content is saving
         this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saving...";

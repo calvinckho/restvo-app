@@ -426,9 +426,9 @@ export class OnboardfeaturePage {
         this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
     }
 
-    async createQuillEditor(event, interactableDisplay) {
-        interactableDisplay.editor = event;
-        interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
+    async createQuillEditor(event, interactableId) {
+        this.interactableDisplay[interactableId].editor = event;
+        this.interactableDisplay[interactableId].editor.setContents(this.interactableDisplay[interactableId].content, 'silent');
     }
 
     joinVideoConference(event, moment) {

@@ -172,6 +172,10 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/activity/5d5785b462489003817fee18');
   }
 
+  continueToApp() {
+    window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.videoChatRoomId + ';channelLastN=' + this.channelLastN + ';startWithAudioMuted=' + this.startWithAudioMuted + ';startWithVideoMuted=' + this.startWithVideoMuted + ';videoChatRoomSubject=' + this.videoChatRoomSubject);
+  }
+
   ngOnDestroy(): void {
     this.subscriptions['userLoaded'].unsubscribe(this.userLoadedHander);
   }
