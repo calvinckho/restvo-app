@@ -250,10 +250,10 @@ export class MainTabPage implements OnInit, OnDestroy {
     async initPushNotification() {
         if (this.platform.is('cordova')) { // native device push notification strategy
             try {
-                const {PushNotifications} = Plugins;
-                PushNotifications.register();
                 if (!this.pushHandler) {
-                    this.pushHandler = PushNotifications.addListener('registration', (token: PushNotificationToken) => {
+                    const {PushNotifications} = Plugins;
+                    PushNotifications.register();
+                    this.pushHandler = PushNotifications.addListener('registration', async (token: PushNotificationToken) => {
                         if (token && token.value) {
                             console.log('device token ->', token.value);
                             this.userData.addDeviceToken({token: token.value}).subscribe(() => {
