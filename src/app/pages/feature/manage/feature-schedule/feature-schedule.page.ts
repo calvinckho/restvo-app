@@ -238,7 +238,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactable)));
           }
         }
-        if (goalsPrivacyPermission && (interactable.length > 10) && interactable[1] === 'goal') { // if it has goals permission
+        if (goalsPrivacyPermission && (interactable.length > 10)) { // if it has goals permission
           const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
           if (index >= 0) {
             if (this.responseObj.matrix_string[index].length < 10) {
