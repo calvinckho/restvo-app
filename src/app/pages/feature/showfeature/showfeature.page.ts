@@ -1655,24 +1655,20 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async openProgram(event, moment) {
-    event.stopPropagation();
-    if (this.platform.width() >= 768) {
-      if (this.authService.token) {
-          if (this.router.url.includes('/app/manage')) {
-              this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
-          } else {
-              this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
-          }
-      } else {
-        this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
-      }
+    if (event) event.stopPropagation();
+    if (!this.authService.token) {
+        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+    } else if (!this.modalPage && this.platform.width() >= 992) {
+        this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
+    } else if (!this.modalPage && this.platform.width() >= 768) {
+        if (this.router.url.includes('/app/manage')) {
+            this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
+        } else {
+            this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+        }
     } else {
-      if (this.authService.token) { // for authenticated user, use modalCtrl for in app experience
         const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: { moment: { _id: moment._id }, modalPage: true}} );
         await modal.present();
-      } else { // for unauthenticated user and in landing page view, use angular router
-        this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
-      }
     }
   }
 
