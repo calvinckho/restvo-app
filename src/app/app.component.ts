@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, NgZone, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {StripeService} from "ngx-stripe";
@@ -7,7 +7,7 @@ import {StripeService} from "ngx-stripe";
 //import {OAuth2Client} from '@byteowls/capacitor-oauth2';
 
 import {
-    ActionSheetController, LoadingController,
+    ActionSheetController, IonSelect,
     MenuController,
     ModalController,
     Platform,
@@ -17,8 +17,6 @@ import { UserData } from './services/user.service';
 import {Chat} from "./services/chat.service";
 import {ShowrecipientinfoPage} from "./pages/connect/showrecipientinfo/showrecipientinfo.page";
 import {Capacitor, Plugins} from "@capacitor/core";
-import {PickfeaturePopoverPage} from "./pages/feature/pickfeature-popover/pickfeature-popover.page";
-import {Moment} from "./services/moment.service";
 import {ProgramsPage} from "./pages/user/programs/programs.page";
 const { App } = Plugins;
 
@@ -29,7 +27,7 @@ const { App } = Plugins;
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, AfterViewInit {
-
+    @ViewChild('restSelect', {static: false}) select: IonSelect;
     selectedProgram: any;
     loading: any;
 
@@ -125,6 +123,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             const modal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
             await modal.present();
         }
+    }
+
+    async clickRestToggle(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.select.open();
     }
 
     async saveToLocalStorage() {

@@ -203,7 +203,7 @@ export class UserData {
 
     async checkRestExpired() {
         if (this.user.hasOwnProperty('restSchedule') && this.user.restSchedule.breakExpiredAt) {
-            let restExpired = new Date().getTime() > new Date(this.user.restSchedule.breakExpiredAt).getTime();
+            const restExpired = new Date().getTime() > new Date(this.user.restSchedule.breakExpiredAt).getTime();
             this.UIrestStatus = restExpired ? 'active' : 'away';
             return restExpired;
         } else {

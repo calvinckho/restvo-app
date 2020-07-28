@@ -453,32 +453,28 @@ export class Chat {
     }
 
     async toggleRestStatus(event) {
-        event.stopPropagation();
         try {
-            if (!this.userData.user.hasOwnProperty('restSchedule')) { // if toggling for the first time
-                let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
+            if (!this.userData.user.hasOwnProperty('restSchedule') && event === 'away') { // if toggling for the first time
+                const expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
                 await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                 this.userData.UIrestStatus = 'away';
                 this.conversations.forEach((obj) => {
                     this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
                 });
-
-            } else {
-                if (await this.userData.checkRestExpired()) { // when switching from active to away
-                    let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
-                    await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
-                    this.userData.UIrestStatus = 'away';
-                    this.conversations.forEach((obj) => {
-                        this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
-                    });
-                } else { // when switching from rest to active
-                    let expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
-                    await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
-                    this.userData.UIrestStatus = 'active';
-                    this.conversations.forEach((obj) => {
-                        this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'online', origin: this.socket.id });
-                    });
-                }
+            } else if (await this.userData.checkRestExpired() && event === 'away') { // when switching from active to away
+                const expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
+                await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
+                this.userData.UIrestStatus = 'away';
+                this.conversations.forEach((obj) => {
+                    this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
+                });
+            } else if (event === 'active') { // when switching from rest to active
+                const expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
+                await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
+                this.userData.UIrestStatus = 'active';
+                this.conversations.forEach((obj) => {
+                    this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'online', origin: this.socket.id });
+                });
             }
         } catch (err) {
             console.log(err);

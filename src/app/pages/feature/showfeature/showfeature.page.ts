@@ -39,7 +39,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
   encapsulation: ViewEncapsulation.None
 })
 export class ShowfeaturePage implements OnInit, OnDestroy {
-  @ViewChild(IonSelect, {static: false}) select: IonSelect;
+    @ViewChild(IonSelect, {static: false}) select: IonSelect;
     @ViewChild(IonContent, {static: false}) content: IonContent;
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
     @ViewChild('peopleSlides', {static: false}) peopleSlides: IonSlides;

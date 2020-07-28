@@ -76,7 +76,7 @@
     </ion-item>
     <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
       <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
-      <ion-input style="width: 10%; text-align: right" margin-left="20px" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
+      <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
     </ion-item>
     <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence === 'weekly'">
       <ion-label style="width: 90%" class="ion-margin-left" slot="start">Days of the Week</ion-label>
