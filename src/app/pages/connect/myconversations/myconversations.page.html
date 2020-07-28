@@ -98,7 +98,7 @@
   <ion-grid style="height: 100%">
     <ion-row style="height: 100%">
       <ion-col [ngStyle]="{'height': (platform.width() >= 768) ? 'calc(100% - 58px)' : '100%'}" class="conversations-panel ion-no-padding" size-xs="12" size-sm="12" size-md="5" size-lg="4">
-        <ion-toolbar *ngIf="platform.width() >= 768">
+        <ion-toolbar *ngIf="platform.width() >= 768" style="--background: var(--ion-toolbar-background, var(--ion-color-step-50, #fff))">
           <ion-searchbar #searchBar slot="start" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
         </ion-toolbar>
         <ion-content>

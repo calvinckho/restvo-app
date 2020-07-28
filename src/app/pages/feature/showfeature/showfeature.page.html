@@ -154,8 +154,8 @@
       </ion-item-group>
     </div>
   </ion-toolbar>
-  <ion-grid style="height: 105%" *ngIf="loadStatus !== 'completed'">
-    <ion-row class="ion-justify-content-start ion-align-items-center" style="height: 95%">
+  <ion-grid style="height: 100%; width: 100%; position: absolute" *ngIf="loadStatus !== 'completed'">
+    <ion-row class="ion-align-items-center" style="height: 100%">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
@@ -743,7 +743,7 @@
           <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
-          <div class="swiper-button-prev swiper-button-white" (click)="slides.slidePrev()" [hidden]="disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <div class="swiper-button-prev swiper-button-white" (click)="slides.slidePrev()" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
           <ion-slides class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [options]="peopleSlidesOptions">
             <ion-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
               <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
@@ -800,7 +800,7 @@
               </ion-card>
             </ion-slide>
           </ion-slides>
-          <div class="swiper-button-next swiper-button-white" (click)="slides.slideNext()" [hidden]="disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <div class="swiper-button-next swiper-button-white" (click)="slides.slideNext()" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
         </div>
         <!--List-->
         <div *ngIf="moment.matrix_number[i][3] === 1">
@@ -858,6 +858,23 @@
           </ion-infinite-scroll>
         </ion-content>
       </div>
+    </div><!--End of ngFor-->
+    <div *ngIf="categoryIds.includes('5c915324e172e4e64590e346') || categoryIds.includes('5c915475e172e4e64590e348')">
+      <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Section Header-->
+        <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured</ion-label>
+      </ion-item>
+      <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{grabCursor: true, updateOnWindowResize: true}">
+        <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
+          <ion-card class="program-card" (click)="openProgram($event, program)">
+            <ion-card-header class="ion-no-padding">
+              <div class="program-photo-container">
+                <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
+              </div>
+            </ion-card-header>
+            <div class="program-name">{{program.matrix_string[0][0]}}</div>
+          </ion-card>
+        </ion-slide>
+      </ion-slides>
     </div>
   </ion-list>
   <ion-slides pager [options]="slideOpts" *ngIf="loadStatus && mode === 'slider'">
@@ -1408,23 +1425,6 @@
       </ion-grid>
     </ion-slide>
   </ion-slides>
-  <div *ngIf="categoryIds.includes('5c915324e172e4e64590e346') || categoryIds.includes('5c915475e172e4e64590e348')">
-    <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Section Header-->
-      <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured</ion-label>
-    </ion-item>
-    <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{grabCursor: true, updateOnWindowResize: true}">
-      <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
-        <ion-card class="program-card" (click)="openProgram($event, program)">
-          <ion-card-header class="ion-no-padding">
-            <div class="program-photo-container">
-              <img class="program-photo" [src]="(program.assets && program.assets.length && program.assets[0]) | background: program._id" />
-            </div>
-          </ion-card-header>
-          <div class="program-name">{{program.matrix_string[0][0]}}</div>
-        </ion-card>
-      </ion-slide>
-    </ion-slides>
-  </div>
   <!--Space to create cushion for the Fab buttons-->
   <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
