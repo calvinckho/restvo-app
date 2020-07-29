@@ -10,10 +10,10 @@ export class ErrorService {
   constructor(private injector: Injector) { }
   handleError(error: any) {
     const router = this.injector.get(Router);
-    if (Error instanceof HttpErrorResponse) {
-      console.log('HTTP Error Response: ' + error.status);
+    if (error.name === 'HttpErrorResponse') {
+      console.log(`HTTP Error Response: STATUS[${error.status}]`);
     } else {
-      console.log('Error Occurred');
+      console.log(`Error Unknown Type Occurred: [${error.message}]`);
     }
   }
 }
