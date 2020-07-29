@@ -73,6 +73,11 @@ class PageObjectBase {
         el.click();
     }
 
+    async clickAuthenticatedElement(sel: string) {
+        const el = element(by.css(`app-main-tab ${this.tag} ${sel}`));
+        el.click();
+    }
+
     protected async countElements(sel: string) {
         return await element.all(by.css(`${this.tag} ${sel}`)).count();
     }
@@ -113,6 +118,14 @@ export class MaintabPage extends PageObjectBase {
 export class ShowfeaturePage extends PageObjectBase {
     constructor() {
         super('app-showfeature', '/');
+    }
+
+    headerIsPresentInAuthenticated(sel) { // used by the journey.e2e-spec.ts
+        return element(by.css(`app-main-tab ${this.tag} ${sel}`)).isPresent();
+    }
+
+    headerIsPresentInUnauthenticated(sel) { // used by the journey.e2e-spec.ts
+        return element(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 
     navigateTo() {
