@@ -1,10 +1,10 @@
-<ion-header *ngIf="chatService.currentChatProps[propIndex]">
+<ion-header>
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal(false)" *ngIf="modalPage || subpanel"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
-    <ion-buttons slot="end">
+    <ion-title *ngIf="chatService.currentChatProps[propIndex]" (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
+    <ion-buttons slot="end" *ngIf="chatService.currentChatProps[propIndex]">
       <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)">
         <ion-icon name="open"></ion-icon>
       </ion-button>

@@ -18,7 +18,7 @@
         <img *ngIf="!activity.assets.length || !activity.assets[0]" src="assets/img/group-default.png"/>
       </ion-thumbnail>
       <ion-label>
-        <h2 class="ion-text-wrap">{{activity.matrix_string[0][0]}}</h2>
+        <h2 class="ion-text-wrap">{{activity.matrix_string[0][0]}} <span *ngIf="activity.deletedAt">(Deleted)</span></h2>
       </ion-label>
       <ion-badge color="primary" *ngIf="activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1]">Marketplace</ion-badge>
       <ion-badge color="grey" *ngIf="!(activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1])">Private</ion-badge>

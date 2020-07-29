@@ -525,7 +525,7 @@ export class InvitetoconnectPage implements OnInit {
                 };
                 this.emailComposer.open(email);
             } else {
-                window.location.href = 'mailto:' + this.selectedEmails + '?subject=Download Restvo for free today&body=' + encodeURI(welcomeMessage);
+                window.location.href = 'mailto:' + this.selectedEmails + '?subject=Download Restvo for free today&body=' + encodeURIComponent(welcomeMessage);
             }
         }
     }

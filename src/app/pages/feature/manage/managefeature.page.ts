@@ -31,6 +31,7 @@ import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscripti
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
 import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
+import {CreatefeaturePage} from "../createfeature/createfeature.page";
 
 @Component({
   selector: 'app-managefeature',
@@ -268,11 +269,13 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         handler: () => {
           const navTransition = actionSheet.dismiss();
           navTransition.then( async () => {
-            if (this.modalPage) {
+            if (!this.modalPage && this.platform.width() >= 992) {
+              this.router.navigate([{ outlets: { sub: ['edit', this.moment._id, { subpanel: true }] }}]);
+            } else if (!this.modalPage && this.platform.width() >= 768) {
+              this.router.navigate(['/app/edit/' + this.moment._id]);
+            } else {
               const editModal = await this.modalCtrl.create({component: EditfeaturePage, componentProps: { moment: this.moment, modalPage: true }});
               await editModal.present();
-            } else {
-              this.router.navigate(['/app/edit/' + this.moment._id]);
             }
           });
         }

@@ -375,7 +375,9 @@ export class RegisterPage implements OnInit {
 
     async loadRegisterSlides() {
         this.ionSpinner = true;
-        this.view = 'register';
+        setTimeout(() => {
+            this.view = 'register';
+        }, 2000);
     }
 
     async registerSlidesLoaded() {
@@ -442,7 +444,7 @@ export class RegisterPage implements OnInit {
                 loading.dismiss();
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(2); // go to upload a Profile Pic
+                    this.goToSlide(6); // go to upload a Profile Pic
                 }, 500);
             }
         } catch (err) {
@@ -477,7 +479,7 @@ export class RegisterPage implements OnInit {
                 if (result.success) {
                     this.view = 'register';
                     setTimeout(() => {
-                        this.goToSlide(4); // verify SMS
+                        this.goToSlide(3); // verify SMS
                     }, 500);
                 } else {
                     const alert = await this.alertCtrl.create({
@@ -499,7 +501,7 @@ export class RegisterPage implements OnInit {
                 if (result && result.success) {
                     const alert = await this.alertCtrl.create({
                         header: 'Password Recovery Email Sent',
-                        subHeader: 'An email with a recovery link has been sent to ' + this.loginForm.get('email').value + '.',
+                        subHeader: 'An email with a verification link has been sent to ' + this.loginForm.get('email').value + '.',
                         buttons: [{ text: 'Ok',
                             handler: () => {
                                 const navTransition = alert.dismiss();
@@ -576,7 +578,7 @@ export class RegisterPage implements OnInit {
             if (result.success) {
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(4); // verify SMS
+                    this.goToSlide(3); // verify SMS
                 }, 500);
             } else {
                 const alert = await this.alertCtrl.create({
@@ -614,9 +616,9 @@ export class RegisterPage implements OnInit {
                 this.view = 'register';
                 setTimeout(() => {
                     if (!this.recovery_mode) {
-                        this.goToSlide(5); // input an email
+                        this.goToSlide(4); // input an email
                     } else { // if it is a recovery process, go to create password
-                        this.goToSlide(6); // create a password
+                        this.goToSlide(5); // create a password
                     }
                 }, 500);
 
@@ -712,7 +714,7 @@ export class RegisterPage implements OnInit {
             await this.authService.registerEmail(data);
             this.view = 'register';
             setTimeout(() => {
-                this.goToSlide(6); // pick a password
+                this.goToSlide(5); // pick a password
             }, 500);
         } catch (err) {
             console.log("result", err);
@@ -746,7 +748,7 @@ export class RegisterPage implements OnInit {
             } else { // if it is a normal registration process
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(2); // upload profile picture
+                    this.goToSlide(6); // upload profile picture
                 }, 500);
             }
         } catch (err) {

@@ -141,6 +141,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             if (!samples.length) {
                 this.reachedEnd = true;
             } else {
+                this.samples = [];
                 samples.forEach((parent) => {
                     this.samples.push(...parent.sample_activities);
                 });

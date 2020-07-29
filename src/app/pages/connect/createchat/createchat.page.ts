@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import {CameraResultType, CameraSource, Plugins} from '@capacitor/core';
 import { AlertController, IonContent, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
-import { Groups } from '../../../services/group.service';
 import { Auth } from '../../../services/auth.service';
 import { Chat } from "../../../services/chat.service"
 import {GroupchatPage} from "../../group/groupchat/groupchat.page";
+import {Moment} from "../../../services/moment.service";
 
 @Component({
   selector: 'app-createchat',
@@ -21,35 +20,25 @@ export class CreatechatPage implements OnInit {
     @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     chatForm: FormGroup;
-    title: string = "Create Chat";
-    churchId: string = '';
-    pageNum: number = 0;
-    displayGroup: boolean = false;
-    reachedEnd: boolean = false;
+    churchId = '';
+    pageNum = 0;
+    displayGroup = false;
+    reachedEnd = false;
     searchKeyword = '';
-    allFriends: any = [];
-    listOfFriends: any = [];
-    listOfAppUsers: any = [];
-    selectedAppUsers: any = [];
+    allFriends = [];
+    listOfFriends = [];
+    listOfAppUsers = [];
+    selectedAppUsers = [];
     group: any;
     totalSelected: number = 0;
     loading: any;
     ionSpinner = true;
     page = 1;
     type: string;
-    showOptional = false;
 
     //group creation variables
     groupForm: FormGroup;
-    days: Array<{name: string, selected: boolean}> = [];
-    frequencies: Array<{name: string, selected: boolean}> = [];
-    countries: Array<{name: string, selected: boolean}> = [];
-    churches: Array<{_id: string, name: string, selected: boolean}> = [];
-    smsPlan: boolean = false;
 
-    country_list: Array<string> = ["United States","Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antarctica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo", "Congo, the Democratic Republic of the", "Cook Islands", "Costa Rica", "Cote D'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea","Guinea-Bissau","Guyana","Haiti","Heard Island and Mcdonald Islands","Holy See (Vatican City State)","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran, Islamic Republic of","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea, Democratic People's Republic of","Korea, Republic of","Kuwait","Kyrgyzstan","Lao People's Democratic Republic","Latvia","Lebanon","Lesotho","Liberia","Libyan Arab Jamahiriya","Liechtenstein","Lithuania","Luxembourg","Macao","Macedonia, the Former Yugoslav Republic of","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia, Federated States of","Moldova, Republic of","Monaco","Mongolia","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Niue","Norfolk Island","Northern Mariana Islands","Norway","Oman","Pakistan","Palau","Palestinian Territory, Occupied","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Pitcairn","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russian Federation","Rwanda","Saint Helena","Saint Kitts and Nevis","Saint Lucia","Saint Pierre and Miquelon","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia and Montenegro","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Georgia and the South Sandwich Islands","Spain","Sri Lanka","Sudan","Suriname","Svalbard and Jan Mayen","Swaziland","Sweden","Switzerland","Syrian Arab Republic","Taiwan, Province of China","Tajikistan","Tanzania, United Republic of","Thailand","Timor-Leste","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos Islands","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States Minor Outlying Islands","Uruguay","Uzbekistan","Vanuatu","Venezuela","Viet Nam","Virgin Islands, British","Virgin Islands, US","Wallis and Futuna","Western Sahara","Yemen","Zambia","Zimbabwe"];
-    day_list: Array<string> = ['', "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Varied or N/A", "To be determined"];
-    frequency_list: Array<string> = ['', "Weekly", "Every Other Week", "One-Time", "Monthly", "1st and 3rd Week", "2nd and 4th Week", "N/A"];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -60,7 +49,7 @@ export class CreatechatPage implements OnInit {
         private authService: Auth,
         public userData: UserData,
         private churchService: Churches,
-        private groupService: Groups,
+        private momentService: Moment,
         private chatService: Chat,
     ) {
         this.chatForm = this.formBuilder.group({
@@ -81,8 +70,8 @@ export class CreatechatPage implements OnInit {
     async renderList() {
         this.listOfFriends = [];
         this.chatService.conversations.forEach((obj) => {
-            if ((obj.conversation.type === 'connect') && obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
-                this.listOfFriends.push({_id: obj.data.participant._id, name: obj.data.name, avatar: obj.data.participant.avatar, badge: obj.data.badge, order: null, select: false});
+            if ((obj.conversation.type === 'connect') && obj.data.name.toLowerCase().includes(this.searchKeyword.toLowerCase())) {
+                this.listOfFriends.push({_id: obj.data.participant._id, name: obj.data.name, avatar: obj.data.participant.avatar, badge: obj.data.badge, order: null, select: this.selectedAppUsers.map((c) => c._id).includes(obj.data.participant._id)});
             }
         });
         this.listOfFriends.forEach((obj, index) => { // to do a stable sort next, first remember the order
@@ -120,7 +109,7 @@ export class CreatechatPage implements OnInit {
                 churchAppUsers.forEach((appuser) => {
                     if (appuser._id !== this.userData.user._id){
                         appuser.name = `${appuser.first_name} ${appuser.last_name}`;
-                        this.listOfAppUsers.push({_id: appuser._id, name: appuser.name, avatar: appuser.avatar, select: false});
+                        this.listOfAppUsers.push({_id: appuser._id, name: appuser.name, avatar: appuser.avatar, select: this.selectedAppUsers.map((c) => c._id).includes(appuser._id)});
                     }
                 });
             }
@@ -135,9 +124,6 @@ export class CreatechatPage implements OnInit {
         event.stopPropagation();
         this.setupLoadPeople();
         this.renderList();
-        setTimeout(() => {
-            //Keyboard.hide();
-        }, 2000);
     }
 
     cancelSearch(event){
@@ -148,18 +134,18 @@ export class CreatechatPage implements OnInit {
     }
 
     select(person){
-        if (person.select){
+        if (person.select) {
             person.select = false;
             this.totalSelected--;
-            if(this.totalSelected < 2){
+            if(this.totalSelected < 2) {
                 this.displayGroup = false;
             }
-            let index = this.selectedAppUsers.indexOf(person);
+            const index = this.selectedAppUsers.indexOf(person);
             this.selectedAppUsers.splice(index, 1);
         } else {
             person.select = true;
             this.totalSelected++;
-            if(this.totalSelected > 1){
+            if (this.totalSelected > 1) {
                 this.displayGroup = true;
             }
             this.selectedAppUsers.unshift(person);
@@ -188,7 +174,7 @@ export class CreatechatPage implements OnInit {
         this.modifyChatName();
     }
 
-    modifyChatName(){
+    modifyChatName() {
         if (this.chatForm.controls.name.pristine) {
             if (this.totalSelected === 1){
                 this.chatForm.patchValue({
@@ -207,14 +193,10 @@ export class CreatechatPage implements OnInit {
     }
 
     async selectAppUsers(){
-        if (this.totalSelected === 1){ //direct message with 1 person
+        if (this.totalSelected === 1){ // direct message with 1 person
             this.createPrivateChat();
-        } else if (this.totalSelected > 1) { //direct message with 2 or more people
-            /*
-            this.page = 2;
-            this.title = 'Create Group Chat';
-            */
-            this.selectGroupType('personal');
+        } else if (this.totalSelected > 1) { // direct message with 2 or more people
+            this.createActivity();
         }
     }
 
@@ -323,172 +305,38 @@ export class CreatechatPage implements OnInit {
         }
     }
 
-    async selectGroupType(type){
-        this.type = type;
-        let controlConfigs = {
-            name: [this.chatForm.value.name, Validators.required],
-            background: [''],
-            emailDisabled: [false],
-            smsDisabled: [false],
-            smsKeyword: [''],
-            churchId: [''],
-            published: [false],
-            flagged: [false],
-            public_group: [false],
-            details: [''],
-            meeting_day: [''],
-            meeting_frequency: [''],
-            beginAtISOString: [new Date().toISOString()],
-            endAtISOString: [new Date().toISOString()],
-            location: [''],
-            street: [''],
-            city: [''],
-            state: [''],
-            country: [''],
-            conversation: [''] // not a GUI element but required for group chat creation
+    async createActivity() {
+        this.ionSpinner = true;
+        this.group = await this.momentService.load('5eea6fca0f43cd616279a0fe');
+        this.group.matrix_string[0][0] = this.chatForm.value.name;
+        this.group.calendar = { // reset the calendar
+            title: this.chatForm.value.name,
+            location: '',
+            notes: '',
+            startDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            options: {
+                firstReminderMinutes: 0,
+                secondReminderMinutes: 0,
+                reminders: []
+            }
         };
-        this.churches = this.userData.user.churches.map((c) => {return {_id: c._id, name: c.name, selected: false};});
-        this.churches.unshift({_id: '', name: 'None', selected: false});
-        this.countries = this.country_list.map((c) => {return {name: c, selected: false};});
-        this.days = this.day_list.map((c)=>{return {name: c, selected: false};});
-        this.frequencies = this.frequency_list.map((c)=>{return {name: c, selected: false};});
-        //populate the community info
-        if (this.type === 'community'){
-            this.title = 'Community Group';
-            controlConfigs.churchId[0] = this.userData.user.churches[this.userData.currentCommunityIndex]._id;
-            controlConfigs = await this.loadCommunityInfo(controlConfigs, this.churchId);
-            this.page = 3;
-        } else if (this.type === 'personal'){
-            // clear the settings
-            this.title = 'Personal Group';
-            controlConfigs.churchId[0] = '';
-            this.page = 3;
+        const [clonedActivity]: any = await this.momentService.clone([this.group], null);
+        if (clonedActivity) {
+            await this.momentService.updateMomentUserLists({
+                operation: 'add to lists and calendar',
+                user_lists: ['user_list_1'],
+                users: this.selectedAppUsers.map((c) => c._id),
+                momentId: clonedActivity._id,
+                calendarId: null // do not add to the moment's calendar because it is just a chat Group
+            }, null, true);
         }
-        this.groupForm = this.formBuilder.group(controlConfigs);
-    }
-
-    async loadCommunityInfo(controlConfigs, id){
-        try {
-            const [church] = await this.churchService.loadChurchProfile(id);
-            controlConfigs.city = church.meeting_location.city;
-            controlConfigs.state = church.meeting_location.state;
-            controlConfigs.country = church.meeting_location.country;
-            this.smsPlan = church.payment_type === "SMS";
-            return controlConfigs;
-        } catch (err){
-            console.log(err);
-        }
-    }
-
-    async changeCommunity(id){
-        try {
-            const [church] = await this.churchService.loadChurchProfile(id);
-            this.groupForm.patchValue(church.meeting_location);
-            this.smsPlan = church.payment_type === "SMS";
-        } catch (err){
-            console.log(err);
-        }
-    }
-
-    async createGroupChat(){
-        try {
-            this.ionSpinner = true;
-            this.group = this.groupForm.value;
-            if (this.type === 'community'){
-                this.group.meeting_location = {
-                    location: this.group.location,
-                    street: this.group.street,
-                    city: this.group.city,
-                    state: this.group.state,
-                    country: this.group.country
-                };
-            } else if (this.type === 'personal') {
-                this.group.meeting_location = {location: '', street: '', city: '', state: '', country: ''};
-                this.group.churchId = '';
-            }
-            this.group.beginAt = new Date(new Date(this.group.beginAtISOString).getTime() + new Date().getTimezoneOffset()*60000).toISOString();
-            this.group.endAt = new Date(new Date(this.group.endAtISOString).getTime() + new Date().getTimezoneOffset()*60000).toISOString();
-            if (!this.group.background.length) {
-                delete this.group.background;
-            }
-            this.group.emailDisabled = !this.group.emailDisabled; // reverse the boolean of the toggle interface
-            this.group.smsDisabled = !this.group.smsDisabled; // reverse the boolean of the toggle interface
-            const createdGroup: any = await this.groupService.createGroupProfile(this.group);
-            this.userData.user.groups.push({_id: createdGroup._id, name: createdGroup.name, role: "Leader", churchId: createdGroup.churchId});
-            const data = { groups: [createdGroup], appUsers: this.selectedAppUsers };
-            await this.groupService.addNewAppUsers(data);
-            this.selectedAppUsers.forEach((appuser) => {
-                this.userData.socket.emit('refresh user status', appuser._id, {type: 'update group participation', conversationId: null});
-            });
-            this.chatService.currentChatProps.push({
-                conversationId: createdGroup.conversation,
-                name: createdGroup.name,
-                group: createdGroup,
-                page: 'chat',
-                badge: 0,
-                modalPage: this.platform.width() < 768
-            });
-            this.ionSpinner = false;
-            this.modalCtrl.dismiss(true);
-        } catch (err) {
-            if (err) {
-                console.log(JSON.stringify(err));
-                this.noNetworkConnection();
-                this.ionSpinner = false;
-            }
-        }
-    }
-
-    async selectUploadFile(event){
-        try {
-            let result: any;
-            if (this.platform.is('cordova')) {
-                const { Camera } = Plugins;
-                const image = await Camera.getPhoto({
-                    quality: 60,
-                    width: 1280,
-                    allowEditing: false,
-                    resultType: CameraResultType.DataUrl,
-                    source: CameraSource.Prompt,
-                    correctOrientation: false
-                });
-                if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadImage('communities', this.groupForm.value.churchId, image, 'createchat');
-                } else {
-                    result = await this.awsService.uploadImage('users', this.userData.user._id, image, 'createchat');
-                }
-            } else {
-                const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                if (this.groupForm.value.churchId.length ) {
-                    result = await this.awsService.uploadFile('communities', this.groupForm.value.churchId, compressed, 'createchat');
-                } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, 'createchat');
-                }
-            }
-            if(result === "Upload succeeded"){
-                if (this.groupForm.value.background && this.groupForm.value.background.length){
-                    await this.awsService.removeFile(this.groupForm.value.background); //remove the previous background from Digital Ocean
-                }
-                this.groupForm.patchValue({background: this.awsService.url});
-            }
-        } catch (err) {
-            console.log(err);
-        }
+        this.ionSpinner = false;
+        this.modalCtrl.dismiss(true);
     }
 
     backButton(){
-        if (this.page > 1){
-            this.page--;
-            if (this.page === 1){
-              this.title = 'Create Chat';
-            } else if (this.page === 2){
-              //this.title = 'Create Group Chat';
-                this.page--;
-                this.title = 'Create Chat';
-            }
-        } else {
-            this.modalCtrl.dismiss(false);
-        }
+        this.modalCtrl.dismiss(false);
     }
 
     // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction

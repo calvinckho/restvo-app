@@ -3,6 +3,10 @@ app-myconversations {
     height: 100%;
   }
 
+  ion-virtual-scroll {
+    cursor: pointer;
+  }
+
   ion-menu-toggle {
     ion-badge {
       position: relative;

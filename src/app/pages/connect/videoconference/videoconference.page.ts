@@ -134,7 +134,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         if (this.userData && this.userData.user && this.userData.user.avatar) {
           this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
         }
-        this.jitsi.executeCommand('subject', (this.videoChatRoomSubject || ' '));
+        this.jitsi.executeCommand('subject', (this.videoChatRoomSubject ? decodeURIComponent(this.videoChatRoomSubject) : ' '));
         this.jitsi.on('readyToClose', this.onJitsiUnloaded);
       }, 1000);
       if (this.authService.token && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId }); }
@@ -170,6 +170,14 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   async goToHome() {
     await this.menuCtrl.enable(this.userData.user);
     this.router.navigateByUrl('/activity/5d5785b462489003817fee18');
+  }
+
+  continueToApp() {
+    if (this.platform.is('ios')) { // on iOS cannot open popup nor trigger deeplink from the same domain, so just go back in history
+      this.location.back();
+    } else { // android can trigger Universal Link from the same domain so no need to send to another domain
+      window.open('https://app.restvo.com/app/video/' + + this.videoChatRoomId + ';channelLastN=' + this.channelLastN + ';startWithAudioMuted=' + this.startWithAudioMuted + ';startWithVideoMuted=' + this.startWithVideoMuted + ';videoChatRoomSubject=' + this.videoChatRoomSubject);
+    }
   }
 
   ngOnDestroy(): void {

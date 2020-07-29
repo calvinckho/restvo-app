@@ -50,7 +50,7 @@
 </ion-header>
 
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field">
-  <ion-grid style="height: 100%; position: absolute;" *ngIf="momentService.ionSpinner">
+  <ion-grid style="height: 100%; width: 100%; position: absolute" *ngIf="momentService.ionSpinner">
     <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>

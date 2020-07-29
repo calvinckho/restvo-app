@@ -98,12 +98,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
         private authService: Auth,
         public userData: UserData,
         public chatService: Chat,
-        private awsService: Aws,
+        public awsService: Aws,
         private networkService: NetworkService,
         public calendarService: CalendarService,
         private responseService: Response,
         public momentService: Moment,
-        private resourceService: Resource,
+        public resourceService: Resource,
     ) {}
 
     async ngOnInit() {
@@ -124,7 +124,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         if (res) {
             if (res.action === 'reload chat view') {
                 if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
-                    await this.cleanup(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].badge);
+                    await this.cleanup(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].badge, false);
                     await this.setup();
                     this.reloadChatView();
                 }
@@ -143,16 +143,16 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     };
 
-    async cleanup(refreshMyConversations) {
+    async cleanup(refreshMyConversations, exit) {
         try {
             this.destroyPlayers(null);
             this.chatAPIBusy = false;
             this.chatReachedEnd = false;
             this.chatPageNum = 0;
-            const currentChatId = this.chatService.currentChatProps[0].conversationId;
+            const currentChatId = this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId;
             this.awsService.sessionAssets[currentChatId] = [];
             this.selectedMoments = [];
-            this.resetBadge(currentChatId, refreshMyConversations);
+            this.resetBadge(currentChatId, refreshMyConversations, exit);
             // lower priority tasks
             if (this.messages.length) {
                 await this.storage.set('conversation-' + currentChatId, this.messages); //store the active page to the local storage
@@ -216,7 +216,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 }
                 this.moreMediaOptions = false;
             }
-            this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge);
+            this.resetBadge(this.chatService.currentChatProps[this.propIndex].conversationId, this.chatService.currentChatProps[this.propIndex].badge, false);
         }
         if (this.subpanel) { // because subpanel is narrow, turn off moreMediaOptions on page load
             this.moreMediaOptions = false;
@@ -775,14 +775,14 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }, 5);*/
     }
 
-    async resetBadge(conversationId, refreshMyConversations) {
+    async resetBadge(conversationId, refreshMyConversations, exit) {
         // set the badge count to 0
         let count = 0;
-        const badge = this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) && this.chatService.currentChatProps[this.propIndex].badge;
+        const badge = this.chatService.currentChatProps && (this.chatService.currentChatProps.length > this.propIndex) ? this.chatService.currentChatProps[this.propIndex].badge : 0;
         if (await this.networkService.hasNetwork && badge) {
             count = await this.chatService.resetBadgeCount(conversationId);
             this.chatService.currentChatProps[this.propIndex].badge = 0;
-            if (refreshMyConversations) {
+            if (refreshMyConversations) { // if true, reload my conversations
                 this.userData.refreshMyConversations({action: 'reload', data: conversationId});
             }
             if (count) {
@@ -793,6 +793,10 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.chatService.connectTabBadge > -1) ? this.chatService.connectTabBadge : 0);
                 }
             }
+        }
+        if (exit) {
+            //  clean up the chat props
+            this.chatService.currentChatProps.pop(); // pop the current chat props. Once that is done, currentChatProps can't be referenced again in the code below. Use currentChatId
         }
         return count;
     }
@@ -1002,7 +1006,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    private async presentToast(text, duration) {
+    async presentToast(text, duration) {
         this.audioToast = await this.toastCtrl.create({
             message: text,
             duration: duration,
@@ -1011,7 +1015,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.audioToast.present();
     }
 
-    private async expandChatView(startVideoChat) { // can only happen in the desktop view
+    async expandChatView(startVideoChat) { // can only happen in the desktop view
         this.chatService.currentChatProps.push(this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]);
         this.closeModal(false);
         setTimeout(() => {
@@ -1178,10 +1182,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // close modal should only be execute by a Modal Page, since Chat is always embedded in the Myconversations page in Desktop view
     async closeModal(refreshNeeded) {
         try {
-            const currentChatId = await this.cleanup(false);
-            //  clean up the chat props
-            this.chatService.currentChatProps.pop(); // pop the current chat props. Once that is done, currentChatProps can't be referenced again in the code below. Use currentChatId
-
+            const currentChatId = await this.cleanup(false, true);
             if (this.modalPage) {
                 this.modalCtrl.dismiss(refreshNeeded);
                 this.userData.refreshMyConversations({action: 'reload', conversationId: currentChatId});

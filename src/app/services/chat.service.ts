@@ -176,36 +176,19 @@ export class Chat {
             this.broadcastChatMessage(message); // broadcast an incoming message
             if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
                 this.connectTabBadge++; //increment the Chat Tab badge count
-                if (this.router.url.indexOf('/app/myconversations') < 0 || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
+                if (!this.router.url.includes('/app/myconversations') || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
                     this.toastNotification({type: 'message', data: message});
                 }
-                this.conversations.forEach((data) => { // update respective badges
-                    if ((data.conversation._id === message.conversationId) && (data.conversation.type === "group")) {
-                        this.userData.user.churches.forEach((church) => {
-                            if (data.conversation.group.churchId && church._id === data.conversation.group.churchId.toString()) {
-                                church.badge++;
-                            }
-                        });
-                        if (!data.conversation.group.churchId) { //in private chat
-                            this.userData.user.churches.forEach((church) => {
-                                if (church._id === "5ab62be8f83e2c1a8d41f894") {
-                                    church.badge++; // increment the Restvo badge
-                                }
-                            });
-                        }
-                    } else if ((data.conversation._id === message.conversationId) && (data.conversation.type === "connect")) {
-                        this.userData.user.churches.forEach((church) => {
-                            if (church._id === "5ab62be8f83e2c1a8d41f894") {
-                                church.badge++; // increment the Restvo badge
-                            }
-                        });
-                    }
-                });
                 const index = this.conversations.map((c) => c.conversation._id).indexOf(message.conversationId);
                 if (index > -1) { // move the incoming message to top of list
                     const conversation = this.conversations[index];
                     this.conversations.splice(index, 1);
                     this.conversations.unshift(conversation);
+                }
+                const currentChatProp = this.currentChatProps.find((c) => c.conversationId === message.conversationId);
+                if (currentChatProp) {
+                    currentChatProp.badge++;
+                    console.log('chatProp badge...', currentChatProp.badge);
                 }
             }
         });
@@ -316,37 +299,14 @@ export class Chat {
     }
 
     async refreshTabBadges() {
-        let churches = [];
-        if (this.userData.user.churches && this.userData.user.churches.length) {
-            churches = this.userData.user.churches.map((c) => {return {_id: c._id, badge: 0}});
-        }
         let connectTabBadge = 0;
         const conversations = await this.getAllUserConversations();
         if (conversations) {
             conversations.forEach((obj) => {
-                if (obj.data && obj.data.badge) connectTabBadge += obj.data.badge;
-                if (obj.conversation.type === 'group' && obj.conversation.group.churchId){ // increment community badges
-                    churches.forEach((church) => {
-                        if (church._id === obj.conversation.group.churchId){
-                            church.badge += obj.data.badge;
-                        }
-                    });
-                } else { // increment Restvo badges
-                    churches.forEach((church) => {
-                        if (church._id === "5ab62be8f83e2c1a8d41f894"){
-                            church.badge += obj.data.badge;
-                        }
-                    });
+                if (obj.data && obj.data.badge) {
+                    connectTabBadge += obj.data.badge;
                 }
             });
-            churches.forEach((church) => {
-                this.userData.user.churches.forEach((userChurch) => {
-                    if (userChurch._id === church._id) {
-                        userChurch.badge = church.badge;
-                    }
-                });
-            });
-            // console.log("badge: ", this.connectTabBadge); //TODO:Uncomment
             this.connectTabBadge = connectTabBadge;
             if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
                 this.badge.set(this.connectTabBadge);
@@ -493,32 +453,28 @@ export class Chat {
     }
 
     async toggleRestStatus(event) {
-        event.stopPropagation();
         try {
-            if (!this.userData.user.hasOwnProperty('restSchedule')) { // if toggling for the first time
-                let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
+            if (!this.userData.user.hasOwnProperty('restSchedule') && event === 'away') { // if toggling for the first time
+                const expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
                 await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
                 this.userData.UIrestStatus = 'away';
                 this.conversations.forEach((obj) => {
                     this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
                 });
-
-            } else {
-                if (await this.userData.checkRestExpired()) { // when switching from active to away
-                    let expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
-                    await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
-                    this.userData.UIrestStatus = 'away';
-                    this.conversations.forEach((obj) => {
-                        this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
-                    });
-                } else { // when switching from rest to active
-                    let expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
-                    await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
-                    this.userData.UIrestStatus = 'active';
-                    this.conversations.forEach((obj) => {
-                        this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'online', origin: this.socket.id });
-                    });
-                }
+            } else if (await this.userData.checkRestExpired() && event === 'away') { // when switching from active to away
+                const expiredAt = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // set rest expired to 8 hours later
+                await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
+                this.userData.UIrestStatus = 'away';
+                this.conversations.forEach((obj) => {
+                    this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'offline', origin: this.socket.id });
+                });
+            } else if (event === 'active') { // when switching from rest to active
+                const expiredAt = new Date(new Date().getTime() - 60 * 60 * 1000); // set rest expired to an arbitrary past date (i.e. 1 hour ago)
+                await this.userData.update({ restSchedule: { breakExpiredAt: expiredAt }} );
+                this.userData.UIrestStatus = 'active';
+                this.conversations.forEach((obj) => {
+                    this.socket.emit('online status', obj.conversation._id, this.userData.user._id, { action: 'ping', state: 'online', origin: this.socket.id });
+                });
             }
         } catch (err) {
             console.log(err);

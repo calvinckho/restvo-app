@@ -214,7 +214,10 @@ export class OnboardfeaturePage {
                     }
                     this.setupInteractableDisplay(moment, interactableId, componentIndex);
                 } else if (componentId === 40010) { // text answer
-                    this.interactableDisplay[interactableId] = [];
+                    // setting the default values of the current interactableDisplay
+                    if (!this.interactableDisplay[interactableId]) {
+                        this.interactableDisplay[interactableId] = { editor: null, currentSaveState: '' };
+                    }
                     for (const interactable of this.responseObj.matrix_string) { // process the text answer responses
                         if (interactableId.toString() === interactable[0]) { // interactableId is a Number
                             let content: any;
@@ -247,6 +250,9 @@ export class OnboardfeaturePage {
                     });
                     this.setupInteractableDisplay(moment, interactableId, componentIndex);
                 }
+            }
+            if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
+                this.loadPeople();
             }
         });
         // add a blank slide at the end of each questionniare: provide a place to transition to the next questionnaire
@@ -426,9 +432,9 @@ export class OnboardfeaturePage {
         this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
     }
 
-    async createQuillEditor(event, interactableDisplay) {
-        interactableDisplay.editor = event;
-        interactableDisplay.editor.setContents(interactableDisplay.content, 'silent');
+    async createQuillEditor(event, interactableId) {
+        this.interactableDisplay[interactableId].editor = event;
+        this.interactableDisplay[interactableId].editor.setContents(this.interactableDisplay[interactableId].content, 'silent');
     }
 
     joinVideoConference(event, moment) {
@@ -460,6 +466,44 @@ export class OnboardfeaturePage {
         } else {
             for (const media of this.mediaList) {
                 media.player.destroy();
+            }
+        }
+    }
+
+    async loadPeople() {
+        if (this.authService.token && this.infiniteScroll) { // infinite scroll for 50000 match users only shows for authenticated users
+            this.infiniteScroll.disabled = false;
+        }
+        this.reachedEnd = false;
+        this.matchedPeople = [];
+        this.pageNum = 0;
+        if (this.moment._id) {
+            this.loadMorePeople({target: this.infiniteScroll});
+        }
+    }
+
+    async loadMorePeople(event) {
+        this.pageNum++;
+        if (!this.reachedEnd && !this.loadAPIBusy) { // loadAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the loadMorePeople function
+            this.loadAPIBusy = true;
+            this.zone.runOutsideAngular(() => {
+                setTimeout(() => {
+                    this.zone.run(() => {
+                        this.loadAPIBusy = false;
+                    });
+                }, 10000);
+            });
+            const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', '', this.pageNum);
+            console.log("matched", results);
+            this.loadAPIBusy = false;
+            this.ionSpinner = false;
+            if (!results.length) {
+                this.reachedEnd = true;
+                if (event && event.target) event.target.disabled = true;
+            } else {
+                for (const result of results) {
+                    this.matchedPeople.push(result);
+                }
             }
         }
     }

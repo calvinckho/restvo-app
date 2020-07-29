@@ -250,10 +250,10 @@ export class MainTabPage implements OnInit, OnDestroy {
     async initPushNotification() {
         if (this.platform.is('cordova')) { // native device push notification strategy
             try {
-                const {PushNotifications} = Plugins;
-                PushNotifications.register();
                 if (!this.pushHandler) {
-                    this.pushHandler = PushNotifications.addListener('registration', (token: PushNotificationToken) => {
+                    const {PushNotifications} = Plugins;
+                    PushNotifications.register();
+                    this.pushHandler = PushNotifications.addListener('registration', async (token: PushNotificationToken) => {
                         if (token && token.value) {
                             console.log('device token ->', token.value);
                             this.userData.addDeviceToken({token: token.value}).subscribe(() => {
@@ -691,27 +691,24 @@ export class MainTabPage implements OnInit, OnDestroy {
                     group: data.group,
                     badge: true,
                     modalPage: true,
-                    cssClass: 'level-10'
                 });
             } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.author.first_name + ' ' + data.author.last_name,
                     page: 'chat',
+                    recipient: data.author,
                     badge: true,
                     modalPage: true,
-                    recipient: data.author,
-                    cssClass: 'level-10'
                 });
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.moment.name,
-                    moment: data.moment,
                     page: 'chat',
+                    moment: data.moment,
                     badge: true,
                     modalPage: true,
-                    cssClass: 'level-10'
                 });
             }
             if (data.subpanel) {
@@ -750,10 +747,10 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
                     } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
-                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window
-                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
+                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
+                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
                     } else { // on desktop web, open another tab and run external API
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + params.videoChatRoomSubject, '_blank');
+                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
                     }
                 } catch (err) {
                     this.userData.readyToControlVideoChat = true;

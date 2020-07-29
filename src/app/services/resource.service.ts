@@ -178,7 +178,7 @@ export class Resource {
     }
 
     forwardGeocode(address) {
-        return this.http.get('https://us1.locationiq.com/v1/search.php?key=pk.e5797fe100f9aa5732d5346f742b243f&q=' + encodeURI(address) + '&format=json').toPromise();
+        return this.http.get('https://us1.locationiq.com/v1/search.php?key=pk.e5797fe100f9aa5732d5346f742b243f&q=' + encodeURIComponent(address) + '&format=json').toPromise();
     }
 
     async searchPixabay() {
@@ -188,7 +188,7 @@ export class Resource {
     }
 
     pixabaySearch(searchKeyword, pageNum) {
-        return this.http.get('https://pixabay.com/api/?key=11622064-8698a5beb77de4a9e9677e4c3&q=' + encodeURI(searchKeyword) + '&per_page=200&image_type=photo&pretty=true&page=' + pageNum.toString() ).toPromise();
+        return this.http.get('https://pixabay.com/api/?key=11622064-8698a5beb77de4a9e9677e4c3&q=' + encodeURIComponent(searchKeyword) + '&per_page=200&image_type=photo&pretty=true&page=' + pageNum.toString() ).toPromise();
     }
 }
 
