@@ -68,7 +68,7 @@ class PageObjectBase {
         el.click();
     }
 
-    protected async clickElement(sel: string) {
+    async clickElement(sel: string) {
         const el = element(by.css(`${this.tag} ${sel}`));
         el.click();
     }
