@@ -40,6 +40,9 @@ import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/
 import {ProgramsPageModule} from "./pages/user/programs/programs.module";
 import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.module";
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+
 @NgModule({
   declarations: [
       AppComponent,
@@ -64,6 +67,8 @@ import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.mod
       PickpeoplePopoverPageModule,
       ProgramsPageModule,
       UploadmediaPageModule,
+      NgxChartsModule,
+      BrowserAnimationsModule,
       NgxStripeModule.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],

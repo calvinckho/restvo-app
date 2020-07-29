@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation, NgZone} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation, NgZone} from '@angular/core';
 import {
   ActionSheetController,
   AlertController,
@@ -23,6 +23,9 @@ import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {ShowfeaturePage} from "../../showfeature/showfeature.page";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {Systemlog} from "../../../../services/systemlog.service";
 
 @Component({
   selector: 'app-feature-insight',
@@ -41,6 +44,25 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   lastActivityAscending = false;
   listOfPrograms: any = [];
   selectedProgramId: any;
+
+  multi: any[];
+  //view: any[] = [700, 300];
+
+  // options
+  legend: boolean = false;
+  showLabels: boolean = true;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = false;
+  xAxisLabel: string = 'Day';
+  yAxisLabel: string = 'Activity';
+  timeline: boolean = true;
+
+  colorScheme = {
+    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
+  };
 
   constructor(
       public zone: NgZone,
@@ -67,6 +89,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       public resourceService: Resource,
       public responseService: Response,
       public calendarService: CalendarService,
+      public systemlogService: Systemlog
   ) {
     super(zone, location, storage, electronService, badge, swUpdate, route, router,
         cache, platform, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
@@ -80,7 +103,8 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       if (!this.moment._id) { // angular router may not have moment._id ready yet
         this.moment._id = this.route.snapshot.paramMap.get('id');
       }
-      await this.loadInsight();
+      this.loadInsight();
+      this.loadMetrics();
     }
   }
 
@@ -91,8 +115,18 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       // ready to check authentication status
       this.setup(data);
       this.loadInsight();
+      this.loadMetrics();
     }
   };
+
+  async loadMetrics() {
+    const results: any = await this.systemlogService.loadMetrics(this.moment._id);
+    console.log("check", results)
+    this.multi = [{
+      name: 'Activity',
+      series: results
+    }];
+  }
 
   async loadInsight() {
     if (this.moment._id) { // angular router may not have moment._id ready yet
@@ -167,6 +201,13 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
           return (reverseOrder ? 1 : -1 ) * (d - c);
         });
       }
+  }
+
+  dateTickFormatting(dateTime) {
+    return new Date(dateTime).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
   }
 
   closeModal() {
