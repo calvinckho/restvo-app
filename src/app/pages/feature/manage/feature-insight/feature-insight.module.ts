@@ -8,6 +8,8 @@ import { IonicModule } from '@ionic/angular';
 import { FeatureInsightPage } from './feature-insight.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
 
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+
 const routes: Routes = [
   {
     path: '',
@@ -21,6 +23,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
       ApplicationPipesModule,
+      NgxChartsModule,
+
     RouterModule.forChild(routes)
   ],
   declarations: [FeatureInsightPage]
