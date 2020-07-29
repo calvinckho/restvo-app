@@ -53,7 +53,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should render unauthenticated journey page', async () => {
-        expect(await app.headerIsPresent("#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresentInUnauthenticated("#showfeature-header")).toBeTruthy();
     });
 
     it('should join the journey', async () => {
@@ -67,6 +67,6 @@ describe('navigate around the maintab', () => {
         await register.fillPassword();
         await register.submitLoginForm();
         await maintab.waitUntilVisible();
-        expect(await app.headerIsPresent("#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresentInAuthenticated("#showfeature-header")).toBeTruthy();
     })
 });
