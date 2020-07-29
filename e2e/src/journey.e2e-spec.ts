@@ -52,16 +52,12 @@ describe('navigate around the maintab', () => {
         await showfeature.waitUntilPresent();
     });
 
-    it('should render unauthenticated journey page', async () => {
+    it('should show unauthenticated journey page', async () => {
         expect(await showfeature.headerIsPresentInUnauthenticated("#showfeature-header")).toBeTruthy();
     });
 
-    it('should join the journey', async () => {
+    it('should login ahd show authenticated journey page', async () => {
         await showfeature.clickElement("#accept-invitation");
-        await me.waitUntilVisible();
-    });
-
-    it('should login', async () => {
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
