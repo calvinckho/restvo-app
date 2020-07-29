@@ -48,15 +48,8 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        // await showfeature.navigateTo();
         await browser.get("/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY");
         await showfeature.waitUntilPresent();
-        // await showfeature.clickSigninButton('#signin');
-        // await browser.waitForAngular();
-        // await register.fillEmail();
-        // await register.fillPassword();
-        // await register.submitLoginForm();
-        // await maintab.waitUntilVisible();
     });
 
     it('should render unauthenticated journey page', async () => {
@@ -66,10 +59,14 @@ describe('navigate around the maintab', () => {
     it('should join the journey', async () => {
         await showfeature.clickElement("#accept-invitation");
         await me.waitUntilVisible();
+    });
 
+    it('should login', async () => {
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-    });
+        await maintab.waitUntilVisible();
+        expect(await app.headerIsPresent("#showfeature-header")).toBeTruthy();
+    })
 });
