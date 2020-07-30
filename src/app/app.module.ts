@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -39,6 +39,7 @@ import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pi
 import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/pickfeature-popover.module";
 import {ProgramsPageModule} from "./pages/user/programs/programs.module";
 import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.module";
+import {ErrorService} from "./services/error.service";
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -86,7 +87,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
       Geolocation,
       NativeGeocoder,
       SpeechRecognition,
-      Calendar
+      Calendar,
+      { provide: ErrorHandler, useClass: ErrorService }
   ],
   bootstrap: [AppComponent]
 })

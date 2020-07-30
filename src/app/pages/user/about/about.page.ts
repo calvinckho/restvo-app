@@ -30,6 +30,11 @@ export class AboutPage implements OnInit, OnDestroy {
       private authService: Auth
   ) { }
 
+  testError() {
+    console.log('Testing Error Service: ');
+    throw new Error('An error occurred');
+  }
+
   ngOnInit() {
     this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
   }
