@@ -62,14 +62,15 @@ class PageObjectBase {
         }
     }
 
-    protected async clickButton(sel: string) {
-        const el = element(by.css(`${this.tag} ${sel}`));
+    protected async clickButton(parentTag: string, sel: string) {
+        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
         await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
         el.click();
     }
 
-    async clickElement(sel: string) {
-        const el = element(by.css(`${this.tag} ${sel}`));
+    async clickElement(parentTag: string, sel: string) {
+        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
         el.click();
     }
 
@@ -80,6 +81,10 @@ class PageObjectBase {
 
     protected async countElements(sel: string) {
         return await element.all(by.css(`${this.tag} ${sel}`)).count();
+    }
+
+    async headerIsPresent(parentTag: string, sel: string) {
+        return element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`)).isPresent();
     }
 }
 
@@ -97,7 +102,7 @@ export class AppPage {
         return element(by.id('title')).getText();
     }
 
-    headerIsPresent(sel) {
+    headerIsPresent(parentTag, sel) {
         return element(by.id(`${sel}`)).isPresent();
     }
 
@@ -112,20 +117,12 @@ export class MaintabPage extends PageObjectBase {
     }
 
     clickTabButton(button) {
-        this.clickButton(button);
+        this.clickButton(null, button);
     }
 }
 export class ShowfeaturePage extends PageObjectBase {
     constructor() {
         super('app-showfeature', '/');
-    }
-
-    headerIsPresentInAuthenticated(sel) { // used by the journey.e2e-spec.ts
-        return element(by.css(`app-main-tab ${this.tag} ${sel}`)).isPresent();
-    }
-
-    headerIsPresentInUnauthenticated(sel) { // used by the journey.e2e-spec.ts
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 
     navigateTo() {
@@ -137,15 +134,16 @@ export class ShowfeaturePage extends PageObjectBase {
     }
 
     clickSigninButton(button) {
-        this.clickButton(button);
+        this.clickButton(null, button);
     }
 
     clickTitle(el) {
-      this.clickButton(el);
+      this.clickButton(null, el);
     }
 
     clickTitleAuthenticated(el) {
-      this.clickButton(`app-main-tab ${this.tag} ${el}`)
+      // this.clickButton(`app-main-tab ${this.tag} ${el}`);
+      this.clickButton(`app-main-tab ${this.tag}`, el);
     }
 }
 
@@ -159,7 +157,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     clickTabButton(button) {
-        this.clickButton(button);
+        this.clickButton(null, button);
     }
 
     async fillEmail() {
@@ -175,7 +173,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     async submitLoginForm() {
-        await this.clickButton('#login-button');
+        await this.clickButton(null, '#login-button');
     }
 
     currentUrl() {
@@ -204,12 +202,8 @@ export class DiscoverPage extends PageObjectBase {
         super('app-discover', 'app/discover');
     }
 
-    headerIsPresent() {
-        return element(by.id('#main-menu-toolbar')).isPresent();
-    }
-
     clickMenuToggle(el) {
-        this.clickElement(el);
+        this.clickElement(null, el);
     }
 }
 
@@ -224,16 +218,12 @@ export class AboutPage extends PageObjectBase {
         super('app-about', '/');
     }
 
-    headerIsPresent(sel) {
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
-    }
-
     clickEditAll() {
-        this.clickElement('#editall');
+        this.clickElement(null, '#editall');
     }
 
     clickBack() {
-        this.clickElement('#clickback');
+        this.clickElement(null, '#clickback');
     }
 }
 
@@ -242,12 +232,8 @@ export class PreferencesPage extends PageObjectBase {
         super('app-preferences', '/');
     }
 
-    headerIsPresent(sel) {
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
-    }
-
     clickBack() {
-        this.clickElement('#clickback');
+        this.clickElement(null, '#clickback');
     }
 }
 
@@ -257,11 +243,11 @@ export class DashboardPage extends PageObjectBase {
     }
 
     clickCreate() {
-        this.clickElement('#create-mentoring');
+        this.clickElement(null, '#create-mentoring');
     }
 
     clickPersonProfileCard() {
-        this.clickElement('#person-profile-card');
+        this.clickElement(null, '#person-profile-card');
     }
 
     deleteEvent() {
@@ -270,12 +256,12 @@ export class DashboardPage extends PageObjectBase {
 
     async createEvent() {
         this.enterTextareaText('#add-event-title', 'Protractor Test Event');
-        await this.clickButton('#all-day');
-        await this.clickButton('#save-event');
+        await this.clickButton(null, '#all-day');
+        await this.clickButton(null, '#save-event');
     }
 
     clickMenuToggle(el) {
-        this.clickElement(el);
+        this.clickElement(null, el);
     }
 }
 
@@ -285,27 +271,23 @@ export class PickfeaturePopoverPage extends PageObjectBase {
     }
 
     chooseCategory(sel) {
-        this.clickElement(sel);
+        this.clickElement(null, sel);
     }
 
     clickBackButton() {
-        this.clickButton('#back-button');
+        this.clickButton(null, '#back-button');
     }
 
     clickNextButton() {
-        this.clickButton('#next-button');
+        this.clickButton(null, '#next-button');
     }
 
     clickCreateNewMoment() {
-        this.clickElement('#create-new-moment');
+        this.clickElement(null, '#create-new-moment');
     }
 
     async countNumberOfNewPrograms() {
         return await this.countElements('.program-card');
-    }
-
-    headerIsPresent(sel) {
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 }
 
@@ -315,20 +297,12 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     }
 
     clickRecent() {
-        this.clickElement('#recent-');
-    }
-
-    headerIsPresent(sel) {
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
+        this.clickElement(null, '#recent-');
     }
 }
 
 export class CreateFeaturePage extends PageObjectBase {
     constructor() {
         super('app-createfeature', '/');
-    }
-
-    headerIsPresent(sel) {
-        return element(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 }

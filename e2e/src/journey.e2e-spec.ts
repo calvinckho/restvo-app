@@ -53,17 +53,17 @@ describe('navigate around the maintab', () => {
     });
 
     it('should show unauthenticated journey page', async () => {
-        expect(await showfeature.headerIsPresentInUnauthenticated("#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
     });
 
     it('should login ahd show authenticated journey page', async () => {
-        await showfeature.clickElement("#accept-invitation");
+        await showfeature.clickElement(null, "#accept-invitation");
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
         await maintab.waitUntilVisible();
-        expect(await showfeature.headerIsPresentInAuthenticated("#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
     });
 
     it('should load the Me page', async () => {
@@ -75,11 +75,11 @@ describe('navigate around the maintab', () => {
     it('should load the journey if exists', async () => {
         await maintab.clickTabButton('#journey-card');
         await me.waitUntilVisible();
-        expect(app.headerIsPresent('#showfeature-header')).toBeTruthy();
+        expect(app.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
     });
 
     it('should leave the journey', async () => {
-        await showfeature.clickTitleAuthenticated('app-showfeature #show-event-title');
+        await showfeature.clickTitleAuthenticated('#show-event-title');
         await me.waitUntilVisible();
         await browser.sleep(5000);
     });
