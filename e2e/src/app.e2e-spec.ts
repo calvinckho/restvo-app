@@ -77,7 +77,7 @@ describe('navigate around the maintab', () => {
     it('should load the edit profile page', async () => {
         await maintab.clickTabButton('#edit-profile-button'); // click on edit profile
         await about.waitUntilVisible(); // wait until about page is visible
-        expect(app.headerIsPresent('#about-me-header')).toBeTruthy(); // the about me header is present
+        expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
     });
 
 });

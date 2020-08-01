@@ -12,7 +12,7 @@ import {
     CreateFeaturePage,
     AboutPage,
     PreferencesPage
-} from './calix-me-page.po';
+} from './app.po';
 import { browser } from 'protractor';
 
 describe('navigate around the maintab', () => {
@@ -77,7 +77,7 @@ describe('navigate around the maintab', () => {
     it('should load the edit profile page', async () => {
         await maintab.clickTabButton('#edit-profile-button');
         await about.waitUntilVisible();
-        expect(app.headerIsPresent('#about-me-header')).toBeTruthy();
+        expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy();
     });
 
 });
