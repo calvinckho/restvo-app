@@ -79,7 +79,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should leave the journey', async () => {
-        await showfeature.clickTitle('#show-event-title');
+        await showfeature.clickTitleAuthenticated('app-showfeature #show-event-title');
         await me.waitUntilVisible();
         await browser.sleep(5000);
     });
