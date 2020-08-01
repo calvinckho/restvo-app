@@ -1,4 +1,4 @@
-import { OnBoardingPage } from './onboarding.po';
+import { OnBoardingPage } from './app.po';
 import { browser } from 'protractor';
 
 describe('the onboarding process', () => {
