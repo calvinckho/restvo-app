@@ -415,7 +415,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 this.planModules.push(moment);
             });
         }
-        if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
+        if (this.moment.resource && this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
             // if there is any interactable (schedule, poll, m.c., text answers), load responses
             if (this.moment.resource.matrix_number[0].find((c) => (c === 10210) || (c >= 30000 && c <= 49999))) {
                 const results: any = await this.responseService.findResponsesByMomentId(this.moment._id, this.relationshipId, ((this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) ? this.calendarId : null));
@@ -578,6 +578,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             });
             this.loadStatus = 'completed';
+            console.log("this responseObj 5f1f478c91c544788269b01b", this.responseObj)
 
             // set up for matching users
             if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
