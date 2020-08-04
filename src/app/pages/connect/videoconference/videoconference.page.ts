@@ -78,7 +78,9 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         url: videoEndpoint.ssl + videoEndpoint.url,
         channelLastN: this.channelLastN,
         startWithAudioMuted: this.startWithAudioMuted,
-        startWithVideoMuted: this.startWithVideoMuted
+        startWithVideoMuted: this.startWithVideoMuted,
+        chatEnabled: false,
+        inviteEnabled: false
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);

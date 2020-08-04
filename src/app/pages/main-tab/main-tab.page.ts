@@ -741,7 +741,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                             url: videoEndpoint.ssl + videoEndpoint.url,
                             channelLastN: params.channelLastN,
                             startWithAudioMuted: params.startWithAudioMuted,
-                            startWithVideoMuted: params.startWithVideoMuted
+                            startWithVideoMuted: params.startWithVideoMuted,
+                            chatEnabled: false,
+                            inviteEnabled: false
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
