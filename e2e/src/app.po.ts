@@ -74,17 +74,18 @@ class PageObjectBase {
         el.click();
     }
 
-    async clickAuthenticatedElement(sel: string) {
-        const el = element(by.css(`app-main-tab ${this.tag} ${sel}`));
-        el.click();
-    }
-
     protected async countElements(sel: string) {
         return await element.all(by.css(`${this.tag} ${sel}`)).count();
     }
 
     async headerIsPresent(parentTag: string, sel: string) {
         return element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`)).isPresent();
+    }
+
+    async clickAlertButton(text: string) {
+        const el = element(by.buttonText(text));
+        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+        el.click();
     }
 }
 
@@ -188,6 +189,16 @@ export class RegisterPage extends PageObjectBase {
 export class NewsPage extends PageObjectBase {
     constructor() {
         super('app-communityboard', 'app/news')
+    }
+}
+
+export class OnboardingfeaturePage extends PageObjectBase {
+    constructor() {
+        super('app-onboardfeature', '/');
+    }
+
+    async clickStartButton() {
+        await this.clickButton(null, '#get-started');
     }
 }
 

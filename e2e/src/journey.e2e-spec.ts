@@ -9,6 +9,7 @@ import {
     ShowfeaturePage,
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
+    OnboardingfeaturePage,
     CreateFeaturePage,
     AboutPage,
     PreferencesPage
@@ -29,6 +30,7 @@ describe('navigate around the maintab', () => {
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
     let createfeature: CreateFeaturePage;
+    let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
         // testing on mobile sized screen
@@ -48,6 +50,7 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
+        onboardfeature = new OnboardingfeaturePage();
         await browser.get("/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY");
         await showfeature.waitUntilPresent();
     });
@@ -66,21 +69,25 @@ describe('navigate around the maintab', () => {
         expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
     });
 
-    it('should load the Me page', async () => {
+    it('should join Journey successfully', async () => {
+        await showfeature.clickElement('app-main-tab', "#accept-invitation");
+        await browser.waitForAngular();
+        await onboardfeature.clickStartButton();
+        await browser.waitForAngular();
+        await maintab.clickAlertButton('OK');
+        await browser.waitForAngular();
+        expect(await showfeature.headerIsPresent("app-main-tab", "#accept-invitation")).toBeFalsy();
+    });
+
+    /*it('should load the Me page', async () => {
         await maintab.clickTabButton('#tab-button-me');
         await me.waitUntilVisible();
         expect(await app.currentUrl()).toContain('app/me');
-    });
-
-    it('should load the journey if exists', async () => {
-        await maintab.clickTabButton('#journey-card');
-        await me.waitUntilVisible();
-        expect(app.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
     });
 
     it('should leave the journey', async () => {
         await showfeature.clickTitleAuthenticated('#show-event-title');
         await me.waitUntilVisible();
         await browser.sleep(5000);
-    });
+    });*/
 });
