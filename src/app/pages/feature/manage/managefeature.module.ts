@@ -13,12 +13,14 @@ import {FeatureBillingPageModule} from "./feature-billing/feature-billing.module
 import {FeatureSubscriptionPageModule} from "./feature-subscription/feature-subscription.module";
 import {FeatureCreatorPageModule} from "./feature-creator/feature-creator.module";
 import {FeatureCurriculumPageModule} from "./feature-curriculum/feature-curriculum.module";
+import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+      ApplicationPipesModule,
     ManagefeatureRoutingModule,
     FeatureInsightPageModule,
     FeatureSchedulePageModule,
