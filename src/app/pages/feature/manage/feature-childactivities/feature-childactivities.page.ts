@@ -98,7 +98,6 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
       }
     } else {
       if (viewType === 'manage') { // manage
-        this.userData.currentManageActivityId = moment._id;
         this.router.navigate(['/app/manage/activity/' + moment._id + '/profile/' + moment._id], {replaceUrl: false});
       } else if (viewType === 'edit') { // edit
         this.router.navigate([{ outlets: { sub: ['edit', moment._id, { subpanel: true }] }}]);
