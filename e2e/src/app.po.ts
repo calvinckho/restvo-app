@@ -18,7 +18,7 @@ class PageObjectBase {
     }
 
     waitUntilInvisible() {
-        return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 10000);
+        return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 15000);
     }
 
     waitUntilPresent() {
@@ -79,13 +79,12 @@ class PageObjectBase {
     }
 
     async headerIsPresent(parentTag: string, sel: string) {
-        return element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`)).isPresent();
-    }
-
-    async clickAlertButton(text: string) {
-        const el = element(by.buttonText(text));
-        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-        el.click();
+        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+        if (el) {
+            return element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`)).isPresent();
+        } else {
+            return false;
+        }
     }
 }
 
@@ -109,6 +108,22 @@ export class AppPage {
 
     clickSettings(element) {
         //this.clickElement(element);
+    }
+
+    async clickAlertButton(text) {
+        //await browser.wait(ExpectedConditions.alertIsPresent(), 10000);
+        //const el = element(by.css('.alert-button-group.sc-ion-alert-md'));
+        const el = element(by.css('.alert-button.sc-ion-alert-md'));
+        //const el = element(by.cssContainingText('.alert-button-inner.sc-ion-alert-md', text)).element(by.xpath('..'));
+        //const name = await el.getTagName();
+        //console.log("check 2", name)
+        //await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+        //console.log("check 3")
+        el.click();
+    }
+
+    alertIsPresent() {
+        return element(by.css('ion-alert')).isPresent();
     }
 }
 

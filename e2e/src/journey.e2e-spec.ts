@@ -16,7 +16,7 @@ import {
 } from './app.po';
 import { browser } from 'protractor';
 
-describe('navigate around the maintab', () => {
+describe('join journey and leave journey', () => {
     let app: AppPage;
     let showfeature: ShowfeaturePage;
     let maintab: MaintabPage;
@@ -59,7 +59,7 @@ describe('navigate around the maintab', () => {
         expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
     });
 
-    it('should login ahd show authenticated journey page', async () => {
+    it('should login and show authenticated journey page', async () => {
         await showfeature.clickElement(null, "#accept-invitation");
         await browser.waitForAngular();
         await register.fillEmail();
@@ -69,23 +69,22 @@ describe('navigate around the maintab', () => {
         expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
     });
 
-    it('should join Journey successfully', async () => {
-        await showfeature.clickElement('app-main-tab', "#accept-invitation");
+    it('should accept invitation and dismiss onboarding', async () => {
+        await showfeature.clickElement('app-main-tab', '#accept-invitation');
         await browser.waitForAngular();
         await onboardfeature.clickStartButton();
-        await browser.waitForAngular();
-        await maintab.clickAlertButton('OK');
-        await browser.waitForAngular();
-        expect(await showfeature.headerIsPresent("app-main-tab", "#accept-invitation")).toBeFalsy();
+        await onboardfeature.waitUntilInvisible();
+        //expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
+        expect(await onboardfeature.headerIsPresent(null, '#onboarding-header')).toBeFalsy();
     });
 
-    /*it('should load the Me page', async () => {
-        await maintab.clickTabButton('#tab-button-me');
-        await me.waitUntilVisible();
-        expect(await app.currentUrl()).toContain('app/me');
+    it('should confirm success prompt', async () => {
+        await app.clickAlertButton('OK');
+        await browser.sleep(1000);
+        expect(await app.alertIsPresent()).toBeFalsy();
     });
 
-    it('should leave the journey', async () => {
+    /*it('should leave the journey', async () => {
         await showfeature.clickTitleAuthenticated('#show-event-title');
         await me.waitUntilVisible();
         await browser.sleep(5000);
