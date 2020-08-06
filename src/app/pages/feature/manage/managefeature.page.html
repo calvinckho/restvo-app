@@ -35,20 +35,16 @@
   <!--Activity Hierarchy-->
   <ion-buttons *ngIf="platform.width() >= 768" style="padding-left: 10px">
     <ion-button (click)="upOneLevel(moment.parent_programs[0].parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id">
-      <ion-badge [ngStyle]="{'background': moment.parent_programs[0].parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.parent_programs[0].parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
     <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id"></ion-icon>
     <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0]._id">
-      <ion-badge [ngStyle]="{'background': moment.parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
     <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
     <ion-button>
-      <ion-badge [ngStyle]="{'background': moment.categories | background :null : 'activity_type'}">{{moment.resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.categories | background :null : 'activity_type'}">{{moment.resource['en-US'].value}}</b>
     </ion-button>
-    <!--<ion-icon name="chevron-forward"></ion-icon>
-    <ion-button>
-      <ion-badge>{{moment.resource['en-US'].value[0]}}</ion-badge>
-    </ion-button>-->
   </ion-buttons>
   <!--Desktop Menu Items-->
   <ion-toolbar *ngIf="platform.width() >= 768">
@@ -133,17 +129,17 @@
 
 <!--Mobile View-->
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() < 768" forceOverscroll="false">
-  <ion-buttons style="padding-left: 10px" *ngIf="initialSetupCompleted">
+  <ion-buttons style="padding: 10px" *ngIf="initialSetupCompleted">
     <ion-button (click)="upOneLevel(moment.parent_programs[0].parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id">
-      <ion-badge [ngStyle]="{'background': moment.parent_programs[0].parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.parent_programs[0].parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
     <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id"></ion-icon>
     <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0]._id">
-      <ion-badge [ngStyle]="{'background': moment.parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.parent_programs[0].categories | background :null : 'activity_type'}">{{moment.parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
     <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
     <ion-button>
-      <ion-badge [ngStyle]="{'background': moment.categories | background :null : 'activity_type'}">{{moment.resource['en-US'].value}}</ion-badge>
+      <b [ngStyle]="{'color': moment.categories | background :null : 'activity_type'}">{{moment.resource['en-US'].value}}</b>
     </ion-button>
   </ion-buttons>
   <ion-list>

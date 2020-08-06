@@ -55,11 +55,11 @@ export class BackgroundPipe implements PipeTransform {
               if (categoryIds.includes('5c915324e172e4e64590e346')) {
                   index = 3;
               } else if (categoryIds.includes('5c915475e172e4e64590e348')) {
-                  index = 4;
+                  index = 8;
               } else {
                   index = 2;
               }
-              color = this.color_arrays[index].color; //file index number has to be between 0 - 4
+              color = '#424242'; // file index number has to be between 0 - 9
           }
           return color;
       }
