@@ -1,7 +1,7 @@
 <ion-header id="pickfeature-header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="back()" id="back-button"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="back()" id="back-button" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
     <ion-title *ngIf="step === 1 && categoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
@@ -15,7 +15,7 @@
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
-          <ion-button (click)="this.close()" [hidden]="!subpanel"> <!--close subpanel-->
+          <ion-button (click)="this.close()" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
               <ion-icon name="close"></ion-icon>
           </ion-button>
       </ion-buttons>

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-    <ion-button (click)="backButton()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    <ion-button (click)="backButton()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title *ngIf="!totalSelected || totalSelected < 2">Create Chat</ion-title>
     <ion-title *ngIf="totalSelected >= 2">Create Group</ion-title>
