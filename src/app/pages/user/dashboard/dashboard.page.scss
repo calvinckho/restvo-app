@@ -134,6 +134,10 @@ app-dashboard {
     }
   }
 
+  .edit-profile-button{
+    height: 34px;
+  }
+
   .short-paragraph {
     margin-top: 3px;
     max-height: 36px;
@@ -417,6 +421,10 @@ app-dashboard {
 
   .to-test-click {
     background-color: red;
+  }
+
+  .about-me-name, .about-me-info {
+    padding-right: 3px;
   }
 
   .about-me-row {
