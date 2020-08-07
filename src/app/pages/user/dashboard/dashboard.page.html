@@ -41,7 +41,7 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
-    <ion-button [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear">
+    <ion-button [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear" color="grey">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
