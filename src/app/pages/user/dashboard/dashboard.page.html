@@ -27,7 +27,7 @@
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-buttons slot="start" *ngIf="modalPage">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
