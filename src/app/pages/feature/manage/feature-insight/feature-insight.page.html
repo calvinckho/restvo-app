@@ -33,23 +33,6 @@
       </ion-select>
     </ion-item>
   </ion-toolbar>
-  <ion-toolbar>
-    <ngx-charts-line-chart
-            [scheme]="colorScheme"
-            [legend]="legend"
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="xAxis"
-            [xAxisTickFormatting]="dateTickFormatting"
-            [yAxis]="yAxis"
-            [xAxisLabel]="xAxisLabel"
-            [yAxisLabel]="yAxisLabel"
-            [timeline]="timeline"
-            [results]="multi"
-    >
-    </ngx-charts-line-chart>
-  </ion-toolbar>
-
   <ion-list>  <!--*ngIf="platform.width() > 768"-->
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
       <div class="column column-label" (click)="sortDisplay('participant')">{{participantsLabel}}</div>
