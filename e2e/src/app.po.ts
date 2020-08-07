@@ -158,7 +158,6 @@ export class ShowfeaturePage extends PageObjectBase {
     }
 
     clickTitleAuthenticated(el) {
-      // this.clickButton(`app-main-tab ${this.tag} ${el}`);
       this.clickButton(`app-main-tab app-showfeature ${this.tag}`, el);
     }
 }
