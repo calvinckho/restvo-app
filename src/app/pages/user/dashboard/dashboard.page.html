@@ -69,8 +69,17 @@
           </ion-item>
         </ion-col>
         <ion-col [size]="6">
-            <div>{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
-            <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
+            <div>
+              <p class="about-me-name">
+              {{userData.user.first_name}} {{userData.user.last_name}} <span
+                *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span>
+              </p>
+          </div>
+            <div class="about-me-info">
+              <p>
+              I am interested in joining the Restvo team and learn more as a software engineering intern.
+              </p>
+            </div>
             <ion-button (click)="openAboutMe()" >Edit Profile</ion-button>
         </ion-col>
       </ion-row>
