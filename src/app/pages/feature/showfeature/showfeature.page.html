@@ -13,7 +13,7 @@
     </ion-buttons>
     <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
     <ion-buttons slot="end">
-      <div *ngIf="userData.user && ['owner','admin','staff'].indexOf(userData.user.role) > -1">
+      <div *ngIf="userData.user && ['owner','admin','staff'].includes(userData.user.role)">
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'">
           <ion-icon name="list"></ion-icon>
         </ion-button>
@@ -30,6 +30,9 @@
         </ion-button>
       </div>
       <div *ngIf="authService.token && setupPermissionCompleted && loadStatus">
+        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="subpanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
+          <ion-icon name="chatbubbles"></ion-icon>
+        </ion-button>
         <ion-button (click)="inviteToJoin()" [hidden]="subpanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
           <ion-icon name="person-add"></ion-icon>
         </ion-button>
@@ -636,7 +639,7 @@
             (onEditorCreated)="createQuillEditor($event, moment.resource.matrix_number[2][i])"
             (onContentChanged)="respondToTextArea($event, i)"
             [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
-            [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].indexOf(userData.user.role) > -1) ? 42 : 0) + 'px'}" format="object">
+            [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].includes(userData.user.role)) ? 42 : 0) + 'px'}" format="object">
           </quill-editor>
         </ion-item>
         <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i]].collaborative">

@@ -704,7 +704,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: data.moment.name,
+                    name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
                     page: 'chat',
                     moment: data.moment,
                     badge: true,

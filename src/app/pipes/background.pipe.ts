@@ -47,21 +47,6 @@ export class BackgroundPipe implements PipeTransform {
               color = this.color_arrays[last_digit].color; //file index number has to be between 0 - 4
           }
           return color;
-      } else if (type === 'activity_type') {
-          let color = this.color_arrays[1].color;
-          if (background && background.length) {
-              let index = 0;
-              const categoryIds = (typeof background[0] === 'string') ? background : background.map((c) => c._id);
-              if (categoryIds.includes('5c915324e172e4e64590e346')) {
-                  index = 3;
-              } else if (categoryIds.includes('5c915475e172e4e64590e348')) {
-                  index = 8;
-              } else {
-                  index = 2;
-              }
-              color = '#424242'; // file index number has to be between 0 - 9
-          }
-          return color;
       }
   }
 }

@@ -8,16 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-toolbar>
-    <ion-item>
-      <ion-label [hidden]="true">Filter by Program</ion-label>
-      <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
-        <ion-select-option value='all'>Show All</ion-select-option>
-        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
     <ngx-charts-line-chart
             [scheme]="colorScheme"
             [legend]="legend"
@@ -33,7 +24,15 @@
     >
     </ngx-charts-line-chart>
   </ion-toolbar>
-
+  <ion-toolbar>
+    <ion-item>
+      <ion-label [hidden]="true">Filter by Program</ion-label>
+      <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
+        <ion-select-option value='all'>Show All</ion-select-option>
+        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-toolbar>
   <ion-list>  <!--*ngIf="platform.width() > 768"-->
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
       <div class="column column-label" (click)="sortDisplay('participant')">{{participantsLabel}}</div>
