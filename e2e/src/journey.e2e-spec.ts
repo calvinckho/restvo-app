@@ -84,9 +84,9 @@ describe('join journey and leave journey', () => {
         expect(await app.alertIsPresent()).toBeFalsy();
     });
 
-    /*it('should leave the journey', async () => {
+    it('should leave the journey', async () => {
         await showfeature.clickTitleAuthenticated('#show-event-title');
         await me.waitUntilVisible();
-        await browser.sleep(5000);
-    });*/
+        await browser.sleep(3000);
+    });
 });
