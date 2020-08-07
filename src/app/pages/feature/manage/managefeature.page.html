@@ -28,10 +28,10 @@
     </ion-title>
     <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
+      <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
         <ion-icon name="chatbubbles"></ion-icon>
       </ion-button>
-      <ion-button (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon></ion-button> <!--More-->
+      <ion-button (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="grey"></ion-icon></ion-button> <!--More-->
     </ion-buttons>
   </ion-toolbar>
 
