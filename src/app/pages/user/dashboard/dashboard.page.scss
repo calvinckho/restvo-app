@@ -415,67 +415,6 @@ app-dashboard {
     background-color: red;
   }
 
-  .person-avatar {
-    width: 100px !important;
-    height: 100px !important;
-  }
-
-  .person-content {
-    height: 75px;
-    overflow: scroll;
-    --background: var(--ion-color-light);
-  }
-
-  .person-content-item {
-    --background: transparent;
-  }
-
-  .person-edit-profile {
-    width: 183px;
-    height: 26px;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    /* identical to box height */
-    display: flex;
-  }
-
-  .person-content-left {
-    // margin: 8px 12.5px 21px 0;
-    // width: 40%;
-    // height: 44px;
-    // line-height: 100%;
-    width: 100%;
-    padding-left: 25px;
-    display: flex;
-    flex-direction: column;
-    // justify-content: space-between;
-  }
-
-  .person-name {
-    width: 183px;
-    height: 23px;
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 23px;
-  }
-  .person-content-container {
-    margin-left: 18px;
-  }
-
-  .person-title {
-    //width: 183px;
-    height: 28px;
-    font-size: 12px;
-    line-height: 14px;
-    overflow: hidden;
-    margin: 8px 0px 16px 0px;
-    color: var(--ion-color-darkgrey);
-  }
-
   .profile-row {
     padding: 6px 0;
   }

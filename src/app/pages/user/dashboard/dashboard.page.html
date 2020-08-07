@@ -59,25 +59,17 @@
     </ion-row>
   </ion-grid>
   <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
-    <ion-row class="profile-row">
-      <ion-card class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="view === 'profile'">
-        <ion-item lines="none">
-          <div class="person-photo-container">
-            <ion-avatar class="person-avatar">
-              <ion-img class="person-avatar" *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
-              <ion-img class="person-avatar" *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-            </ion-avatar>
-          </div>
-          <div class="person-content-left">
-            <ion-card-title class="person-name">
-              {{userData.user.first_name}} {{userData.user.last_name}}
-            </ion-card-title>
-            <div class="person-title" [innerHTML]="userData.user.bio"></div>
-            <ion-button id="edit-profile-button" shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
-          </div>
-        </ion-item>
-      </ion-card>
-    </ion-row>
+    <div>
+      <ion-item lines="none">
+        <div class="image-cropper">
+          <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
+          <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
+        </div>
+      </ion-item>
+      <div>{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
+      <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
+      <ion-button (click)="openAboutMe()" >Edit Profile</ion-button>
+    </div>
 
     <!-- Complete your Profile Banner -->
     <ion-row class="profile-row" *ngIf="view === 'profile'">
