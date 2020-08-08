@@ -118,13 +118,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.allowCustomStartDate = false; // reset the property
         this.recurrenceStartDate = new Date();
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
-        if (this.categoryId === 'all') { // if category is provided, skip to step 1
-            this.step = 1;
+        if (this.categoryId === 'all') { // if no category is provided, begin with 0
+            this.step = 0;
             this.categoryId = null;
-        } else if (this.categoryId) {
+        } else if (this.categoryId) { // if category id is provided, start with 1
             this.step = 1;
-        } else {
-            this.categoryId = '5e9f46e1c8bf1a622fec69d5'; // default choice is a Journey
         }
     }
 
@@ -550,10 +548,15 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     back() {
+        // close page or step back
         if (this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
             this.close();
         } else {
             this.step--;
+        }
+        // reset categoryId
+        if (this.step === 0) {
+            this.categoryId = null;
         }
     }
 
