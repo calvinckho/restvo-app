@@ -63,8 +63,16 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     };
     parentRelationshipResponseObj: any = this.responseTemplate; // a user can respond to the Content's Relationship
 
-
     subscriptions: any = {};
+
+    // calendar
+    recurrenceStartDate = new Date();
+    recurrenceStartTime = new Date().toISOString();
+    recurrenceByDay = [];
+    allDay = false;
+    dateType = 'start'; // open the calendar by default
+
+    allowCustomStartDate = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -107,6 +115,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.disableSelect = this.disableSelect || this.route.snapshot.paramMap.get('disableSelect') === 'true';
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
+        this.allowCustomStartDate = false; // reset the property
+        this.recurrenceStartDate = new Date();
+        this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         if (this.categoryId === 'all') { // if category is provided, skip to step 1
             this.step = 1;
             this.categoryId = null;
@@ -168,6 +179,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         navTransition.then( async () => {
                             selectedMoment.cloned = false;
                             selectedMoment.joinAs = this.joinAs;
+                            selectedMoment.startDate = null;
                             this.selectedMoments.push(selectedMoment);
                             if (this.selectedMoments.length > this.maxMomentCount) {
                                 this.selectedMoments.splice(0, 1);
@@ -187,6 +199,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     navTransition.then( async () => {
                         selectedMoment.cloned = 'new';
                         selectedMoment.joinAs = this.joinAs;
+                        selectedMoment.startDate = null;
                         this.selectedMoments.push(selectedMoment);
                         if (this.selectedMoments.length > this.maxMomentCount) {
                             this.selectedMoments.splice(0, 1);
@@ -229,6 +242,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     navTransition.then( async () => {
                         sample.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
                         sample.joinAs = this.joinAs;
+                        sample.startDate = null;
                         this.selectedMoments.push(sample);
                         if (this.selectedMoments.length > this.maxMomentCount) {
                             this.selectedMoments.splice(0, 1);
@@ -358,8 +372,17 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else {
                 this.done();
             }
-        } else if (this.step >= 2) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
+        } else if (this.step === 2) { // only allow post-processing (select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
             if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.categoryId)) {
+                this.step++;
+            } else {
+                this.done();
+            }
+        } else if (this.step >= 3) { // only allow pick start date if moment has schedule that has floating start date toggled on
+            const schedules: any = await this.momentService.loadActivitySchedules(this.selectedMoments[0]._id);
+            this.allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
+
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.allowCustomStartDate) {
                 this.step++;
             } else {
                 this.done();
@@ -398,6 +421,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 }
                 if (this.type && this.selectedMoments[0].array_boolean.length > this.type) {
                     this.selectedMoments[0].array_boolean[this.type] = true;
+                }
+                if (this.allowCustomStartDate) {
+                    this.selectedMoments[0].startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
                 }
                 const clonedMoments: any = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
@@ -500,6 +526,27 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         alert.present();
+    }
+
+    focusCalendarDateField(type) {
+        this.calendarService.calendar.currentViewDate = this.recurrenceStartDate;
+        this.calendarService.updateViewCalendar();
+        this.dateType = type;
+    }
+
+    changeSelectedDate(inputDate) {
+        if (inputDate === ' ') return;
+        if ( this.dateType === 'start' ) {
+            this.recurrenceStartDate = inputDate;
+            this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
+            this.dateType = '';
+        }
+        this.calendarService.updateViewCalendar();
+    }
+
+    // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction
+    customTrackBy(index: number, item: any): any {
+        return index;
     }
 
     back() {
