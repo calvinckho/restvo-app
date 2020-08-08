@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
+  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none"  color="lightgrey">
         <ion-avatar slot="start">
