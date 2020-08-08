@@ -61,12 +61,10 @@
   <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
       <ion-row class="about-me-row" >
         <ion-col [size]="6">
-          <ion-item lines="none">
           <div class="image-cropper">
               <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
               <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
             </div>
-          </ion-item>
         </ion-col>
         <ion-col [size]="6">
             <div>
