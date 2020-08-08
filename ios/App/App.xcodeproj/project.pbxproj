@@ -531,7 +531,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/Info.plist;
@@ -561,7 +561,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				ENABLE_BITCODE = NO;
@@ -588,7 +588,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -613,7 +613,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
