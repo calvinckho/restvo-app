@@ -1,13 +1,29 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Insight</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+    <ngx-charts-line-chart
+            [scheme]="colorScheme"
+            [legend]="legend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="xAxis"
+            [xAxisTickFormatting]="dateTickFormatting"
+            [yAxis]="yAxis"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            [timeline]="timeline"
+            [results]="multi"
+    >
+    </ngx-charts-line-chart>
+  </ion-toolbar>
   <ion-toolbar>
     <ion-item>
       <ion-label [hidden]="true">Filter by Program</ion-label>

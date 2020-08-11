@@ -102,7 +102,9 @@ export class Moment {
     }
 
     manageMoment(data) {
-        this.userData.currentManageActivityId = data.moment._id;
+        if (data && !data.modalPage) {
+            this.userData.currentManageActivityId = data.moment._id;
+        }
         this._manageMoment.next(data);
     }
 

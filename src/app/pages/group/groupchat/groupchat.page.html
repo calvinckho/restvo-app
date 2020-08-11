@@ -1,20 +1,20 @@
 <ion-header>
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)" *ngIf="modalPage || subpanel"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(false)" *ngIf="modalPage || subpanel" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title *ngIf="chatService.currentChatProps[propIndex]" (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
     <ion-buttons slot="end" *ngIf="chatService.currentChatProps[propIndex]">
-      <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)">
+      <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)" color="grey">
         <ion-icon name="open"></ion-icon>
       </ion-button>
-      <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}">
-        <ion-icon name="videocam" color="dark"></ion-icon>
+      <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}" color="grey">
+        <ion-icon name="videocam"></ion-icon>
       </ion-button>
-      <ion-button (click)="seeMoreInfo()" *ngIf="!subpanel">
-        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="dark"></ion-icon>
+      <ion-button (click)="seeMoreInfo()" *ngIf="!subpanel" color="grey">
+        <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
-      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subpanel">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf ="subpanel" color="grey">
         <ion-icon name="close" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>

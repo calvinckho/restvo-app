@@ -4,6 +4,10 @@ app-pickfeature-popover {
   display: flex;
   flex-direction: column;
 
+  ion-item ion-datetime{
+    position: relative !important;
+  }
+
   .column-label {
     text-align: center;
   }
@@ -132,8 +136,51 @@ app-pickfeature-popover {
     overflow: scroll;
   }
 
-
   .selected {
     opacity: 1;
   }
+
+  // calendar
+  .monthview {
+    width: 85%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding-bottom: 10px;
+    --color: var(--ion-color-dark);
+  }
+
+  .month-title-container {
+    width: 100%;
+  }
+
+  .month-title {
+    width: calc((100% / 7) * 5);
+    text-align: center;
+    display: inline-block;
+  }
+
+  .calendar-arrow {
+    width: calc(100% / 7);
+    position: relative;
+    display: inline-block;
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+  }
+
+  .content-count {
+    margin: 0 10px;
+    width: 10%;
+  }
+
+  .content-date {
+    font-size: 12px;
+    padding-left: 2%;
+    margin-right: 8px;
+    width: 20%;
+  }
+
 }

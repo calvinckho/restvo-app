@@ -1,7 +1,7 @@
 <ion-header id="pickfeature-header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="back()" id="back-button"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="back()" id="back-button" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
     <ion-title *ngIf="step === 1 && categoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
@@ -15,7 +15,7 @@
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
-          <ion-button (click)="this.close()" [hidden]="!subpanel"> <!--close subpanel-->
+          <ion-button (click)="this.close()" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
               <ion-icon name="close"></ion-icon>
           </ion-button>
       </ion-buttons>
@@ -209,6 +209,46 @@
       </ion-grid>
     </ion-row>
   </ion-grid>
+  <ion-grid *ngIf="step === 4" class="full-height">
+    <ion-row class="full-height grid-row ion-align-items-center">
+      <ion-col>
+        <ion-item lines="none">
+          <div style="font-size: 14px" class="ion-text-wrap">When do you plan to start {{selectedMoments[0].matrix_string[0][0]}}?</div>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+          <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+        </ion-item>
+
+        <ion-card class="monthview" *ngIf="dateType">
+          <div class="month-title-container">
+            <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+            <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
+            <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+          </div>
+          <div class="monthview-day-headers">S</div>
+          <div class="monthview-day-headers">M</div>
+          <div class="monthview-day-headers">T</div>
+          <div class="monthview-day-headers">W</div>
+          <div class="monthview-day-headers">T</div>
+          <div class="monthview-day-headers">F</div>
+          <div class="monthview-day-headers">S</div>
+
+          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
+            <div class="monthview-element-content" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
+              <div *ngIf="dayOfMonth.date != ' ' ">
+                {{dayOfMonth.date.getDate()}}
+              </div>
+              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index;">
+                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 <ion-footer>
@@ -234,8 +274,8 @@
   </ion-toolbar>
   <ion-toolbar>
     <ion-row>
-      <ion-button *ngIf="step < 3" (click)="next()" expand="full" shape="round" class="centered" id="next-button" [disabled]="step === 1 && !selectedMoments.length">Next</ion-button>
-      <ion-button *ngIf="step === 3" (click)="done()" expand="full" shape="round" class="centered" id="done-button">Done</ion-button>
+      <ion-button *ngIf="step < 4" (click)="next()" expand="full" shape="round" class="centered" id="next-button" [disabled]="step === 1 && !selectedMoments.length">Next</ion-button>
+      <ion-button *ngIf="step === 4" (click)="done()" expand="full" shape="round" class="centered" id="done-button">Done</ion-button>
     </ion-row>
   </ion-toolbar>
 </ion-footer>

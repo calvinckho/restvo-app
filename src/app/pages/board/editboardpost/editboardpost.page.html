@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar>
-        <ion-buttons slot="start">
+        <ion-buttons slot="start" color="grey">
             <ion-button (click)="closeModal(false)">
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
@@ -8,8 +8,8 @@
         <ion-title *ngIf="!post._id">{{resource['en-US'].matrix_string[0][2]}}</ion-title>
         <ion-title *ngIf="post._id">{{resource['en-US'].matrix_string[0][12]}} {{resource['en-US'].matrix_string[0][2]}} </ion-title>
         <ion-buttons slot="end">
-            <ion-button *ngIf="!post._id" ion-button (click)="savePost()" [disabled]="!post.body?.length">{{resource['en-US'].matrix_string[0][8]}}</ion-button>
-            <ion-button *ngIf="post._id" ion-button (click)="savePost()" [disabled]="!post.body?.length">{{resource['en-US'].matrix_string[0][13]}}</ion-button>
+            <ion-button *ngIf="!post._id" (click)="savePost()" [disabled]="!post.body?.length" color="grey">{{resource['en-US'].matrix_string[0][8]}}</ion-button>
+            <ion-button *ngIf="post._id" (click)="savePost()" [disabled]="!post.body?.length" color="grey">{{resource['en-US'].matrix_string[0][13]}}</ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>

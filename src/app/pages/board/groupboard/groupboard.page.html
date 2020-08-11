@@ -12,14 +12,14 @@
       </ion-slide>
     </ion-slides>
     <ion-buttons slot="end">
-      <ion-button color="secondary" (click)="createNewPost()" *ngIf="page === 'board' && userData.user">
-      <ion-icon name="add"></ion-icon>
+      <ion-button color="grey" (click)="createNewPost()" *ngIf="page === 'board' && userData.user">
+         <ion-icon name="add"></ion-icon>
       </ion-button>
-      <ion-button (click)="presentPopover($event)" *ngIf="page !== 'board' && userData.user">
+      <ion-button (click)="presentPopover($event)" *ngIf="page !== 'board' && userData.user" color="grey">
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="!userData.user">
-        <ion-icon name="add" color="primary"></ion-icon>
+      <ion-button *ngIf="!userData.user" color="grey">
+        <ion-icon name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-row *ngIf="group" class="title-dots-row">

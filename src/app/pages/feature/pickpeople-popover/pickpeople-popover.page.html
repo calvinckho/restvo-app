@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="close()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="close()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>{{title}}</ion-title>
     <ion-buttons id="done" slot="end">
-      <ion-button *ngIf="shareLink" (click)="share()"><ion-icon name="share"></ion-icon></ion-button>
-      <ion-button (click)="submitPeople()">Done</ion-button>
+      <ion-button *ngIf="shareLink" (click)="share()" color="grey"><ion-icon name="share"></ion-icon></ion-button>
+      <ion-button (click)="submitPeople()" color="grey">Done</ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>

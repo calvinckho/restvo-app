@@ -1,5 +1,5 @@
 <ion-header [hidden]="router.url.includes('/app/user') && !modalPage">
-  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
+  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none" color="lightgrey">
         <ion-avatar slot="start">
@@ -27,7 +27,7 @@
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-buttons slot="start" *ngIf="modalPage">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
@@ -41,7 +41,7 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
-    <ion-button [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear">
+    <ion-button [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear" color="grey">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" *ngIf="!userData.user">
@@ -58,7 +58,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
+  <div class="profile-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
     <ion-row class="profile-row">
       <ion-card class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="view === 'profile'">
         <ion-item lines="none">
@@ -68,11 +68,11 @@
               <ion-img class="person-avatar" *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
             </ion-avatar>
           </div>
-          <div class="person-content-left">
+          <div class="person-content">
             <ion-card-title class="person-name">
               {{userData.user.first_name}} {{userData.user.last_name}}
             </ion-card-title>
-            <div class="person-title" [innerHTML]="userData.user.bio"></div>
+            <div class="person-bio" [innerHTML]="userData.user.bio"></div>
             <ion-button id="edit-profile-button" shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
         </ion-item>

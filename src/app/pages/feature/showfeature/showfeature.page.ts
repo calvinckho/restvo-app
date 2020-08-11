@@ -578,7 +578,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             });
             this.loadStatus = 'completed';
-            console.log("this responseObj 5f1f478c91c544788269b01b", this.responseObj)
 
             // set up for matching users
             if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {

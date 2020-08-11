@@ -39,8 +39,8 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       private menuCtrl: MenuController,
       private route: ActivatedRoute,
       private resourceService: Resource,
-      private authService: Auth,
-      private userData: UserData,
+      public authService: Auth,
+      public userData: UserData,
       private chatService: Chat
   ) { }
 

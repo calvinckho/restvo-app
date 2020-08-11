@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="modalPage">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Curriculum</ion-title>
   </ion-toolbar>
@@ -104,7 +104,7 @@
     <ion-card style="background: var(--ion-color-lightgrey)" mode="md" *ngIf="loadCompleted && (timeline | calendar: 'calendaritemuncategorized')">
       <ion-card-content class="goal-content overall ion-no-padding">
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
-          <ion-label class="ion-margin-start" >Uncategorized</ion-label>
+          <ion-label class="ion-margin-start">Uncategorized</ion-label>
         </ion-item>
         <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
           <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">

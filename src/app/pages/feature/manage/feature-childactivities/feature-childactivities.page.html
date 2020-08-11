@@ -48,7 +48,7 @@
       <ion-buttons class="actions-col ion-justify-content-evenly">
         <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="key-outline"></ion-icon></ion-button>
         <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>
-        <ion-button (click)="pushToMessagePage($event, activity)" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
+        <ion-button (click)="$event.stopPropagation(); chatService.openChat({ conversationId: moment.conversation, moment: activity, subpanel: this.platform.width() >= 768 })" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
       </ion-buttons>
     </ion-item>
   </ion-list>

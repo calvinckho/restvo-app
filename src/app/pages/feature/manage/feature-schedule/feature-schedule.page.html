@@ -1,7 +1,7 @@
 <ion-header >
   <ion-toolbar *ngIf="modalPage">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
@@ -25,8 +25,8 @@
         </ion-buttons>
       </ion-item>
       <ion-item lines="none">
-        <ion-label (click)="focusCalendarDateField('start')"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
-        <ion-datetime *ngIf="recurrenceStartTime" (ionCancel)="dateType='end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+        <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+        <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
       </ion-item>
       <ion-item lines="none" *ngIf="dateType != 'start'">
         <ion-label (click)="focusCalendarDateField('end')"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
@@ -292,7 +292,7 @@
     </ion-item>
     <ion-item-group class="ion-margin-left" lines="full">
       <ion-item lines="none">
-        <ion-label class="ion-margin-left">Floating Start Date</ion-label>
+        <ion-label class="ion-margin-left">Prompt Users for Custom Start Date</ion-label>
         <ion-checkbox [(ngModel)]="schedule.array_boolean[0]"></ion-checkbox>
       </ion-item>
       <ion-item lines="none">
