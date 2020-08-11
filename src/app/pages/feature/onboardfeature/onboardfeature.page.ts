@@ -539,7 +539,7 @@ export class OnboardfeaturePage {
             await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding, refreshAppPages);
             if (this.completedDefaultOnboarding) {
                 if (this.modalPage) { // onboarding is a popover by default
-                    this.router.navigate([this.authService.cachedRouteUrl]); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl
+                    this.router.navigate([this.authService.cachedRouteUrl], { replaceUrl: true }); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl
                     this.modalCtrl.dismiss(true);
                     setTimeout( () => {
                         // only exclude ios mobile web, coz iOS browers hasn't allowed swPush yet

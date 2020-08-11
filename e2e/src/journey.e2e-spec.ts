@@ -74,7 +74,7 @@ describe('join journey and leave journey', () => {
         await browser.waitForAngular();
         await onboardfeature.clickStartButton();
         await onboardfeature.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
-        expect(await showfeature.headerIsPresent('app-main-tab', '.can-go-back #accept-invitation')).toBeFalsy(); // need .can-go-back class selector because there are two authenticated showfeature in the DOM
+        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
     });
 
     it('should confirm success prompt', async () => {
@@ -83,9 +83,9 @@ describe('join journey and leave journey', () => {
         expect(await app.alertIsPresent()).toBeFalsy();
     });
 
-    it('should open showfeature header options', async () => {
+    it('should not show accept-invitation', async () => {
         await showfeature.clickElement(`app-main-tab`, '#show-event-title');
         await browser.sleep(7000);
-        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeTruthy();
+        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
     });
 });
