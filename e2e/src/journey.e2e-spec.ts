@@ -34,9 +34,9 @@ describe('join journey and leave journey', () => {
 
     beforeAll(async () => {
         // testing on mobile sized screen
-        const width = 600;
+        /*const width = 600;
         const height = 968;
-        await browser.driver.manage().window().setSize(width, height);
+        await browser.driver.manage().window().setSize(width, height);*/
         app = new AppPage();
         maintab = new MaintabPage();
         register = new RegisterPage();
@@ -60,13 +60,13 @@ describe('join journey and leave journey', () => {
     });
 
     it('should login and show authenticated journey page', async () => {
-        await showfeature.clickElement(null, "#accept-invitation");
+        await showfeature.clickElement(null, '#accept-invitation');
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
         await maintab.waitUntilVisible();
-        expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeTruthy();
     });
 
     it('should accept invitation and dismiss onboarding', async () => {
@@ -74,8 +74,7 @@ describe('join journey and leave journey', () => {
         await browser.waitForAngular();
         await onboardfeature.clickStartButton();
         await onboardfeature.waitUntilInvisible();
-        //expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
-        expect(await onboardfeature.headerIsPresent(null, '#onboarding-header')).toBeFalsy();
+        expect(await showfeature.headerIsPresent('app-main-tab', '.can-go-back #accept-invitation')).toBeFalsy();
     });
 
     it('should confirm success prompt', async () => {
@@ -84,9 +83,9 @@ describe('join journey and leave journey', () => {
         expect(await app.alertIsPresent()).toBeFalsy();
     });
 
-    /*it('should leave the journey', async () => {
-        await showfeature.clickTitleAuthenticated('#show-event-title');
-        await me.waitUntilVisible();
-        await browser.sleep(5000);
-    });*/
+    it('should open showfeature header options', async () => {
+        await showfeature.clickElement(`app-main-tab`, '#show-event-title');
+        await browser.sleep(7000);
+        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeTruthy();
+    });
 });

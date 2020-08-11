@@ -69,9 +69,13 @@ class PageObjectBase {
     }
 
     async clickElement(parentTag: string, sel: string) {
-        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
-        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-        el.click();
+        const els = element.all(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+        els.each(async (el) => {
+            if (el.isDisplayed()) {
+                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+                el.click();
+            }
+        });
     }
 
     protected async countElements(sel: string) {
@@ -81,7 +85,7 @@ class PageObjectBase {
     async headerIsPresent(parentTag: string, sel: string) {
         const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
         if (el) {
-            return element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`)).isPresent();
+            return el.isPresent();
         } else {
             return false;
         }
@@ -151,15 +155,6 @@ export class ShowfeaturePage extends PageObjectBase {
 
     clickSigninButton(button) {
         this.clickButton(null, button);
-    }
-
-    clickTitle(el) {
-      this.clickButton(null, el);
-    }
-
-    clickTitleAuthenticated(el) {
-      // this.clickButton(`app-main-tab ${this.tag} ${el}`);
-      this.clickButton(`app-main-tab app-showfeature ${this.tag}`, el);
     }
 }
 
