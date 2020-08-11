@@ -51,12 +51,12 @@ describe('join journey and leave journey', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get("/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY");
+        await browser.get('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
         await showfeature.waitUntilPresent();
     });
 
     it('should show unauthenticated journey page', async () => {
-        expect(await showfeature.headerIsPresent(null, "#showfeature-header")).toBeTruthy();
+        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
     });
 
     it('should login and show authenticated journey page', async () => {
@@ -73,8 +73,8 @@ describe('join journey and leave journey', () => {
         await showfeature.clickElement('app-main-tab', '#accept-invitation');
         await browser.waitForAngular();
         await onboardfeature.clickStartButton();
-        await onboardfeature.waitUntilInvisible();
-        expect(await showfeature.headerIsPresent('app-main-tab', '.can-go-back #accept-invitation')).toBeFalsy();
+        await onboardfeature.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
+        expect(await showfeature.headerIsPresent('app-main-tab', '.can-go-back #accept-invitation')).toBeFalsy(); // need .can-go-back class selector because there are two authenticated showfeature in the DOM
     });
 
     it('should confirm success prompt', async () => {
