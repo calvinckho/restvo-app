@@ -324,11 +324,6 @@ app-showfeature {
   }
 
   // people slideshow
-
-  .filter {
-    //margin-top: 12px;
-  }
-
   #peopleSlides {
     height: 100%;
   }
@@ -413,7 +408,6 @@ app-showfeature {
     margin: 10px 0 21px 0;
     width: 60%;
     height: 42px;
-    //max-height: 72px;
     line-height: 14px; /* Height / no. of lines to display */
     overflow: hidden;
     font-size: 12px;
@@ -445,19 +439,15 @@ app-showfeature {
   .person-photo-container {
     height: 300px;
     overflow: hidden;
-    //border-radius: 50%;
-    //margin: 5% auto;
   }
 
   .person-photo {
     object-fit: cover;
     cursor: pointer;
-    //opacity: 50%;
     height: 100%;
     width: 100%;
     margin: auto;
     display: block;
-    //max-height: 200px;
   }
 
   .program-slides {
