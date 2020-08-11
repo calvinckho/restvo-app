@@ -58,7 +58,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
+  <div class="profile-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
     <ion-row class="profile-row">
       <ion-card class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="view === 'profile'">
         <ion-item lines="none">
@@ -68,11 +68,11 @@
               <ion-img class="person-avatar" *ngIf="!userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
             </ion-avatar>
           </div>
-          <div class="person-content-left">
+          <div class="person-content">
             <ion-card-title class="person-name">
               {{userData.user.first_name}} {{userData.user.last_name}}
             </ion-card-title>
-            <div class="person-title" [innerHTML]="userData.user.bio"></div>
+            <div class="person-bio" [innerHTML]="userData.user.bio"></div>
             <ion-button id="edit-profile-button" shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
         </ion-item>
