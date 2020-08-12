@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "10.21.0"
+  - "10.22.0"
 
 # Cache node_modules
 cache:
@@ -9,8 +9,6 @@ cache:
 
 addons:
   chrome: stable
-
-os: osx
 
 branches:
   only:

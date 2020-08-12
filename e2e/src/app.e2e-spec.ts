@@ -31,6 +31,7 @@ describe('navigate around the maintab', () => {
     let createfeature: CreateFeaturePage;
 
     beforeAll(async () => {
+        await browser.waitForAngularEnabled(true);
         // testing on mobile sized screen
         const width = 600;
         const height = 968;
