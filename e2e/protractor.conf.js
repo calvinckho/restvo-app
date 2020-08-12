@@ -7,7 +7,8 @@ exports.config = {
   allScriptsTimeout: 110000,
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    './src/journey.e2e-spec.ts' // run this specific script
+    './src/app.e2e-spec.ts'
+    //'./src/journey.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
     'browserName': 'chrome'
@@ -18,7 +19,7 @@ exports.config = {
   SELENIUM_PROMISE_MANAGER: false,
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 30000,
+    defaultTimeoutInterval: 60000,
     print: function() {}
   },
   onPrepare() {
