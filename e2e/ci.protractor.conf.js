@@ -11,7 +11,7 @@ exports.config = {
   ],
   capabilities: {
     chromeOptions: {
-      args: [ "--headless" ]
+      args: [ "--headless", "--disable-browser-side-navigation" ]
     },
     'browserName': 'chrome'
   },
@@ -23,11 +23,5 @@ exports.config = {
     showColors: true,
     defaultTimeoutInterval: 30000,
     print: function() {}
-  },
-  /*onPrepare() {
-    require('ts-node').register({
-      project: 'e2e/tsconfig.e2e.json'
-    });
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
-  }*/
+  }
 };
