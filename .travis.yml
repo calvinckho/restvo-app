@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "10.22.0"
+sudo: true
+
+addons:
+  chrome: stable
+
+branches:
+  only:
+    - app-dev01
+    - app-production
+
+before_script:
+  - npm install -g @angular/cli
+
+script:
+  - ng e2e --protractor-config='e2e/ci.protractor.conf.js'
+  - yarn build --prod --base-href $base_href #base_href should be given in travis as an environment variable
