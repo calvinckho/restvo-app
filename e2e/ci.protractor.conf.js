@@ -11,7 +11,7 @@ exports.config = {
   ],
   capabilities: {
     chromeOptions: {
-      args: [ "--headless", "--disable-browser-side-navigation" ]
+      args: [ "--headless" ]
     },
     'browserName': 'chrome'
   },
