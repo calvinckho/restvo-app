@@ -1,7 +1,11 @@
 language: node_js
 node_js:
   - "10.22.0"
-sudo: true
+
+# Cache node_modules
+cache:
+  directories:
+    - "node_modules"
 
 addons:
   chrome: stable
@@ -13,7 +17,7 @@ branches:
 
 before_script:
   - npm install -g @angular/cli
+  - sleep 3
 
 script:
   - ng e2e --protractor-config='e2e/ci.protractor.conf.js'
-  - npm run build
