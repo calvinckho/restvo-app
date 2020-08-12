@@ -16,4 +16,4 @@ before_script:
 
 script:
   - ng e2e --protractor-config='e2e/ci.protractor.conf.js'
-  - yarn build --prod --base-href $base_href #base_href should be given in travis as an environment variable
+  - npm run build
