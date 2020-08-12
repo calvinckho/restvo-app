@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.7.28",
+  "version": "1.7.30",
   "description": "Connect with Mentors",
   "private": true,
   "main": "./build/index.js",
@@ -14,7 +14,7 @@
     "publish": "npm run build && electron-builder -mw --x64 --ia32 -p always"
   },
   "dependencies": {
-    "@capacitor-community/electron-core": "^1.0.0",
+    "@capacitor-community/electron-core": "^1.2.3",
     "ajv": "^6.12.3",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^1.3.0",
@@ -23,7 +23,7 @@
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
-    "electron": "^9.1.1",
+    "electron": "^9.2.0",
     "electron-builder": "^22.7.0",
     "typescript": "~3.9.5"
   },
@@ -41,7 +41,6 @@
     "mac": {
       "category": "Social Networking",
       "darkModeSupport": true,
-      "target": "dmg",
       "icon": "appIcon.png"
     },
     "win": {
@@ -52,7 +51,7 @@
       {
         "provider": "github",
         "owner": "calvinckho",
-        "repo": "restvoApp"
+        "repo": "restvo-desktop"
       }
     ],
     "files": [
