@@ -107,7 +107,7 @@
     </ion-item>
     <div *ngIf="!joinDisabled">
       <!--Already Joined-->
-      <ion-item *ngIf="hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none">
+      <ion-item *ngIf="hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="moreParticipantOptions()" lines="none" id="toggle-more-options">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap message-container">
           <ion-label class="ion-margin-top">You are a {{participantLabel}}</ion-label>

@@ -88,4 +88,10 @@ describe('join journey and leave journey', () => {
         await browser.sleep(7000);
         expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
     });
+
+    it('should toggle more options', async () => {
+        await showfeature.clickElement(`app-main-tab`, '#toggle-more-options');
+        await browser.sleep(7000);
+        expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
+    });
 });
