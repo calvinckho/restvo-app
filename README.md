@@ -1,3 +1,4 @@
+https://travis-ci.com/calvinckho/restvo-app.svg?branch=app-dev01
 # Restvo Official Web App
 
 Welcome to the Restvo Web App Development Community. Your contribute is so valuable to this project to bring mentorship and coaching to more people around the world. 
