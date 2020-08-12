@@ -16,7 +16,7 @@ branches:
     - app-production
 
 before_script:
-  - npm install -g @angular/cli
+  - npm install -g @angular/cli@8.3.25
   - sleep 3
 
 script:
