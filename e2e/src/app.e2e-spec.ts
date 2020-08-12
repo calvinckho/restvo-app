@@ -32,9 +32,9 @@ describe('navigate around the maintab', () => {
 
     beforeAll(async () => {
         // testing on mobile sized screen
-        //const width = 600;
-        //const height = 968;
-        //await browser.driver.manage().window().setSize(width, height);
+        const width = 600;
+        const height = 968;
+        await browser.driver.manage().window().setSize(width, height);
         app = new AppPage();
         maintab = new MaintabPage();
         register = new RegisterPage();
