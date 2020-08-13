@@ -116,7 +116,7 @@
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
       <!--Not yet Joined - permission check-->
-      <ion-item *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
+      <ion-item id="click-to-join" *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>

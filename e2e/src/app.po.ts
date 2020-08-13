@@ -110,24 +110,38 @@ export class AppPage {
         return element(by.id(`${sel}`)).isPresent();
     }
 
-    clickSettings(element) {
-        //this.clickElement(element);
+    async waitUntilElementVisible(sel) {
+        const el = element(by.css(sel));
+        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+    }
+
+    async waitUntilElementInvisible(sel) {
+        const el = element(by.css(sel));
+        await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
     }
 
     async clickAlertButton(text) {
-        //await browser.wait(ExpectedConditions.alertIsPresent(), 10000);
-        //const el = element(by.css('.alert-button-group.sc-ion-alert-md'));
-        const el = element(by.css('.alert-button.sc-ion-alert-md'));
-        //const el = element(by.cssContainingText('.alert-button-inner.sc-ion-alert-md', text)).element(by.xpath('..'));
-        //const name = await el.getTagName();
-        //console.log("check 2", name)
-        //await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-        //console.log("check 3")
-        el.click();
+        element.all(by.css('.alert-button.sc-ion-alert-md')).each(async (el) => {
+            if (await el.getText() === text) {
+                el.click();
+            }
+        });
     }
 
     alertIsPresent() {
         return element(by.css('ion-alert')).isPresent();
+    }
+
+    async clickActionSheetButton(text) {
+        element.all(by.css('.action-sheet-button')).each(async (el) => {
+            if (await el.getText() === text) {
+                el.click();
+            }
+        });
+    }
+
+    actionsheetIsPresent() {
+        return element(by.css('ion-action-sheet')).isPresent();
     }
 }
 
@@ -155,11 +169,6 @@ export class ShowfeaturePage extends PageObjectBase {
 
     clickSigninButton(button) {
         this.clickButton(null, button);
-    }
-
-    async clickActionSheetButton() {
-      const el = element(by.css(".action-sheet-button.ion-activatable.ion-focusable.sc-ion-action-sheet-md.ion-activated"));
-      el.click();
     }
 }
 

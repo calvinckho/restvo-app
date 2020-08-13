@@ -14,7 +14,7 @@ import {
     AboutPage,
     PreferencesPage
 } from './app.po';
-import { browser } from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 describe('join journey and leave journey', () => {
     let app: AppPage;
@@ -79,25 +79,23 @@ describe('join journey and leave journey', () => {
 
     it('should confirm success prompt', async () => {
         await app.clickAlertButton('OK');
-        await browser.sleep(1000);
+        await app.waitUntilElementInvisible('ion-alert');
         expect(await app.alertIsPresent()).toBeFalsy();
     });
 
-    it('should not show accept-invitation', async () => {
+    it('should click to see more options', async () => {
         await showfeature.clickElement(`app-main-tab`, '#show-event-title');
-        await browser.sleep(7000);
-        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
-    });
-
-    it('should toggle more options', async () => {
+        await browser.sleep(1000);
+        //await app.waitUntilElementVisible('app-main-tab #toggle-more-options');
         await showfeature.clickElement(`app-main-tab`, '#toggle-more-options');
-        await browser.sleep(7000);
-        // expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
+        await browser.sleep(3000);
+        //await app.waitUntilElementVisible('ion-action-sheet');
+        expect(await app.actionsheetIsPresent()).toBeTruthy();
     });
 
     it('should click the leave action sheet button', async () => {
-        await showfeature.clickActionSheetButton();
-        await browser.sleep(7000);
-        // expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
+        await app.clickActionSheetButton('Leave');
+        await app.waitUntilElementVisible('app-main-tab #click-to-join');
+        expect(await showfeature.headerIsPresent('app-main-tab', '#click-to-join')).toBeTruthy();
     });
 });
