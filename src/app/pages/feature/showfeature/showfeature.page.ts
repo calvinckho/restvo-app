@@ -2019,7 +2019,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   async openRegister(slide, loginStatus) {
     //   const registerModal = await this.modalCtrl.create({component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true}});
-      const registerModal = await this.modalCtrl.create({component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true}, cssClass: 'fullScreen'});
+      const modalObject: any = {component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true } };
+      if (this.platform.width() >= 768) {
+          modalObject.cssClass = 'fullScreen';
+      }
+      const registerModal = await this.modalCtrl.create(modalObject);
       await registerModal.present();
   }
 

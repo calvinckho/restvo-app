@@ -87,7 +87,6 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   reloadEditPage = async () => {
     // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
     if (this.userData.user && (this.router.url.includes('creator') || this.modalPage)) {
-
       this.id = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
       this.loadSchedules();
       await this.setup();
@@ -96,8 +95,10 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
 
   async loadSchedules() {
     // check to see if it has any schedules
-    this.schedules = await this.momentService.loadActivitySchedules(this.id);
-    this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
+    if (this.id) {
+      this.schedules = await this.momentService.loadActivitySchedules(this.id);
+      this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
+    }
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
