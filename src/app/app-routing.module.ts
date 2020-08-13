@@ -58,6 +58,7 @@ const routes: Routes = [
     },
     {
         path: 'pickfeature',
+        // tslint:disable-next-line:max-line-length
         loadChildren: () => import('./pages/feature/pickfeature-popover/pickfeature-popover.module').then( m => m.PickfeaturePopoverPageModule),
         outlet: 'sub'
     },
@@ -69,7 +70,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)], //{ enableTracing: true }
+  imports: [RouterModule.forRoot(routes)], // { enableTracing: true }
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

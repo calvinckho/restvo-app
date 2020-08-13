@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -42,6 +42,7 @@ import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.mod
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {ErrorService} from "./services/error.service";
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
       Geolocation,
       NativeGeocoder,
       SpeechRecognition,
-      Calendar
+      Calendar,
+      { provide: ErrorHandler, useClass: ErrorService }
   ],
   bootstrap: [AppComponent]
 })

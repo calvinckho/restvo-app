@@ -1,28 +1,28 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, async } from '@angular/core/testing';
-import { APP_BASE_HREF } from "@angular/common";
-import { RouterModule, Routes } from "@angular/router";
+import { APP_BASE_HREF } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
 
 import {IonicModule} from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import {IonicStorageModule} from "@ionic/storage";
-import {ShowgroupPageModule} from "./pages/group/showgroup/showgroup.module";
-//import {AppRoutingModule} from "./app-routing.module";
-import {EditgroupPageModule} from "./pages/group/editgroup/editgroup.module";
-import {environment} from "../environments/environment";
-import {GroupboardPageModule} from "./pages/board/groupboard/groupboard.module";
-import {BrowserModule} from "@angular/platform-browser";
-import {ServiceWorkerModule} from "@angular/service-worker";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {IonicStorageModule} from '@ionic/storage';
+import {ShowgroupPageModule} from './pages/group/showgroup/showgroup.module';
+// import {AppRoutingModule} from "./app-routing.module";
+import {EditgroupPageModule} from './pages/group/editgroup/editgroup.module';
+import {environment} from '../environments/environment';
+import {GroupboardPageModule} from './pages/board/groupboard/groupboard.module';
+import {BrowserModule} from '@angular/platform-browser';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CacheModule} from 'ionic-cache';
-import {ShowcommunityPageModule} from "./pages/community/showcommunity/showcommunity.module";
+import {ShowcommunityPageModule} from './pages/community/showcommunity/showcommunity.module';
 import {NgxElectronModule} from 'ngx-electron';
-import {NetworkService} from "./services/network-service.service";
-import {NetworkServiceMock} from "./services/mocks/network-service.service.mock";
+import {NetworkService} from './services/network-service.service';
+//import {NetworkServiceMock} from './services/mocks/network-service.service.mock';
 import { UserData } from './services/user.service';
-import { UserDataMock } from './services/mocks/user.service.mock';
+//import { UserDataMock } from './services/mocks/user.service.mock';
 
 describe('AppComponent', () => {
     const routes: Routes = [
@@ -61,10 +61,10 @@ describe('AppComponent', () => {
         },
     ];
 
-  //let platformSpy, platformReadySpy;
+  // let platformSpy, platformReadySpy;
 
   beforeEach(async(() => {
-    //platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    // platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
 
     TestBed.configureTestingModule({
       declarations: [
@@ -80,7 +80,7 @@ describe('AppComponent', () => {
           ReactiveFormsModule,
           IonicModule.forRoot(),
           IonicStorageModule.forRoot(),
-          //AppRoutingModule,
+          // AppRoutingModule,
           ShowcommunityPageModule,
           ShowgroupPageModule,
           GroupboardPageModule,
@@ -90,9 +90,9 @@ describe('AppComponent', () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
-        //{ provide: Platform, useValue: platformSpy },
-          { provide: NetworkService, useClass: NetworkServiceMock },
-          { provide: UserData, useClass: UserDataMock }
+        // { provide: Platform, useValue: platformSpy },
+          //{ provide: NetworkService, useClass: NetworkServiceMock },
+          //{ provide: UserData, useClass: UserDataMock },
       ],
     }).compileComponents();
   }));

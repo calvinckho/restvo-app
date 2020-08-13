@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {Injectable, Injector} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
@@ -10,6 +10,7 @@ import {Platform} from "@ionic/angular";
 export class Systemlog {
 
     constructor(private http: HttpClient,
+                private injector: Injector,
                 private platform: Platform,
                 private appVersion: AppVersion,
                 public authService: Auth,
@@ -22,6 +23,14 @@ export class Systemlog {
         if (this.userData && this.userData.defaultProgram && this.userData.defaultProgram._id) {
             data.defaultProgram = this.userData.defaultProgram._id;
         }
+        if (this.platform.is('cordova')) {
+            data.appVersionNumber = await this.appVersion.getVersionNumber();
+        }
+        return this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+    }
+
+    async logMessage(data) {
+        data.appPlatforms = this.platform.platforms();
         if (this.platform.is('cordova')) {
             data.appVersionNumber = await this.appVersion.getVersionNumber();
         }
