@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMAs } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, async } from '@angular/core/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -20,9 +20,9 @@ import {CacheModule} from 'ionic-cache';
 import {ShowcommunityPageModule} from './pages/community/showcommunity/showcommunity.module';
 import {NgxElectronModule} from 'ngx-electron';
 import {NetworkService} from './services/network-service.service';
-import {NetworkServiceMock} from './services/mocks/network-service.service.mock';
+//import {NetworkServiceMock} from './services/mocks/network-service.service.mock';
 import { UserData } from './services/user.service';
-import { UserDataMock } from './services/mocks/user.service.mock';
+//import { UserDataMock } from './services/mocks/user.service.mock';
 
 describe('AppComponent', () => {
     const routes: Routes = [
@@ -91,8 +91,8 @@ describe('AppComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         // { provide: Platform, useValue: platformSpy },
-          { provide: NetworkService, useClass: NetworkServiceMock },
-          { provide: UserData, useClass: UserDataMock },
+          //{ provide: NetworkService, useClass: NetworkServiceMock },
+          //{ provide: UserData, useClass: UserDataMock },
       ],
     }).compileComponents();
   }));

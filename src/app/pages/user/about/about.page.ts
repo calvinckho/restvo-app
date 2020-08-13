@@ -22,18 +22,13 @@ export class AboutPage implements OnInit, OnDestroy {
   role: any;
 
   constructor(
-      private platform: Platform,
+      public platform: Platform,
       private router: Router,
       private awsService: Aws,
       public modalCtrl: ModalController,
       public userData: UserData,
       private authService: Auth
   ) { }
-
-  testError() {
-    console.log('Testing Error Service: ');
-    throw new Error('An error occurred');
-  }
 
   ngOnInit() {
     this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);

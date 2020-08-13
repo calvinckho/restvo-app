@@ -264,22 +264,26 @@ export class UserData {
     }
 
     async checkAdminAccess(communityId) {
-        const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
-        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-        const activityId = await this.storage.get('currentManageActivityId');
-        if (activityId && this.activitiesWithAdminAccess.length) {
-            if (this.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
-                this.currentManageActivityId = activityId;
-            } else {
+        if (this.authService && this.authService.httpAuthOptions) {
+            const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
+            this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+            this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+            const activityId = await this.storage.get('currentManageActivityId');
+            if (activityId && this.activitiesWithAdminAccess.length) {
+                if (this.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
+                    this.currentManageActivityId = activityId;
+                } else {
+                    this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
+                    this.storage.set('currentManageActivityId', this.currentManageActivityId);
+                }
+            } else if (this.activitiesWithAdminAccess.length) {
                 this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
                 this.storage.set('currentManageActivityId', this.currentManageActivityId);
             }
-        } else if (this.activitiesWithAdminAccess.length) {
-            this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
-            this.storage.set('currentManageActivityId', this.currentManageActivityId);
+            return result;
+        } else {
+            return false;
         }
-        return result;
     }
 
     initializeUser() {

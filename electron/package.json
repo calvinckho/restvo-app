@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.7.30",
+  "version": "1.7.31",
   "description": "Connect with Mentors",
   "private": true,
   "main": "./build/index.js",

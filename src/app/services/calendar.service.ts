@@ -56,7 +56,7 @@ export class CalendarService {
     }
 
     async getUserCalendar() {
-        if (!this.authService.token) {
+        if (!this.authService || !this.authService.token) {
             return;
         }
         try {
