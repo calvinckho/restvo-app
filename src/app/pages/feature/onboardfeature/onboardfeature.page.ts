@@ -167,7 +167,7 @@ export class OnboardfeaturePage {
         });
 
         // if there is any interactable
-        if (moment.resource.matrix_number[0].find((c) => c >= 30000 && c <= 49999) > -1) {
+        if (moment.resource.matrix_number[0].find((c) => c >= 30000 && c <= 49999)) {
             if (moment.response) {
                 moment.response.user = { // manually populate the user - standardized in showFeature.ts, the populated user is returned by loadReponsesByMomentId
                     _id: this.userData.user._id,
@@ -191,7 +191,7 @@ export class OnboardfeaturePage {
         }
 
         // if there is any interactable that requires socket.io support
-        if (moment.resource.matrix_number[0].find((c) => c >= 30000 && c <= 39999) > -1) {
+        if (moment.resource.matrix_number[0].find((c) => c >= 30000 && c <= 39999)) {
             if (this.momentService && this.momentService.socket) {
                 this.momentService.socket.emit('join moment', moment._id) ;
             }
@@ -251,7 +251,7 @@ export class OnboardfeaturePage {
                     this.setupInteractableDisplay(moment, interactableId, componentIndex);
                 }
             }
-            if (this.moment.resource.matrix_number[0].find((c) => c === 50000)) {
+            if (moment.resource.matrix_number[0].find((c) => c === 50000)) {
                 this.loadPeople();
             }
         });
