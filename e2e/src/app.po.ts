@@ -156,6 +156,11 @@ export class ShowfeaturePage extends PageObjectBase {
     clickSigninButton(button) {
         this.clickButton(null, button);
     }
+
+    async clickActionSheetButton() {
+      const el = element(by.css(".action-sheet-button.ion-activatable.ion-focusable.sc-ion-action-sheet-md.ion-activated"));
+      el.click();
+    }
 }
 
 export class RegisterPage extends PageObjectBase {

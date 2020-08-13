@@ -92,6 +92,12 @@ describe('join journey and leave journey', () => {
     it('should toggle more options', async () => {
         await showfeature.clickElement(`app-main-tab`, '#toggle-more-options');
         await browser.sleep(7000);
-        expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
+        // expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
+    });
+
+    it('should click the leave action sheet button', async () => {
+        await showfeature.clickActionSheetButton();
+        await browser.sleep(7000);
+        // expect(await showfeature.headerIsPresent('app-main-tab', '#toggle-more-options')).toBeFalsy();
     });
 });
