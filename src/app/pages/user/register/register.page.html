@@ -73,15 +73,15 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height overflow">
         <ion-list>
+          <ion-buttons style="margin-left: 18px" slot="start" (click)="view = 'signin'">
+            <ion-button fill="clear">
+              <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+            </ion-button>
+          </ion-buttons>
           <ion-slides #welcomeSlides pager class="ion-padding-bottom">
             <!--Intro slide 1-->
             <ion-slide>
               <ion-list>
-                <ion-buttons style="margin-left: 18px" slot="start" (click)="view = 'signin'">
-                  <ion-button fill="clear">
-                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
                 <ion-item class="ion-justify-content-center intro-graphics" style="margin-left: 2%; margin-right: 2%" lines="none">
                   <div class="graphics-container">
                     <img src="assets/img/intro_1.png" />
