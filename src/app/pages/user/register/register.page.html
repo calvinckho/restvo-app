@@ -63,7 +63,6 @@
           
         <ion-col class="right-signUp" *ngIf="platform.width() >= 768">
           <img class="background-img" src="assets/img/signUp.png"/>
-          <!--<div class="welcome-title">HELLO, Friend!</div>-->
           <div class="welcome-subtitle">Not a user yet? Sign up here</div>
           <ion-button color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'welcome'" id="signup-button">Sign up</ion-button>
         </ion-col>
@@ -499,8 +498,7 @@
 
         <ion-col class="right-signUp" *ngIf="platform.width() >= 768">
           <img class="background-img" src="assets/img/signUp.png"/>
-          <!--<div class="welcome-title">Welcome Back!</div>-->
-          <div *ngIf="exitType === 'slide'">
+          <div [hidden]="exitType === 'dashboard'">
             <div class="welcome-subtitle">Already a user? Sign in here</div>
             <ion-button color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'" id="signup-button">Sign in</ion-button>
             <ion-button (click)="view = 'signin'; toggleRecoveryMode()" class="create-account" fill="clear">I forgot my password</ion-button>
