@@ -611,13 +611,21 @@ export class RegisterPage implements OnInit {
             if (result.success){
                 this.userData.user = result.user;
                 await this.userData.loadStoredCommunity();
-                // if it is not recovery process, select an email
                 this.view = 'register';
                 setTimeout(() => {
-                    if (!this.recovery_mode) {
-                        this.goToSlide(2); // input an email
-                    } else { // if it is a recovery process, go to create password
+                    // if it is recovery process, go to create password
+                    if (this.recovery_mode) {
                         this.goToSlide(3); // create a password
+                    } else {
+                        if (this.exitType === 'dashboard'){ // if it is to register a new mobile from Settings
+                            this.menuCtrl.enable(true);
+                            this.router.navigateByUrl('/app/user/profile');
+                            if (this.modalPage) {
+                                this.modalCtrl.dismiss();
+                            }
+                        } else { // if this is normal mobile onboarding
+                            this.goToSlide(2); // input an email
+                        }
                     }
                 }, 500);
 
