@@ -22,7 +22,7 @@ export class AboutPage implements OnInit, OnDestroy {
   role: any;
 
   constructor(
-      private platform: Platform,
+      public platform: Platform,
       private router: Router,
       private awsService: Aws,
       public modalCtrl: ModalController,
