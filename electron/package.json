@@ -1,6 +1,6 @@
 {
   "name": "Restvo",
-  "version": "1.7.31",
+  "version": "1.7.32",
   "description": "Connect with Mentors",
   "private": true,
   "main": "./build/index.js",
@@ -41,11 +41,11 @@
     "mac": {
       "category": "Social Networking",
       "darkModeSupport": true,
-      "icon": "appIcon.png"
+      "icon": "assets/appIcon.png"
     },
     "win": {
       "target": "nsis",
-      "icon": "appIcon.ico"
+      "icon": "assets/appIcon.ico"
     },
     "publish": [
       {
