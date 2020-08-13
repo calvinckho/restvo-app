@@ -125,6 +125,10 @@ app-register {
     margin: 0 auto;
   }
 
+  .welcome-form {
+    max-width: 600px;
+  }
+
   .welcome-name {
     color: var(--ion-color-primary);
     font-weight: 900;
