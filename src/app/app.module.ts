@@ -42,7 +42,7 @@ import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.mod
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import {Systemlog} from "./services/systemlog.service";
+import {ErrorService} from "./services/error.service";
 
 @NgModule({
   declarations: [
@@ -88,7 +88,7 @@ import {Systemlog} from "./services/systemlog.service";
       NativeGeocoder,
       SpeechRecognition,
       Calendar,
-      { provide: ErrorHandler, useClass: Systemlog }
+      { provide: ErrorHandler, useClass: ErrorService }
   ],
   bootstrap: [AppComponent]
 })
