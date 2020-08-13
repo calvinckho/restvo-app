@@ -444,7 +444,7 @@ export class RegisterPage implements OnInit {
                 loading.dismiss();
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(6); // go to upload a Profile Pic
+                    this.goToSlide(4); // go to upload a Profile Pic
                 }, 500);
             }
         } catch (err) {
@@ -479,7 +479,7 @@ export class RegisterPage implements OnInit {
                 if (result.success) {
                     this.view = 'register';
                     setTimeout(() => {
-                        this.goToSlide(3); // verify SMS
+                        this.goToSlide(1); // verify SMS
                     }, 500);
                 } else {
                     const alert = await this.alertCtrl.create({
@@ -578,7 +578,7 @@ export class RegisterPage implements OnInit {
             if (result.success) {
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(3); // verify SMS
+                    this.goToSlide(1); // verify SMS
                 }, 500);
             } else {
                 const alert = await this.alertCtrl.create({
@@ -606,7 +606,6 @@ export class RegisterPage implements OnInit {
             loginDeviceType: 'mobile'
         };
         try {
-            console.log("verify", data);
             const result: any = await this.authService.verifyMobile(data);
             loading.dismiss();
             if (result.success){
@@ -616,9 +615,9 @@ export class RegisterPage implements OnInit {
                 this.view = 'register';
                 setTimeout(() => {
                     if (!this.recovery_mode) {
-                        this.goToSlide(4); // input an email
+                        this.goToSlide(2); // input an email
                     } else { // if it is a recovery process, go to create password
-                        this.goToSlide(5); // create a password
+                        this.goToSlide(3); // create a password
                     }
                 }, 500);
 
@@ -714,7 +713,7 @@ export class RegisterPage implements OnInit {
             await this.authService.registerEmail(data);
             this.view = 'register';
             setTimeout(() => {
-                this.goToSlide(5); // pick a password
+                this.goToSlide(3); // pick a password
             }, 500);
         } catch (err) {
             console.log("result", err);
@@ -748,7 +747,7 @@ export class RegisterPage implements OnInit {
             } else { // if it is a normal registration process
                 this.view = 'register';
                 setTimeout(() => {
-                    this.goToSlide(6); // upload profile picture
+                    this.goToSlide(4); // upload profile picture
                 }, 500);
             }
         } catch (err) {
