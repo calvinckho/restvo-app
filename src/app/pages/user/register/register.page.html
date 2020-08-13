@@ -240,7 +240,7 @@
                       </ion-row>
                     </div>
                     <div *ngIf="loginMode === 'mobile'" lines="none">
-                      <form [formGroup]="nameForm" class="form">
+                      <form [formGroup]="nameForm">
                         <ion-item *ngIf="loginMode === 'mobile'" lines="full">
                           <ion-input type="text" formControlName="first_name" placeholder="First Name" autocapitalize="true" id="first-name"></ion-input>
                           <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="true" id="last-name"></ion-input>
