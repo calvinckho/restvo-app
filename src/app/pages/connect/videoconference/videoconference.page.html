@@ -1,5 +1,5 @@
 <ion-content *ngIf="platform.is('cordova')"><!--Native App-->
-  <div style="height: 100%"><!--Mobile App on iOS, Android-->
+  <div style="height: 100%"><!--Native App on iOS, Android-->
     <ion-grid style="height: 100%" *ngIf="!userData.readyToControlVideoChat">
       <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
         <ion-spinner name="dots"></ion-spinner>
@@ -23,7 +23,7 @@
   </div>
 </ion-content>
 <ion-content *ngIf="!platform.is('cordova')"> <!--Non-native App-->
-  <div *ngIf="!platform.is('mobileweb') || platform.is('tablet')" style="height: 100%"><!--Desktop, Laptop, Tablet-->
+  <div *ngIf="!platform.is('mobileweb') || platform.is('tablet') || platform.width() > 768" style="height: 100%"><!--Desktop, Laptop, Tablet-->
     <div id="videoConference" *ngIf="!videoEnded"></div>
     <ion-grid style="height: 100%" *ngIf="videoEnded">
       <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
@@ -41,7 +41,7 @@
       </ion-row>
     </ion-grid>
   </div>
-  <ion-grid style="height: 100%" *ngIf="platform.is('mobileweb') && !platform.is('tablet')"> <!--Mobile web browser and not tablet-->
+  <ion-grid style="height: 100%" *ngIf="platform.is('mobileweb') && !platform.is('tablet') && platform.width() <= 768"> <!--Mobile web browser and not tablet-->
     <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
       <div>
         <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">

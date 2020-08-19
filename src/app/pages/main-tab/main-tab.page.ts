@@ -747,7 +747,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         });
                         window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                         window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-                    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile web but not tablet, display download app page
+                    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() <= 768) { // mobile web but not tablet, display download app page
                         this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
                     } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
                         window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
