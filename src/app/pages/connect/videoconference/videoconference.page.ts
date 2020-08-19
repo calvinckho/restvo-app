@@ -54,20 +54,19 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
   }
 
-  ionViewWillEnter() { // for unauthenticated user joining after the re-routing by Angular router
-    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
+  ionViewWillEnter() { // for unauthenticated user joining after being re-routed by Angular router from /app/video to /video
+    if (!this.router.url.includes('app/video') && !this.platform.is('cordova') && !this.userData.videoChatRoomId) {
       this.initializeVideoConference();
     }
   }
 
   userLoadedHander = () => { // for authenticated user joining when the observable is first subscribed to
-    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {
+    if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId) {
       this.initializeVideoConference();
     }
   };
 
   async initializeVideoConference() {
-    this.userData.readyToControlVideoChat = false;
     setTimeout(() => {
       this.userData.readyToControlVideoChat = true;
     }, this.platform.is('cordova') ? 2000 : 10000); // default video chat load timeout = 2 sec for mobile plugin, 10s for desktop. it needs shorter load time because TODO: onJitsiUnloaded is not working on mobile plugin so needs to manually readyToControlVideoChat to true after 2 sec
@@ -84,7 +83,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-    } else if (!this.platform.is('mobileweb') || this.platform.is('tablet') || this.platform.width() > 768) { // desktop, laptap, touchscreen tablet
+    } else { // desktop, laptap, touchscreen tablet
       get('https://meet.jit.si/external_api.js', () => {
         const domain = videoEndpoint.url;
         const options = {
@@ -96,7 +95,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
             channelLastN: parseInt(this.channelLastN || '-1', 10),
             startWithAudioMuted: this.startWithAudioMuted,
             startWithVideoMuted: this.startWithVideoMuted,
-            externalConnectUrl: 'https://app.restvo.com/video/' + this.videoChatRoomId
+            externalConnectUrl: 'https://app.restvo.com/video/' + this.videoChatRoomId,
           },
           interfaceConfigOverwrite: {
             APP_NAME: 'Restvo Video',
@@ -113,15 +112,19 @@ export class VideoconferencePage implements OnInit, OnDestroy {
               'videoquality', 'filmstrip', 'invite', 'stats', 'shortcuts',
               'tileview'
             ],
-            MOBILE_APP_PROMO: false
+            MOBILE_APP_PROMO: false,
+            MOBILE_DOWNLOAD_LINK_ANDROID: 'https://play.google.com/store/apps/details?id=com.restvo.app',
+            MOBILE_DOWNLOAD_LINK_IOS: 'https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8',
+            APP_SCHEME: 'com.restvo.app',
+            ANDROID_APP_PACKAGE: 'com.restvo.app'
           },
           onload: this.onJitsiLoaded()
         };
         this.jitsi = new JitsiMeetExternalAPI(domain, options);
       });
-    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() <= 768) { // mobile phone browser
+    }/* else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() <= 768) { // mobile phone browser
       // show warning on the HTML to tell user to download the native app
-    }
+    }*/
   }
 
   onJitsiLoaded = async () => {
@@ -171,7 +174,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 
   async goToHome() {
     await this.menuCtrl.enable(this.userData.user);
-    this.router.navigateByUrl('/activity/5d5785b462489003817fee18');
+    this.router.navigateByUrl((this.userData.user ? '/app/' : '') + '/activity/5d5785b462489003817fee18');
   }
 
   continueToApp() {

@@ -726,57 +726,47 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async toggleVideoChat(params) {
-        if (this.userData.readyToControlVideoChat) {
-            if (!this.userData.videoChatRoomId) {
-                try {
-                    this.userData.readyToControlVideoChat = false;
-                    setTimeout(() => {
-                        this.userData.readyToControlVideoChat = true;
-                    }, 10000); // default video chat load timeout = 10s
-                    const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
-                    if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
-                        const { Jitsi } = Plugins;
-                        await Jitsi.joinConference({
-                            roomName: params.videoChatRoomId,
-                            url: videoEndpoint.ssl + videoEndpoint.url,
-                            channelLastN: params.channelLastN,
-                            startWithAudioMuted: params.startWithAudioMuted,
-                            startWithVideoMuted: params.startWithVideoMuted,
-                            chatEnabled: false,
-                            inviteEnabled: false
-                        });
-                        window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
-                        window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-                    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() <= 768) { // mobile web but not tablet, display download app page
-                        this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
-                    } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
-                        window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-                    } else { // on desktop web, open another tab and run external API
-                        window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-                    }
-                } catch (err) {
-                    this.userData.readyToControlVideoChat = true;
-                    const networkAlert = await await this.alertCtrl.create({
-                        header: 'No Internet Connection',
-                        message: 'Please check your internet connection.',
-                        buttons: ['Dismiss'],
-                        cssClass: 'level-15'
-                    });
-                    await networkAlert.present();
-                }
-            } else {
+        try {
+            this.userData.readyToControlVideoChat = false;
+            setTimeout(() => {
                 this.userData.readyToControlVideoChat = true;
-                // logically only happens on non-native app (the toggleVideoChat button is covered by the native Jitsi view during call)
-                if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'leave video chat', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
-                this.userData.videoChatRoomId = '';
-                if (this.platform.is('cordova')) {
-                    // onJitisiUnloaded will take care of clean up
-                } else {
-                    this.jitsi.executeCommand('hangup');
+            }, 10000); // default video chat load timeout = 10s
+            const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
+            if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
+                const { Jitsi } = Plugins;
+                await Jitsi.joinConference({
+                    roomName: params.videoChatRoomId,
+                    url: videoEndpoint.ssl + videoEndpoint.url,
+                    channelLastN: params.channelLastN,
+                    startWithAudioMuted: params.startWithAudioMuted,
+                    startWithVideoMuted: params.startWithVideoMuted,
+                    chatEnabled: false,
+                    inviteEnabled: false,
+                });
+                window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
+                window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
+            } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
+                window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
+            } else if (!this.platform.is('ios')) { // Desktop, Android, etc that is not iOS
+                window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
+            } else { // on iOS
+                await this.menuCtrl.enable(false);
+                this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
+                if (this.userData.videoChatRoomId) { // if video chat wasn't exited correctly, reload the window
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
                 }
-                // @ts-ignore
-                $(`#videoSpace`).empty();
             }
+        } catch (err) {
+            this.userData.readyToControlVideoChat = true;
+            const networkAlert = await await this.alertCtrl.create({
+                header: 'No Internet Connection',
+                message: 'Please check your internet connection.',
+                buttons: ['Dismiss'],
+                cssClass: 'level-15'
+            });
+            await networkAlert.present();
         }
     }
 
