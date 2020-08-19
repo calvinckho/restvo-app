@@ -31,6 +31,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 
   jitsi: any = {};
   videoEnded = false;
+  isWebRTCSupported: boolean = false;
 
   constructor(
       public platform: Platform,
@@ -52,6 +53,12 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.startWithAudioMuted = this.route.snapshot.paramMap.get('startWithAudioMuted') === 'true';
     this.startWithVideoMuted = this.route.snapshot.paramMap.get('startWithVideoMuted') === 'true';
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
+    ['RTCPeerConnection', 'webkitRTCPeerConnection', 'mozRTCPeerConnection', 'RTCIceGatherer'].forEach((item) => {
+      if (item in window) {
+        this.isWebRTCSupported = true;
+      }
+    });
+    console.log("is supported", this.isWebRTCSupported)
   }
 
   ionViewWillEnter() { // for unauthenticated user joining after being re-routed by Angular router from /app/video to /video
@@ -83,7 +90,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-    } else { // desktop, laptap, touchscreen tablet
+    } else { // desktop, laptap, touchscreen tablet, mobile browser
       get('https://meet.jit.si/external_api.js', () => {
         const domain = videoEndpoint.url;
         const options = {
@@ -100,9 +107,6 @@ export class VideoconferencePage implements OnInit, OnDestroy {
           interfaceConfigOverwrite: {
             APP_NAME: 'Restvo Video',
             NATIVE_APP_NAME: 'Restvo',
-            SHOW_JITSI_WATERMARK: false,
-            SHOW_BRAND_WATERMARK: true,
-            BRAND_WATERMARK_LINK: 'https://wee.nyc3.cdn.digitaloceanspaces.com/app/icon_email.png',
             DEFAULT_REMOTE_DISPLAY_NAME: 'Restvo friend',
             ENABLE_FEEDBACK_ANIMATION: false,
             TOOLBAR_BUTTONS: [
@@ -112,6 +116,10 @@ export class VideoconferencePage implements OnInit, OnDestroy {
               'videoquality', 'filmstrip', 'invite', 'stats', 'shortcuts',
               'tileview'
             ],
+            // the following only works if we run our own video bridge
+            SHOW_JITSI_WATERMARK: false,
+            SHOW_BRAND_WATERMARK: true,
+            BRAND_WATERMARK_LINK: 'https://wee.nyc3.cdn.digitaloceanspaces.com/app/icon_email.png',
             MOBILE_APP_PROMO: false,
             HIDE_DEEP_LINKING_LOGO: true,
             MOBILE_DOWNLOAD_LINK_ANDROID: 'https://play.google.com/store/apps/details?id=com.restvo.app',
@@ -174,7 +182,6 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   }
 
   async goToHome() {
-    await this.menuCtrl.enable(this.userData.user);
     this.router.navigateByUrl((this.userData.user ? '/app/' : '') + '/activity/5d5785b462489003817fee18');
   }
 
@@ -184,6 +191,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     } else { // android can trigger Universal Link from the same domain so no need to send to another domain
       window.open('https://app.restvo.com/app/video/' + + this.videoChatRoomId + ';channelLastN=' + this.channelLastN + ';startWithAudioMuted=' + this.startWithAudioMuted + ';startWithVideoMuted=' + this.startWithVideoMuted + ';videoChatRoomSubject=' + this.videoChatRoomSubject);
     }
+  }
+
+  ionViewWillLeave() {
+    this.menuCtrl.enable(this.userData.user);
+    this.userData.videoChatRoomId = '';
   }
 
   ngOnDestroy(): void {
