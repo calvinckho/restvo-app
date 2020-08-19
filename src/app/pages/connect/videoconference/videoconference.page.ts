@@ -84,7 +84,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-    } else if (!this.platform.is('mobileweb') || this.platform.is('tablet')) { // desktop, laptap, touchscreen tablet
+    } else if (!this.platform.is('mobileweb') || this.platform.is('tablet') || this.platform.width() > 768) { // desktop, laptap, touchscreen tablet
       get('https://meet.jit.si/external_api.js', () => {
         const domain = videoEndpoint.url;
         const options = {
@@ -119,7 +119,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         };
         this.jitsi = new JitsiMeetExternalAPI(domain, options);
       });
-    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet')) { // mobile phone browser
+    } else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() <= 768) { // mobile phone browser
       // show warning on the HTML to tell user to download the native app
     }
   }
