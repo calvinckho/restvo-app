@@ -53,12 +53,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.startWithAudioMuted = this.route.snapshot.paramMap.get('startWithAudioMuted') === 'true';
     this.startWithVideoMuted = this.route.snapshot.paramMap.get('startWithVideoMuted') === 'true';
     this.subscriptions['userLoaded'] = this.userData.refreshUserStatus$.subscribe(this.userLoadedHander);
-    ['RTCPeerConnection', 'webkitRTCPeerConnection', 'mozRTCPeerConnection', 'RTCIceGatherer'].forEach((item) => {
-      if (item in window) {
-        this.isWebRTCSupported = true;
-      }
-    });
-    console.log("is supported", this.isWebRTCSupported)
+    this.isWebRTCSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   }
 
   ionViewWillEnter() { // for unauthenticated user joining after being re-routed by Angular router from /app/video to /video
@@ -103,6 +98,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
             startWithAudioMuted: this.startWithAudioMuted,
             startWithVideoMuted: this.startWithVideoMuted,
             externalConnectUrl: 'https://app.restvo.com/video/' + this.videoChatRoomId,
+            disableDeepLinking: true
           },
           interfaceConfigOverwrite: {
             APP_NAME: 'Restvo Video',
@@ -121,11 +117,6 @@ export class VideoconferencePage implements OnInit, OnDestroy {
             SHOW_BRAND_WATERMARK: true,
             BRAND_WATERMARK_LINK: 'https://wee.nyc3.cdn.digitaloceanspaces.com/app/icon_email.png',
             MOBILE_APP_PROMO: false,
-            HIDE_DEEP_LINKING_LOGO: true,
-            MOBILE_DOWNLOAD_LINK_ANDROID: 'https://play.google.com/store/apps/details?id=com.restvo.app',
-            MOBILE_DOWNLOAD_LINK_IOS: 'https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8',
-            APP_SCHEME: 'com.restvo.app',
-            ANDROID_APP_PACKAGE: 'com.restvo.app'
           },
           onload: this.onJitsiLoaded()
         };
