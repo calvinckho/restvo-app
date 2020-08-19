@@ -113,6 +113,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
               'tileview'
             ],
             MOBILE_APP_PROMO: false,
+            HIDE_DEEP_LINKING_LOGO: true,
             MOBILE_DOWNLOAD_LINK_ANDROID: 'https://play.google.com/store/apps/details?id=com.restvo.app',
             MOBILE_DOWNLOAD_LINK_IOS: 'https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8',
             APP_SCHEME: 'com.restvo.app',
