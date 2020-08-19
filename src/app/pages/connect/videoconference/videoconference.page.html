@@ -23,7 +23,7 @@
   </div>
 </ion-content>
 <ion-content *ngIf="!platform.is('cordova')"> <!--Non-native App-->
-  <div *ngIf="!platform.is('mobileweb') || platform.is('tablet') || platform.width() > 768" style="height: 100%"><!--Desktop, Laptop, Tablet-->
+  <div style="height: 100%"><!--Desktop, Laptop, Tablet-->
     <div id="videoConference" *ngIf="!videoEnded"></div>
     <ion-grid style="height: 100%" *ngIf="videoEnded">
       <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
@@ -41,7 +41,7 @@
       </ion-row>
     </ion-grid>
   </div>
-  <ion-grid style="height: 100%" *ngIf="platform.is('mobileweb') && !platform.is('tablet') && platform.width() <= 768"> <!--Mobile web browser and not tablet-->
+  <!--<ion-grid style="height: 100%" *ngIf="platform.is('mobileweb') && !platform.is('tablet') && platform.width() <= 768"> &lt;!&ndash;Mobile web browser and not tablet&ndash;&gt;
     <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
       <div>
         <ion-row class="ion-justify-content-center" style="margin-bottom: 50px">
@@ -60,5 +60,5 @@
         </ion-row>
       </div>
     </ion-row>
-  </ion-grid>
+  </ion-grid>-->
 </ion-content>
