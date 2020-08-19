@@ -504,7 +504,6 @@ app-showfeature {
   }
 
   .participant-row {
-    //padding: 0 10px;
     width: 100%;
   }
 
@@ -513,13 +512,12 @@ app-showfeature {
   }
 
   .participant-centered {
-    width: 100px;
-    height: 65px;
-    margin: auto 0 auto 0;
+    width: 43px;
+    height: 43px;
 
     .participant-avatar {
-      margin: 0 auto;
-      top: 0
+      // margin: 0 auto;
+      // top: 0;
     }
 
     .participant-joined {
@@ -528,11 +526,11 @@ app-showfeature {
       top: 28px;
     }
 
-    .participant-label {
-      margin: 5px auto 0 auto;
-      color: grey;
-      font-size: 12px;
-    }
+    // .participant-label {
+    //   margin: 5px auto 0 auto;
+    //   color: grey;
+    //   font-size: 12px;
+    // }
   }
 
   .tile-grid {

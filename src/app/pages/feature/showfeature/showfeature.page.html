@@ -487,14 +487,12 @@
           <ion-grid style="max-height: 20%; overflow: scroll">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
-                <ion-item lines="none" (click)="seeUserInfo($event, user)">
-                  <div class="participant-centered">
-                    <ion-avatar class="participant-avatar" slot="start">
-                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-                    </ion-avatar>
-                  </div>
-                </ion-item>
+                <div class="participant-centered">
+                  <ion-avatar class="participant-avatar" slot="start">
+                    <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                    <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                  </ion-avatar>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -508,14 +506,12 @@
           <ion-grid style="max-height: 20%; overflow: scroll">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
-                <ion-item lines="none" (click)="seeUserInfo($event, user)">
-                  <div class="participant-centered">
-                    <ion-avatar class="participant-avatar" slot="start">
-                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-                    </ion-avatar>
-                  </div>
-                </ion-item>
+                <div class="participant-centered">
+                  <ion-avatar class="participant-avatar" slot="start">
+                    <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                    <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                  </ion-avatar>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -529,14 +525,12 @@
           <ion-grid style="max-height: 20%; overflow: scroll">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
-                <ion-item lines="none" (click)="seeUserInfo($event, user)">
-                  <div class="participant-centered">
-                    <ion-avatar class="participant-avatar" slot="start">
-                      <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                      <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-                    </ion-avatar>
-                  </div>
-                </ion-item>
+                <div class="participant-centered">
+                  <ion-avatar class="participant-avatar" slot="start">
+                    <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
+                    <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                  </ion-avatar>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>
