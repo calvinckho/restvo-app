@@ -8,7 +8,15 @@ import {
   Platform, PopoverController,
   ToastController
 } from "@ionic/angular";
-import {Element as StripeElement, Elements, ElementsOptions, StripeService} from "ngx-stripe";
+import {
+  StripeCardComponent,
+  StripeInstance,
+  StripeFactoryService
+} from 'ngx-stripe';
+import {
+  StripeCardElementOptions,
+  StripeElementsOptions
+} from '@stripe/stripe-js';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserData} from "../../../../services/user.service";
@@ -37,19 +45,31 @@ import {CacheService} from "ionic-cache";
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   @ViewChild(IonContent, {static: false}) content: IonContent;
   @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+  @ViewChild(StripeCardComponent, {static: false}) card: StripeCardComponent;
 
   @Input() modalPage: any;
-  elements: Elements;
-  card: StripeElement;
-  // optional parameters
-  elementsOptions: ElementsOptions = {
+  stripeService: StripeInstance;
+  cardOptions: StripeCardElementOptions = {
+    style: {
+      base: {
+        iconColor: '#666EE8',
+        color: '#31325F',
+        fontWeight: '300',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSize: '18px',
+        '::placeholder': {
+          color: '#CFD7E0'
+        }
+      }
+    }
+  };
+  elementsOptions: StripeElementsOptions = {
     locale: 'en'
   };
   billingForm: FormGroup;
   community: any;
   numberOfActiveUsers: any;
   refreshNeeded = false;
-  stripeElementName = 'card-element-plan';
   community_participants: any = [];
   ionSpinner = false;
   subscriptionResource: any;
@@ -81,7 +101,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       public responseService: Response,
       public calendarService: CalendarService,
       private formBuilder: FormBuilder,
-      private stripeService: StripeService,
+      private stripeFactory: StripeFactoryService,
       public paymentService: PaymentService,
       private cache: CacheService,
   ) {
@@ -117,30 +137,22 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       });
       await networkAlert.present();
     });
-    //this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshHandler);
+    if (this.networkService.domain === 'https://server.restvo.com') {
+      this.stripeService = this.stripeFactory.create('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
+    } else {
+      this.stripeService = this.stripeFactory.create('pk_test_x6u9uWj1QBPuhpD1MtOTTriS');
+    }
   }
 
   onSlidesLoaded () {
     this.slides.lockSwipes(true);
   }
 
-  /*refreshHandler = async (data) => {
-    if (data && data.type === 'load community ready') {
-      //this.prevSlide();
-      this.churchService.numberOfActiveUsers = await this.churchService.getAppUserUsage(this.churchService.currentManagedCommunity._id);
-    }
-  };*/
-
   reloadEditPage = async () => { // refresh the Edit Page
     if (this.userData.user) {
       this.setup(); // this needs to be added because reloadEditPage overwrites the parent handler of the same name
-      //this.prevSlide();
     }
   };
-
-  ionViewDidEnter() {
-    this.stripeElementName = 'card-element-plan' + (this.modalPage ? '-modal' : '');
-  }
 
   prevSlide() {
     this.slides.lockSwipes(false);
@@ -156,33 +168,6 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
     this.slides.lockSwipes(true);
   }
 
-  prepareBillingElement() {
-    this.stripeService.elements(this.elementsOptions)
-        .subscribe(elements => {
-          this.elements = elements;
-          // Only mount the element the first time
-          if (!this.card) {
-            this.card = this.elements.create('card', {
-              style: {
-                base: {
-                  iconColor: '#666EE8',
-                  color: '#31325F',
-                  fontWeight: 300,
-                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                  fontSize: '18px',
-                  '::placeholder': {
-                    color: '#CFD7E0'
-                  }
-                }
-              }
-            });
-            this.card.mount('#' + this.stripeElementName);
-          } else {
-            this.card.mount('#' + this.stripeElementName);
-          }
-        });
-  }
-
   async selectPlan(plan) {
     try {
       if (plan === 'Growth' && !this.moment.subscriptionId) {
@@ -191,7 +176,6 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
           this.community_participants = result.community_participants;
         }
         this.nextSlide();
-        this.prepareBillingElement();
       } else if (plan === 'Growth' && this.moment.subscriptionId) {
         await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], null, null);
         this.userData.refreshUserStatus({type: 'change aux data'});
@@ -235,7 +219,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       delete owner.postal_code;
       delete owner.country;
       delete owner.coupon;
-      this.stripeService.createSource(this.card, {
+      this.stripeService.createSource(this.card.element, {
         type: 'card',
         currency: 'usd',
         owner: owner,
@@ -254,7 +238,6 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
                 handler: () => {
                   const navTransition = alert.dismiss();
                   navTransition.then( async () => {
-                    this.card.clear();
                     this.billingForm.reset();
                     this.prevSlide();
                   });
@@ -297,6 +280,4 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       await alert.present();
     }
   }
-
-
 }

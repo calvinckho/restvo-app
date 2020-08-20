@@ -8,6 +8,7 @@ import { FeatureSubscriptionPageRoutingModule } from './feature-subscription-rou
 
 import { FeatureSubscriptionPage } from './feature-subscription.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
+import {NgxStripeModule} from "ngx-stripe";
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
     ReactiveFormsModule,
     ApplicationPipesModule,
     IonicModule,
+    NgxStripeModule,
     FeatureSubscriptionPageRoutingModule
   ],
   declarations: [FeatureSubscriptionPage]
