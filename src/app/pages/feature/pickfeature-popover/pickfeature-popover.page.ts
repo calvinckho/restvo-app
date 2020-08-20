@@ -377,11 +377,14 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 this.done();
             }
         } else if (this.step >= 3) { // only allow pick start date if moment has schedule that has floating start date toggled on
-            const schedules: any = await this.momentService.loadActivitySchedules(this.selectedMoments[0]._id);
-            this.allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
-
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.allowCustomStartDate) {
-                this.step++;
+            if (this.selectedMoments && this.selectedMoments.length && this.selectedMoments[0] && this.selectedMoments[0]._id) {
+                const schedules: any = await this.momentService.loadActivitySchedules(this.selectedMoments[0]._id);
+                this.allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
+                if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && this.allowCustomStartDate) {
+                    this.step++;
+                } else {
+                    this.done();
+                }
             } else {
                 this.done();
             }
