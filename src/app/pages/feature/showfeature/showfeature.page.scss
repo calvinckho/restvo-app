@@ -518,6 +518,10 @@ app-showfeature {
     .participant-avatar {
       // margin: 0 auto;
       // top: 0;
+      background-color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .participant-joined {
@@ -531,6 +535,13 @@ app-showfeature {
     //   color: grey;
     //   font-size: 12px;
     // }
+  }
+
+  .empty-avatar-letters {
+    font-size: 22.5px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
   }
 
   .tile-grid {
