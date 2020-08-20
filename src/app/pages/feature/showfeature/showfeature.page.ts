@@ -818,7 +818,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  async deleteMoment() {
+  async deleteMoment(intent) {
     const alert = await this.alertCtrl.create({
       header: this.resource['en-US'].value[19] + ' ' + this.moment.resource['en-US'].value[0],
       message: this.resource['en-US'].value[22] + ' ' + this.moment.matrix_string[0][0] + '? ' + (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && (this.moment.resource.matrix_number[0].indexOf(10370) > -1) ? this.resource['en-US'].value[23] : ''),
@@ -827,14 +827,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           const navTransition = alert.dismiss();
           navTransition.then( async () => {
             // Remove the Moment
-            await this.momentService.delete(this.moment);
+            await this.momentService.delete(this.moment, intent);
               this.userData.refreshDefaultActivity(this.moment._id);
               this.anyChangeMade = true;
             if (this.modalPage) {
               this.closeModal();
             } else {
               this.router.navigate(['/app/me'], { replaceUrl: true });
-              //this.location.back();
             }
           });
         }},
@@ -1425,21 +1424,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 });
             },
         }]);
-        if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
-            buttons = buttons.concat([
-                {
-                    text: 'Clone', // Clone
-                    icon: 'copy',
-                    handler: () => {
-                        const navTransition = actionSheet.dismiss();
-                        navTransition.then( async () => {
-                            this.expandedPrivilegesView = false;
-                            this.momentService.cloneMoment(this.moment);
-                        });
-                    }
-                }]);
-        }
-        if (this.hasOrganizerAccess) {
+
+        if (this.hasOrganizerAccess) { // for general Admins and Restvo staff
             buttons = buttons.concat([
                 {
                     text: this.resource['en-US'].value[18], // Edit
@@ -1451,20 +1437,56 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             this.editMoment();
                         });
                     }
-                },
-                {
-                    text: this.resource['en-US'].value[19], // Delete
-                    role: 'destructive',
-                    icon: 'trash',
-                    handler: () => {
-                        const navTransition = actionSheet.dismiss();
-                        navTransition.then( async () => {
-                            this.expandedPrivilegesView = false;
-                            this.deleteMoment();
-                        });
-                    }
                 }
             ]);
+            if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) { // for Staff
+                buttons = buttons.concat([
+                    {
+                        text: 'Clone', // Clone
+                        icon: 'copy',
+                        handler: () => {
+                            const navTransition = actionSheet.dismiss();
+                            navTransition.then( async () => {
+                                this.momentService.cloneMoment(this.moment);
+                            });
+                        }
+                    },
+                    {
+                        text: this.resource['en-US'].value[44], // Archive for staff
+                        icon: 'archive',
+                        handler: () => {
+                            const navTransition = actionSheet.dismiss();
+                            navTransition.then( async () => {
+                                this.deleteMoment('archive');
+                            });
+                        }
+                    },
+                    {
+                        text: this.resource['en-US'].value[19], // Delete for staff
+                        role: 'destructive',
+                        icon: 'trash',
+                        handler: () => {
+                            const navTransition = actionSheet.dismiss();
+                            navTransition.then( async () => {
+                                this.deleteMoment('delete');
+                            });
+                        }
+                    }]);
+            } else {
+                buttons = buttons.concat([
+                    {
+                        text: this.resource['en-US'].value[19], // Delete for General Admins (archive in the backend)
+                        role: 'destructive',
+                        icon: 'trash',
+                        handler: () => {
+                            const navTransition = actionSheet.dismiss();
+                            navTransition.then( async () => {
+                                this.deleteMoment('archive');
+                            });
+                        }
+                    }
+                ]);
+            }
             if (this.moment.array_boolean && this.moment.array_boolean.length && this.moment.array_boolean.length > 6 && this.moment.array_boolean[6]) {
                 buttons.push({
                     text: this.resource['en-US'].value[41], // View Chat

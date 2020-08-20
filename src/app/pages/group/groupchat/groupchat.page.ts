@@ -401,7 +401,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
         // next process Moments
-        console.log("send moment", this.selectedMoments);
         if (this.selectedMoments.length) {
             let promises = this.selectedMoments.map( async (moment) => {
                 if (moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Poll') {
@@ -413,8 +412,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.selectedMoments = []; // empty the selected moments array
             // remove abandoned moments
             promises = this.removedMoments.map( async (moment) => {
-                console.log("trying to remove", moment);
-                await this.momentService.delete(moment);
+                await this.momentService.delete(moment, 'delete');
             });
             await Promise.all(promises);
             this.storage.remove('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId); //clear the cache of composed message

@@ -661,7 +661,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           const navTransition = alert.dismiss();
           navTransition.then( async () => {
             // Remove the Content
-            await this.momentService.delete(content);
+            await this.momentService.delete(content, 'delete');
           });
         }},
         { text: 'Cancel' }],

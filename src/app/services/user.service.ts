@@ -43,7 +43,7 @@ export class UserData {
     videoChatRoomId = ''; // the current video chat ID if one is in session
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
     versions = { // current app's version that will be used to compare with labels loaded from the database
-        'Activity Components': 19, // this is the current activity components version used by this code
+        'Activity Components': 20, // this is the current activity components version used by this code, make this higher than the mongodb stored value to force reload the app's cache
         'List of Components': [ 10000, 10010, 10050, 10100, 10200, 10210, 10300, 10310, 10320, 10330, 10360, 10370, 10400, 10500, 10600, 20000, 20010, 30000, 40000, 50000, 40010, 40020, 11000, 10210, 20020, 12000 ] // this is the list of components used by this code
     };
     private _refreshUserStatus: BehaviorSubject<any> = new BehaviorSubject(null);

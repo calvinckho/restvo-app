@@ -520,7 +520,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     const navTransition = alert.dismiss();
                     navTransition.then( async () => {
                         // Remove the Content
-                        await this.momentService.delete(content);
+                        await this.momentService.delete(content, 'delete');
                     });
                 }},
                 { text: 'Cancel' }],

@@ -603,8 +603,8 @@ export class Moment {
         return response;
     }
 
-    async delete(moment) {
-        const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id, this.authService.httpAuthOptions)
+    async delete(moment, intent) {
+        const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id + (intent === 'archive' ? '?archive=true' : ''), this.authService.httpAuthOptions)
             .toPromise();
         let duration = 5;
         if (this.router.url.includes('outlets')) { // just in case the subpanel view of the deleted Moment is open
