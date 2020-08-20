@@ -226,7 +226,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       }).subscribe(async (result) => {
         if (result.source) {
           owner.coupon = this.billingForm.value.coupon;
-          const updateResult = await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], owner, result.source);
+          const updateResult: any = await this.paymentService.subscribe(this.moment._id, this.subscriptionResource['en-US'].matrix_string[1][0], owner, result.source);
           this.ionSpinner = false;
           if (updateResult === 'success') {
             this.userData.refreshUserStatus({type: 'change aux data'});
@@ -248,8 +248,8 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
             await alert.present();
           } else {
             const alert = await this.alertCtrl.create({
-              header: 'Something Went Wrong',
-              subHeader: 'We cannot process your request at this time. Please try again later.',
+              header: updateResult && updateResult.message ? 'Payment Method Failed' : 'Something Went Wrong',
+              subHeader: updateResult && updateResult.message ? updateResult.message : 'We cannot process your request at this time. Please try again later.',
               buttons: [{ text: 'Ok' }],
               cssClass: 'level-15'
             });

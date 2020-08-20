@@ -190,7 +190,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
         owner: owner,
       }).subscribe(async (result) => {
         if (result.source) {
-          const updateResult = await this.paymentService.updateBillingMethod(this.moment._id, result.source);
+          const updateResult: any = await this.paymentService.updateBillingMethod(this.moment._id, result.source);
           this.ionSpinner = false;
           if (updateResult === 'success') {
             this.loadBillingInfo();
@@ -205,8 +205,8 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
             await alert.present();
           } else {
             const alert = await this.alertCtrl.create({
-              header: 'Something Went Wrong',
-              subHeader: 'We cannot process your request at this time. Please try again later.',
+              header: updateResult && updateResult.message ? 'Payment Method Failed' : 'Something Went Wrong',
+              subHeader: updateResult && updateResult.message ? updateResult.message : 'We cannot process your request at this time. Please try again later.',
               buttons: [{ text: 'Ok' }],
               cssClass: 'level-15'
             });
