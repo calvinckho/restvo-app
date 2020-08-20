@@ -1,5 +1,13 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {Element as StripeElement, Elements, ElementsOptions, StripeService} from "ngx-stripe";
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  StripeCardComponent,
+  StripeInstance,
+  StripeFactoryService
+} from 'ngx-stripe';
+import {
+  StripeCardElementOptions,
+  StripeElementsOptions
+} from '@stripe/stripe-js';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
@@ -34,12 +42,24 @@ import {CacheService} from "ionic-cache";
   encapsulation: ViewEncapsulation.None,
 })
 export class FeatureBillingPage extends EditfeaturePage implements OnInit {
-
+  @ViewChild(StripeCardComponent, {static: false}) card: StripeCardComponent;
   @Input() modalPage: any;
-  elements: Elements;
-  card: StripeElement;
-  // optional parameters
-  elementsOptions: ElementsOptions = {
+  stripeService: StripeInstance;
+  cardOptions: StripeCardElementOptions = {
+    style: {
+      base: {
+        iconColor: '#666EE8',
+        color: '#31325F',
+        fontWeight: '300',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSize: '18px',
+        '::placeholder': {
+          color: '#CFD7E0'
+        }
+      }
+    }
+  };
+  elementsOptions: StripeElementsOptions = {
     locale: 'en'
   };
   billingForm: FormGroup;
@@ -48,7 +68,6 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   sources: any;
   invoices = [];
   endOfInvoices = false;
-  stripeElementName = 'card-element-billing';
   updatePayment = false;
   ionSpinner = false;
   stripeCustomer: any;
@@ -82,7 +101,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
       public responseService: Response,
       public calendarService: CalendarService,
       private formBuilder: FormBuilder,
-      private stripeService: StripeService,
+      private stripeFactory: StripeFactoryService,
       public paymentService: PaymentService,
       private cache: CacheService,
   ) {
@@ -118,10 +137,11 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
       });
       await networkAlert.present();
     });
-  }
-
-  ionViewDidEnter() {
-    this.stripeElementName = 'card-element-billing' + (this.modalPage ? '-modal' : '');
+    if (this.networkService.domain === 'https://server.restvo.com') {
+      this.stripeService = this.stripeFactory.create('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
+    } else {
+      this.stripeService = this.stripeFactory.create('pk_test_x6u9uWj1QBPuhpD1MtOTTriS');
+    }
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
@@ -145,40 +165,12 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
     }
   }
 
-  prepareBillingElement() {
-    this.stripeService.elements(this.elementsOptions)
-        .subscribe(elements => {
-          this.elements = elements;
-          // Only mount the element the first time
-          if (!this.card) {
-            this.card = this.elements.create('card', {
-              style: {
-                base: {
-                  iconColor: '#666EE8',
-                  color: '#31325F',
-                  fontWeight: 300,
-                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                  fontSize: '18px',
-                  '::placeholder': {
-                    color: '#CFD7E0'
-                  }
-                }
-              }
-            });
-            this.card.mount('#' + this.stripeElementName);
-          } else {
-            this.card.mount('#' + this.stripeElementName);
-          }
-        });
-  }
-
   async loadBillingInfo() {
     this.sources = await this.paymentService.loadBillingInfo(this.moment._id);
   }
 
   async updatePaymentMethod() {
     this.updatePayment = true;
-    this.prepareBillingElement();
   }
 
   async submitBillingMethod() {
@@ -192,7 +184,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
       delete owner.state;
       delete owner.postal_code;
       delete owner.country;
-      this.stripeService.createSource(this.card, {
+      this.stripeService.createSource(this.card.element, {
         type: 'card',
         currency: 'usd',
         owner: owner,
@@ -202,8 +194,8 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
           this.ionSpinner = false;
           if (updateResult === 'success') {
             this.loadBillingInfo();
-            this.card.clear();
             this.billingForm.reset();
+            this.updatePayment = false; // close the billing info window
             const alert = await this.alertCtrl.create({
               header: 'Success',
               subHeader: 'Your payment method is updated.',
@@ -249,10 +241,10 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   async listInvoices(direction) {
     let query = '';
     if (direction === 'previous'){
-      query += "?ending_before=" + this.invoices[0].id;
+      query += '?ending_before=' + this.invoices[0].id;
     }
     if (direction === 'next'){
-      query += "?starting_after=" + this.invoices[this.invoices.length - 1].id;
+      query += '?starting_after=' + this.invoices[this.invoices.length - 1].id;
     }
     const invoices: any = await this.paymentService.listInvoices(this.moment._id, query);
     invoices.forEach((invoice) => {

@@ -67,7 +67,7 @@
         <ion-card-title>Update Payment Information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <div [id]=stripeElementName class="field"></div>
+        <ngx-stripe-card [stripe]="stripeService" [options]="cardOptions" class="field"></ngx-stripe-card>
         <ion-item>
           <ion-label position="stacked">Name</ion-label>
           <ion-input autocomplete="on" type="text" formControlName="name" placeholder="Jane Doe"></ion-input>

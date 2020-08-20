@@ -133,10 +133,5 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     async saveToLocalStorage() {
         await this.storage.set('serverDomain', this.networkService.domain);
-        if (this.networkService.domain === 'https://server.restvo.com') {
-            this.stripeService.setKey('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
-        } else {
-            this.stripeService.setKey('pk_test_x6u9uWj1QBPuhpD1MtOTTriS');
-        }
     }
 }
