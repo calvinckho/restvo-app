@@ -49,7 +49,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
     style: {
       base: {
         iconColor: '#666EE8',
-        color: '#31325F',
+        color: '#808080', // set as grey to balance dark and light mode
         fontWeight: '300',
         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
         fontSize: '18px',
