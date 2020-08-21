@@ -191,15 +191,15 @@ app-groupchat {
       color: var(--ion-color-dark);
     }
     a:link {
-      color:var(--ion-color-dark);
+      color: var(--ion-color-darkgrey);
     }
     a:visited {
-      color:var(--ion-color-dark);
+      color: var(--ion-color-darkgrey);
     }
   }
 
   .chat-bubble.left:before {
-    background-color:var(--ion-color-light);
+    background-color: var(--ion-color-light);
     left: 10px;
     -webkit-transform: rotate(70deg) skew(5deg);
   }
@@ -208,13 +208,13 @@ app-groupchat {
     margin-left: 2%;
     background-color: var(--ion-color-primary);
     p {
-      color:var(--ion-color-light);
+      color: var(--ion-color-light);
     }
     a:link {
-      color:var(--ion-color-light);
+      color: var(--ion-color-lightgrey);
     }
     a:visited {
-      color:var(--ion-color-light);
+      color: var(--ion-color-lightgrey);
     }
   }
 
@@ -251,14 +251,14 @@ app-groupchat {
     border-radius: 5px;
     padding: 5px 6px 5px 6px;
     background-color: var(--ion-color-primary);
-    .message {
-      color: var(--ion-color-secondary);
+    p {
+      color: var(--ion-color-light);
     }
     a:link {
-      color: lightskyblue;
+      color: var(--ion-color-lightgrey);
     }
     a:visited {
-      color: lightskyblue;
+      color: var(--ion-color-lightgrey);
     }
   }
 
@@ -268,6 +268,12 @@ app-groupchat {
     background-color: var(--ion-color-light);
     p {
       color: var(--ion-color-dark);
+    }
+    a:link {
+      color: var(--ion-color-darkgrey);
+    }
+    a:visited {
+      color: var(--ion-color-darkgrey);
     }
   }
 

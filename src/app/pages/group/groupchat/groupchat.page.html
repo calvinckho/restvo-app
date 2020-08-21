@@ -205,7 +205,7 @@
           </ion-grid>
           <div class="chat-bubble left" *ngIf="!message.moment && message.body?.length > 0">
             <div class="quote-bubble left ion-text-wrap" *ngIf="message.quote && message.quote.body">
-              <div class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
+              <p class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></p>
             </div>
             <!-- Attachments inside a quote -->
             <ion-grid *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
@@ -370,7 +370,7 @@
         <div class="chat-bubble right" slot="end" *ngIf="!message.moment && message.body?.length > 0">
           <!-- Quoted Message -->
           <div class="quote-bubble right ion-text-wrap" *ngIf="message.quote && message.quote.body">
-            <div color="dark" class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></div>
+            <p class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></p>
           </div>
           <!--Quoted Attachments-->
           <ion-grid class="multiple-photos" *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
