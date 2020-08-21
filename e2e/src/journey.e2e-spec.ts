@@ -14,7 +14,7 @@ import {
     AboutPage,
     PreferencesPage
 } from './app.po';
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser} from 'protractor';
 
 describe('join journey and leave journey', () => {
     let app: AppPage;
