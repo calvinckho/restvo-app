@@ -378,8 +378,8 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
 
   async deleteMoment(intent) {
     const alert = await this.alertCtrl.create({
-      header: this.resource['en-US'].value[19] + ' ' + this.moment.resource['en-US'].value[0],
-      message: this.resource['en-US'].value[22] + ' ' + this.moment.matrix_string[0][0] + '? ' + (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && (this.moment.resource.matrix_number[0].indexOf(10370) > -1) ? this.resource['en-US'].value[23] : ''),
+      header: (['owner', 'admin', 'staff'].includes(this.userData.user.role) && intent === 'archive' ? this.resource['en-US'].value[44] : this.resource['en-US'].value[19]) + ' ' + this.moment.resource['en-US'].value[0],
+      message: (['owner', 'admin', 'staff'].includes(this.userData.user.role) && intent === 'archive' ? 'Are you sure you want to archive' : this.resource['en-US'].value[22]) + ' ' + this.moment.matrix_string[0][0] + '? ' + (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && (this.moment.resource.matrix_number[0].indexOf(10370) > -1) ? this.resource['en-US'].value[23] : ''),
       buttons: [{ text: 'Ok',
         handler: () => {
           const navTransition = alert.dismiss();
