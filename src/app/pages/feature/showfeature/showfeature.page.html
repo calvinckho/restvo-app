@@ -488,7 +488,7 @@
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
-                  <ion-avatar class="participant-avatar" slot="start">
+                  <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
                     <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
@@ -507,7 +507,7 @@
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
-                  <ion-avatar class="participant-avatar" slot="start">
+                  <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
                     <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
@@ -526,7 +526,7 @@
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
-                  <ion-avatar class="participant-avatar" slot="start">
+                  <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
                     <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
