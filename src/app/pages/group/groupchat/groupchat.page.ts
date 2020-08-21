@@ -170,7 +170,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 }
             });
             if (!this.modalPage && this.platform.width() >= 768) { // when viewing it in desktop mode
-                this.chatService.currentChatProps = this.chatService.currentChatProps.slice(this.chatService.currentChatProps.length - 1); // remove the old chat properties
+                this.chatService.currentChatProps = this.chatService.currentChatProps.slice(this.chatService.currentChatProps.length - 1); // remove the old chat property elements and retain the latest one
             }
             this.composedMessage = '';
             return currentChatId;
