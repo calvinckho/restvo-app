@@ -1,10 +1,7 @@
 import {AfterViewInit, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import {StripeService} from "ngx-stripe";
-
-//import {registerWebPlugin} from "@capacitor/core";
-//import {OAuth2Client} from '@byteowls/capacitor-oauth2';
+import {StripeService} from 'ngx-stripe';
 
 import {
     ActionSheetController, IonSelect,
@@ -14,10 +11,10 @@ import {
 } from '@ionic/angular';
 import { NetworkService } from './services/network-service.service';
 import { UserData } from './services/user.service';
-import {Chat} from "./services/chat.service";
-import {ShowrecipientinfoPage} from "./pages/connect/showrecipientinfo/showrecipientinfo.page";
-import {Capacitor, Plugins} from "@capacitor/core";
-import {ProgramsPage} from "./pages/user/programs/programs.page";
+import {Chat} from './services/chat.service';
+import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecipientinfo.page';
+import {Capacitor, Plugins} from '@capacitor/core';
+import {ProgramsPage} from './pages/user/programs/programs.page';
 const { App } = Plugins;
 
 @Component({
