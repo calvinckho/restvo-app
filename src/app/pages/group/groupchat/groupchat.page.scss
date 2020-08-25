@@ -8,10 +8,6 @@ app-groupchat {
     cursor: pointer;
   }
 
-  ion-content {
-    --background: var(--ion-color-secondary);
-  }
-
   ion-infinite-scroll {
     //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
   }

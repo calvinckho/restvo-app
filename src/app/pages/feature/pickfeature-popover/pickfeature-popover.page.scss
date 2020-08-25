@@ -4,6 +4,10 @@ app-pickfeature-popover {
   display: flex;
   flex-direction: column;
 
+  ion-content {
+    --background: var(--ion-color-lightgrey);
+  }
+
   ion-item ion-datetime{
     position: relative !important;
   }

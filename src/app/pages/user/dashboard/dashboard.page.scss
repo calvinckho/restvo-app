@@ -13,6 +13,10 @@ app-dashboard {
     }
   }
 
+  ion-content {
+    --background: var(--ion-color-lightgrey);
+  }
+
   ion-card-header, ion-card-content {
     font-size: 14px;
   }

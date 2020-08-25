@@ -88,7 +88,7 @@
   </ion-toolbar>-->
 </ion-header>
 
-<ion-content>
+<ion-content [ngClass]="{'desktop-content': platform.width() >= 768 }">
   <!--get new obj when page is refreshed-->
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-align-items-center" style="height: 100%">
@@ -97,7 +97,7 @@
   </ion-grid>
   <ion-grid style="height: 100%">
     <ion-row style="height: 100%">
-      <ion-col [ngStyle]="{'height': (platform.width() >= 768) ? 'calc(100% - 58px)' : '100%'}" class="conversations-panel ion-no-padding" size-xs="12" size-sm="12" size-md="5" size-lg="4">
+      <ion-col [ngStyle]="{'height': (platform.width() >= 768) ? 'calc(100% - 58px)' : '100%', 'padding-right': (platform.width() >= 768) ? '5px' : '0px'}" class="ion-no-padding" size-xs="12" size-sm="12" size-md="5" size-lg="4">
         <ion-toolbar *ngIf="platform.width() >= 768" style="--background: var(--ion-toolbar-background, var(--ion-color-step-50, #fff))">
           <ion-searchbar #searchBar slot="start" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
         </ion-toolbar>

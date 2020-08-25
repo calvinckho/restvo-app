@@ -17,6 +17,10 @@ app-communityboard {
     }
   }
 
+  ion-content {
+    --background: var(--ion-color-lightgrey);
+  }
+
   .moreoptions-container {
     max-height: 30vh;
     overflow: scroll;
