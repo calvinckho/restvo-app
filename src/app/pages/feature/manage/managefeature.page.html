@@ -1,5 +1,5 @@
 <ion-header *ngIf="resource && resource._id && moment.resource && moment.resource.field">
-  <ion-toolbar>
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="!modalPage && platform.width() < 768" slot="start" fill="clear">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -36,7 +36,7 @@
   </ion-toolbar>
 
   <!--Activity Hierarchy-->
-  <ion-buttons *ngIf="platform.width() >= 768" style="padding-left: 10px">
+  <ion-buttons *ngIf="platform.width() >= 768" style="padding-left: 10px" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-button (click)="upOneLevel(moment.parent_programs[0].parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id">
       <b>{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
@@ -51,7 +51,7 @@
   </ion-buttons>
   <!--Desktop Menu Items-->
   <ion-toolbar *ngIf="platform.width() >= 768">
-    <ion-grid class="desktop-header">
+    <ion-grid class="desktop-header-grid">
       <ion-row class="ion-justify-content-start">
         <ion-col [ngClass]="{'selected': router.url.includes('insight')}" (click)="clickManageMenu('insight', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('insight') ? 'primary' : 'secondary'" lines="none">

@@ -21,7 +21,7 @@ export class DiscoverPage  {
     constructor(
                 public router: Router,
                 private storage: Storage,
-                private platform: Platform,
+                public platform: Platform,
                 private modalCtrl: ModalController,
                 public authService: Auth,
                 public chatService: Chat,

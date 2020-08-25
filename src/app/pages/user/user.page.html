@@ -1,5 +1,5 @@
-<ion-header *ngIf="userData.user">
-  <ion-toolbar>
+<ion-header *ngIf="userData.user" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start" fill="clear" id="user-menu-toggle">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>

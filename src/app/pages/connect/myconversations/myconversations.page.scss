@@ -39,8 +39,7 @@ app-myconversations {
   }
 
   .conversations-panel {
-    //height: 100%;//calc(100% - 58px);
-    border-right: var(--border);
+    padding-right: 5px;
   }
 
   .online {
@@ -74,7 +73,6 @@ app-myconversations {
   }
 
   .moreoptions-row {
-    //padding: 0 10px;
     width: 100%;
   }
 

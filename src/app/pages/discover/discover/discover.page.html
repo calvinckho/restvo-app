@@ -1,4 +1,4 @@
-<ion-header *ngIf="userData" id="discover-header">
+<ion-header *ngIf="userData" id="discover-header" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
   <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none"  color="lightgrey">
@@ -19,7 +19,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle slot="start" menu="main" id="dashboard-menu-toggle">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>

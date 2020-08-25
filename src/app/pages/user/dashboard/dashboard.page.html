@@ -1,4 +1,4 @@
-<ion-header [hidden]="router.url.includes('/app/user') && !modalPage">
+<ion-header [hidden]="router.url.includes('/app/user') && !modalPage" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
   <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none" color="lightgrey">
@@ -19,7 +19,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -31,7 +31,6 @@
     </ion-buttons>
     <ion-title slot="start" *ngIf="view === 'profile'">Me</ion-title>
     <ion-title slot="start" *ngIf="view === 'calendar'">Calendar</ion-title>
-      <!--<ion-searchbar class="header-searchbar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" *ngIf="platform.width() >= 768 && !platform.is('ios')" slot="start"></ion-searchbar>-->
     <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
@@ -58,7 +57,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <div class="profile-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
+  <div class="profile-container">
     <ion-row class="profile-row">
       <ion-card class="profile-card" [ngClass]="{'mobile-card': platform.width() < 768}" *ngIf="view === 'profile'">
         <ion-item lines="none">

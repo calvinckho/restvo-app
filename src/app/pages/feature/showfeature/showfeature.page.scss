@@ -47,6 +47,11 @@ app-showfeature {
     z-index: 15;
   }
 
+  .desktop-ion-list {
+    border-radius: 5px;
+    margin: 12px;
+  }
+
   .ql-container.ql-snow {
     border: none !important;
   }
@@ -78,6 +83,12 @@ app-showfeature {
     --min-height: 26px;
 
     .section-label {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 19px;
+    }
+
+    .section-label-small {
       font-size: 12px;
     }
   }
@@ -132,7 +143,7 @@ app-showfeature {
   }
 
   .textarea {
-    margin: 15px;
+    margin: 15px 0;
   }
 
   .textarea.center {
@@ -516,8 +527,8 @@ app-showfeature {
     height: 43px;
 
     .participant-avatar {
-      // margin: 0 auto;
-      // top: 0;
+      width: 100%;
+      height: 100%;
       background-color: #ccc;
       display: flex;
       align-items: center;
@@ -907,11 +918,17 @@ app-showfeature {
   }
 
   .tab-filter {
-    //margin-top: 8px;
     margin-bottom: 8px;
   }
 
-  .tab-button {
-    //--indicator-height: 42px;
+  .tab-toolbar {
+    --background: transparent;
+  }
+
+  .people-grid {
+    max-height: 130px;
+    overflow: scroll;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }

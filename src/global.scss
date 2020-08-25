@@ -56,6 +56,10 @@ ion-header {
   }
 }
 
+ion-content {
+  --background: var(--ion-color-lightgrey);
+}
+
 ion-item {
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -75,6 +79,11 @@ ion-item {
 
 p {
   font-size: 14px;
+}
+
+.desktop-header-toolbar {
+  --background: var(--ion-color-lightgrey);
+  background-color: var(--ion-color-lightgrey);
 }
 
 .item-divider ion-label {

@@ -1,5 +1,5 @@
-<ion-header id="showfeature-header" *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))"> <!--hide header if embedded in Discover page or Manage community/program mode-->
-  <ion-toolbar>
+<ion-header id="showfeature-header" *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))" [ngClass]="{'ion-no-border': platform.width() >= 768 }"> <!--hide header if embedded in Discover page or Manage community/program mode-->
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -17,9 +17,6 @@
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'" color="grey">
           <ion-icon name="list"></ion-icon>
         </ion-button>
-<!--        <ion-button *ngIf="loadStatus && moment && moment.resource && moment.resource.matrix_number[0]?.indexOf(20010) > -1 && mode === 'list'" (click)="mode = 'slider'">
-          <ion-icon name="albums"></ion-icon>
-        </ion-button>-->
       </div>
       <div *ngIf="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--if content calendar and show Content Edit Controls to Users-->
         <ion-button (click)="deleteCalendarItem($event)" class="ion-margin-end" color="grey">
@@ -45,6 +42,20 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <!--Activity Hierarchy-->
+  <ion-buttons *ngIf="resource && resource._id && moment.resource && moment.resource.field && !subpanel && platform.width() >= 768" style="padding-left: 10px" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
+    <ion-button (click)="upOneLevel(moment.parent_programs[0].parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id">
+      <b>{{moment.parent_programs[0].parent_programs[0].resource['en-US'].value}}</b>
+    </ion-button>
+    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0].parent_programs && moment.parent_programs[0].parent_programs.length && moment.parent_programs[0].parent_programs[0] && moment.parent_programs[0].parent_programs[0]._id"></ion-icon>
+    <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0]._id">
+      <b>{{moment.parent_programs[0].resource['en-US'].value}}</b>
+    </ion-button>
+    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
+    <ion-button>
+      <b>{{moment.resource['en-US'].value}}</b>
+    </ion-button>
+  </ion-buttons>
 </ion-header>
 
 <ion-content class="ion-padding-bottom" id="showfeature-content">
@@ -162,7 +173,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadStatus && mode === 'list' && moment.resource" class="ion-no-padding">
+  <ion-list *ngIf="loadStatus && mode === 'list' && moment.resource" class="ion-no-padding" [ngClass]="{ 'desktop-ion-list': platform.width() >= 768 }">
     <!--Content Calendar Item-->
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
@@ -245,8 +256,8 @@
       <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
         <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i][0] | nl2br"></div>
       </ion-item>
-      <ion-item class="section" color="lightgrey" *ngIf="item === 10050" lines="none"> <!--section header-->
-        <ion-label color="darkgrey" class="section-label ion-text-uppercase">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
+      <ion-item class="section" color="secondary" *ngIf="item === 10050" lines="none"> <!--section header-->
+        <ion-label color="dark" class="section-label">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
       </ion-item>
       <ion-item-group *ngIf="item === 10100"> <!--location-->
         <ion-item lines="none">
@@ -273,7 +284,7 @@
         </ion-item>
       </ion-item-group>
       <ion-item lines="none" *ngIf="item === 20020" class="tab-filter"> <!--Tabs-->
-        <ion-toolbar mode="md">
+        <ion-toolbar mode="md" class="tab-toolbar">
           <ion-segment (ionChange)="changeTabSelection($event)" [value]="tabSelection" mode="md">
             <ion-segment-button class="tab-button" *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j" [value]="tabId" mode="md">{{moment.matrix_string[i][j]}}</ion-segment-button>
           </ion-segment>
@@ -303,7 +314,7 @@
             </div>
             <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container" >
               <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="progressView = (progressView === section ? null : section)" >
-                <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                <div color="darkgrey" class="section-label-small schedule-label ion-text-uppercase">
                   {{section}}<span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: [], section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                 </div>
                 <ion-button slot="end" fill="clear">
@@ -357,7 +368,7 @@
                 </ion-buttons>
                 <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
                   <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
-                    <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                    <div color="darkgrey" class="section-label-small schedule-label ion-text-uppercase">
                       {{section}}
                       <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                     </div>
@@ -398,7 +409,7 @@
               </ion-buttons>
               <div *ngFor="let section of (moment.matrix_number[i][0] ? ['Current', 'Upcoming', 'Completed'] : ['Current', 'Completed'])" class="schedule-container">
                 <ion-item class="section schedule-section" color="lightgrey" lines="none" (click)="goal[2] = (goal[2] === section ? null : section)">
-                  <div color="darkgrey" class="section-label schedule-label ion-text-uppercase">
+                  <div color="darkgrey" class="section-label-small schedule-label ion-text-uppercase">
                     {{section}}
                     <span [hidden]="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] })">{{" ("}}{{(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalsectionstats' : { scheduleIds: scheduleIds, goal: goal, section: section, showUpcoming: moment.matrix_number[i][0] } }})</span>
                   </div>
@@ -480,11 +491,11 @@
       <div class="component" *ngIf="item === 10500"> <!--People-->
         <!--Show Participants-->
         <div *ngIf="moment.matrix_number[i][0]">
-          <ion-item lines="none" class="section" color="lightgrey">
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][3] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][5]}}</ion-label>
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][3]">{{moment.matrix_string[i][3]}}</ion-label>
+          <ion-item lines="none" class="section" color="secondary">
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][3] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][5]}}</ion-label>
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][3]">{{moment.matrix_string[i][3]}}</ion-label>
           </ion-item>
-          <ion-grid style="max-height: 130px; overflow: scroll">
+          <ion-grid class="people-grid">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
@@ -499,11 +510,11 @@
         </div>
         <!--Show Organizers-->
         <div *ngIf="moment.matrix_number[i][1]">
-          <ion-item lines="none" class="section" color="lightgrey">
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][5] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][7]}}</ion-label>
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][5]">{{moment.matrix_string[i][5]}}</ion-label>
+          <ion-item lines="none" class="section" color="secondary">
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][5] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][7]}}</ion-label>
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][5]">{{moment.matrix_string[i][5]}}</ion-label>
           </ion-item>
-          <ion-grid style="max-height: 130px; overflow: scroll">
+          <ion-grid class="people-grid">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
@@ -518,11 +529,11 @@
         </div>
         <!--Show Leaders-->
         <div *ngIf="moment.matrix_number[i][2]">
-          <ion-item lines="none" class="section" color="lightgrey">
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][1] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][9]}}</ion-label>
-            <ion-label color="darkgrey" class="section-label ion-text-uppercase" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][1]">{{moment.matrix_string[i][1]}}</ion-label>
+          <ion-item lines="none" class="section" color="secondary">
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && !moment.matrix_string[i][1] && moment.resource['en-US'].matrix_string[i]">{{moment.resource['en-US'].matrix_string[i][9]}}</ion-label>
+            <ion-label color="dark" class="section-label" *ngIf="moment.matrix_string[i] && moment.matrix_string[i][1]">{{moment.matrix_string[i][1]}}</ion-label>
           </ion-item>
-          <ion-grid style="max-height: 130px; overflow: scroll">
+          <ion-grid class="people-grid">
             <ion-row class="participant-row">
               <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size="auto">
                 <div class="participant-centered">
@@ -851,8 +862,8 @@
       </div>
     </div><!--End of ngFor-->
     <div *ngIf="categoryIds.includes('5c915324e172e4e64590e346') || categoryIds.includes('5c915475e172e4e64590e348')">
-      <ion-item color="lightgrey" lines="none" class="section"> <!--Featured Section Header-->
-        <ion-label color="darkgrey" class="section-label ion-text-uppercase">Featured</ion-label>
+      <ion-item color="secondary" lines="none" class="section"> <!--Featured Section Header-->
+        <ion-label color="dark" class="section-label">Featured</ion-label>
       </ion-item>
       <ion-slides class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [options]="{grabCursor: true, updateOnWindowResize: true}">
         <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">

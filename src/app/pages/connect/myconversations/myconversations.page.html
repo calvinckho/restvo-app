@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header [ngClass]="{'ion-no-border': platform.width() >= 768 }">
   <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none"  color="lightgrey">
@@ -19,7 +19,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="userData.user" slot="start">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -190,7 +190,7 @@
           </ion-virtual-scroll>
         </ion-content>
       </ion-col>
-      <ion-col size-xs="0" size-sm="0" size-md="7" size-lg="8" class="ion-no-padding">
+      <ion-col size-xs="0" size-sm="0" size-md="7" size-lg="8" class="ion-no-padding group-chat">
         <ion-router-outlet></ion-router-outlet>
       </ion-col>
     </ion-row>

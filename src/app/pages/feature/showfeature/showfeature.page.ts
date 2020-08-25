@@ -2151,6 +2151,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
+    async upOneLevel(momentId) {
+        if (this.modalPage) {
+            this.modalCtrl.dismiss();
+        } else if (this.userData.activitiesWithAdminAccess.find((c) => c._id === momentId)) {
+            this.userData.currentManageActivityId = momentId;
+            this.router.navigate(['/app/manage/activity/' + momentId + '/insight/' + momentId]);
+        } else {
+            this.router.navigate(['/app/activity/' + momentId]);
+        }
+    }
+
   async noNetworkConnection(){
     const networkAlert = await this.alertCtrl.create({
       header: 'No Internet Connection',

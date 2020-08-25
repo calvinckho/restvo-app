@@ -1,5 +1,5 @@
-<ion-header id="pickfeature-header">
-  <ion-toolbar>
+<ion-header id="pickfeature-header" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-buttons slot="start">
       <ion-button (click)="back()" id="back-button" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
@@ -20,10 +20,10 @@
           </ion-button>
       </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar *ngIf="step === 1">
+  <ion-toolbar *ngIf="step === 1" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-searchbar [(ngModel)]="searchKeyword" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" debounce="500" placeholder="Search"></ion-searchbar>
   </ion-toolbar>
-  <ion-toolbar class="filter" *ngIf="step === 1">
+  <ion-toolbar class="filter" *ngIf="step === 1" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-segment [(ngModel)]="currentView">
       <ion-segment-button value="new">Marketplace</ion-segment-button>
       <ion-segment-button value="recent">Recent</ion-segment-button>

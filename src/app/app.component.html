@@ -1,7 +1,7 @@
 <ion-app>
   <ion-split-pane contentId="main-app" [when]="userData.splitPaneState" [ngClass]="{'split-pane-narrow': router.url.includes('(sub:') && platform.width() >= 768 }">
-    <ion-menu menuId="main" side="start" contentId="main-app" mode="md" type="overlay">
-      <ion-content>
+    <ion-menu menuId="main" side="start" contentId="main-app" type="overlay" class="main-menu">
+      <ion-content class="main-menu-content">
         <ion-toolbar class="title-container" id="main-menu-toolbar">
           <ion-item (click)="openSelectHomePage()">
             <ion-label *ngIf="!userData.defaultProgram">Restvo <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
