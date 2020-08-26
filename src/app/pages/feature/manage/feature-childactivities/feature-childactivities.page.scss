@@ -61,7 +61,6 @@ app-feature-childactivities {
   }
 
   .grid-row {
-    //align-items: center !important;
     overflow: scroll;
   }
 
@@ -79,8 +78,6 @@ app-feature-childactivities {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    height: 300px;
     text-align: center;
   }
 }
