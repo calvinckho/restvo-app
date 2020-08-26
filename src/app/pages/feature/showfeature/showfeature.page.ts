@@ -76,7 +76,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   mapURL = '';
   addressURL = '';
   planModules = [];
-  slideOpts = {
+  mediaSlideOpts = {
     initialSlide: 1,
     speed: 400
   };

@@ -433,11 +433,20 @@
         </div>
       </div>
       <!-- Media Slideshow -->
-      <ion-slides *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360) && moment.matrix_number[i]?.length && moment.matrix_number[i][0]) && moment.matrix_string[i]?.length" pager="true" [options]="slideOpts">
+      <ion-slides *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360) && moment.matrix_number[i]?.length && moment.matrix_number[i][0]) && moment.matrix_string[i]?.length" pager="true" [options]="mediaSlideOpts">
         <ion-slide *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
           <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
             <ion-img [src]="url"></ion-img>
           </ion-thumbnail>
+          <div class="icon-container">
+            <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+          </div>
+          <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+          <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+          <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
         </ion-slide>
       </ion-slides>
       <!--Video Conference-->
