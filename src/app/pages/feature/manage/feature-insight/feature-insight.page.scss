@@ -10,7 +10,9 @@ app-feature-insight {
     padding-bottom: 10px;
 
     .insight-person-avatar {
-      margin: 0 auto;
+      margin: auto;
+      height: 40px;
+      width: 40px;
     }
 
     .insight-person-label {

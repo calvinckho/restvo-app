@@ -18,10 +18,10 @@
     <div *ngFor="let parent of moments">
       <ion-label class="program-title ion-margin">{{parent.matrix_string[0][0]}}</ion-label>
       <ion-item *ngFor="let moment of parent.sample_activities" (click)="showActivity(moment)">
-        <ion-thumbnail slot="start">
-          <img *ngIf="moment.assets?.length" [src]="moment.assets[0]"/>
-          <img *ngIf="!moment.assets.length" src="assets/img/group-default.png"/>
-        </ion-thumbnail>
+        <ion-avatar slot="start">
+          <ion-img *ngIf="moment.assets?.length" [src]="moment.assets[0]"></ion-img>
+          <ion-img *ngIf="!moment.assets.length" src="assets/img/group-default.png"></ion-img>
+        </ion-avatar>
         <ion-label>
           <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
         </ion-label>

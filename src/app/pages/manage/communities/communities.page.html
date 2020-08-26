@@ -13,10 +13,10 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let community of communities" (click)="showCommunityProfile(community)">
-      <ion-thumbnail slot="start">
-        <img *ngIf="community.background" [src]="community.background"/>
-        <img *ngIf="!community.background" src="assets/img/group-default.png"/>
-      </ion-thumbnail>
+      <ion-avatar slot="start">
+        <ion-img *ngIf="community.background" [src]="community.background"></ion-img>
+        <ion-img *ngIf="!community.background" src="assets/img/group-default.png"></ion-img>
+      </ion-avatar>
       <ion-label>
         <h2 class="ion-text-wrap">{{community.name}}
           <!--<ion-badge color="danger" *ngIf="community.admin">Admin</ion-badge>-->

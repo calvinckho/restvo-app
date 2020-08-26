@@ -13,10 +13,10 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let activity of activities" (click)="showActivity(activity)">
-      <ion-thumbnail slot="start">
-        <img *ngIf="activity.assets.length && activity.assets[0]" [src]="activity.assets[0]"/>
-        <img *ngIf="!activity.assets.length || !activity.assets[0]" src="assets/img/group-default.png"/>
-      </ion-thumbnail>
+      <ion-avatar slot="start">
+        <ion-img *ngIf="activity.assets.length && activity.assets[0]" [src]="activity.assets[0]"></ion-img>
+        <ion-img *ngIf="!activity.assets.length || !activity.assets[0]" src="assets/img/group-default.png"></ion-img>
+      </ion-avatar>
       <ion-label>
         <h2 class="ion-text-wrap">{{activity.matrix_string[0][0]}} <span *ngIf="activity.deletedAt">(Deleted)</span></h2>
       </ion-label>
