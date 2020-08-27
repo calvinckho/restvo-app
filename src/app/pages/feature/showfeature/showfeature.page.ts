@@ -78,7 +78,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   planModules = [];
   mediaSlideOpts = {
     initialSlide: 1,
-    speed: 400
+    speed: 400,
+    // navigation: {
+    //   nextEl: '.swiper-button-next',
+    //   prevEl: '.swiper-button-prev',
+    // }
   };
   mediaList: Array<{_id: string, player: Plyr}> = [];
   responseTemplate = {
