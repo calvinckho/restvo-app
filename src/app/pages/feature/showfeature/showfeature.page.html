@@ -437,7 +437,7 @@
         <!--Grid View or Slideshow but with only 1 item-->
         <ion-grid *ngIf="moment.matrix_number[i][0] === 1 || moment.matrix_string[i]?.length === 1" class="ion-no-padding">
           <ion-row *ngIf="((item === 10010 && moment.matrix_number[i][0]) || item === 10300 || item === 10310 || item === 10360 || item === 40010)" class="ion-justify-content-start ion-no-padding">
-            <ion-col size="auto" [ngStyle]="{'width': (100/(moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) + '%'}" class="ion-no-padding" *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
+            <ion-col size="auto" [ngStyle]="{'width': (100/(moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) + '%'}" class="photo-split-view ion-no-padding" *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
               <ion-thumbnail class="photo-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                 <ion-img [src]="url"></ion-img>
               </ion-thumbnail>

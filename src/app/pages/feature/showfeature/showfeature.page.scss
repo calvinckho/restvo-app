@@ -615,7 +615,8 @@ app-showfeature {
   }
 
   .photo-split-view {
-    display: inline-block;
+    //display: inline-block;
+    min-width: 120px;
   }
 
   .icon-container {
