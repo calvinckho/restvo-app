@@ -98,4 +98,16 @@ describe('join journey and leave journey', () => {
         await app.waitUntilElementVisible('app-main-tab #click-to-join');
         expect(await showfeature.headerIsPresent('app-main-tab', '#click-to-join')).toBeTruthy();
     });
+
+    it('should click the Settings tab', );
+
+    it('should click the logout button', )
+
+
+
+
+
+    //Pseudocode
+    //1.Describe the expectations for the test spec
+    //2.
 });
