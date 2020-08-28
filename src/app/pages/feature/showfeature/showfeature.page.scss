@@ -619,13 +619,22 @@ app-showfeature {
   }
 
   .icon-container {
-    margin: 0 auto;
-    max-width: 100px;
+    margin: 10px auto;
+    max-width: 80px;
+  }
+
+  .icon-container.slideshow {
+    min-height: 150px;
+  }
+
+  .photo-item {
+    --size: 100%;
+    max-height: 280px;
   }
 
   .thumbnail-item {
     --size: 100%;
-    max-height: 280px;
+    max-height: 80px;
   }
 
   .video-container {
@@ -633,8 +642,18 @@ app-showfeature {
     width: 100%;
   }
 
-  .video-container slideshow {
+  .video-container.slideshow {
     margin: 0 calc((100% - 540px)/2);
+  }
+
+  .audio-container {
+    margin: 10px auto;
+    width: 90%;
+  }
+
+  .audio-container.slideshow {
+    margin: 10px auto 30px;
+    width: 90%;
   }
 
   .selected-item {

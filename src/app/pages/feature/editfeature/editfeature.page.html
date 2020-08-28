@@ -480,8 +480,12 @@
         <div *ngIf="(item == 10010 || (item >= 10300 && item <= 10360)) && moment.matrix_string[i]?.length && moment.matrix_string[i][0].length">
           <ion-item lines="none">
             <ion-icon name="eye" class="moment-label"></ion-icon>
-            <ion-label>Display Media in List View</ion-label>
-            <ion-toggle [(ngModel)]="moment.matrix_number[i][0]"></ion-toggle>
+            <ion-label>View Mode</ion-label>
+            <ion-select [(ngModel)]="moment.matrix_number[i][0]">
+              <ion-select-option [value]=0>Hide</ion-select-option>
+              <ion-select-option [value]=1>Grid</ion-select-option>
+              <ion-select-option [value]=2>Slideshow</ion-select-option>
+            </ion-select>
           </ion-item>
         </div>
         <!--Photo Viewer-->
