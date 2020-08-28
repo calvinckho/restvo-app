@@ -619,11 +619,12 @@ app-showfeature {
   }
 
   .icon-container {
-    margin: 10px auto;
+    margin: 10px;
     max-width: 80px;
   }
 
   .icon-container.slideshow {
+    margin: 10px auto;
     min-height: 150px;
   }
 

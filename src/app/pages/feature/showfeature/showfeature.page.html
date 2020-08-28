@@ -432,12 +432,12 @@
           </ion-card>
         </div>
       </div>
-      <!-- Media Slideshow -->
+      <!-- Media -->
       <div *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360) && moment.matrix_number[i]?.length && moment.matrix_number[i][0])"> <!--Hide/Show Media Setting-->
         <!--Grid View or Slideshow but with only 1 item-->
         <ion-grid *ngIf="moment.matrix_number[i][0] === 1 || moment.matrix_string[i]?.length === 1" class="ion-no-padding">
-          <ion-row *ngIf="((item === 10010 && moment.matrix_number[i][0]) || item === 10300 || item === 10310 || item === 10360 || item === 40010)" class="ion-justify-content-evenly ion-no-padding">
-            <div [ngStyle]="{'width': (100/(moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) - (((moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) === 1) ? 0 : 0) + '%'}" class="photo-split-view ion-no-padding" *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
+          <ion-row *ngIf="((item === 10010 && moment.matrix_number[i][0]) || item === 10300 || item === 10310 || item === 10360 || item === 40010)" class="ion-justify-content-start ion-no-padding">
+            <ion-col size="auto" [ngStyle]="{'width': (100/(moment.matrix_string[i]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) + '%'}" class="ion-no-padding" *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
               <ion-thumbnail class="photo-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                 <ion-img [src]="url"></ion-img>
               </ion-thumbnail>
@@ -450,7 +450,7 @@
               <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
               <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
               <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
-            </div>
+            </ion-col>
           </ion-row>
         </ion-grid>
         <!--Slideshow and has two or more items-->
@@ -469,7 +469,7 @@
               </div>
               <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
               <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
-              <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container slideshow" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
+              <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" [ngClass]="{'slideshow': platform.width() >=768 }" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
             </ion-slide>
           </ion-slides>
           <!--<div class="media-swiper-button-next swiper-button-next swiper-button-white" (click)="mediaSlides.slideNext()" [hidden]="disableMediaNextBtn || (this.platform.width() < 768)"></div>-->
