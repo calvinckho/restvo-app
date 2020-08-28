@@ -42,6 +42,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonSelect, {static: false}) select: IonSelect;
     @ViewChild(IonContent, {static: false}) content: IonContent;
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild('mediaSlides', {static: false}) mediaSlides: IonSlides;
     @ViewChild('peopleSlides', {static: false}) peopleSlides: IonSlides;
     @ViewChild('plansSlides', {static: false}) plansSlides: IonSlides;
     @ViewChild('programsSlides', {static: false}) programsSlides: IonSlides;
@@ -58,10 +59,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   subpanel = false;
   subscriptions: any = {};
   mode = 'list';
-  slideOpts = {
-      updateOnWindowResize: true,
-      autoHeight: true // turned off autoHeight coz it will mess up the pager position
-  };
   loading: any;
   resource: any = {};
   description = '';
@@ -76,14 +73,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   mapURL = '';
   addressURL = '';
   planModules = [];
-  mediaSlideOpts = {
-    initialSlide: 1,
-    speed: 400,
-    // navigation: {
-    //   nextEl: '.swiper-button-next',
-    //   prevEl: '.swiper-button-prev',
-    // }
-  };
   mediaList: Array<{_id: string, player: Plyr}> = [];
   responseTemplate = {
       matrix_string: [],
@@ -132,6 +121,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     selectedGoal = null;
     progressView = '';
 
+    // 10300 Media
+    mediaSlideOpts = {
+        initialSlide: 0,
+        speed: 400,
+        autoHeight: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: true
+        }
+    };
+
   // 10500 Manage Participants
   participantsView = 'participants';
 
@@ -177,14 +177,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   loadAPIBusy = false;
   searchKeyword = '';
   ionSpinner = false;
-
-  // Plans Sliders
-  programsReachedEnd = true;
-  programs = [];
-  programPageNum = 0;
-  categoryIds = [];
-
-  //Slider Button
+    //Slider Button
     peopleSlidesOptions = {
         slidesPerView: 1.1,
         grabCursor: true,
@@ -194,8 +187,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             prevEl: '.swiper-button-prev',
         }
     };
-  disablePrevBtn = true;
-  disableNextBtn = false;
+    disablePrevBtn = true;
+    disableNextBtn = false;
+
+  // Plans Sliders
+  programsReachedEnd = true;
+  programs = [];
+  programPageNum = 0;
+  categoryIds = [];
 
   // Content Calendar Item
     calendarItem: any;
@@ -262,7 +261,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   loadAndProcessMomentHandler = async (data) => {
       // if there are players loaded and one of them is playing or is being paused
-      if (this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.currentTime > 0))))) {
+      if (this.mediaList.length && this.mediaList.find((c) => (c && c.hasOwnProperty('player') && (c.player.playing || (c.player.currentTime > 0))))) {
           // do nothing
       } else { // otherwise refresh
           this.setup(data);
@@ -1149,16 +1148,21 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  async swipePeopleSlide() {
-      this.disablePrevBtn = await this.slides.isBeginning();
-      this.disableNextBtn = await this.slides.isEnd();
-    if (this.peopleSlides && this.loadStatus !== 'loading') {
-      const currentSlideIndex = await this.peopleSlides.getActiveIndex();
-      if (currentSlideIndex === this.matchedPeople.length - 4) {
-        this.loadMorePeople(null);
-      }
+  /*async swipeMediaSlide() {
+      this.disableMediaPrevBtn = await this.mediaSlides.isBeginning();
+      this.disableMediaNextBtn = await this.mediaSlides.isEnd();
+  }*/
+
+    async swipePeopleSlide() {
+        this.disablePrevBtn = await this.peopleSlides.isBeginning();
+        this.disableNextBtn = await this.peopleSlides.isEnd();
+        if (this.peopleSlides && this.loadStatus !== 'loading') {
+            const currentSlideIndex = await this.peopleSlides.getActiveIndex();
+            if (currentSlideIndex === this.matchedPeople.length - 4) {
+                this.loadMorePeople(null);
+            }
+        }
     }
-  }
 
   async loadPeople() {
     if (this.loadStatus !== 'loading') {
