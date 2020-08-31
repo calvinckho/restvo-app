@@ -58,4 +58,17 @@ describe('add and remove user from group', () => {
     it('should show unauthenticated group page', async () => {
         expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
     });
+
+    it('should login and show authenticated group page', async () => {
+        console.log("hey")
+        await showfeature.clickSigninButton('#group-signin');
+        console.log("boi")
+        await browser.waitForAngular();
+        console.log("man")
+        await register.fillEmail();
+        await register.fillPassword();
+        await register.submitLoginForm();
+        await showfeature.waitUntilVisible();
+        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+    });
 });
