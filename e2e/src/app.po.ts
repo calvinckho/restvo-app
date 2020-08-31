@@ -94,6 +94,8 @@ class PageObjectBase {
 
 export class AppPage {
 
+    protected tag: string;
+
     navigateTo() {
         return browser.get('/register');
     }
@@ -142,6 +144,16 @@ export class AppPage {
 
     actionsheetIsPresent() {
         return element(by.css('ion-action-sheet')).isPresent();
+    }
+
+    async clickElement(parentTag: string, sel: string) {
+        const els = element.all(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+        els.each(async (el) => {
+            if (el.isDisplayed()) {
+                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+                el.click();
+            }
+        });
     }
 }
 

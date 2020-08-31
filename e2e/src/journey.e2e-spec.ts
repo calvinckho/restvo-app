@@ -111,7 +111,7 @@ describe('join journey and leave journey', () => {
     })
 
 
-
+    //to do: copy selectElement method to AppPage class
 
 
     //Pseudocode
