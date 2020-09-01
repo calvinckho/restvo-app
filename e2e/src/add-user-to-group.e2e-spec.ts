@@ -52,22 +52,26 @@ describe('add and remove user from group', () => {
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/app/activity/5e0012f714001a7dbf712de2');
-        await showfeature.waitUntilPresent();
+        // await showfeature.waitUntilPresent();
+        await browser.sleep(5000);
     });
 
-    it('should show unauthenticated group page', async () => {
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
-    });
+    // it('should show unauthenticated group page', async () => {
+    //     expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+    // });
 
     it('should login and show authenticated group page', async () => {
-        console.log("hey")
+        console.log("test1");
         await showfeature.clickSigninButton('#group-signin');
-        console.log("boi")
+        console.log("test2");
         await browser.waitForAngular();
-        console.log("man")
+        console.log("test3");
         await register.fillEmail();
+        console.log("test4");
         await register.fillPassword();
+        console.log("test5");
         await register.submitLoginForm();
+        console.log("test6");
         await showfeature.waitUntilVisible();
         expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
     });
