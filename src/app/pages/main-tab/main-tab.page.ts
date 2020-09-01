@@ -276,9 +276,19 @@ export class MainTabPage implements OnInit, OnDestroy {
                         console.log('received notification ' + JSON.stringify(notification), JSON.stringify(notification.data));
                     });
                     PushNotifications.addListener('pushNotificationActionPerformed', async (result) => {
-                        console.log('action', JSON.stringify(result.notification.data));
+                        console.log('push action', result.notification.data);
                         if (result.notification.data.page === 'MessagePage') {
-                            this.openGroupChat(result.notification.data);
+                            const data = result.notification.data;
+                            if (data.moment) {
+                                data.moment = JSON.parse(data.moment); // android push data payload is a string and needs to be parse into json
+                            }
+                            if (data.group) {
+                                data.group = JSON.parse(data.group); // android push data payload is a string and needs to be parse into json
+                            }
+                            if (data.author) {
+                                data.author = JSON.parse(data.author); // android push data payload is a string and needs to be parse into json
+                            }
+                            this.openGroupChat(data);
                         } else if (result.notification.data.page === 'Moment') {
                             const params: any = {};
                             if (result.notification.data.relationshipId) {
@@ -681,35 +691,32 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async openGroupChat(data) {
-        console.log('incoming data', JSON.parse(data));
+        console.log('incoming data', typeof data, typeof data.author, data.author, typeof data.moment);
         if (data) {
             if (data.group) { // for a group chat
-                const group = JSON.parse(data.group); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: group.name,
+                    name: data.group.name,
                     page: 'chat',
-                    group: group,
+                    group: data.group,
                     badge: true,
                     modalPage: true,
                 });
             } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
-                const author = JSON.parse(data.author); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: author.first_name + ' ' + author.last_name,
+                    name: data.author.first_name + ' ' + data.author.last_name,
                     page: 'chat',
-                    recipient: author,
+                    recipient: data.author,
                     badge: true,
                     modalPage: true,
                 });
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
-                const moment = JSON.parse(data.moment); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: moment.name || (moment.matrix_string ? moment.matrix_string[0][0] : ''),
+                    name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
                     page: 'chat',
-                    moment: moment,
+                    moment: data.moment,
                     badge: true,
                     modalPage: true,
                 });
