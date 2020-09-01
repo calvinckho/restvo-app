@@ -146,11 +146,9 @@ export class AppPage {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-    async clickElement(parentTag: string, sel: string) {
-        const els = element.all(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+    async clickSettings(text) {
+        element.all(by.css('#userProfileSettings')).each(async (el) => {
+            if (await el.getText === text) {
                 el.click();
             }
         });

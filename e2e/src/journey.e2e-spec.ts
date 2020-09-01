@@ -100,15 +100,17 @@ describe('join journey and leave journey', () => {
     });
 
     it('should click the Settings tab', async () => {
-        await app.clickElement('app-main-tab', '#userProfileSettings'); // to click the Settings ion-item
-        expect(await app.currentUrl()).toContain('app/user/profile') //expect the url to change in the address bar
+        await app.clickSettings('Settings') // to click
+        await browser.sleep(3000);
+        expect(await app.currentUrl()).toContain('profile') //expect the url to change in the address bar
+
     });
 
-    it('should click the logout button', () => {
-        //click the privacy and settings tab
-        //click the ion-button to sign out
-        //expect ion-button with #signin to be present
-    })
+    // it('should click the logout button', () => {
+    //     //click the privacy and settings tab
+    //     //click the ion-button to sign out
+    //     //expect ion-button with #signin to be present
+    // })
 
 
     //to do: copy selectElement method to AppPage class
