@@ -175,7 +175,7 @@ export class Chat {
             console.log('incoming message...', message);
             this.broadcastChatMessage(message); // broadcast an incoming message
             if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
-                this.connectTabBadge++; //increment the Chat Tab badge count
+                this.connectTabBadge++; // increment the Chat Tab badge count
                 if (!this.router.url.includes('/app/myconversations') || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
                     this.toastNotification({type: 'message', data: message});
                 }

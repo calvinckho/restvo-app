@@ -783,14 +783,14 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (refreshMyConversations) { // if true, reload my conversations
                 this.userData.refreshMyConversations({action: 'reload', data: conversationId});
             }
-            if (count) {
+/*            if (count) {
                 if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
                     this.badge.decrease(count);
                 }
                 if (this.electronService.isElectronApp) {
                     this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.chatService.connectTabBadge > -1) ? this.chatService.connectTabBadge : 0);
                 }
-            }
+            }*/
         }
         if (exit) {
             //  clean up the chat props

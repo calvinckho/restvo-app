@@ -757,15 +757,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (this.networkService.hasNetwork) {
         // first reset the conversation badge count to 0, decrease the system badge count down by number of unread messages in group
         if (this.moment.conversation) {
-          const count = await this.chatService.resetBadgeCount(this.moment.conversation);
-          if (count) {
-            if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
-              this.badge.decrease(count);
+            const count = await this.chatService.resetBadgeCount(this.moment.conversation);
+            if (count) {
+                this.userData.refreshMyConversations({action: 'reload', data: this.moment.conversation});
             }
-            if (this.electronService.isElectronApp) {
-              this.electronService.ipcRenderer.send('SYSTEM_TRAY:::CHANGE_BADGE', -1 * count);
-            }
-          }
           // Remove user from user_list
           await this.momentService.updateMomentUserLists({
             operation: 'remove from lists',

@@ -189,15 +189,10 @@ export class GroupPopoverPage implements OnInit, OnDestroy {
                     const count = await this.chatService.resetBadgeCount(this.group.conversation);
                     this.chatService.socket.emit('leave conversation', this.group.conversation);
                     if (count) {
-                        if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
-                            this.badge.decrease(count);
-                        }
-                        if (this.electronService.isElectronApp) {
-                            this.electronService.ipcRenderer.send('SYSTEM_TRAY:::CHANGE_BADGE', -1 * count);
-                        }
+                        this.userData.refreshMyConversations({action: 'reload', data: this.group.conversation});
                     }
                 }
-                //Remove group from user-data and group collections
+                // Remove group from user-data and group collections
                 await this.userData.leaveGroup(this.group);
                 this.popoverCtrl.dismiss(true);
             } else {

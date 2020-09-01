@@ -276,7 +276,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         console.log('received notification ' + JSON.stringify(notification), JSON.stringify(notification.data));
                     });
                     PushNotifications.addListener('pushNotificationActionPerformed', async (result) => {
-                        console.log('action', result.notification);
+                        console.log('action', JSON.stringify(result.notification.data));
                         if (result.notification.data.page === 'MessagePage') {
                             this.openGroupChat(result.notification.data);
                         } else if (result.notification.data.page === 'Moment') {
@@ -420,7 +420,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
         });
         try {
-            if (Capacitor.isPluginAvailable('LocalNotifications')) {
+            if (!this.platform.is('android') && Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android
                 Plugins.LocalNotifications.registerActionTypes({
                     types: [
                         {
@@ -467,8 +467,8 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         } catch (error) {}
         this.subscriptions['toastNotification'] = this.chatService.toastNotification$.subscribe(async (res) => {
-            if (!res) return;
-            if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
+            if (!res || this.platform.is('android')) return; // local notification is turned off on android
+            if (this.platform.is('cordova') && this.userData.user.enablePushNotification) { // only iOS
                 this.badge.increase(1);
             }
             const data = res.data;
@@ -681,32 +681,35 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async openGroupChat(data) {
-        console.log('incoming data', data);
+        console.log('incoming data', JSON.parse(data));
         if (data) {
             if (data.group) { // for a group chat
+                const group = JSON.parse(data.group); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: data.group.name,
+                    name: group.name,
                     page: 'chat',
-                    group: data.group,
+                    group: group,
                     badge: true,
                     modalPage: true,
                 });
             } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
+                const author = JSON.parse(data.author); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: data.author.first_name + ' ' + data.author.last_name,
+                    name: author.first_name + ' ' + author.last_name,
                     page: 'chat',
-                    recipient: data.author,
+                    recipient: author,
                     badge: true,
                     modalPage: true,
                 });
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
+                const moment = JSON.parse(data.moment); // android only: the property needs to be converted from string to object
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
-                    name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
+                    name: moment.name || (moment.matrix_string ? moment.matrix_string[0][0] : ''),
                     page: 'chat',
-                    moment: data.moment,
+                    moment: moment,
                     badge: true,
                     modalPage: true,
                 });
