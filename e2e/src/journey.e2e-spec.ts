@@ -112,10 +112,6 @@ describe('join journey and leave journey', () => {
     //     //expect ion-button with #signin to be present
     // })
 
-
-    //to do: copy selectElement method to AppPage class
-
-
     //Pseudocode
     //1.Describe the expectations for the test spec
     //2.
