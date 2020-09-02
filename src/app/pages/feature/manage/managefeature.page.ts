@@ -31,7 +31,6 @@ import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscripti
 import {PaymentService} from "../../../services/payment.service";
 import {Storage} from "@ionic/storage";
 import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
-import {CreatefeaturePage} from "../createfeature/createfeature.page";
 
 @Component({
   selector: 'app-managefeature',

@@ -113,7 +113,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       matrix_number: [],
       matrix_string: [],
       conversations: [],
-      array_boolean: Array(8), // default to not published in Discover (0), and not a Restvo system activity (1), not a participant onboarding activity (2), not a organizer onboarding activity (3), not a leader onboarding activity (4)
+      array_boolean: Array(11), // default to not published in Discover (0), and not a Restvo system activity (1), not a participant onboarding activity (2), not a organizer onboarding activity (3), not a leader onboarding activity (4)
       array_community: ['5ab62be8f83e2c1a8d41f894'], // Restvo as default community
       assets: [],
       program: '',
@@ -227,12 +227,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
           this.churches.unshift({_id: '', name: 'None', selected: false});
 
-          // optional: visible components. If none is provided, show all
-          this.visibleComponents = (this.visibleComponents || this.route.snapshot.paramMap.get('visibleComponents') || []);
-          if (typeof this.visibleComponents === 'string' && this.visibleComponents.length) {
-              this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
-          }
-
           if (!this.modalPage) { // if angular routing, load the params
               this.programId = this.route.snapshot.paramMap.get('programId'); // the program ID
               this.type = parseInt(this.route.snapshot.paramMap.get('type'), 10); // 2: participants, 3: organizers, 4: leaders
@@ -328,13 +322,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.addComponent(11000); // Chat
                   this.editTemplate = true;
               } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73') { // Content
+                  this.moment.array_boolean[9] = true;
                   this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
                   this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
-                  this.addComponent(10000); // add the "Relationship Name"
-                  this.addComponent(20000); // Visibility
-                  this.addComponent(10300); // Upload Media
-                  this.addComponent(10050); // section header
-                  this.addComponent(10010); // Description
+                  this.addComponent(10000); // add the "Content Name"
+                  //this.addComponent(20000); // Visibility
                   this.editTemplate = true;
               } else if (this.categoryId) {
                   this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
@@ -463,6 +455,17 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   }
               });
           }
+          // determine visible components
+          this.visibleComponents = (this.visibleComponents || this.route.snapshot.paramMap.get('visibleComponents') || []);
+          if (this.visibleComponents && this.visibleComponents.length) {
+              if (typeof this.visibleComponents === 'string') {
+                  this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
+              }
+          } else if (this.categoryId === '5e1bbda67b00ea76b75e5a73' || (this.moment.categories && this.moment.categories.includes('5e1bbda67b00ea76b75e5a73'))) { // content default components
+              this.visibleComponents = [10000,10010,10050,10300,30000,40010,40020];
+          } else if (this.categoryId === '5e17acd47b00ea76b75e5a71' || (this.moment.categories && this.moment.categories.includes('5e17acd47b00ea76b75e5a71'))) { // onboarding default components
+              this.visibleComponents = [10000,10010,10300,20010,40010,40020];
+          }
           this.initialSetupCompleted = true;
           console.log('editfeature setup completed', this.moment);
       } catch (err) {
@@ -519,6 +522,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.moment.matrix_string.push([]); // input field
       } else if (componentId === 10500) { // People
           this.moment.matrix_number.push(Array(13));
+          this.moment.matrix_string.push([]); // input field
+      } else if (componentId === 20000) { // Visibility in Content
+          this.moment.matrix_number.push([]); // input field
           this.moment.matrix_string.push([]); // input field
       } else if (componentId === 20020) { // Tabs
           this.moment.matrix_number.push(Array(5));

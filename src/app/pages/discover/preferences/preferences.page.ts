@@ -11,7 +11,6 @@ import {Chat} from "../../../services/chat.service";
 import {UserData} from "../../../services/user.service";
 import {Moment} from "../../../services/moment.service";
 import {Resource} from "../../../services/resource.service";
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
 

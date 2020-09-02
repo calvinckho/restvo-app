@@ -29,7 +29,7 @@
     <ion-item *ngIf="!editTemplate"> <!--Template Name and Save Template button-->
       <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="folder"></ion-icon></div>
       <ion-label>{{moment.resource['en-US'].value[0]}}</ion-label>
-      <ion-button (click)="edit()" *ngIf="!visibleComponents.length">{{resource['en-US'].value[8]}} {{resource['en-US'].value[9]}}</ion-button> <!--Customize Template-->
+      <ion-button (click)="edit()">{{resource['en-US'].value[8]}} {{resource['en-US'].value[9]}}</ion-button> <!--Customize Template-->
     </ion-item>
     <ion-item-group *ngIf="moment.program && moment.program.length">
       <ion-item>
@@ -401,12 +401,12 @@
         <!--Textarea + Media-->
         <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010" lines="none">
           <ion-reorder class="moment-label" slot="start"><ion-icon name="menu"></ion-icon></ion-reorder>
-          <ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize autocorrect="on" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
+          <ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
           <ion-buttons slot="end" [hidden]="!editTemplate" class="ion-no-margin">
             <ion-button fill="clear" (click)="removeComponent(i, item)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
-        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010 && resource['en-US'].value.length > 36" lines="none"> <!--textarea media section-->
+        <ion-item *ngIf="(!visibleComponents.length || visibleComponents.includes(item)) && item === 10010 && resource['en-US'].value.length > 36 && (moment.resource.matrix_number[0].includes(20010) || moment.matrix_string[i].length > 11)" lines="none"> <!--textarea media section, slider view only, or if media has already been added from before-->
           <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></label>
           <label class="moment-input" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</label>
         </ion-item>
@@ -476,11 +476,11 @@
           <ion-range style="width: 50%" min="2" max="1000" [(ngModel)]="moment.matrix_number[i][0]" slot="end"></ion-range>
           <ion-input style="width: 10%" placeholder="2" [(ngModel)]="moment.matrix_number[i][0]" slot="end" (ionChange)="moment.matrix_number[i][0] = moment.matrix_number[i][0] || 2"></ion-input>
         </ion-item>
-        <!--Display Photo/Video in List View-->
-        <div *ngIf="(item == 10010 || (item >= 10300 && item <= 10360)) && moment.matrix_string[i]?.length && moment.matrix_string[i][0].length">
+        <!--Media View Mode in Slideshow view or in List View-->
+        <div *ngIf="((item == 10010 || item === 40010) && (moment.matrix_string[i]?.length > 11)) || (moment.matrix_string[i]?.length && item >= 10300 && item <= 10360)">
           <ion-item lines="none">
             <ion-icon name="eye" class="moment-label"></ion-icon>
-            <ion-label>View Mode</ion-label>
+            <ion-label>Media View Mode</ion-label>
             <ion-select [(ngModel)]="moment.matrix_number[i][0]">
               <ion-select-option [value]=0>Hide</ion-select-option>
               <ion-select-option [value]=1>Normal</ion-select-option>
@@ -729,7 +729,7 @@
               <ion-select-option [value]=1>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][8]}}</ion-select-option> <!--Collaborative-->
             </ion-select>
           </ion-item>
-          <ion-item lines="none" *ngIf="resource['en-US'].value.length > 34"> <!--media section-->
+          <ion-item lines="none" *ngIf="resource['en-US'].value.length > 34 && (moment.resource.matrix_number[0].includes(20010) || moment.matrix_string[i].length > 11)"> <!--media section-->
             <label class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></label>
             <label class="moment-input" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</label>
           </ion-item>
@@ -1361,7 +1361,7 @@
 <ion-footer style="max-height: 20%; overflow: scroll" *ngIf="editTemplate && resource && resource._id && moment.resource && moment.resource.field">
   <ion-toolbar>
     <div class="component-options" *ngIf="editTemplate">
-      <ion-button *ngFor="let componentOption of resource['en-US'].matrix_string; index as i;" shape="round" fill="solid" color="primary" size="small" [hidden]="resource.matrix_number[1][i] < 1 || (resource.matrix_number[0][i] >= 10310 && resource.matrix_number[0][i] <= 10360) || resource.matrix_number[0][i] === 40000" (click)="addComponent(resource.matrix_number[0][i])">
+      <ion-button *ngFor="let componentOption of resource['en-US'].matrix_string; index as i;" shape="round" fill="solid" color="primary" size="small" [hidden]="(resource.matrix_number[1][i] < 1) || (resource.matrix_number[0][i] >= 10310 && resource.matrix_number[0][i] <= 10360) || (resource.matrix_number[0][i] === 40000) || (visibleComponents.length && !visibleComponents.includes(resource.matrix_number[0][i]))" (click)="addComponent(resource.matrix_number[0][i])">
         <div class="addRemoveText">+ {{componentOption[0]}}</div>
       </ion-button>
     </div>

@@ -691,8 +691,8 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     async openGroupChat(data) {
-        console.log('incoming data', typeof data, typeof data.author, data.author, typeof data.moment);
         if (data) {
+            console.log('incoming data', typeof data);
             if (data.group) { // for a group chat
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,

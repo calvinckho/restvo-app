@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActionSheetController, AlertController, IonContent, ModalController, Platform} from "@ionic/angular";
+import {ActionSheetController, AlertController, ModalController, Platform} from '@ionic/angular';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
