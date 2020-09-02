@@ -21,6 +21,26 @@
     <ion-buttons class="ion-justify-content-center ion-margin-vertical">
       <ion-button shape="round" fill="solid" color="primary" size="small" (click)="chooseOnboardingProcess($event)">Add Onboarding Process</ion-button>
     </ion-buttons>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-card-content class="onboarding-card">
+              <img src="assets/img/plan.svg">
+              <h4 class="text-center">Create your own</h4>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col>
+          <ion-card>
+            <ion-card-content class="onboarding-card">
+              <img src="assets/img/template.svg">
+              <h4 class="text-center">Use a template</h4>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
       <ion-list-header>
           <ion-label>Participants</ion-label>
       </ion-list-header>
