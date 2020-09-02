@@ -100,10 +100,9 @@ describe('join journey and leave journey', () => {
     });
 
     it('should click the Settings tab', async () => {
-        await app.clickSettings('Settings') // to click
+        await app.clickSettings('#userProfileSettings') // to click
         await browser.sleep(3000);
         expect(await app.currentUrl()).toContain('profile') //expect the url to change in the address bar
-
     });
 
     // it('should click the logout button', () => {

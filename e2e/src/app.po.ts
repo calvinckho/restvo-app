@@ -146,12 +146,10 @@ export class AppPage {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-    async clickSettings(text) {
-        element.all(by.css('#userProfileSettings')).each(async (el) => {
-            if (await el.getText === text) {
-                el.click();
-            }
-        });
+    async clickSettings(elementId) {
+        const settingEl = element(by.css(elementId));
+        settingEl.click();
+        console.log('Log the element', settingEl);
     }
 }
 
