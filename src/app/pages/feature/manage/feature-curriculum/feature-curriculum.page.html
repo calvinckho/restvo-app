@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content *ngIf="schedule">
+  <ion-grid style="height: 100%; width: 100%; position: absolute" *ngIf="!loadCompleted">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
   <ion-list>
     <ion-row class="ion-justify-content-center">
       <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">

@@ -167,9 +167,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       await this.loadGoals();
     }
-    setTimeout(() => {
+/*    setTimeout(() => {
       this.loadCompleted = true;
-    }, 500);
+    }, 500);*/
   }
 
   async loadGoals() {
@@ -185,12 +185,12 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
     }
     await this.refreshCalendarDisplay();
+    this.loadCompleted = true;
   }
 
   refreshCalendarDisplay() {
     if (this.responses.length) {
       const latestResponse = this.responses[this.responses.length - 1];
-      console.log("last res", latestResponse)
       this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
 
       /*for (const interactable of latestResponse.matrix_string) { // process the interactable and schedule responses
