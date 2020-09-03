@@ -86,6 +86,40 @@ export class PreferencesPage implements OnInit, OnDestroy {
     }, 50);
   }
 
+  async createMoment() {
+      if (this.modalPage) {
+          this.close();
+      }
+      const data: any = {};
+      if (this.categoryId) {
+          data.categoryId = this.categoryId;
+      }
+      if (this.programId) {
+          data.programId = this.programId;
+      }
+      if (this.type) {
+          data.type = this.type;
+      }
+      if (this.parent_programId) {
+          data.parent_programId = this.parent_programId;
+      }
+      if (this.scheduleId) {
+          data.scheduleId = this.scheduleId;
+      }
+      if (this.goalId) {
+          data.goalId = this.goalId;
+      }
+      if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
+          this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
+      } else if (!this.modalPage && this.platform.width() >= 992) {
+          data.subpanel = true;
+          this.router.navigate([{ outlets: { sub: ['create', data] }}]);
+      } else { // create other Activities
+          data.modalPage = true;
+          this.momentService.editMoment(data);
+      }
+  }
+
   async loadMorePreferences(event) {
     try {
       this.pageNum++;
@@ -156,8 +190,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
     }
   }
 
-    async chooseOnboardingProcess(event) {
-      event.stopPropagation();
+    async chooseOnboardingProcess() {
       const componentProps: any = {title: 'Choose from Library', categoryId: '5e17acd47b00ea76b75e5a71', allowCreate: true, allowSwitchCategory: false, disableSelect: true };
       if (this.programId) {
         componentProps.programId = this.programId;
