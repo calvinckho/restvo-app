@@ -90,6 +90,15 @@ class PageObjectBase {
             return false;
         }
     }
+
+    async signinButtonIsPresent() {
+        const signinButton = element(by.css('#signin'));
+        if (signinButton) {
+            return signinButton.isPresent();
+        } else {
+            return false;
+        }
+    }
 }
 
 export class AppPage {
