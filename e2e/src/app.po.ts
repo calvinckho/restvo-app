@@ -152,7 +152,7 @@ export class AppPage {
     }
 
     logoutButtonIsPresent() {
-        return element(by.css('#logoutButton')).isPresent();
+        return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
 }
 
