@@ -102,9 +102,6 @@ class PageObjectBase {
 }
 
 export class AppPage {
-
-    protected tag: string;
-
     navigateTo() {
         return browser.get('/register');
     }
