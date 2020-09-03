@@ -146,10 +146,13 @@ export class AppPage {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-    async clickSettings(elementId) {
-        const settingEl = element(by.css(elementId));
-        settingEl.click();
-        console.log('Log the element', settingEl);
+    async clickElement(elementId) {
+        const selectedEl = element(by.css(elementId));
+        selectedEl.click();
+    }
+
+    logoutButtonIsPresent() {
+        return element(by.css('#logoutButton')).isPresent();
     }
 }
 

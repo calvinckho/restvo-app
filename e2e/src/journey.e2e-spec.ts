@@ -100,16 +100,16 @@ describe('join journey and leave journey', () => {
     });
 
     it('should click the Settings tab', async () => {
-        await app.clickSettings('#userProfileSettings') // to click
-        await browser.sleep(3000);
-        expect(await app.currentUrl()).toContain('profile') //expect the url to change in the address bar
+        await app.clickElement('#userProfileSettings') // to click the settings tab
+        await browser.sleep(3000); // wait for browser to stabilize
+        expect(await app.currentUrl()).toContain('profile') //expect the url to change in the address bar to have string profile
     });
 
-    // it('should click the logout button', () => {
-    //     //click the privacy and settings tab
-    //     //click the ion-button to sign out
-    //     //expect ion-button with #signin to be present
-    // })
+    it('should click the logout button', async () => {
+        await app.clickElement('#logoutButton') // click ion-item with id logoutButton
+        await browser.sleep(3000); // wait for browser to stabilize
+        expect(await app.currentUrl()).toContain('activity') //expect the url to change in the address bar to have string profile
+    })
 
     //Pseudocode
     //1.Describe the expectations for the test spec
