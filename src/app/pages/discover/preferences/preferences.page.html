@@ -21,7 +21,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-card (click)="createMoment()">
+          <ion-card (click)="createMoment()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
             <ion-card-content class="onboarding-card">
               <img src="assets/img/plan.svg">
               <h4 class="text-center">Create your own</h4>
@@ -29,7 +29,7 @@
           </ion-card>
         </ion-col>
         <ion-col>
-          <ion-card (click)="chooseOnboardingProcess()">
+          <ion-card (click)="chooseOnboardingProcess()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
             <ion-card-content class="onboarding-card">
               <img src="assets/img/template.svg">
               <h4 class="text-center">Use a template</h4>

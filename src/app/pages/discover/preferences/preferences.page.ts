@@ -43,7 +43,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
       private router: Router,
       private location: Location,
       private storage: Storage,
-      private platform: Platform,
+      public platform: Platform,
       private authService: Auth,
       private chatService: Chat,
       public userData: UserData,
@@ -94,6 +94,7 @@ export class PreferencesPage implements OnInit, OnDestroy {
       if (!this.modalPage && this.platform.width() >= 992) {
           this.router.navigate([{ outlets: { sub: ['create', data] }}]);
       } else { // create other Activities
+          data.modalPage = true;
           this.momentService.editMoment(data);
       }
   }
