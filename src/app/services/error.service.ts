@@ -23,7 +23,8 @@ export class ErrorService implements ErrorHandler {
     } else {
       data.stringField_1 = `Error Occurred in ${router.url}: [${error.message}]`;
       console.log(`Error Occurred in ${router.url}: [${error.message}]`);
+      console.log(error)
     }
-    this.systemLogService.logMessage(data);
+    if (this.systemLogService) this.systemLogService.logMessage(data);
   }
 }
