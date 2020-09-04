@@ -263,7 +263,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       // if there are players loaded and one of them is playing or is being paused
       if (this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.hasOwnProperty('currentTime') && (c.player.currentTime > 0)))))) {
           // do nothing
-      } else { // otherwise refresh
+      } else if (data && data.type !== 'update onboarding answers') { // except if data type is update onboarding answers, execute a refresh on all other user refresh type
           this.setup(data);
       }
   };
@@ -1111,7 +1111,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.responses.splice(index, 1, response);
                 }
                 if (this.moment.program) {
-                    this.userData.refreshUserStatus({});
+                    this.userData.refreshUserStatus({ type: 'update onboarding answers' });
                 }
                 // Showing the user that the content has been saved at the end of the timeout
                 this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saved";

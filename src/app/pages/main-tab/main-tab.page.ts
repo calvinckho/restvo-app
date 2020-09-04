@@ -91,7 +91,6 @@ export class MainTabPage implements OnInit, OnDestroy {
         console.log('platform info:', this.platform.platforms());
         this.processAuth(); // first-time loading app and entering authentication section
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
-            console.log("refresh maintab", data)
             if (data && data.type === 'setup device') { // from recover page, or from re-logging in
                 this.setupDevice();
             }

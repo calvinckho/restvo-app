@@ -128,8 +128,7 @@ export class Moment {
                 this.socket = io(this.networkService.domain + '/moments-namespace');
             }
         });
-        this.socket.on('connect', () => {
-        });
+        this.socket.on('connect', () => {});
         this.socket.on('refresh moment', async (momentId, data) => {
             this.refreshMoment({ momentId: momentId, data: data});
             console.log('refresh moment');
