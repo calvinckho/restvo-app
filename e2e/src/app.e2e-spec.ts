@@ -81,3 +81,8 @@ describe('navigate around the maintab', () => {
     });
 
 });
+
+//steps
+//1 - click the back button (id="clickback")
+//2 - click the settings tabs
+//3 - click the logout tab logout
