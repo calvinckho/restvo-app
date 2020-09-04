@@ -5,12 +5,6 @@ node_js:
 addons:
   chrome: stable
 
-branches:
-  only:
-    - app-dev01
-    - app-production
-    - journey-e2e-2
-
 before_script:
   - npm install -g @angular/cli@8.3.25
 
