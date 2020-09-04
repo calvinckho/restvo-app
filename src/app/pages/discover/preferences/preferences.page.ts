@@ -87,30 +87,12 @@ export class PreferencesPage implements OnInit, OnDestroy {
   }
 
   async createMoment() {
-  //     if (this.modalPage) {
-  //         this.close();
-  //     }
-  //     const data: any = {};
-  //     if (this.categoryId) {
-  //         data.categoryId = this.categoryId;
-  //     }
-  //     if (this.programId) {
-  //         data.programId = this.programId;
-  //     }
-  //     if (this.type) {
-  //         data.type = this.type;
-  //     }
-  //     if (this.parent_programId) {
-  //         data.parent_programId = this.parent_programId;
-  //     }
-  //     if (this.scheduleId) {
-  //         data.scheduleId = this.scheduleId;
-  //     }
-  //     if (this.goalId) {
-  //         data.goalId = this.goalId;
-  //     }
+      const data: any = { categoryId: '5e17acd47b00ea76b75e5a71' };
+       if (this.programId) {
+           data.programId = this.programId;
+       }
       if (!this.modalPage && this.platform.width() >= 992) {
-          this.router.navigate([{ outlets: { sub: ['create'] }}]);
+          this.router.navigate([{ outlets: { sub: ['create', data] }}]);
       } else { // create other Activities
           this.momentService.editMoment(data);
       }
