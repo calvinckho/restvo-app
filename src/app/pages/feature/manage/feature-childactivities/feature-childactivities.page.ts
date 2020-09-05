@@ -26,6 +26,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   ionSpinner = false;
   activities: any;
   selectedActivities = [];
+  cachedActivities = [];
   searchKeyword = '';
   refreshNeeded = false;
   activityAscending = true;
@@ -83,6 +84,16 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   async loadChildActivities() {
       this.activities = await this.momentService.loadProgramChildActivities(this.momentId, this.categoryId);
       this.activities.map((c) => c.select = false);
+      this.cachedActivities = this.activities;
+
+    this.activities.sort((a, b) => {
+      if (a.deletedAt && !b.deletedAt) {
+        return 1;
+      }
+      if (!a.deletedAt && b.deletedAt) {
+        return -1;
+      }
+    });
   }
 
   async openChildActivity(event, moment, viewType) {
@@ -153,42 +164,53 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     }
   }
 
-  selectActivity(event, user) {
-    event.stopPropagation();
-    if (user.select) {
-      user.select = false;
-      const index = this.selectedActivities.indexOf(user);
-      this.selectedActivities.splice(index, 1);
-    } else {
-      user.select = true;
-      this.selectedActivities.push(user);
-      //this.searchbar.setFocus();
+  renderUniqueParticipantList() {
+    this.activities = this.cachedActivities.filter((c) => (c.matrix_string[0][0]).toLowerCase().includes(this.searchKeyword.toLowerCase()));
+    for (const activity of this.activities) {
+      if (this.selectedActivities.find((c) => c._id === activity._id)) {
+        activity.selected = true;
+      }
     }
   }
 
-  unselectActivity(event, user) {
+  selectActivity(event, activity) {
     event.stopPropagation();
-    let index = this.selectedActivities.indexOf(user);
+    if (activity.select) {
+      activity.select = false;
+      const index = this.selectedActivities.indexOf(activity);
+      this.selectedActivities.splice(index, 1);
+    } else {
+      activity.select = true;
+      this.selectedActivities.push(activity);
+    }
+  }
+
+  unselectActivity(event, activity) {
+    event.stopPropagation();
+    let index = this.selectedActivities.indexOf(activity);
     if (index > -1) {
       this.selectedActivities[index].select = false;
     }
-    index = this.selectedActivities.indexOf(user);
+    index = this.selectedActivities.indexOf(activity);
     if (index > -1) {
       this.selectedActivities.splice(index, 1);
     }
   }
 
-  async multiSelectAction(event) {
-    event.stopPropagation();
-    if (!this.selectedActivities.length || !event.detail.value.length) return; // if no participant or remove type selected, exit
+  async multiSelectAction(action) {
+    if (!this.selectedActivities.length) return; // if no child activity or remove type selected, exit
     const alert = await this.alertCtrl.create({
-      header: 'Remove ' + (this.selectedActivities.length === 1 ? event.detail.value[0].singularLabel : event.detail.value[0].pluralLabel),
-      subHeader: 'You are about to remove ' + (this.selectedActivities.length === 1 ? (this.selectedActivities[0].first_name + ' ' + this.selectedActivities[0].last_name + ' as a ' + event.detail.value[0].singularLabel) : (this.selectedActivities.length + ' ' + event.detail.value[0].pluralLabel)) + '. Are you sure you want to proceed?',
+      header: (['owner', 'admin', 'staff'].includes(this.userData.user.role) && action === 'Archive' ? this.resourceService.resource['en-US'].value[44] : this.resourceService.resource['en-US'].value[19]) + ' ' + this.categoryLabel + (this.selectedActivities.length === 1 ? 's' : ''),
+      subHeader: 'You are about to ' + (['owner', 'admin', 'staff'].includes(this.userData.user.role) && action === 'Archive' ? this.resourceService.resource['en-US'].value[44] : this.resourceService.resource['en-US'].value[19]).toLowerCase() + ' ' + (this.selectedActivities.length === 1 ? (this.selectedActivities[0].matrix_string[0][0]) : (this.selectedActivities.length + ' ' + this.categoryLabel + 's')) + '. Are you sure you want to proceed?',
       cssClass: 'level-15',
-      buttons: [{ text: 'Remove',
+      buttons: [{ text: 'Proceed',
         handler: async () => {
           alert.dismiss();
-          //this.removeFromUserLists(event.detail.value.map((c) => c.user_list), this.selectedActivities.map((c) => c._id));
+          for (const selectedActivity of this.selectedActivities) {
+            await this.momentService.delete(selectedActivity, action.toLowerCase());
+          }
+          this.selectedActivities = [];
+          this.renderUniqueParticipantList();
         }}, { text: 'Cancel' }]
     });
     await alert.present();
@@ -264,14 +286,16 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     };
     this.selectedSample.parent_programs = [this.moment._id];
     const clonedMoments: any = await this.momentService.clone([this.selectedSample], 'admin'); // clone and do not add admin as participants
-    this.ionSpinner = false;
     if (clonedMoments && clonedMoments.length) {
       if (this.platform.width() >= 768) {
         this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + clonedMoments[0]._id + '/overview/' + clonedMoments[0]._id, { visibleComponents: '10000,10010,10050,10300' }]);
       } else {
         this.momentService.openCreator({ moment: clonedMoments[0], modalPage: true });
       }
+      this.newActivityName = ''; // reset name
     }
+    this.ionSpinner = false; // turn off spinner
+    this.view = '1'; // reset view
   }
 
   back() {

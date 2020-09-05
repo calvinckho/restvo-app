@@ -6,16 +6,32 @@
     <ion-title>{{this.categoryLabel}}<span [hidden]="view === '2'">s</span></ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="activities && view === '1'"> <!--Show always except in Plans-->
-    <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
-      <div class="select-col"></div>
-      <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}s<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
-      <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
-      <div class="actions-col column-label">Actions</div>
-    </ion-item>
+    <ion-list>
+      <ion-item lines="none">
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
+      </ion-item>
+      <ion-item *ngIf="selectedActivities.length" lines="none">
+        <ion-label>{{selectedActivities.length}} Selected</ion-label>
+        <ion-button slot="end" (click)="multiSelectAction('Archive')" *ngIf="['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{this.resourceService.resource['en-US'].value[44]}}</ion-button> <!--Archive for Staff-->
+        <ion-button slot="end" (click)="multiSelectAction('Delete')" *ngIf="['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{resourceService.resource['en-US'].value[19]}}</ion-button> <!--Delete for Staff-->
+        <ion-button slot="end" (click)="multiSelectAction('Archive')" *ngIf="!['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{resourceService.resource['en-US'].value[19]}}</ion-button> <!--Archive for General User, the label says Delete-->
+      </ion-item>
+      <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
+        <div class="select-col"></div>
+        <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}s<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+        <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
+        <div class="actions-col column-label">Actions</div>
+      </ion-item>
+    </ion-list>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-grid style="height: 100%; width: 100%; position: absolute" *ngIf="ionSpinner">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
   <ion-list *ngIf="view === '1'">
     <ion-item *ngFor="let activity of activities; index as i" [ngStyle]="{'opacity': activity.deletedAt ? '0.5' : '1'}" (click)="openChildActivity($event, activity, 'view')" [hidden]="!((activity.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || activity.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
       <ion-buttons class="select-col">
