@@ -238,7 +238,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               if (this.route.snapshot.paramMap.get('id')) {
                   this.moment = await this.momentService.load(this.route.snapshot.paramMap.get('id'));
               }
-          } else if (this.modalPage && this.moment && this.moment._id && !this.moment.matrix_string) { // if enter via modalPage, load moment if only the _id is provided
+          } else if (this.modalPage && this.moment && this.moment._id) { // if enter via modalPage, load moment by default
               this.moment = await this.momentService.load(this.moment._id);
           }
           // determine visible components based on @Input or param
