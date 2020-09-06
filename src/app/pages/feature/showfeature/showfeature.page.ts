@@ -619,14 +619,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         } else {
             this.momentService.socket.emit('join moment', this.moment._id);
         }
-    }
-    const calendarItemIds = this.calendarService.calendarItems.map((c) => c._id );
-    this.hasAddedToCalendar = this.moment.calendar && (calendarItemIds.indexOf(this.moment.calendar._id) > -1);
-      let peopleComponentId = -1;
-      if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
-          peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
       }
-      if (peopleComponentId > -1) {
+      this.hasAddedToCalendar = this.moment.calendar && this.calendarService.calendarItems.map((c) => c._id).includes(this.moment.calendar._id);
+      if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && this.moment.resource.matrix_number[0].indexOf(10500)) {
           this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 2 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : this.moment.resource['en-US'].matrix_string[peopleComponentId][4];
           this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 4 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : this.moment.resource['en-US'].matrix_string[peopleComponentId][6];
           this.leaderLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 0 && this.moment.matrix_string[peopleComponentId][0] ? this.moment.matrix_string[peopleComponentId][0] : this.moment.resource['en-US'].matrix_string[peopleComponentId][8];
@@ -634,16 +629,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.organizersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 5 && this.moment.matrix_string[peopleComponentId][5] ? this.moment.matrix_string[peopleComponentId][5] : this.moment.resource['en-US'].matrix_string[peopleComponentId][7];
           this.leadersLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 1 && this.moment.matrix_string[peopleComponentId][1] ? this.moment.matrix_string[peopleComponentId][1] : this.moment.resource['en-US'].matrix_string[peopleComponentId][9];
       }
-      // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
-      this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
       if (this.moment.user_list_1) { // user_list_1 is not returned by loadMomentPublic so this needs to be checked
           this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
       }
-      // if Activity's organizer
-      if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
-          this.hasOrganizerAccess = true;
-      // if Restvo staff
-      } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+      // if Activity's organizer or Restvo staff
+      if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id) || ['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
           this.hasOrganizerAccess = true;
       // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
       } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
@@ -663,6 +653,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           await Promise.all(promises);
       }
       this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
+      // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
+      this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
       this.setupPermissionCompleted = true;
   }
 
