@@ -260,10 +260,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      // if there are players loaded and one of them is playing or is being paused
-      if (this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.hasOwnProperty('currentTime') && (c.player.currentTime > 0)))))) {
+      // if data type is update onboarding answer, or if there are players loaded and one of them is playing or is being paused
+      if ((data && data.type === 'update onboarding answers') || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.hasOwnProperty('currentTime') && (c.player.currentTime > 0)))))) {
           // do nothing
-      } else if (data && data.type !== 'update onboarding answers') { // except if data type is update onboarding answers, execute a refresh on all other user refresh type
+      } else { // execute a refresh on all other user refresh type
           this.setup(data);
       }
   };
