@@ -574,6 +574,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.cleanup();
     }
 
+    showtime() {
+        console.log("check", this.recurrenceStartTime, new Date(this.recurrenceStartTime).getHours());
+    }
+
     cleanup() {
         this.searchKeyword = '';
         this.currentView = 'new';

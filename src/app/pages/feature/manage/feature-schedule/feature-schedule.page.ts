@@ -191,27 +191,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   refreshCalendarDisplay() {
     if (this.responses.length) {
       const latestResponse = this.responses[this.responses.length - 1];
-      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]));
-
-      /*for (const interactable of latestResponse.matrix_string) { // process the interactable and schedule responses
-        // content calendar list
-        for (const calendarItem of this.timeline) {
-          if (calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((c) => c[0]).includes(c)); // grab the goal attributes
-          }
-        }
-        // also update the response Obj, in ascending updatedAt order, so the responseObj will have the latest response data
-        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
-        if (index >= 0) {
-          this.responseObj.matrix_string.splice(index, 1, interactable);
-        } else {
-          this.responseObj.matrix_string.push(interactable);
-        }
-      }
-
-      // update this.responseObj with the latest goals data
-      this.responseObj.matrix_string = this.responseObj.matrix_string.filter((c) => !['goal', 'master goal'].includes(c[1]));
-      this.responseObj.matrix_string.push(...latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1])));*/
+      this.listOfDisplayGoals = latestResponse.matrix_string.filter((c) => ['goal', 'master goal'].includes(c[1]) && (c.length <= 6 || (c.length > 6) && c[6] === this.scheduleId));
     }
     for (const response of this.responses) {
       // if to-dos are not private (collaborative), or if it is private and the response is created by the user
@@ -707,7 +687,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         }
       }
     }
-    const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName];
+    const goalData = [Math.floor((Math.random() + new Date().getTime()) * 1000).toString(), 'goal', null, this.resourceService.color_arrays.find((c) => !c.status).color, null, goalName, this.scheduleId];
     this.listOfDisplayGoals.push(goalData);
     this.responseObj.matrix_string.push(goalData);
     this.momentService.submitResponse(this.moment, this.responseObj, false);

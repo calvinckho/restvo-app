@@ -166,4 +166,84 @@ app-feature-schedule {
     top: 5px;
     right: 15px;
   }
+
+  .monthview {
+    width: 85%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding-bottom: 10px;
+    --color: var(--ion-color-dark);
+  }
+
+  .month-title-container {
+    width: 100%;
+  }
+
+  .month-title {
+    width: calc((100% / 7) * 5);
+    text-align: center;
+    display: inline-block;
+  }
+
+  .calendar-arrow {
+    width: calc(100% / 7);
+    position: relative;
+    display: inline-block;
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+  }
+
+  .monthview-day-headers {
+    width: calc(100% / 7);
+    float: left;
+    position: relative;
+    color: var(--ion-color-grey);
+    text-align: center;
+  }
+
+  .monthview-element {
+    width: calc(100% / 7);
+    float: left;
+    position: relative;
+    padding-bottom: calc(100% / 9);
+  }
+
+  .monthview-element .monthview-element-content {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    text-align: center;
+    margin: 5px;
+    padding-top: 5px;
+    position: absolute;
+  }
+
+  .past-calendar-item {
+    background-color: var(--ion-color-grey);
+  }
+
+  .monthview-dot-container {
+    text-align: center;
+    display: inline-block;
+  }
+
+  .monthview-element-dot {
+    height: 5px;
+    width: 5px;
+    margin: 0px 0.5px 0px 0.5px;
+    border-radius: 50%;
+    background-color: var(--ion-color-primary);
+  }
+
+  .underline-datestring {
+    text-decoration: underline;
+  }
+
+  .selected-date {
+    background-color: var(--ion-color-lightgrey);
+    border-radius: 50%;
+  }
 }

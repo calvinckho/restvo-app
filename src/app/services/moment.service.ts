@@ -614,7 +614,9 @@ export class Moment {
             await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
             await this.calendarService.getUserCalendar();
             await this.chatService.getAllUserConversations();
-            this.userData.refreshAppPages();
+            setTimeout(() => {
+                this.userData.refreshAppPages();
+            }, 500);
             // reload the check Admin Access data
             if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
                 await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);

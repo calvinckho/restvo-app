@@ -214,7 +214,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 this.closeModal(true);
             }
         } else if (res && res.data && this.moment && res.momentId === this.moment._id && res.data.operation === 'deleted moment') {
-            this.closeModal(false);
+            if (this.modalPage) {
+                this.closeModal(false);
+            } else {
+                this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+            }
             // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
         }
     };
