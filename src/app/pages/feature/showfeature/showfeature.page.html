@@ -58,10 +58,10 @@
   </ion-buttons>
 </ion-header>
 
-<ion-content class="ion-padding-bottom" id="showfeature-content" [ngClass]="{'desktop-content': platform.width() >= 768 }">
+<ion-content class="ion-padding-bottom" id="showfeature-content" [ngClass]="{'desktop-content': platform.width() >= 768}">
   <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadStatus && setupPermissionCompleted">
     <!--Invitation Section-->
-    <ion-item-sliding side="end" *ngIf="(participant_type === 2) && token">
+    <ion-item-sliding *ngIf="(participant_type === 2) && token">
       <ion-item id="accept-invitation" (click)="acceptInvitation($event)" lines="none">
         <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap">
@@ -76,7 +76,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-    <ion-item-sliding side="end" *ngIf="!hasLeaderAccess && (participant_type === 4) && token">
+    <ion-item-sliding *ngIf="!hasLeaderAccess && (participant_type === 4) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
         <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap">
@@ -91,7 +91,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-    <ion-item-sliding side="end" *ngIf="!hasOrganizerAccess && (this.participant_type === 3) && token">
+    <ion-item-sliding *ngIf="!hasOrganizerAccess && (this.participant_type === 3) && token">
       <ion-item (click)="acceptInvitation($event)" lines="none">
         <ion-icon name="mail-open" slot="start" color="danger"></ion-icon>
         <div class="ion-text-wrap">

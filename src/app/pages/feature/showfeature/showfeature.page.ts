@@ -291,7 +291,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.loadPrograms();
 
       // if user has not joined, or if token is provided
-      if ((this.authService.token && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
+      if ((this.authService.token && this.userData.user && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
           this.showSpecialAccess = true;
       } else {
@@ -622,7 +622,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
     const calendarItemIds = this.calendarService.calendarItems.map((c) => c._id );
     this.hasAddedToCalendar = this.moment.calendar && (calendarItemIds.indexOf(this.moment.calendar._id) > -1);
-    if (this.moment.user_list_1) {
+    if (this.moment.user_list_1) { // user_list_1 is not returned by loadMomentPublic so this needs to be checked
         let peopleComponentId = -1;
         if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
             peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
@@ -637,32 +637,32 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         // if a Content, disable join/leave function since join/leave is handled by user joining via the calendar content item (Calendar doc with user listed in users property)
         this.joinDisabled = this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') || this.moment.categories.map((c) => c._id).includes('5e17acd47b00ea76b75e5a71');
-          this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
-          // if Activity's organizer
-        if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
+        this.hasParticipantAccess = this.moment.user_list_1.map((c) => c._id).includes(this.userData.user._id);
+    }
+      // if Activity's organizer
+      if (this.moment.user_list_2.map((c) => c._id).includes(this.userData.user._id)) {
           this.hasOrganizerAccess = true;
           // if Restvo staff
-          } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
-              this.hasOrganizerAccess = true;
+      } else if (['owner', 'admin', 'staff'].includes(this.userData.user.role)) {
+          this.hasOrganizerAccess = true;
           // if the Activity has a parent Program and respective grandparent programs, also check their organizers list
-          } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
-              const promises = this.moment.parent_programs.map( async (parent_program) => {
-                  if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
-                      this.hasOrganizerAccess = true;
-                  }
-                  if (parent_program.parent_programs && parent_program.parent_programs.length) {
-                      const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
-                          if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
-                              this.hasOrganizerAccess = true;
-                          }
-                      });
-                      await Promise.all(promises2);
-                  }
-              });
-              await Promise.all(promises);
-        }
-        this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
-    }
+      } else if (this.moment.parent_programs && this.moment.parent_programs.length) {
+          const promises = this.moment.parent_programs.map( async (parent_program) => {
+              if (parent_program.user_list_2 && parent_program.user_list_2.includes(this.userData.user._id)) {
+                  this.hasOrganizerAccess = true;
+              }
+              if (parent_program.parent_programs && parent_program.parent_programs.length) {
+                  const promises2 = parent_program.parent_programs.map( async (grandparent_program) => {
+                      if (grandparent_program.user_list_2 && grandparent_program.user_list_2.includes(this.userData.user._id)) {
+                          this.hasOrganizerAccess = true;
+                      }
+                  });
+                  await Promise.all(promises2);
+              }
+          });
+          await Promise.all(promises);
+      }
+      this.hasLeaderAccess = this.moment.user_list_3.map((c) => c._id).includes(this.userData.user._id);
       this.setupPermissionCompleted = true;
   }
 
@@ -2195,8 +2195,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    if (this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    if (this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions && this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
+    if (this.subscriptions && this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
   }
 
     // for refreshing moment either because of real-time interactables, or for refreshing participation
