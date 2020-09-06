@@ -621,7 +621,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
       }
       this.hasAddedToCalendar = this.moment.calendar && this.calendarService.calendarItems.map((c) => c._id).includes(this.moment.calendar._id);
-      if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && this.moment.resource.matrix_number[0].indexOf(10500)) {
+      if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length && this.moment.resource.matrix_number[0].includes(10500)) {
+          const peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
           this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 2 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : this.moment.resource['en-US'].matrix_string[peopleComponentId][4];
           this.organizerLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 4 && this.moment.matrix_string[peopleComponentId][4] ? this.moment.matrix_string[peopleComponentId][4] : this.moment.resource['en-US'].matrix_string[peopleComponentId][6];
           this.leaderLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 0 && this.moment.matrix_string[peopleComponentId][0] ? this.moment.matrix_string[peopleComponentId][0] : this.moment.resource['en-US'].matrix_string[peopleComponentId][8];
