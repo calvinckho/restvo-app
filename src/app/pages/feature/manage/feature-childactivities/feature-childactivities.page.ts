@@ -7,7 +7,6 @@ import {Chat} from "../../../../services/chat.service";
 import {UserData} from "../../../../services/user.service";
 import {Moment} from "../../../../services/moment.service";
 import {Resource} from "../../../../services/resource.service";
-import {GroupchatPage} from "../../../group/groupchat/groupchat.page";
 
 @Component({
   selector: 'app-feature-childactivities',

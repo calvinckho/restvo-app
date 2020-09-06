@@ -69,17 +69,17 @@
     </ion-item>
   </ion-list>
   <ion-grid *ngIf="view === '1'">
-    <ion-row class="grid-row ion-align-items-center">
-      <ion-col size-xs="6">
+    <ion-row class="grid-row">
+      <ion-col size-xs="6" class="ion-align-items-center">
         <ion-card class="category-card" mode="md" (click)="view = '2'" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
           <ion-card-content>
-            <img src="assets/icon/create.svg" alt="Create Plan Icon">
+            <img style="margin-bottom: 10px;" src="assets/icon/create.svg" alt="Create Plan Icon">
             <br>
             <strong>Create your own {{categoryLabel}}</strong>
           </ion-card-content>
         </ion-card>
       </ion-col>
-      <ion-col size-xs="6">
+      <ion-col size-xs="6" class="ion-align-items-center">
         <ion-card class="category-card" mode="md" (click)="chooseFromMarketplace()" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
           <ion-card-content>
             <img src="assets/icon/template.svg" alt="Select Template Icon">
@@ -91,8 +91,8 @@
     </ion-row>
   </ion-grid>
   <!--In the create step, show a form to collect basic info about a new Plan-->
-  <ion-card>
-    <ion-grid class="full-height" *ngIf="view === '2'">
+  <ion-card *ngIf="view === '2'">
+    <ion-grid class="full-height">
       <ion-row class="ion-justify-content-center ion-align-items-center full-height form-container">
         <ion-col>
           <ion-item lines="none">

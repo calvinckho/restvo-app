@@ -17,27 +17,47 @@
             <ion-spinner name="dots"></ion-spinner>
         </ion-row>
     </ion-grid>
-  <ion-list *ngIf="organizer"> 
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-card (click)="createMoment()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
-            <ion-card-content class="onboarding-card">
-              <img src="assets/img/plan.svg">
-              <h4 class="text-center">Create your own</h4>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-        <ion-col>
-          <ion-card (click)="chooseOnboardingProcess()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
-            <ion-card-content class="onboarding-card">
-              <img src="assets/img/template.svg">
-              <h4 class="text-center">Use a template</h4>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
+    <ion-grid *ngIf="organizer">
+        <ion-row class="grid-row">
+            <ion-col size-xs="6" class="ion-align-items-center">
+                <ion-card class="category-card" mode="md" (click)="createMoment()" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
+                    <ion-card-content>
+                        <img style="margin-bottom: 10px;" src="assets/icon/create.svg" alt="Create Plan Icon" />
+                        <br>
+                        <strong>Create your own</strong>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+            <ion-col size-xs="6" class="ion-align-items-center">
+                <ion-card class="category-card" mode="md" (click)="chooseOnboardingProcess()" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
+                    <ion-card-content>
+                        <img src="assets/icon/template.svg" alt="Select Template Icon" />
+                        <br>
+                        <strong>Select from available templates</strong>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+        <!--<ion-row>
+          <ion-col>
+            <ion-card (click)="createMoment()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
+              <ion-card-content class="category-card">
+                <img src="assets/img/plan.svg">
+                <h4 class="text-center">Create your own</h4>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col>
+            <ion-card (click)="chooseOnboardingProcess()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
+              <ion-card-content class="category-card">
+                <img src="assets/img/template.svg">
+                <h4 class="text-center">Use a template</h4>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>-->
     </ion-grid>
+  <ion-list *ngIf="organizer">
       <ion-item lines="none">Participants</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[2]">
         <ion-item>
@@ -141,6 +161,7 @@
       Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> Onboarding process</span><span *ngIf="moments.length > 1"> Onboarding processes</span>
     </ion-item-divider>
   </ion-list>
+
     <!--About Me-->
     <ion-list *ngIf="!organizer">
         <ion-item *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')">

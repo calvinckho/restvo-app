@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {
   IonInfiniteScroll,
   ModalController,
@@ -18,6 +18,7 @@ import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeat
   selector: 'app-preferences',
   templateUrl: './preferences.page.html',
   styleUrls: ['./preferences.page.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PreferencesPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;

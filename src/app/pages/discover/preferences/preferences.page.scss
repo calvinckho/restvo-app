@@ -1,11 +1,13 @@
 app-preferences {
 
-}
+  .grid-row {
+    overflow: scroll;
+  }
 
-.onboarding-card {
-  text-align: center;
-
-  & img {
-    height: 125px;
+  .category-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 }
