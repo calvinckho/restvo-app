@@ -22,7 +22,7 @@
             <ion-col size-xs="6" class="ion-align-items-center">
                 <ion-card class="category-card" mode="md" (click)="createMoment()" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
                     <ion-card-content>
-                        <img style="margin-bottom: 10px;" src="assets/icon/create.svg" alt="Create Plan Icon" />
+                        <img style="margin-bottom: 10px;" src="assets/img/plan.svg" alt="Create Plan Icon" />
                         <br>
                         <strong>Create your own</strong>
                     </ion-card-content>
@@ -31,36 +31,18 @@
             <ion-col size-xs="6" class="ion-align-items-center">
                 <ion-card class="category-card" mode="md" (click)="chooseOnboardingProcess()" [ngStyle]="{'height': platform.width() >= 768 ? '300px' : '215px'}">
                     <ion-card-content>
-                        <img src="assets/icon/template.svg" alt="Select Template Icon" />
+                        <img src="assets/img/template.svg" alt="Select Template Icon" />
                         <br>
                         <strong>Select from available templates</strong>
                     </ion-card-content>
                 </ion-card>
             </ion-col>
         </ion-row>
-        <!--<ion-row>
-          <ion-col>
-            <ion-card (click)="createMoment()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
-              <ion-card-content class="category-card">
-                <img src="assets/img/plan.svg">
-                <h4 class="text-center">Create your own</h4>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card (click)="chooseOnboardingProcess()" [ngClass]="{'ion-no-margin': platform.width() < 768}">
-              <ion-card-content class="category-card">
-                <img src="assets/img/template.svg">
-                <h4 class="text-center">Use a template</h4>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>-->
     </ion-grid>
   <ion-list *ngIf="organizer">
       <ion-item lines="none">Participants</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[2]">
-        <ion-item>
+        <ion-item lines="none">
             <ion-avatar slot="start">
                 <ion-img *ngIf="moment.assets?.length" [src]="moment.assets[0]"></ion-img>
                   <ion-img *ngIf="!moment.assets.length" src="assets/img/group-default.png"></ion-img>
@@ -71,7 +53,6 @@
                     <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
                 </ion-label>
             </div>
-
             <ion-buttons *ngIf="!moment.response" slot="end">
                 <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
                     <ion-icon name="cog"></ion-icon>
@@ -82,10 +63,9 @@
             <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
         </ion-item>
       </ion-card>
-
       <ion-item lines="none">Leaders</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[4]">
-          <ion-item>
+          <ion-item lines="none">
               <ion-avatar slot="start">
                   <ion-img *ngIf="moment.assets?.length" [src]="moment.assets[0]"></ion-img>
                   <ion-img *ngIf="!moment.assets.length" src="assets/img/group-default.png"></ion-img>
@@ -96,7 +76,6 @@
                       <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
                   </ion-label>
               </div>
-
               <ion-buttons *ngIf="!moment.response" slot="end">
                   <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
                       <ion-icon name="cog"></ion-icon>
@@ -107,10 +86,9 @@
               <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
           </ion-item>
       </ion-card>
-
       <ion-item lines="none">Organizers</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[3]">
-          <ion-item>
+          <ion-item lines="none">
               <ion-avatar slot="start">
                   <ion-img *ngIf="moment.assets?.length" [src]="moment.assets[0]"></ion-img>
                   <ion-img *ngIf="!moment.assets.length" src="assets/img/group-default.png"></ion-img>
@@ -135,7 +113,7 @@
 
       <ion-item lines="none">Unused</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
-          <ion-item>
+          <ion-item lines="none">
               <ion-avatar slot="start">
                   <ion-img *ngIf="moment.assets?.length" [src]="moment.assets[0]"></ion-img>
                   <ion-img *ngIf="!moment.assets.length" src="assets/img/group-default.png"></ion-img>
@@ -146,7 +124,6 @@
                       <h2 class="ion-text-wrap">{{moment.matrix_string[0][0]}}</h2>
                   </ion-label>
               </div>
-
               <ion-buttons *ngIf="!moment.response" slot="end">
                   <ion-button (click)="openOnboardingProcess($event, moment, 'edit')">
                       <ion-icon name="cog"></ion-icon>
@@ -175,7 +152,6 @@
                 </ion-label>
                 <ion-note style="font-style: italic" class="ion-margin-top">{{moment.matrix_string[0][0]}}</ion-note>
             </div>
-
             <ion-badge *ngIf="!moment.response" [color]="momentService.loadIcon(moment.resource.field).color" slot="end">{{moment.resource['en-US'].value[0]}}</ion-badge>
             <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
             <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
