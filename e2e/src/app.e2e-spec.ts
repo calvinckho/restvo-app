@@ -91,6 +91,11 @@ describe('navigate around the maintab', () => {
         await browser.sleep(3000);
         expect(await app.currentUrl()).toContain('profile');
     });
+    it('should click the logout button', async () => {
+        await app.clickElement('#logoutButton')
+        await browser.sleep(3000);
+        expect(await showfeature.signinButtonIsPresent()).toBeTruthy();
+    })
 
 });
 
