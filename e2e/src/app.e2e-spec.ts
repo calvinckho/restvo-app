@@ -86,6 +86,11 @@ describe('navigate around the maintab', () => {
         await browser.sleep(3000);
         expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
     });
+    it('should click the Settings button', async () => {
+        await app.clickElement('#dashboardSettingsButton')
+        await browser.sleep(3000);
+        expect(await app.currentUrl()).toContain('profile');
+    });
 
 });
 
