@@ -71,12 +71,19 @@ describe('navigate around the maintab', () => {
     it('should load the Me page', async () => {
         await maintab.clickTabButton('#tab-button-me'); // click on the Me tab
         await me.waitUntilVisible(); // wait for me to be visible
+        await browser.sleep(3000);
         expect(await app.currentUrl()).toContain('app/me');
     });
 
     it('should load the edit profile page', async () => {
         await maintab.clickTabButton('#edit-profile-button'); // click on edit profile
         await about.waitUntilVisible(); // wait until about page is visible
+        await browser.sleep(3000);
+        expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
+    });
+    it('should click the back button', async () => {
+        await app.clickElement('#clickback')
+        await browser.sleep(3000);
         expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
     });
 
