@@ -87,7 +87,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should click the Settings button', async () => {
-        await app.clickElement('#dashboardSettingsButton') // click the settings icon on the dashboard
+        await app.clickElement('#dashboardSettingsButton'); // click the settings icon on the dashboard
         await browser.sleep(1000); // tell webdriver to wait so page can be seen
         expect(await app.currentUrl()).toContain('profile'); // it should contain /profile in url
     });
@@ -96,7 +96,5 @@ describe('navigate around the maintab', () => {
         await app.clickElement('#logoutButton') //click the logout button
         await browser.sleep(1000); // tell webdriver to wait so sign in page can be seen
         expect(await showfeature.signinButtonIsPresent()).toBeTruthy(); //it should contain signin button in header
-
-    })
-
+    });
 });
