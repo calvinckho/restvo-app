@@ -1008,7 +1008,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.audioToast = await this.toastCtrl.create({
             message: text,
             duration: duration,
-            position: 'top'
+            position: 'top',
+            color: 'darkgrey'
         });
         this.audioToast.present();
     }

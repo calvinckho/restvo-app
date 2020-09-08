@@ -78,7 +78,8 @@ export class NetworkService {
         const toast = await this.toastCtrl.create({
             message: 'You are now connected to the internet.',
             duration: 3000,
-            position: 'top'
+            position: 'top',
+            color: 'darkgrey'
         });
         toast.present();
     }
@@ -92,7 +93,8 @@ export class NetworkService {
         const toast = await this.toastCtrl.create({
             message: 'Cannot connect to the internet. Please Check your network connection.',
             duration: 3000,
-            position: 'top'
+            position: 'top',
+            color: 'darkgrey'
         });
         toast.present();
     }

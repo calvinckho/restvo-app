@@ -384,7 +384,8 @@ export class EditboardpostPage implements OnInit, OnDestroy {
         const toast = await this.toastCtrl.create({
             message: text,
             duration: 3000,
-            position: 'top'
+            position: 'top',
+            color: 'darkgrey'
         });
         toast.present();
     }
