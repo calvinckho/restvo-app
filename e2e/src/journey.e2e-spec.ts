@@ -33,10 +33,10 @@ describe('join journey and leave journey', () => {
     let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
-        // testing on mobile sized screen
-        /*const width = 600;
+        // testing on desktop sized screen
+        const width = 1200;
         const height = 968;
-        await browser.driver.manage().window().setSize(width, height);*/
+        await browser.driver.manage().window().setSize(width, height);
         app = new AppPage();
         maintab = new MaintabPage();
         register = new RegisterPage();
