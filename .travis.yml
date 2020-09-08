@@ -10,3 +10,11 @@ before_script:
 
 script:
   - ng e2e --protractor-config='e2e/ci.protractor.conf.js'
+
+jobs:
+  include:
+    - stage: test
+      name: "Join Journey Test"
+      script: ng e2e --protractor-config='e2e/src/desktop/journey.conf.js'
+    - name: "Tab Navigation Test"
+      script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'

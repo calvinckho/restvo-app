@@ -12,7 +12,7 @@ import {
     CreateFeaturePage,
     AboutPage,
     PreferencesPage
-} from './app.po';
+} from '../app.po';
 import { browser } from 'protractor';
 
 describe('navigate around the maintab', () => {

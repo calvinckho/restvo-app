@@ -6,11 +6,12 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 exports.config = {
   allScriptsTimeout: 110000,
   specs: [
-    //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    './src/mobile/tab-navigate.e2e-spec.ts',
-    './src/desktop/journey.e2e-spec.ts' // run this specific script
+    './tab-navigate.e2e-spec.ts',
   ],
   capabilities: {
+    chromeOptions: {
+      args: [ "--headless" ]
+    },
     'browserName': 'chrome'
   },
   directConnect: true,
