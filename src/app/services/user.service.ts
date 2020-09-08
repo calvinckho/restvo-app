@@ -28,9 +28,9 @@ export class UserData {
     currentCommunityIndex: number; // Update page community carousel slide actual index, it can go beyond the total number of slides (x+1 = 0)
     currentManageActivityId: string;
     loginAt: any;
-    hasPlatformAdminAccess: boolean = false;
+    hasPlatformAdminAccess = false;
     activitiesWithAdminAccess: any = [];
-    developerModeClick: number = 0;
+    developerModeClick = 0;
     deviceToken: string;
     pushSubscription: any;
     delayPushNotificationReminder = 0;
@@ -39,7 +39,7 @@ export class UserData {
     splitPaneState: any = 'md';
     defaultProgram: any;
     UIAdminMode = false; // Landing page displaying Admin Insight view instead of Profile view
-    UIrestStatus = "active"; // user's current UI rest status: active or away
+    UIrestStatus = 'active'; // user's current UI rest status: active or away
     videoChatRoomId = ''; // the current video chat ID if one is in session
     readyToControlVideoChat = true; // the readiness of controlling video chat. only used by app runs on cordova and utilizing Jitsi capacitor plugin
     versions = { // current app's version that will be used to compare with labels loaded from the database
