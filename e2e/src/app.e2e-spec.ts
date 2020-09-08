@@ -78,28 +78,25 @@ describe('navigate around the maintab', () => {
     it('should load the edit profile page', async () => {
         await maintab.clickTabButton('#edit-profile-button'); // click on edit profile
         await about.waitUntilVisible(); // wait until about page is visible
-        await browser.sleep(3000);
         expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
     });
+
     it('should click the back button', async () => {
-        await app.clickElement('#clickback')
-        await browser.sleep(3000);
+        await app.clickElement('#clickback') // click the back button
         expect(app.headerIsPresent(null, '#about-me-header')).toBeTruthy(); // the about me header is present
     });
+
     it('should click the Settings button', async () => {
-        await app.clickElement('#dashboardSettingsButton')
-        await browser.sleep(3000);
-        expect(await app.currentUrl()).toContain('profile');
+        await app.clickElement('#dashboardSettingsButton') // click the settings icon on the dashboard
+        await browser.sleep(1000); // tell webdriver to wait so page can be seen
+        expect(await app.currentUrl()).toContain('profile'); // it should contain /profile in url
     });
+
     it('should click the logout button', async () => {
-        await app.clickElement('#logoutButton')
-        await browser.sleep(3000);
-        expect(await showfeature.signinButtonIsPresent()).toBeTruthy();
+        await app.clickElement('#logoutButton') //click the logout button
+        await browser.sleep(1000); // tell webdriver to wait so sign in page can be seen
+        expect(await showfeature.signinButtonIsPresent()).toBeTruthy(); //it should contain signin button in header
+
     })
 
 });
-
-//steps
-//1 - click the back button (id="clickback")
-//2 - click the settings tabs
-//3 - click the logout tab logout
