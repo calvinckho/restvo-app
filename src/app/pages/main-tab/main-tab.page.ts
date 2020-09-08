@@ -508,7 +508,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                             }
                         ],
                         duration: 5000,
-                        position: 'top'
+                        position: 'top',
+                        color: 'darkgrey'
                     });
                     toast.present();
                     let closedByTimeout = false;
@@ -546,7 +547,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                             }
                         ],
                         duration: 5000,
-                        position: 'top'
+                        position: 'top',
+                        color: 'darkgrey'
                     });
                     let closedByTimeout = false;
                     const timeoutHandle = setTimeout(() => {
