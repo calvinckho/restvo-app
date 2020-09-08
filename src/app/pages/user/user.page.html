@@ -50,7 +50,7 @@
             <ion-icon slot="start" name="notifications" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/notifications')}">Notifications</ion-label>
           </ion-item>
-          <ion-item (click)="logout($event)">
+          <ion-item id="logoutButton" (click)="logout($event)">
             <ion-icon slot="start" name="log-out" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Log Out</ion-label>
           </ion-item>

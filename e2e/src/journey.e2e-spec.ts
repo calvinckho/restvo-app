@@ -98,4 +98,16 @@ describe('join journey and leave journey', () => {
         await app.waitUntilElementVisible('app-main-tab #click-to-join');
         expect(await showfeature.headerIsPresent('app-main-tab', '#click-to-join')).toBeTruthy();
     });
+
+    it('should click the Settings tab', async () => {
+        await app.clickElement('#userProfileSettings')
+        await browser.waitForAngular();
+        expect(await app.currentUrl()).toContain('profile');
+    });
+
+    it('should click the logout button', async () => {
+        await app.clickElement('#logoutButton')
+        await browser.waitForAngular();
+        expect(await showfeature.signinButtonIsPresent()).toBeTruthy();
+    })
 });

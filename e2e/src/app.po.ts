@@ -90,10 +90,18 @@ class PageObjectBase {
             return false;
         }
     }
+
+    async signinButtonIsPresent() {
+        const signinButton = element(by.css('#signin'));
+        if (signinButton) {
+            return signinButton.isPresent();
+        } else {
+            return false;
+        }
+    }
 }
 
 export class AppPage {
-
     navigateTo() {
         return browser.get('/register');
     }
@@ -142,6 +150,15 @@ export class AppPage {
 
     actionsheetIsPresent() {
         return element(by.css('ion-action-sheet')).isPresent();
+    }
+
+    async clickElement(elementId) {
+        const selectedEl = element(by.css(elementId));
+        selectedEl.click();
+    }
+
+    logoutButtonIsPresent() {
+        return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
 }
 
