@@ -8,9 +8,6 @@ addons:
 before_script:
   - npm install -g @angular/cli@8.3.25
 
-script:
-  - ng e2e --protractor-config='e2e/ci.protractor.conf.js'
-
 jobs:
   include:
     - stage: test
