@@ -114,7 +114,7 @@
           </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('subscription')}" (click)="clickManageMenu('subscription', null)" *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')">
-          <ion-item class="ion-no-padding" [color]="router.url.includes('subscription') ? 'primary' : 'secondary'" lines="none">
+          <ion-item [class]="router.url.includes('subscription') ? 'selected ion-no-padding' : 'ion-no-padding'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="planet"></ion-icon>
             <ion-label class="menu-label">Subscription</ion-label>
           </ion-item>
@@ -207,4 +207,3 @@
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() >= 768" forceOverscroll="false">
   <ion-router-outlet></ion-router-outlet>
 </ion-content>
-
