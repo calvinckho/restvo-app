@@ -126,11 +126,9 @@
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
       <ion-virtual-scroll [items]="recentCalendarItems" approxItemHeight="100px">
         <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)">
-          <div class="avatar-col" *ngIf="calendarItem.moment">
-            <ion-avatar class="user-avatar">
-              <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
-            </ion-avatar>
-          </div>
+          <ion-avatar class="avatar-col" *ngIf="calendarItem.moment">
+            <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
+          </ion-avatar>
           <div class="name-col" *ngIf="calendarItem.moment">
             <ion-label class="name-label ion-text-wrap">
               {{calendarItem.moment.matrix_string[0][0]}}
