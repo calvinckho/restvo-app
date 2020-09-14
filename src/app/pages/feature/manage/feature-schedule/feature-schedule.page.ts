@@ -700,7 +700,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         avatar: this.userData.user.avatar
       }
     };
-    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
     //this.content.scrollToBottom(50);
   }
 
@@ -724,14 +724,20 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         avatar: this.userData.user.avatar
       }
     };
-    this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+    this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
     // free up the color palette
     for (const color_option of this.resourceService.color_arrays) {
       if (color_option.color === goal[3]) {
         color_option.status = null;
       }
     }
-    this.refreshCalendarDisplay();
+    // remove goal attributes from calendarItems
+    for (const calendarItem of this.timeline) {
+      index = calendarItem.goals.indexOf((goal[0]));
+      if (index >= 0) { // interactable[0] is a String
+        calendarItem.goals.splice(index, 1);
+      }
+    }
   }
 
   async touchGoal(goal, type) {
@@ -763,7 +769,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           avatar: this.userData.user.avatar
         }
       };
-      this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+      this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
 
     }, type === 'text' ? 500 : 0);
   }
