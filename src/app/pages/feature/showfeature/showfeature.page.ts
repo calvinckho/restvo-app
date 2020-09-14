@@ -2195,202 +2195,204 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     // for refreshing moment either because of real-time interactables, or for refreshing participation
     refreshMomentHandler = async (res) => {
         console.log("incoming refresh", res)
-        if (res && res.momentId && res.data) {
-            const momentId = res.momentId;
-            const data = res.data;
-            if (momentId === this.moment._id && data.operation === 'deleted moment') {
-                if (this.modalPage) {
-                    this.closeModal();
-                } else {
-                    this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-                }
-                // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
-            } else if (momentId === this.relationshipId) {
-                if (data.calendarId) {
-                    // keep the parentRelationshipResponseObj fresh
-                    const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
-                    if (index >= 0) {
-                        this.parentRelationshipResponseObj.matrix_string.splice(index, 1, data.interactable);
+        this.zone.run(async () => {
+            if (res && res.momentId && res.data) {
+                const momentId = res.momentId;
+                const data = res.data;
+                if (momentId === this.moment._id && data.operation === 'deleted moment') {
+                    if (this.modalPage) {
+                        this.closeModal();
                     } else {
-                        this.parentRelationshipResponseObj.matrix_string.push(data.interactable);
+                        this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
                     }
-                } else if (data.goal) {
-                    if (data.action === 'delete') {
-                        // keep the parentRelationshipResponseObj fresh by removing goal
-                        const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
+                    // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
+                } else if (momentId === this.relationshipId) {
+                    if (data.calendarId) {
+                        // keep the parentRelationshipResponseObj fresh
+                        const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                         if (index >= 0) {
-                            this.parentRelationshipResponseObj.matrix_string.splice(index, 1);
-                        }
-                    } else {
-                        // keep the goal fresh in parentRelationshipResponseObj
-                        const i = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
-                        if (i >= 0) {
-                            this.parentRelationshipResponseObj.matrix_string.splice(i, 1, data.goal);
+                            this.parentRelationshipResponseObj.matrix_string.splice(index, 1, data.interactable);
                         } else {
-                            this.parentRelationshipResponseObj.matrix_string.push(data.goal);
+                            this.parentRelationshipResponseObj.matrix_string.push(data.interactable);
+                        }
+                    } else if (data.goal) {
+                        if (data.action === 'delete') {
+                            // keep the parentRelationshipResponseObj fresh by removing goal
+                            const index = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (index >= 0) {
+                                this.parentRelationshipResponseObj.matrix_string.splice(index, 1);
+                            }
+                        } else {
+                            // keep the goal fresh in parentRelationshipResponseObj
+                            const i = this.parentRelationshipResponseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (i >= 0) {
+                                this.parentRelationshipResponseObj.matrix_string.splice(i, 1, data.goal);
+                            } else {
+                                this.parentRelationshipResponseObj.matrix_string.push(data.goal);
+                            }
                         }
                     }
-                }
-                // for all other socket io moment room signal, including moment._id, momentId + relationshipId, calendarId
-            } else if ((this.moment._id === momentId) || (this.moment._id + (this.relationshipId || '') === momentId) || ((this.calendarId || '') === momentId)) {
-                if (data.response) {
-                    const index = this.responses.map((c) => c._id).indexOf(data.response._id);
-                    if (index < 0) { // if the response hasn't been added to the response list
-                        this.responses.push(data.response);
-                    } else { // if it has been added, replace with the incoming one
-                        this.responses.splice(index, 1, data.response);
-                    }
-                    // now the latest response have been included, reset the display array for Poll
-                    if (data.response.matrix_number) {
-                        for (const interactable of data.response.matrix_number) {
-                            const interactableId = interactable[0];
-                            if (this.interactableDisplay.hasOwnProperty(interactableId)) {
-                                // if the response includes a Poll
-                                const componentId = this.moment.resource.matrix_number[0][this.moment.resource.matrix_number[2].indexOf(interactableId)];
-                                if (componentId === 30000) {
-                                    // reset vote count to zero
-                                    this.interactableDisplay[interactableId].forEach((displayItem) => {
-                                        displayItem.count = 0;
-                                        displayItem.votedByUser = false;
-                                    });
-                                    // reconstruct the interactable Display array
-                                    this.totalVoteCount[interactableId] = 0;
-                                    this.setupPollDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
-                                } else if (componentId === 40000) { // multiple choice
-                                    this.setupInteractableDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
-                                } else if (componentId === 40010) { // text answer
-                                    // using delta. see below
-                                } else if (componentId === 40020) { // tile choice
-                                    this.setupInteractableDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
+                    // for all other socket io moment room signal, including moment._id, momentId + relationshipId, calendarId
+                } else if ((this.moment._id === momentId) || (this.moment._id + (this.relationshipId || '') === momentId) || ((this.calendarId || '') === momentId)) {
+                    if (data.response) {
+                        const index = this.responses.map((c) => c._id).indexOf(data.response._id);
+                        if (index < 0) { // if the response hasn't been added to the response list
+                            this.responses.push(data.response);
+                        } else { // if it has been added, replace with the incoming one
+                            this.responses.splice(index, 1, data.response);
+                        }
+                        // now the latest response have been included, reset the display array for Poll
+                        if (data.response.matrix_number) {
+                            for (const interactable of data.response.matrix_number) {
+                                const interactableId = interactable[0];
+                                if (this.interactableDisplay.hasOwnProperty(interactableId)) {
+                                    // if the response includes a Poll
+                                    const componentId = this.moment.resource.matrix_number[0][this.moment.resource.matrix_number[2].indexOf(interactableId)];
+                                    if (componentId === 30000) {
+                                        // reset vote count to zero
+                                        this.interactableDisplay[interactableId].forEach((displayItem) => {
+                                            displayItem.count = 0;
+                                            displayItem.votedByUser = false;
+                                        });
+                                        // reconstruct the interactable Display array
+                                        this.totalVoteCount[interactableId] = 0;
+                                        this.setupPollDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
+                                    } else if (componentId === 40000) { // multiple choice
+                                        this.setupInteractableDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
+                                    } else if (componentId === 40010) { // text answer
+                                        // using delta. see below
+                                    } else if (componentId === 40020) { // tile choice
+                                        this.setupInteractableDisplay(interactableId, this.moment.resource.matrix_number[2].indexOf(interactableId));
+                                    }
                                 }
                             }
                         }
-                    }
-                } else if (data.type === 'refresh participation') {
-                    await this.loadMoment();
-                    if (this.moment && this.moment._id) {
-                        if (this.authService.token && this.userData.user) {
-                            this.setupPermission();
-                        } else {
-                            this.setupPermissionCompleted = true;
+                    } else if (data.type === 'refresh participation') {
+                        await this.loadMoment();
+                        if (this.moment && this.moment._id) {
+                            if (this.authService.token && this.userData.user) {
+                                this.setupPermission();
+                            } else {
+                                this.setupPermissionCompleted = true;
+                            }
                         }
-                    }
-                    // text answer interactable
-                    // socket.io is broadcasted on 3 levels:
-                    // 1. to the entire momentId room. use case is an onboarding process or a regular Activity that has an interactable
-                    // 2. to momentId - relationshipId room. use case is in a Relationship's Content, when user is responding to Content that can be used by multiple Relationships
-                    // 3. to momentId - relationshipId room, but also include a calendarId tag. use case is for a specific Content that is being repeated by a schedule, and the response is different for each Content calendar item.
-                    // { delta: Delta object }, interactableId: Number, author: { _id: String }, collaborate: Boolean }
-                } else if (data.type === 'refresh calendar items') {
-                    // load content calendars from backend.
-                    // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
-                    if (this.hasOrganizerAccess) {
-                        const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
-                        this.adminOrPublicAccessContentCalendars = results || [];
-                        // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
-                    } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
-                        const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
-                        this.adminOrPublicAccessContentCalendars = results || [];
-                    } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
-                        await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
-                        this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
-                    }
-                    this.refreshCalendarDisplay();
-                    this.checkAndLoadNotes();
-                } else if (data.type === 'refresh notes') {
-                    this.checkAndLoadNotes();
-                } else if (data.delta && data.interactableId && this.interactableDisplay.hasOwnProperty(data.interactableId)) {
-                    // update the interactable Display (private or collaborative view)
-                    console.log("delta", this.interactableDisplay)
-                    if (this.interactableDisplay.hasOwnProperty(data.interactableId) && this.interactableDisplay[data.interactableId].editor) {
-                        this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
-                    }
-                } else if (data.calendarId) {
-                    // if to-dos are not private (collaborative), or if it is private and the response is created by the user
-                    const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id);
-                    // in the event that Goals is turned off, but there are still Goal update, it must be sent by an admin so we can grant permission
-                    const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
+                        // text answer interactable
+                        // socket.io is broadcasted on 3 levels:
+                        // 1. to the entire momentId room. use case is an onboarding process or a regular Activity that has an interactable
+                        // 2. to momentId - relationshipId room. use case is in a Relationship's Content, when user is responding to Content that can be used by multiple Relationships
+                        // 3. to momentId - relationshipId room, but also include a calendarId tag. use case is for a specific Content that is being repeated by a schedule, and the response is different for each Content calendar item.
+                        // { delta: Delta object }, interactableId: Number, author: { _id: String }, collaborate: Boolean }
+                    } else if (data.type === 'refresh calendar items') {
+                        // load content calendars from backend.
+                        // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
+                        if (this.hasOrganizerAccess) {
+                            const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
+                            this.adminOrPublicAccessContentCalendars = results || [];
+                            // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                        } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                            const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                            this.adminOrPublicAccessContentCalendars = results || [];
+                        } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                            await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                            this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                        }
+                        this.refreshCalendarDisplay();
+                        this.checkAndLoadNotes();
+                    } else if (data.type === 'refresh notes') {
+                        this.checkAndLoadNotes();
+                    } else if (data.delta && data.interactableId && this.interactableDisplay.hasOwnProperty(data.interactableId)) {
+                        // update the interactable Display (private or collaborative view)
+                        console.log("delta", this.interactableDisplay)
+                        if (this.interactableDisplay.hasOwnProperty(data.interactableId) && this.interactableDisplay[data.interactableId].editor) {
+                            this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
+                        }
+                    } else if (data.calendarId) {
+                        // if to-dos are not private (collaborative), or if it is private and the response is created by the user
+                        const todosPrivacyPermission = !this.toDosPrivate || (this.toDosPrivate && data.author._id === this.userData.user._id);
+                        // in the event that Goals is turned off, but there are still Goal update, it must be sent by an admin so we can grant permission
+                        const goalsPrivacyPermission = todosPrivacyPermission || ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]);
 
-                    // update user's calendar items array
-                    for (const calendarItem of this.calendarService.calendarItems) {
-                        if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                            if (todosPrivacyPermission && data.state) {
-                                calendarItem.completed = data.state;
-                            } else if (goalsPrivacyPermission && data.goals) {
-                                calendarItem.goals = data.goals;
+                        // update user's calendar items array
+                        for (const calendarItem of this.calendarService.calendarItems) {
+                            if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                                if (todosPrivacyPermission && data.state) {
+                                    calendarItem.completed = data.state;
+                                } else if (goalsPrivacyPermission && data.goals) {
+                                    calendarItem.goals = data.goals;
+                                }
                             }
                         }
-                    }
-                    // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
-                    for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
-                        if (calendarItem._id === data.calendarId) { // interactable[0] is a String
-                            if (todosPrivacyPermission && data.hasOwnProperty('state')) {
-                                calendarItem.completed = data.state;
-                            } else if (goalsPrivacyPermission && data.goals) {
-                                calendarItem.goals = data.goals;
+                        // update super admin's calendar items list (ad hoc for super admin. normally empty for regular user who is not a super admin)
+                        for (const calendarItem of this.adminOrPublicAccessContentCalendars) {
+                            if (calendarItem._id === data.calendarId) { // interactable[0] is a String
+                                if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                                    calendarItem.completed = data.state;
+                                } else if (goalsPrivacyPermission && data.goals) {
+                                    calendarItem.goals = data.goals;
+                                }
                             }
                         }
-                    }
-                    // keep the responseObj fresh
-                    // if it is to toggle the to-do state
-                    if (todosPrivacyPermission && data.hasOwnProperty('state')) {
-                        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
-                        if (index >= 0) {
-                            this.responseObj.matrix_string[index].splice(0, 5);
-                            this.responseObj.matrix_string[index].unshift(...data.interactable.slice(0, 6));
-                        } else {
-                            this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(data.interactable)));
-                        }
-                        // if it is to change a content calendar's goal attributes
-                    } else if (goalsPrivacyPermission && data.goals) {
-                        const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
-                        if (index >= 0) {
-                            if (this.responseObj.matrix_string[index].length < 10) {
-                                this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
-                            } else if (this.responseObj.matrix_string[index].length > 10) {
-                                this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                        // keep the responseObj fresh
+                        // if it is to toggle the to-do state
+                        if (todosPrivacyPermission && data.hasOwnProperty('state')) {
+                            const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                            if (index >= 0) {
+                                this.responseObj.matrix_string[index].splice(0, 5);
+                                this.responseObj.matrix_string[index].unshift(...data.interactable.slice(0, 6));
+                            } else {
+                                this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(data.interactable)));
                             }
-                            this.responseObj.matrix_string[index].push(...data.goals);
+                            // if it is to change a content calendar's goal attributes
+                        } else if (goalsPrivacyPermission && data.goals) {
+                            const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
+                            if (index >= 0) {
+                                if (this.responseObj.matrix_string[index].length < 10) {
+                                    this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
+                                } else if (this.responseObj.matrix_string[index].length > 10) {
+                                    this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                                }
+                                this.responseObj.matrix_string[index].push(...data.goals);
+                            } else {
+                                let interactableObj = Array(10);
+                                interactableObj[0] = data.calendarId;
+                                interactableObj.push(...data.goals);
+                                this.responseObj.matrix_string.push(interactableObj);
+                            }
+                        }
+                    } else if (data.goal) {
+                        if (data.action === 'delete') {
+                            let index = this.listOfDisplayGoals.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (index >= 0) {
+                                this.listOfDisplayGoals.splice(index, 1);
+                            }
+                            // keep the responseObj fresh by removing goal
+                            index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (index >= 0) {
+                                this.responseObj.matrix_string.splice(index, 1);
+                            }
                         } else {
-                            let interactableObj = Array(10);
-                            interactableObj[0] = data.calendarId;
-                            interactableObj.push(...data.goals);
-                            this.responseObj.matrix_string.push(interactableObj);
-                        }
-                    }
-                } else if (data.goal) {
-                    if (data.action === 'delete') {
-                        let index = this.listOfDisplayGoals.map((c) => c[0]).indexOf(data.goal[0]);
-                        if (index >= 0) {
-                            this.listOfDisplayGoals.splice(index, 1);
-                        }
-                        // keep the responseObj fresh by removing goal
-                        index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
-                        if (index >= 0) {
-                            this.responseObj.matrix_string.splice(index, 1);
-                        }
-                    } else {
-                        let index =  this.listOfDisplayGoals.map((c) => c[0]).indexOf(data.goal[0]);
-                        if (index >= 0) {
-                            this.listOfDisplayGoals.splice(index, 1, data.goal);
-                        } else {
-                            this.listOfDisplayGoals.push(data.goal);
-                        }
-                        for (let interactable of this.listOfDisplayGoals) {
-                            interactable[2] = (interactable[2] == 'true'); // convert type to boolean
-                        }
+                            const index =  this.listOfDisplayGoals.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (index >= 0) {
+                                this.listOfDisplayGoals.splice(index, 1, data.goal);
+                            } else {
+                                this.listOfDisplayGoals.push(data.goal);
+                            }
+                            /*for (let interactable of this.listOfDisplayGoals) {
+                                interactable[2] = (interactable[2] == 'true'); // convert type to boolean
+                            }*/
 
-                        // keep the goal fresh in responseObj
-                        const i = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
-                        if (i >= 0) {
-                            this.responseObj.matrix_string.splice(i, 1, data.goal);
-                        } else {
-                            this.responseObj.matrix_string.push(data.goal);
+                            // keep the goal fresh in responseObj
+                            const i = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.goal[0]);
+                            if (i >= 0) {
+                                this.responseObj.matrix_string.splice(i, 1, data.goal);
+                            } else {
+                                this.responseObj.matrix_string.push(data.goal);
+                            }
                         }
                     }
+                    // if refreshing the parent Relationship (when viewing a Content that belongs to a relationship)
                 }
-                // if refreshing the parent Relationship (when viewing a Content that belongs to a relationship)
             }
-        }
-    };
+        });
+    }
 }
