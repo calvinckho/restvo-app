@@ -1,7 +1,15 @@
 <ion-header>
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(this.anyChangeMade)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal(this.anyChangeMade)" *ngIf="!subpanel">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="subpanel && userData.subpanelWidth > 30">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title slot="start">
       <span *ngIf="moment._id">{{moment.resource['en-US'].value[0]}}</span> <!--Create-->

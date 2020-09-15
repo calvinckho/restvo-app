@@ -1,7 +1,15 @@
 <ion-header id="pickfeature-header" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
   <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-buttons slot="start">
-      <ion-button (click)="back()" id="back-button" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="back()" id="back-button" color="grey" *ngIf="!subpanel">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="subpanel && userData.subpanelWidth > 30">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
     <ion-title *ngIf="step === 1 && categoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>

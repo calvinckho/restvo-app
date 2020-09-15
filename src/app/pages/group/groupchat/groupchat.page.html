@@ -1,7 +1,15 @@
 <ion-header>
   <ion-toolbar mode="ios">
-    <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)" *ngIf="modalPage || subpanel" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+    <ion-buttons slot="start" *ngIf="modalPage || subpanel">
+      <ion-button (click)="closeModal(false)" color="grey" *ngIf="!subpanel">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="subpanel && userData.subpanelWidth > 30">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title *ngIf="chatService.currentChatProps[propIndex]" (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
     <ion-buttons slot="end" *ngIf="chatService.currentChatProps[propIndex]">
@@ -15,7 +23,7 @@
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
       <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf ="subpanel" color="grey">
-        <ion-icon name="close" color="dark"></ion-icon>
+        <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

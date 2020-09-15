@@ -86,7 +86,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         public modalCtrl: ModalController,
         private loadingCtrl: LoadingController,
         private momentService: Moment,
-        private userData: UserData,
+        public userData: UserData,
         public calendarService: CalendarService,
         public responseService: Response
     ) {}

@@ -7,8 +7,14 @@
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-buttons *ngIf="authService.token && (modalPage || platform.width() >= 768)" slot="start">
-      <ion-button (click)="closeModal()" color="grey">
+      <ion-button (click)="closeModal()" color="grey" *ngIf="!subpanel">
         <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="subpanel && userData.subpanelWidth > 30">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
