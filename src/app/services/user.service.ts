@@ -35,7 +35,7 @@ export class UserData {
     pushSubscription: any;
     delayPushNotificationReminder = 0;
     delayImportContactListReminder = 0;
-    showDownloadLink = true;
+    showDownloadLink = false;
     splitPaneState: any = 'md';
     defaultProgram: any;
     UIAdminMode = false; // Landing page displaying Admin Insight view instead of Profile view
@@ -241,6 +241,9 @@ export class UserData {
             this.stripeService.setKey('pk_live_yJ6A4nw34iPEMTvJnAzTZPLl');
         }
         this.defaultProgram = await this.storage.get('defaultProgram');
+        if (!this.defaultProgram) { // if not yet joined a default Program, show the download link on mobile browser
+            this.showDownloadLink = true;
+        }
         this.UIAdminMode = await this.storage.get('UIAdminMode');
     }
 
