@@ -9,6 +9,10 @@
 
 <ion-content>
   <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+    <ion-select [(ngModel)]="moment._id" interface="action-sheet" slot="end" placeholder="Show All">
+      <ion-select-option>date 1</ion-select-option>
+      <ion-select-option>date 3</ion-select-option>
+    </ion-select>
     <ngx-charts-line-chart
             [scheme]="colorScheme"
             [legend]="legend"
