@@ -98,5 +98,5 @@
     </ion-menu>
     <ion-router-outlet id="main-app" [swipeGesture]="false"></ion-router-outlet>
   </ion-split-pane>
-  <ion-router-outlet name="sub" id="sub-panel" *ngIf="router.url.includes('(sub:') && platform.width() >= 768" [ngStyle]="{'left': router.url.includes('(sub:') ? ((100 - userData.subpanelWidth) + '%') : '100%', 'width': router.url.includes('(sub:') ? (userData.subpanelWidth + '%') : '0'}"></ion-router-outlet>
+  <ion-router-outlet name="sub" id="sub-panel" [ngStyle]="{'left': router.url.includes('(sub:') ? ((100 - userData.subpanelWidth) + '%') : '100%', 'width': router.url.includes('(sub:') ? (userData.subpanelWidth + '%') : '0'}"></ion-router-outlet>
 </ion-app>

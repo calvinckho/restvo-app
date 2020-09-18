@@ -607,7 +607,7 @@ export class Moment {
             .toPromise();
         let duration = 5;
         if (this.router.url.includes('outlets')) { // just in case the subpanel view of the deleted Moment is open
-            this.router.navigate([{ outlets: { sub: null }}]);
+            this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
             duration = 1500; // if reseting outlet, provide a 1.5 sec delay
         }
         setTimeout(async () => {

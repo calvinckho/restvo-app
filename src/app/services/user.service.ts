@@ -764,7 +764,7 @@ export class UserData {
                 this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', 0);
             }
             if (this.router.url.includes('(sub:')) {
-                this.router.navigate([{ outlets: { sub: null }, replaceUrl: true }]);
+                this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
             }
             setTimeout(async () => {
                 await this.resetUserData();

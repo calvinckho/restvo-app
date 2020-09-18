@@ -119,9 +119,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.allowCustomStartDate = false; // reset the property
         this.recurrenceStartDate = new Date();
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
-        if (this.categoryId === 'all') { // if no category is provided, begin with 0
+        if (this.categoryId === 'all' || !this.categoryId) { // if 'all' category is indicated, begin with 0
             this.step = 0;
-            this.selectedCategoryId = null;
+            this.selectedCategoryId = this.selectedCategoryId || '5e9f46e1c8bf1a622fec69d5';
         } else if (this.categoryId) { // if category id is provided, start with 1
             this.step = 1;
             this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
@@ -498,7 +498,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     }, 2000);
                 }
             } else { // in Admin - Schedule view
-                this.router.navigate([{ outlets: { sub: null }}]);
+                this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
                 await this.loading.dismiss();
             }
             this.cleanup();
@@ -551,15 +551,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else {
             this.step--;
         }
-        // reset categoryId
-        if (this.step === 0) {
-            this.selectedCategoryId = null;
-        }
     }
 
     close() {
         if (this.subpanel) {
-            this.router.navigate([{ outlets: { sub: null }}]);
+            this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
         } else if (this.modalPage) {
             this.modalCtrl.dismiss();
         } else {

@@ -39,7 +39,7 @@
         <ion-button (click)="inviteToJoin()" [hidden]="subpanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
           <ion-icon name="person-add"></ion-icon>
         </ion-button>
-        <ion-button (click)="router.navigate([{ outlets: { sub: null }, replaceUrl: true }])" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
+        <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
           <ion-icon name="close"></ion-icon>
         </ion-button>
       </div>

@@ -45,7 +45,7 @@ export class ShowrecipientinfoPage implements OnInit {
     constructor(
                 public storage: Storage,
                 private location: Location,
-                private router: Router,
+                public router: Router,
                 private route: ActivatedRoute,
                 private actionSheetCtrl: ActionSheetController,
                 public alertCtrl: AlertController,
@@ -321,7 +321,7 @@ export class ShowrecipientinfoPage implements OnInit {
     */
 
     async createRelationship() {
-        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Create Relationship', maxMomentCount: 1, categoryId: '5dfdbb547b00ea76b75e5a70', allowCreate: false, allowSwitchCategory: false, modalPage: true}});
+        const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose Plan', maxMomentCount: 1, allowCreate: false, modalPage: true}});
         await pickProgramModal.present();
         const {data: moments} = await pickProgramModal.onDidDismiss();
         if (moments && moments.length) {

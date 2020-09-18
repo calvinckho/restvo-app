@@ -18,7 +18,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="saveActivity(false)" id="save-event">{{resource['en-US'].value[4]}}</ion-button> <!--Save-->
-      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" [hidden]="!subpanel"> <!--close subpanel-->
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" [hidden]="!subpanel"> <!--close subpanel-->
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>

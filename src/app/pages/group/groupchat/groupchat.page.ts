@@ -983,7 +983,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 } else if (this.platform.width() >= 768) {
                     this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id], { replaceUrl: false });
                 } else {
-                this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
+                    this.router.navigate(['/app/myconversations/person/' + this.chatService.currentChatProps[this.propIndex].recipient._id]);
                 }
             }
         }

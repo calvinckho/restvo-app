@@ -13,7 +13,7 @@
     </ion-buttons>
     <ion-title>{{recipient.first_name}} {{recipient.last_name}}</ion-title>
     <ion-buttons class="header-buttons" slot="end">
-      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf="subpanel">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" *ngIf="subpanel">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -145,8 +145,7 @@
         <ion-row *ngIf="!isConnected"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="messageRecipient()">Add as Friend</ion-button></ion-col></ion-row>
         <ion-row *ngIf="!userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="shareContactInfo()">Share My Contact Info</ion-button></ion-col></ion-row>
         <ion-row *ngIf="userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="shareContactInfo()">Turn Off Sharing My Contact Info</ion-button></ion-col></ion-row>
-        <!--<ion-row *ngIf="!isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="inviteToGroup()">Invite to Group</ion-button></ion-col></ion-row>-->
-        <ion-row *ngIf="!isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="createRelationship()">Create Relationship</ion-button></ion-col></ion-row>
+        <ion-row *ngIf="!isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="createRelationship()">Invite to Start Plan</ion-button></ion-col></ion-row>
         <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 

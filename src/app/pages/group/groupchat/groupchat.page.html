@@ -22,7 +22,7 @@
       <ion-button (click)="seeMoreInfo()" *ngIf="!subpanel" color="grey">
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
-      <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" *ngIf ="subpanel" color="grey">
+      <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" *ngIf ="subpanel" color="grey">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -41,7 +41,7 @@
           <ion-label>No Chat Message to Display</ion-label>
         </ion-row>
         <ion-row class="ion-justify-content-center" *ngIf="router.url.includes('(sub:')">
-          <ion-button (click)="router.navigate([{ outlets: { sub: null }}])" fill="clear">Close</ion-button>
+          <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" fill="clear">Close</ion-button>
         </ion-row>
       </div>
     </ion-row>

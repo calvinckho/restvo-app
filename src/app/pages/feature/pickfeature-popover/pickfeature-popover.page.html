@@ -12,14 +12,17 @@
       </ion-button>
     </ion-buttons>
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Type</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group Type</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5c915475e172e4e64590e348'">Choose a Program Type</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5c915324e172e4e64590e346'">Choose a Community</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e1bbda67b00ea76b75e5a73'">Choose a Content</ion-title>
-    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e17acd47b00ea76b75e5a71'">Choose an Onboarding Process</ion-title>
-    <ion-title *ngIf="step === 1 && !selectedCategoryId">Choose from Available Templates</ion-title>
+    <ion-title *ngIf="step === 1 && currentView === 'new'">Choose a Template</ion-title>
+    <div *ngIf="step === 1 && currentView === 'recent'">
+      <ion-title *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Relationship</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5c915475e172e4e64590e348'">Choose a Program</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5c915324e172e4e64590e346'">Choose a Community</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5e1bbda67b00ea76b75e5a73'">Choose a Content</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5e17acd47b00ea76b75e5a71'">Choose an Onboarding Process</ion-title>
+      <ion-title *ngIf="!selectedCategoryId">Choose from Available Templates</ion-title>
+    </div>
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
@@ -123,9 +126,6 @@
                 </ion-card-header>
                 <div class="program-type"><ion-badge color="button1" class="ion-text-wrap">{{sample.resource['en-US'].value[0]}}</ion-badge></div>
                 <div class="program-name light">{{sample.matrix_string[0][0]}}</div>
-                <!--<ion-button class="info-moment ion-no-padding ion-no-margin" (click)="openFeature($event, sample)" fill="clear" size="small">
-                  <ion-icon name="information-circle-outline" color="secondary"></ion-icon>
-                </ion-button>-->
               </ion-card>
             </ion-col>
         </ion-row>
@@ -143,10 +143,6 @@
             </ion-label>
           </div>
           <div class="type-col"><ion-badge color="button1" class="ion-text-wrap">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
-          <!--<div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="calendarItem.moment.array_boolean[1]">Share in Marketplace</span></div>-->
-          <!--<ion-buttons class="actions-col ion-justify-content-evenly" *ngIf="calendarItem.moment">
-            <ion-button (click)="openFeature($event, calendarItem.moment)" fill="clear"><ion-icon name="eye-outline"></ion-icon></ion-button>
-          </ion-buttons>-->
         </ion-item>
       </ion-virtual-scroll>
     </ion-grid>
@@ -259,6 +255,10 @@
 
 <ion-footer>
   <ion-toolbar *ngIf="step === 1 && selectedMoments.length">
+    <ion-item lines="none" *ngIf="maxMomentCount === 1">
+      <ion-label *ngIf="selectedMoments[0].cloned">This {{selectedMoments[0].resource['en-US'].value[0]}} template will be cloned:</ion-label>
+      <ion-label *ngIf="!selectedMoments[0].cloned">You have selected this {{selectedMoments[0].resource['en-US'].value[0]}}:</ion-label>
+    </ion-item>
     <ion-grid class="selected-grid">
       <ion-row>
         <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size="auto">
