@@ -1080,7 +1080,7 @@
                     <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_1'], participantsLabel)">
                       <div class="participant-centered">
                         <ion-avatar class="participant-avatar" slot="start">
-                          <ion-icon name="add"></ion-icon>
+                          <ion-icon name="add" color="secondary"></ion-icon>
                         </ion-avatar>
                       </div>
                     </ion-item>
@@ -1135,9 +1135,8 @@
                     <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_2'], organizersLabel)">
                       <div class="participant-centered">
                         <ion-avatar class="participant-avatar" slot="start">
-                          <img src="assets/img/avatar-default.jpg"/>
+                          <ion-icon name="add" color="secondary"></ion-icon>
                         </ion-avatar>
-                        <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{organizerLabel}}</ion-label>
                       </div>
                     </ion-item>
                   </ion-col>
@@ -1146,10 +1145,10 @@
                       <div class="participant-centered">
                         <ion-avatar class="participant-avatar" slot="start">
                           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                          <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                          <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                         </ion-avatar>
-                        <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'organizer', j)"></ion-icon>
-                        <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                        <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'participant', j)"></ion-icon>
+                        <!--<ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>-->
                       </div>
                     </ion-item>
                   </ion-col>
@@ -1191,9 +1190,8 @@
                     <ion-item lines="none" (click)="addParticipants($event, 'connect', ['user_list_3'], leadersLabel)">
                       <div class="participant-centered">
                         <ion-avatar class="participant-avatar" slot="start">
-                          <img src="assets/img/avatar-default.jpg"/>
+                          <ion-icon name="add" color="secondary"></ion-icon>
                         </ion-avatar>
-                        <ion-label class="participant-label ion-text-center">{{resource['en-US'].value[31]}} {{leaderLabel}}</ion-label>
                       </div>
                     </ion-item>
                   </ion-col>
@@ -1202,10 +1200,10 @@
                       <div class="participant-centered">
                         <ion-avatar class="participant-avatar" slot="start">
                           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                          <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+                          <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                         </ion-avatar>
-                        <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'leader', j)"></ion-icon>
-                        <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
+                        <ion-icon class="participant-joined" color="danger" name="remove-circle" (click)="removeParticipant($event, 'participant', j)"></ion-icon>
+                        <!--<ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>-->
                       </div>
                     </ion-item>
                   </ion-col>
