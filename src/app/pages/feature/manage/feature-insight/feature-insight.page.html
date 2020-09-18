@@ -9,9 +9,12 @@
 
 <ion-content>
   <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
-    <ion-select [(ngModel)]="moment._id" interface="action-sheet" slot="end" placeholder="Show All">
-      <ion-select-option>date 1</ion-select-option>
-      <ion-select-option>date 3</ion-select-option>
+    <ion-select interface="action-sheet" slot="end" placeholder="see options">
+      <!-- 30 days, 90 days, this year, last year -->
+      <ion-select-option>30 days</ion-select-option>
+      <ion-select-option>90 days</ion-select-option>
+      <ion-select-option>This Year</ion-select-option>
+      <ion-select-option>Last Year</ion-select-option>
     </ion-select>
     <ngx-charts-line-chart
             [scheme]="colorScheme"
