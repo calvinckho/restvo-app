@@ -471,7 +471,7 @@
             <ion-item lines="none">
               <ion-label class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</ion-label>
             </ion-item>
-            <ion-item lines="none" class="select-container" *ngFor="let reminder of reminders; index as j">
+            <ion-item lines="none" *ngFor="let reminder of reminders; index as j">
               <ion-select [interfaceOptions]="{cssClass: 'level-15'}" style="padding-left: 0;" id="custom-select" interface="popover" [(ngModel)]="reminders[j]">
                 <ion-select-option value="0">At time of event</ion-select-option>
                 <ion-select-option value="5">5 min before</ion-select-option>
@@ -486,11 +486,13 @@
                 <ion-select-option value="2880">2 days before</ion-select-option>
                 <ion-select-option value="10080">1 week before</ion-select-option>
               </ion-select>
-              <ion-icon slot="end" name="trash" color="grey" (click)="deleteReminder($event, j)"></ion-icon>
+              <ion-button fill="clear" style="float: right" (click)="deleteReminder($event, j)">
+                <ion-icon name="trash" color="grey"></ion-icon>
+              </ion-button>
             </ion-item>
           </div>
           <ion-item *ngIf="item === 10400 && reminders?.length < 2" lines="none">
-            <ion-label class="moment-input" (click)="addNewReminder()">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
+            <ion-button shape="round" fill="solid" (click)="addNewReminder()">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-button>
           </ion-item>
           <div *ngIf="item === 10370"> <!--References-->
             <ion-item lines="none">
@@ -510,7 +512,7 @@
               </ion-item>
             </ion-reorder-group>
             <ion-item lines="none">
-              <ion-button (click)="addReference()">
+              <ion-button shape="round" fill="solid" (click)="addReference()">
                 <div class="addRemoveText">+ Choose from Library</div>
               </ion-button>
             </ion-item>
@@ -520,21 +522,24 @@
               <ion-label class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</ion-label>
             </ion-item>
             <ion-item lines="none"> <!--Enable Group Chat for Participants-->
-              <ion-label style="width: 70%" class="ion-margin-left" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{participantsLabel}}</ion-label>
+              <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{participantsLabel}}</ion-label>
               <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[5]"></ion-toggle>
             </ion-item>
             <ion-item lines="none"> <!--Enable Leaders' Chat-->
-              <ion-label style="width: 70%" class="ion-margin-left" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{leadersLabel}}</ion-label>
+              <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{leadersLabel}}</ion-label>
               <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[7]"></ion-toggle>
             </ion-item>
             <ion-item lines="none"> <!--Enable Organizers' Chat-->
-              <ion-label style="width: 70%" class="ion-margin-left" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{organizersLabel}}</ion-label>
+              <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{organizersLabel}}</ion-label>
               <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[6]"></ion-toggle>
             </ion-item>
           </div>
           <div *ngIf="item === 12000"> <!--Notes-->
             <ion-item lines="none">
               <ion-label class="moment-input">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label class="moment-input">A list of notes will display here.</ion-label>
             </ion-item>
           </div>
           <div *ngIf="item === 30000"> <!--Poll-->
@@ -549,11 +554,11 @@
               <ion-input class="moment-input" type="text" [(ngModel)]="moment.matrix_string[i][j]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2] + ' ' + (j+1).toString()"></ion-input>
               <ion-button slot="end" fill="clear" (click)="removeInteractableItem($event, i, j)" class="close-button" ion-button><ion-icon name="trash" color="grey"></ion-icon></ion-button>
             </ion-item>
-            <ion-buttons class="ion-padding">
+            <ion-item lines="none">
               <ion-button shape="round" fill="solid" color="primary" (click)="addInteractableItem(i)">
                 <div class="addRemoveText">+ {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</div>
               </ion-button>
-            </ion-buttons>
+            </ion-item>
           </div>
           <div *ngIf="item === 40000"> <!--Multiple Choice-->
             <ion-item lines="none">
@@ -576,13 +581,13 @@
             <ion-item *ngFor="let option of moment.matrix_string[i]; trackBy: customTrackBy; let j = index;">
               <span class="option-number">{{j+1}}.</span>
               <ion-input class="moment-input" type="text" [(ngModel)]="moment.matrix_string[i][j]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2] + ' ' + (j+1).toString()"></ion-input>
-              <ion-button slot="end" fill="clear" (click)="removeInteractableItem($event, i, j)" class="close-button" ion-button><ion-icon name="trash" color="grey"></ion-icon></ion-button>
+              <ion-button slot="end" fill="clear" (click)="removeInteractableItem($event, i, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
             </ion-item>
-            <ion-buttons class="ion-padding">
-              <ion-button shape="round" fill="solid" color="primary" (click)="addInteractableItem(i)">
+            <ion-item lines="none">
+              <ion-button fill="solid" shape="round" (click)="addInteractableItem(i)">
                 <div class="addRemoveText">+ {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</div>
               </ion-button>
-            </ion-buttons>
+            </ion-item>
           </div>
           <div *ngIf="item === 40010"> <!--Short Answer-->
             <ion-item lines="none">
@@ -677,11 +682,11 @@
                 </ion-grid>
               </div>
             </div>
-            <ion-buttons class="ion-padding">
+            <ion-item lines="none">
               <ion-button shape="round" fill="solid" color="primary" (click)="addInteractableItem(i)">
                 <div class="addRemoveText">+ {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</div>
               </ion-button>
-            </ion-buttons>
+            </ion-item>
           </div>
           <div *ngIf="item === 50000"> <!--Directory-->
             <ion-item lines="none">
