@@ -372,7 +372,7 @@
             <ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
           </ion-item>
           <ion-item *ngIf="item === 10010 && resource['en-US'].value.length > 36 && (moment.resource.matrix_number[0].includes(20010) || moment.matrix_string[i].length > 11)" lines="none"> <!--textarea media section, onboarding view only, or if media has already been added from before-->
-            <ion-label class="moment-input" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-label>
+            <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-button>
           </ion-item>
           <!--Upload Media-->
           <ion-item-group *ngIf="item === 10300">
@@ -624,7 +624,7 @@
               </ion-select>
             </ion-item>
             <ion-item lines="none" *ngIf="resource['en-US'].value.length > 34 && (moment.resource.matrix_number[0].includes(20010) || moment.matrix_string[i].length > 11)"> <!--media section-->
-              <ion-label class="moment-input" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-label>
+              <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-button>
             </ion-item>
           </div>
           <!--Multiple Choice with Picture Tiles or List of Choices-->
