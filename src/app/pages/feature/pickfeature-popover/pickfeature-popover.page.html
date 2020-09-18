@@ -12,14 +12,14 @@
       </ion-button>
     </ion-buttons>
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Type</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group Type</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5c915475e172e4e64590e348'">Choose a Program Type</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5c915324e172e4e64590e346'">Choose a Community</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5e1bbda67b00ea76b75e5a73'">Choose a Content</ion-title>
-    <ion-title *ngIf="step === 1 && categoryId === '5e17acd47b00ea76b75e5a71'">Choose an Onboarding Process</ion-title>
-    <ion-title *ngIf="step === 1 && !categoryId">Choose from Available Templates</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Type</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group Type</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5c915475e172e4e64590e348'">Choose a Program Type</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5c915324e172e4e64590e346'">Choose a Community</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e1bbda67b00ea76b75e5a73'">Choose a Content</ion-title>
+    <ion-title *ngIf="step === 1 && selectedCategoryId === '5e17acd47b00ea76b75e5a71'">Choose an Onboarding Process</ion-title>
+    <ion-title *ngIf="step === 1 && !selectedCategoryId">Choose from Available Templates</ion-title>
 
     <ion-title *ngIf="step > 1">{{selectedMoments[0].matrix_string[0][0]}}</ion-title>
       <ion-buttons slot="end">
@@ -47,7 +47,7 @@
       </ion-row>
       <ion-row class="ion-justify-content-start">
         <ion-col size="auto">
-          <ion-card class="category-card" mode="md" (click)="categoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': categoryId === '5e9f46e1c8bf1a622fec69d5'}">
+          <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'}">
             <ion-card-header>
               <ion-card-title>Journey</ion-card-title>
             </ion-card-header>
@@ -57,7 +57,7 @@
           </ion-card>
         </ion-col>
         <ion-col size="auto">
-          <ion-card class="category-card" mode="md" (click)="categoryId = '5e9fe372c8bf1a622fec69d8'" [ngClass]="{'selected': categoryId === '5e9fe372c8bf1a622fec69d8'}">
+          <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5e9fe372c8bf1a622fec69d8'" [ngClass]="{'selected': selectedCategoryId === '5e9fe372c8bf1a622fec69d8'}">
             <ion-card-header>
               <ion-card-title>Mentoring</ion-card-title>
             </ion-card-header>
@@ -67,7 +67,7 @@
           </ion-card>
         </ion-col>
         <ion-col size="auto">
-          <ion-card class="category-card" mode="md" (click)="categoryId = '5e9fe35cc8bf1a622fec69d7'" [ngClass]="{'selected': categoryId === '5e9fe35cc8bf1a622fec69d7'}">
+          <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5e9fe35cc8bf1a622fec69d7'" [ngClass]="{'selected': selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'}">
             <ion-card-header>
               <ion-card-title>Group</ion-card-title>
             </ion-card-header>
@@ -77,7 +77,7 @@
           </ion-card>
         </ion-col>
         <ion-col size="auto">
-          <ion-card class="category-card" mode="md" (click)="categoryId = '5c915475e172e4e64590e348'" [ngClass]="{'selected': categoryId === '5c915475e172e4e64590e348'}">
+          <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5c915475e172e4e64590e348'" [ngClass]="{'selected': selectedCategoryId === '5c915475e172e4e64590e348'}">
             <ion-card-header>
               <ion-card-title>Program</ion-card-title>
             </ion-card-header>
@@ -87,7 +87,7 @@
           </ion-card>
         </ion-col>
         <ion-col size="auto">
-          <ion-card class="category-card" mode="md" (click)="categoryId = '5c915324e172e4e64590e346'" [ngClass]="{'selected': categoryId === '5c915324e172e4e64590e346'}">
+          <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5c915324e172e4e64590e346'" [ngClass]="{'selected': selectedCategoryId === '5c915324e172e4e64590e346'}">
             <ion-card-header>
               <ion-card-title>Community</ion-card-title>
             </ion-card-header>
@@ -101,7 +101,7 @@
   </ion-row>
   <div *ngIf="step === 1">
     <div *ngIf="currentView === 'new'" class="new-section">
-        <!--<ion-label class="program-title ion-margin" *ngIf="(categoryId !== '5e17acd47b00ea76b75e5a71') && parent.matrix_string">{{parent.matrix_string[0][0]}}</ion-label>-->
+        <!--<ion-label class="program-title ion-margin" *ngIf="(selectedCategoryId !== '5e17acd47b00ea76b75e5a71') && parent.matrix_string">{{parent.matrix_string[0][0]}}</ion-label>-->
         <ion-grid class="program-grid">
           <ion-row class="program-row ion-justify-content-start">
             <ion-col *ngIf="allowCreate" class="ion-align-self-center" size="auto">
@@ -174,18 +174,18 @@
           <ion-col size="auto">
             <ion-card class="category-card" mode="md" (click)="joinAs = 'user_list_1'" [ngClass]="{'selected': joinAs === 'user_list_1'}">
               <ion-card-header>
-                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Learner</ion-card-title>
-                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentee</ion-card-title>
-                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Participant</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Learner</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Mentee</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Participant</ion-card-title>
               </ion-card-header>
-              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">
                 <li>Restvo provides you with the resources along the way</li>
               </ion-card-content>
-              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">
                 <li>A mentee learns from the guidance of a mentor</li>
                 <li>You can invite other mentors and mentors</li>
               </ion-card-content>
-              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">
                 <li>You can invite one or multiple leaders to lead this group</li>
                 <li>You can invite other participants to join</li>
               </ion-card-content>
@@ -194,18 +194,18 @@
           <ion-col size="auto">
             <ion-card class="category-card" mode="md" (click)="joinAs = 'user_list_3'" [ngClass]="{'selected': joinAs === 'user_list_3'}">
               <ion-card-header>
-                <ion-card-title *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">Facilitator</ion-card-title>
-                <ion-card-title *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">Mentor</ion-card-title>
-                <ion-card-title *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">Leader</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Facilitator</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Mentor</ion-card-title>
+                <ion-card-title *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Leader</ion-card-title>
               </ion-card-header>
-              <ion-card-content *ngIf="categoryId === '5e9f46e1c8bf1a622fec69d5'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">
                 <li>You can guide someone along the journey. Restvo will assist you in the process</li>
               </ion-card-content>
-              <ion-card-content *ngIf="categoryId === '5e9fe372c8bf1a622fec69d8'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">
                 <li>A mentor offers support and guidance</li>
                 <li>You can invite other mentors and mentees</li>
               </ion-card-content>
-              <ion-card-content *ngIf="categoryId === '5e9fe35cc8bf1a622fec69d7'">
+              <ion-card-content *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">
                 <li>You provide leadership to the group</li>
                 <li>You can invite other leaders and participants to join</li>
               </ion-card-content>
@@ -223,7 +223,7 @@
         </ion-item>
         <ion-item lines="none">
           <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
-          <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}" (ionChange)="showtime()"></ion-datetime>
+          <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
         </ion-item>
 
         <ion-card class="monthview" *ngIf="dateType">

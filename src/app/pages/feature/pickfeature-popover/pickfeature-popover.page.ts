@@ -52,6 +52,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     reachedEnd = false;
     selectedMoments = [];
     step = 0;
+    selectedCategoryId: any;
     loading: any;
 
     // Content Calendar creation
@@ -120,9 +121,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         if (this.categoryId === 'all') { // if no category is provided, begin with 0
             this.step = 0;
-            this.categoryId = null;
+            this.selectedCategoryId = null;
         } else if (this.categoryId) { // if category id is provided, start with 1
             this.step = 1;
+            this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
         }
     }
 
@@ -143,7 +145,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     async loadMoreSamples() {
         this.pageNum++;
         if (!this.reachedEnd) {
-            const samples: any = await this.momentService.loadSampleActivities(this.categoryId);
+            const samples: any = await this.momentService.loadSampleActivities(this.selectedCategoryId);
             this.ionSpinner = false;
             // temp overide the paging function: i.e. only load page 1
             this.reachedEnd = true;
@@ -190,8 +192,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         buttons = buttons.concat([
             {
                 text: 'Clone', // View
-                //role: 'destructive',
-                //icon: 'trash',
                 handler: () => {
                     const navTransition = actionSheet.dismiss();
                     navTransition.then( async () => {
@@ -207,8 +207,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             },
             {
                 text: 'View', // View
-                //role: 'destructive',
-                //icon: 'trash',
                 handler: () => {
                     const navTransition = actionSheet.dismiss();
                     navTransition.then( async () => {
@@ -218,7 +216,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             },
             {
                 text: 'Cancel', // Cancel
-                //icon: 'close-circle',
                 role: 'cancel',
             }]);
         actionSheet = await this.actionSheetCtrl.create({
@@ -250,8 +247,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             },
             {
                 text: 'View', // View
-                //role: 'destructive',
-                //icon: 'trash',
                 handler: () => {
                     const navTransition = actionSheet.dismiss();
                     navTransition.then( async () => {
@@ -261,7 +256,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             },
             {
                 text: 'Cancel', // Cancel
-                //icon: 'close-circle',
                 role: 'cancel',
             }]);
         actionSheet = await this.actionSheetCtrl.create({
@@ -286,7 +280,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.recentCalendarItems = [];
         const requested_categories = ['5c915475e172e4e64590e348', '5e9f46e1c8bf1a622fec69d5', '5dfdbb547b00ea76b75e5a70', '5e9fe35cc8bf1a622fec69d7', '5e9fe372c8bf1a622fec69d8'];
         this.calendarService.calendarItems.forEach((calendarItem) => {
-            if (calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.matrix_string[0][0].toLowerCase().includes(this.searchKeyword.toLowerCase()) || calendarItem.moment.resource['en-US'].value[0].toLowerCase().includes(this.searchKeyword.toLowerCase())) && (this.categoryId ? calendarItem.moment.categories.includes(this.categoryId) : requested_categories.find((c) => calendarItem.moment.categories.includes(c)))) {
+            if (calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field === 'User Defined Activity' && (calendarItem.moment.matrix_string[0][0].toLowerCase().includes(this.searchKeyword.toLowerCase()) || calendarItem.moment.resource['en-US'].value[0].toLowerCase().includes(this.searchKeyword.toLowerCase())) && (this.selectedCategoryId ? calendarItem.moment.categories.includes(this.selectedCategoryId) : requested_categories.find((c) => calendarItem.moment.categories.includes(c)))) {
                 this.recentCalendarItems.push(calendarItem);
             }
         });
@@ -312,8 +306,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.close();
         }
         const data: any = {};
-        if (this.categoryId) {
-            data.categoryId = this.categoryId;
+        if (this.selectedCategoryId) {
+            data.categoryId = this.selectedCategoryId;
         }
         if (this.programId) {
             data.programId = this.programId;
@@ -330,8 +324,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         if (this.goalId) {
             data.goalId = this.goalId;
         }
-        if (this.categoryId === '5c915324e172e4e64590e346') { // create a community
-            this.router.navigate(['/app/create/community', { categoryId: this.categoryId }]);
+        if (this.selectedCategoryId === '5c915324e172e4e64590e346') { // create a community
+            this.router.navigate(['/app/create/community', { categoryId: this.selectedCategoryId }]);
         } else if (!this.modalPage && this.platform.width() >= 992) {
             data.subpanel = true;
             this.router.navigate([{ outlets: { sub: ['create', data] }}]);
@@ -350,7 +344,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step++;
         } else if (this.step === 0) {
             this.step++;
-            this.allowCreate = (this.categoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
+            this.allowCreate = (this.selectedCategoryId === '5c915324e172e4e64590e346'); // if Community, allow Create new
             if (this.step === 1) {
                 this.loadSamples();
                 this.renderRecentList();
@@ -358,20 +352,20 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         } else if (this.step === 1) { // only allow post-processing (edit name, select role) if maxMomentCount === 1 and it is a cloned Activity)
             if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned) {
                 if (this.selectedMoments[0].categories.includes('5e9f46e1c8bf1a622fec69d5')) { // journey
-                    this.categoryId = '5e9f46e1c8bf1a622fec69d5';
+                    this.selectedCategoryId = '5e9f46e1c8bf1a622fec69d5';
                 } else if (this.selectedMoments[0].categories.includes('5e9fe372c8bf1a622fec69d8')) { // mentoring
-                    this.categoryId = '5e9fe372c8bf1a622fec69d8';
+                    this.selectedCategoryId = '5e9fe372c8bf1a622fec69d8';
                 } else if (this.selectedMoments[0].categories.includes('5e9fe35cc8bf1a622fec69d7')) { // group
-                    this.categoryId = '5e9fe35cc8bf1a622fec69d7';
+                    this.selectedCategoryId = '5e9fe35cc8bf1a622fec69d7';
                 } else {
-                    this.categoryId = this.selectedMoments[0].categories[0]; // for others, just use the first in the item (e.g. Program, Community)
+                    this.selectedCategoryId = this.selectedMoments[0].categories[0]; // for others, just use the first in the item (e.g. Program, Community)
                 }
                 this.step++;
             } else {
                 this.done();
             }
         } else if (this.step === 2) { // only allow post-processing (select role) if maxMomentCount === 1 and it is a cloned program, and not Program (and Community), Content, Onboarding Process
-            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.categoryId)) {
+            if (this.maxMomentCount === 1 && this.selectedMoments[0].cloned && !['5c915475e172e4e64590e348', '5e1bbda67b00ea76b75e5a73', '5e17acd47b00ea76b75e5a71'].includes(this.selectedCategoryId)) {
                 this.step++;
             } else {
                 this.done();
@@ -464,7 +458,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             // route user upon completing all operation
             // if Admin portal - New Plan, send the user to the category page
             let type: any;
-            switch (this.categoryId) {
+            switch (this.selectedCategoryId) {
                 case '5e9fe372c8bf1a622fec69d8':
                     type = 'mentoring';
                     break;
@@ -480,8 +474,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 default:
                     type = 'journey';
             }
-            if (this.router.url.includes('newplan') && this.parent_programId && type && this.categoryId) { // if admin mode -> new activity
-                this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.categoryId }]);
+            if (this.router.url.includes('newplan') && this.parent_programId && type && this.selectedCategoryId) { // if admin mode -> new activity
+                this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.selectedCategoryId }]);
                 await this.loading.dismiss();
             } else if (this.router.url.includes('invite') || this.router.url.includes('choose')) { // else, in invite flow,  send user to the addParticipant page if the user is an organizer, or to the
                 let hasOrganizerAccess: any;
@@ -559,7 +553,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         }
         // reset categoryId
         if (this.step === 0) {
-            this.categoryId = null;
+            this.selectedCategoryId = null;
         }
     }
 
@@ -574,10 +568,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.cleanup();
     }
 
-    showtime() {
-        console.log("check", this.recurrenceStartTime, new Date(this.recurrenceStartTime).getHours());
-    }
-
     cleanup() {
         this.searchKeyword = '';
         this.currentView = 'new';
@@ -586,7 +576,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.pageNum = 0;
         this.reachedEnd = false;
         this.selectedMoments = [];
-        this.setup(); // reset the page to the entry state
+        this.step = 0;
     }
 
     ngOnDestroy(): void {
