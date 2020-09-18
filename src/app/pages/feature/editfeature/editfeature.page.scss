@@ -79,9 +79,9 @@ app-editfeature {
     overflow: scroll;
   }
 
-  a {
+  /*a {
     margin: 15px 10%;
-  }
+  }*/
 
   .addComponentActivated {
     opacity: 0.5;
@@ -299,7 +299,7 @@ app-editfeature {
 
   .video-container {
     width: 80%;
-    margin: 5px 15px;
+    margin: 5px 0;
   }
 
   .moment-photo {
@@ -471,21 +471,21 @@ app-editfeature {
   }
 
   .thumbnail-item {
-    margin: 0 10px;
+    margin: 0;
     --size: 100px;
   }
 
   .remove-media {
     position: absolute;
     top: 4px;
-    left: 15px;
+    left: 17px;
     z-index: 15;
   }
 
   .remove-video {
     position: absolute;
     top: 4px;
-    right: -95px;
+    left: 17px;
     z-index: 15;
   }
 
@@ -500,8 +500,7 @@ app-editfeature {
 
   .selected-item {
     height: 100px;
-    margin: 5px 5px 5px 0;
-    //width: 100%;
+    margin: 5px 15px;
   }
 
   .add-icon {
@@ -548,5 +547,15 @@ app-editfeature {
 
   .add-goal-label {
     padding-left: 10px;
+  }
+
+  .ql-editor {
+    p, li {
+      font-size: 16px;
+    }
+  }
+
+  .ql-snow .ql-editor h3 {
+    font-size: 16px;
   }
 }

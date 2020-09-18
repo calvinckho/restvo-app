@@ -97,8 +97,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     leadersLabel = 'Leaders';
     childActivityLabel = 'Plan';
     tempTabComponentSelection = [];
+    interactableDisplay: any = {};     // an object of arrays of options to be displayed
 
-  activityResourceObj = { // default template object
+    activityResourceObj = { // default template object
       field: 'User Defined Activity',
       matrix_number: [[], [], [], []],
       'en-US': {
@@ -149,6 +150,15 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         dependent_moment: '',
         createdAt: new Date()
     };
+
+    quillEditorToolbarConfig = [
+        ['bold', 'italic'],        // toggled buttons
+        ['link'],                         // link and image, video
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'align': [] }],
+        ['clean'],  // remove formatting button
+    ];
 
   constructor (
       public route: ActivatedRoute,
@@ -439,6 +449,19 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               this.startTime = new Date(new Date().setMinutes(0)).toISOString();
               this.endTime = new Date(new Date().setMinutes(0)).toISOString();
           }
+          this.moment.resource.matrix_number[2].forEach((interactableId, index) => { // process the text answer responses
+              const interactable = this.moment.matrix_string[index];
+              this.interactableDisplay[interactableId] = { editor: null };
+              if (this.moment.resource.matrix_number[0][index] === 10010) { // interactableId is a Number
+                  let content: any;
+                  if (interactable.length > 2 && interactable[2]) {
+                      content = JSON.parse(interactable[2]);
+                  } else { // for backward compatibility before quill, need to build the content object from scratch
+                      content = {ops: [{insert: interactable[0] + '\n'}]};
+                  }
+                  this.interactableDisplay[interactableId].content = content; // insert the response data into the display matrix
+              }
+          });
           if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
               this.addressURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
           }
@@ -476,7 +499,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
           }
           this.initialSetupCompleted = true;
-          console.log('editfeature setup completed', this.moment, this.visibleComponents, this.editTemplate);
+          console.log('editfeature setup completed', this.moment, this.interactableDisplay);
       } catch (err) {
           console.log("editfeature setup error", err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
@@ -1103,6 +1126,14 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         await alertCtrl.present();
     }
 
+    async respondToTextArea(event, componentIndex) {
+        this.anyChangeMade = true;
+        this.moment.matrix_string[componentIndex][0] = event.text;
+        this.moment.matrix_string[componentIndex][2] = JSON.stringify(event.content);
+        this.moment.matrix_string[componentIndex][3] = JSON.stringify(event.delta);
+        console.log("quill changed", this.moment.matrix_string);
+    }
+
   async saveActivity(closeModal) {
       this.loading = await this.loadingCtrl.create({
           message: 'Saving...',
@@ -1363,6 +1394,15 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             this.moment.matrix_string[i].push(...media_list);
         }
         console.log("after media upload", this.moment);
+    }
+
+    async createQuillEditor(event, interactableId) {
+        if (this.interactableDisplay[interactableId] && this.interactableDisplay[interactableId].content) {
+            event.setContents(this.interactableDisplay[interactableId].content.ops, 'silent');
+            this.interactableDisplay[interactableId]['editor'] = event;
+        } else {
+            //this.interactableDisplay[interactableId] = { editor: null, content:  };
+        }
     }
 
   // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction

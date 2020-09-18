@@ -703,6 +703,13 @@ app-showfeature {
 
   .ql-editor {
     padding-left: 0;
+    p, li {
+      font-size: 16px;
+    }
+  }
+
+  .ql-snow .ql-editor h3 {
+    font-size: 16px;
   }
 
   .ql-editor.ql-blank::before {

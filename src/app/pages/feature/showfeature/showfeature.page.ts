@@ -493,7 +493,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 if (this.moment.resource.matrix_number[2]) {
                     // interactableId is a Number
                     const interactableId = this.moment.resource.matrix_number[2][componentIndex]; // if interactable, grab the createdAt timestamp
-                    if (componentId === 30000) { // poll
+                    if (componentId === 10010) { // textarea
+                        if (this.moment.matrix_string[componentIndex].length > 2 && this.moment.matrix_string[componentIndex][2]) {
+                            this.interactableDisplay[interactableId] = { content: JSON.parse(this.moment.matrix_string[componentIndex][2]) };
+                        }
+                    } else if (componentId === 30000) { // poll
                         this.interactableDisplay[interactableId] = [];
                         for (const option of this.moment.matrix_string[componentIndex]) { // set up the poll options
                             this.interactableDisplay[interactableId].push({option: option, count: 0, votedByUser: false});

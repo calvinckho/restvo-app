@@ -260,7 +260,12 @@
     </div>
     <div *ngFor="let item of moment.resource.matrix_number[0]; trackBy: customTrackBy; index as i" [hidden]="moment.resource.matrix_number[0].includes(20020) && (i > moment.resource.matrix_number[0].indexOf(20020)) && (moment.resource.matrix_number[3][i] !== tabSelection)">
       <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
-        <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i][0] | nl2br"></div>
+        <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i][0] | nl2br" *ngIf="(moment.matrix_string[i].length < 3) || !moment.matrix_string[i][2]"></div>
+        <quill-view
+            [content]="interactableDisplay[moment.resource.matrix_number[2][i]].content.ops"
+            format="object"
+            *ngIf="(moment.matrix_string[i].length > 2) && moment.matrix_string[i][2] && interactableDisplay[moment.resource.matrix_number[2][i]].content?.ops">
+        </quill-view>
       </ion-item>
       <ion-item class="section" color="secondary" *ngIf="item === 10050" lines="none"> <!--section header-->
         <ion-label color="dark" class="section-label">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>

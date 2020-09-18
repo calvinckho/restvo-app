@@ -368,8 +368,15 @@
           <ion-item *ngIf="item === 10010" lines="none"> <!--textarea media section, slider view only, or if media has already been added from before-->
             <ion-label class="moment-input">Text</ion-label>
           </ion-item>
-          <ion-item *ngIf="item === 10010" lines="none">
-            <ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>
+          <ion-item *ngIf="item === 10010 && initialSetupCompleted" lines="none" style="margin-bottom: 10px">
+            <!-- run respondToTextArea to update the currentSaveState display -->
+            <quill-editor
+                (onEditorCreated)="createQuillEditor($event, moment.resource.matrix_number[2][i])"
+                (onContentChanged)="respondToTextArea($event, i)"
+                [modules]="{ toolbar: this.quillEditorToolbarConfig }" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]"
+                [styles]="{'height': '300px', 'font-family': 'Roboto,Helvetica Neue,sans-serif'}" format="object">
+            </quill-editor>
+            <!--<ion-textarea class="moment-input" rows="4" [minRows]="1" [maxRows]="6" autosize (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" [(ngModel)]="moment.matrix_string[i][0]"></ion-textarea>-->
           </ion-item>
           <ion-item *ngIf="item === 10010 && resource['en-US'].value.length > 36 && (moment.resource.matrix_number[0].includes(20010) || moment.matrix_string[i].length > 11)" lines="none"> <!--textarea media section, onboarding view only, or if media has already been added from before-->
             <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-button>
