@@ -152,8 +152,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     };
 
     quillEditorToolbarConfig = [
-        ['bold', 'italic'],        // toggled buttons
-        ['link'],                         // link and image, video
+        ['bold', 'italic'], // toggled buttons
+        ['link'],           // link and image, video
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'align': [] }],
