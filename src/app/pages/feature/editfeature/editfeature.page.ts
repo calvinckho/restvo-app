@@ -52,7 +52,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     subpanel = false;
     subscriptions: any = {};
-    editTemplate = false;
+    editTemplate = true;
+    addComponentActivated = false;
   templateChanged = false;
   ionSpinner = false;
 
@@ -251,6 +252,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               if (typeof this.visibleComponents === 'string') {
                   this.visibleComponents = this.visibleComponents.split(',').map((c) => parseInt(c, 10));
               }
+              this.editTemplate = false;
           }
           console.log("loaded moment", this.moment);
 
@@ -474,7 +476,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
           }
           this.initialSetupCompleted = true;
-          console.log('editfeature setup completed', this.moment, this.visibleComponents);
+          console.log('editfeature setup completed', this.moment, this.visibleComponents, this.editTemplate);
       } catch (err) {
           console.log("editfeature setup error", err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
@@ -504,6 +506,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await versionAlert.present();
           return;
       }
+      this.addComponentActivated = false;
       // append component id, max count, input field in moment object
       if (componentId === 10600) { // for Video Conference, default to 1000
           this.moment.matrix_number.push([1000]); // input field
@@ -580,6 +583,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   reorderComponents(event) {
+      this.templateChanged = true;
       this.resourceService.showPixabay = -1;
       if (this.moment.matrix_number && this.moment.matrix_number.length) {
           this.moment.matrix_number = this.reorderArray(this.moment.matrix_number, event.detail.from, event.detail.to);
@@ -1112,7 +1116,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
-          this.editTemplate = false; // turn edit mode off
+          //this.editTemplate = false; // turn edit mode off
       }
 
       // for all day events, start time is set to 12a on selected date and end time is set to 12a the following day

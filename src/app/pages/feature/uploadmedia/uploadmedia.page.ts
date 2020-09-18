@@ -84,11 +84,11 @@ export class UploadmediaPage implements OnInit {
 
   async promptMediaUrl(provider) {
     const alert2 = await this.alertCtrl.create({
-      header: provider === 'youtube' ? 'Input the Youtube link' : 'Input the Media Url',
+      header: provider === 'youtube' ? 'Input Youtube Video Url' : 'Input the Media Url',
       inputs: [{
         name: 'src',
         type: 'text',
-        placeholder: provider === 'youtube' ? 'Youtube link' : 'Media Link'
+        placeholder: provider === 'youtube' ? 'Youtube Url Address' : 'Media Url Address'
       }],
       buttons: [
         {

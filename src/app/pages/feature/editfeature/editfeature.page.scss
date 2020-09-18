@@ -13,6 +13,11 @@ app-editfeature {
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
+    /*ion-buttons {
+      position: relative;
+      right: -41px;
+      z-index: 5;
+    }*/
   }
 
   ion-item ion-datetime {
@@ -34,6 +39,37 @@ app-editfeature {
     font-weight: 600;
   }
 
+  .flex-card {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .start-section {
+    //flex: 1;
+  }
+
+  .end-section {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .remove-button {
+    height: 50%;
+    padding-top: 2px;
+    padding-bottom: 10px;
+    //align-self: flex-start;
+    //justify-content: flex-start;
+  }
+
+  .reorder-button {
+    height: 50%;
+    margin: 0 5px;
+  }
+
   .stock-preview {
     --size: 100px;
   }
@@ -47,7 +83,7 @@ app-editfeature {
     margin: 15px 10%;
   }
 
-  .editTemplate {
+  .addComponentActivated {
     opacity: 0.5;
   }
 
@@ -158,7 +194,7 @@ app-editfeature {
     padding: 5px 0;*/
     float: left;
     opacity: 0.5;
-    margin-left: 10px;
+    //margin-left: 10px;
   }
 
   .small-font {
@@ -173,8 +209,18 @@ app-editfeature {
     }
   }
 
-  .section-header {
-    font-size: 18px;
+  .section {
+    --min-height: 26px;
+
+    .section-label {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 19px;
+    }
+
+    .section-label-small {
+      font-size: 12px;
+    }
   }
 
   .addRemoveButtons {
@@ -256,9 +302,9 @@ app-editfeature {
     width: 30%;
   }
 
-  .moment-photo-frame {
+  .video-container {
     width: 80%;
-    margin-bottom: 10px;
+    margin: 5px 15px;
   }
 
   .moment-photo {
@@ -283,6 +329,10 @@ app-editfeature {
     padding: 0 10px;
   }
 
+  .addComponentCard {
+    cursor: pointer;
+  }
+
   .plan-module-options {
     display: block;
     max-height: 100px;
@@ -300,14 +350,31 @@ app-editfeature {
     width: 100%;
   }
 
-  .participant-avatar {
-    margin: 6px auto;
-  }
+  .participant-centered {
+    width: 43px;
+    height: 43px;
 
-  .participant-joined {
-    position: absolute;
-    left: 60%;
-    top: 28px;
+    .participant-avatar {
+      width: 100%;
+      height: 100%;
+      background-color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .participant-joined {
+      position: absolute;
+      left: 60%;
+      top: 28px;
+    }
+
+    // .participant-label {
+    //   margin: 5px auto 0 auto;
+    //   color: grey;
+    //   font-size: 12px;
+    // }
   }
 
   .participant-label {
@@ -409,14 +476,14 @@ app-editfeature {
   }
 
   .thumbnail-item {
-    margin: 0 auto;
+    margin: 0 10px;
     --size: 100px;
   }
 
   .remove-media {
     position: absolute;
     top: 4px;
-    right: calc(100% / 2 - 45px);
+    left: 15px;
     z-index: 15;
   }
 
@@ -438,6 +505,7 @@ app-editfeature {
 
   .selected-item {
     height: 100px;
+    margin: 5px 5px 5px 0;
     //width: 100%;
   }
 
@@ -481,5 +549,9 @@ app-editfeature {
 
   .chat-label {
     width: 50px;
+  }
+
+  .add-goal-label {
+    padding-left: 10px;
   }
 }
