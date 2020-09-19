@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation, NgZone, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation, NgZone} from '@angular/core';
 import {
   ActionSheetController,
   AlertController,
@@ -23,6 +23,8 @@ import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {ShowfeaturePage} from "../../showfeature/showfeature.page";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {Systemlog} from "../../../../services/systemlog.service";
 
 @Component({
@@ -32,7 +34,7 @@ import {Systemlog} from "../../../../services/systemlog.service";
   encapsulation: ViewEncapsulation.None
 })
 
-export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnChanges {
+export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
 
   relationshipCompletion: any;
   participantAscending = true;
@@ -46,38 +48,21 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
   multi: any[];
   //view: any[] = [700, 300];
 
-  date = new Date();
-
   // options
-  schemeType: string = "linear"
   legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
   xAxis: boolean = true;
   yAxis: boolean = true;
-  showYAxisLabel: boolean = false;
+  showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = false;
   xAxisLabel: string = 'Day';
-  xScaleMin: string;
-  xScaleMax: string;
   yAxisLabel: string = 'Activity';
   timeline: boolean = true;
-
-  //duration unit and value
-  durationValue: number = 7;
-  durationUnit: string = 'day';
-  currentDayValue: string = '7'
 
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
-
-  //value for the circle graph
-  circleGraphValue: number = 90;
-  radius = 54;
-  circumference = 2 * Math.PI * this.radius;
-  dashoffset: number;
-
 
   constructor(
       public zone: NgZone,
@@ -110,12 +95,6 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
         cache, platform, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
         networkService, chatService, userData, authService, mapService,
         momentService, resourceService, responseService, calendarService);
-    this.progress(this.circleGraphValue);
-  }
-
-  private progress(value: number){
-    const progress = value / 100;
-    this.dashoffset = this.circumference * (1 - progress);
   }
 
   async ngOnInit() {
@@ -125,14 +104,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
         this.moment._id = this.route.snapshot.paramMap.get('id');
       }
       this.loadInsight();
-      this.loadMetrics('thisWeek');
-    }
-    console.log('this progress:', this.circleGraphValue)
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.value.currentValue !== changes.value.previousValue){
-      this.progress(changes.value.currentValue);
+      this.loadMetrics();
     }
   }
 
@@ -141,55 +113,15 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
     if (this.router.url.includes('insight')) {
       // data.type - 'change aux data' or null or others. In all cases, reload moment and redo permission
       // ready to check authentication status
-      this.setup(data, !!(this.authService.token && this.userData.user));
+      this.setup(data);
       this.loadInsight();
-      this.loadMetrics(this.currentDayValue);
+      this.loadMetrics();
     }
   };
 
-  async loadMetrics(dayValue) {
-    //find a way to utilize xmin on chart
-    this.currentDayValue = dayValue;
-    switch (dayValue){
-      case 'thisWeek':
-        // line area chart doc link https://swimlane.gitbook.io/ngx-charts/v/docs-test/examples/line-area-charts/line-chart
-        const currentDay = this.date.getDay();
-        const difference = this.date.getDate() - currentDay;
-        const firstDayInMilliSeconds = this.date.setDate(difference)
-        let firstDayOfWeek = new Date(firstDayInMilliSeconds).toISOString()
-        console.log('check for firstDayOfWeek', firstDayOfWeek, typeof firstDayOfWeek)
-        this.xScaleMin = firstDayOfWeek;
-        console.log('check if this.xScaleMin updated', this.xScaleMin)
-        this.durationValue = 7
-        this.durationUnit = 'day'
-        break;
-      case 'thisMonth':
-        this.durationValue = 30 //to change later when xScaleMin works
-        this.durationUnit = 'day'
-        break;
-      case '30':
-        this.durationValue = 1
-        this.durationUnit = 'month'
-        break;
-      case '90':
-        this.durationValue = 3
-        this.durationUnit = 'month'
-        break;
-      case 'thisYear':
-        this.durationValue = 1
-        this.durationUnit = 'year'
-        break;
-        default:
-        this.durationValue = 7
-        this.durationUnit = 'day'
-    }
-
-    // this.multi = [{
-    //   name: 'Activity',
-    //   series: []
-    // }];
+  async loadMetrics() {
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
-    const results: any = await this.systemlogService.loadMetrics(this.moment._id, this.durationUnit, this.durationValue);
+    const results: any = await this.systemlogService.loadMetrics(this.moment._id);
     console.log("check for load metrics", results)
     this.multi = [{
       name: 'Activity',
