@@ -281,7 +281,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       // if user has not joined, or if token is provided
       if ((this.authService.token && this.userData.user && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
-          this.showSpecialAccess = true;
+          if (this.moment._id !== '5d5785b462489003817fee18') { // hide special access for Restvo at all times
+              this.showSpecialAccess = true;
+          }
       } else {
           this.hasSpecialPrivilege = true;
       }
