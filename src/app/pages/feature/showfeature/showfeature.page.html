@@ -57,7 +57,7 @@
     <ion-button (click)="upOneLevel(moment.parent_programs[0]._id)" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0]._id">
       <b>{{moment.parent_programs[0].resource['en-US'].value}}</b>
     </ion-button>
-    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length"></ion-icon>
+    <ion-icon name="chevron-forward" *ngIf="moment.parent_programs && moment.parent_programs.length && moment.parent_programs[0] && moment.parent_programs[0]._id"></ion-icon>
     <ion-button>
       <b>{{moment.resource['en-US'].value}}</b>
     </ion-button>

@@ -252,11 +252,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if ((data && data.type === 'update onboarding answers') || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.hasOwnProperty('currentTime') && (c.player.currentTime > 0)))))) {
           // do nothing
       } else { // execute a refresh on all other user refresh type
-          this.setup(data);
+          this.setup(data, !!(this.authService.token && this.userData.user));
       }
   };
 
-  async setup(data) {
+  async setup(data, isAuthenticated) {
       this.loadStatus = 'loading';
       await this.loadCalendarItem();
       if (this.moment._id) { // if called by modalCtrl.create()
@@ -279,11 +279,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.loadPrograms();
 
       // if user has not joined, or if token is provided
-      if ((this.authService.token && this.userData.user && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
+      if ((isAuthenticated && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
           // do not hide special access toolbar
-          if (this.moment._id !== '5d5785b462489003817fee18') { // hide special access for Restvo at all times
-              this.showSpecialAccess = true;
-          }
+          this.showSpecialAccess = true;
       } else {
           this.hasSpecialPrivilege = true;
       }
