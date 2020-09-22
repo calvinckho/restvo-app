@@ -64,4 +64,9 @@ describe('add and remove user from group', () => {
         await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
+
+    it('should click to add user to group', async () => {
+        await showfeature.clickSigninButton("#add-user-to-group");
+        await browser.sleep(5000);
+    });
 });
