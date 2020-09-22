@@ -52,6 +52,7 @@ class PageObjectBase {
     }
 
     protected async enterInputText(sel: string, text: string) {
+        await this.waitUntilElementPresent(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {
@@ -65,6 +66,7 @@ class PageObjectBase {
     }
 
     protected async enterTextareaText(sel: string, text: string) {
+        await this.waitUntilElementPresent(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {
