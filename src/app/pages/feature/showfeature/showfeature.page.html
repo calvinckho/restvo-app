@@ -184,7 +184,7 @@
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-        <ion-textarea class="moment-input" autocapitalize="true" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
+        <ion-textarea class="moment-input" autocapitalize="on" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
       </ion-item>
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">

@@ -91,6 +91,15 @@ class PageObjectBase {
         }
     }
 
+    async elementIsPresent(parentTag: string, sel: string) {
+        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+        if (el) {
+            return el.isPresent();
+        } else {
+            return false;
+        }
+    }
+
     async signinButtonIsPresent() {
         const signinButton = element(by.css('#signin'));
         if (signinButton) {
@@ -216,6 +225,15 @@ export class RegisterPage extends PageObjectBase {
 
     async submitLoginForm() {
         await this.clickButton(null, '#login-button');
+    }
+
+    async fillSubmitCreateAccountEmailForm() {
+        await this.enterInputText('#firstName', 'Tammy');
+        await this.enterInputText('#LastName', 'Ho');
+        await this.enterInputText('#newEmail', 'calvin+4@restvo.com');
+        await this.enterInputText('#newPassword1', 'makenodifference');
+        await this.enterInputText('#newPassword2', 'makenodifference');
+        await this.clickButton(null, '#createEmailAccount');
     }
 
     currentUrl() {

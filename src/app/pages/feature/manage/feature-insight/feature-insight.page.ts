@@ -23,8 +23,6 @@ import {Auth} from "../../../../services/auth.service";
 import {Chat} from "../../../../services/chat.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {ShowfeaturePage} from "../../showfeature/showfeature.page";
-import { BrowserModule } from '@angular/platform-browser';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {Systemlog} from "../../../../services/systemlog.service";
 
 @Component({
@@ -113,7 +111,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     if (this.router.url.includes('insight')) {
       // data.type - 'change aux data' or null or others. In all cases, reload moment and redo permission
       // ready to check authentication status
-      this.setup(data);
+      this.setup(data, !!(this.authService.token && this.userData.user));
       this.loadInsight();
       this.loadMetrics();
     }
