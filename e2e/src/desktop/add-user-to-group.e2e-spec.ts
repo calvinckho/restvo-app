@@ -51,17 +51,17 @@ describe('add and remove user from group', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/app/activity/5e0012f714001a7dbf712de2');
-        await showfeature.waitUntilElementPresent('#signin');
+        await browser.get('/activity/5e0012f714001a7dbf712de2');
+        await showfeature.waitUntilPresent();
         await showfeature.clickSigninButton('#signin');
-        await register.waitUntilVisible();
+        await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
     });
 
     it('should show authenticated activity page', async () => {
-        await register.waitUntilInvisible();
-        expect(await maintab.waitUntilPresent()).toBeTruthy();
+        await showfeature.waitUntilElementPresent('#showfeature-header');
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 });
