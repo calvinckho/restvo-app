@@ -500,7 +500,7 @@
           <img class="background-img" src="assets/img/signUp.png"/>
           <div [hidden]="exitType === 'dashboard'">
             <div class="welcome-subtitle">Already a user? Sign in here</div>
-            <ion-button color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'" id="signup-button">Sign in</ion-button>
+            <ion-button #signupButton color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'">Sign in</ion-button>
             <ion-button (click)="view = 'signin'; toggleRecoveryMode()" class="create-account" fill="clear">I forgot my password</ion-button>
           </div>
         </ion-col>

@@ -56,26 +56,26 @@ describe('register an account as a new user', () => {
     });
 
     it('should show unauthenticated main page', async () => {
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 
     it('should open register modal', async () => {
-        await showfeature.clickElement(null, '#signin');
+        await showfeature.clickElement('#signin');
         await register.waitUntilVisible();
-        expect(await register.elementIsPresent(null, '#register')).toBeTruthy();
+        expect(await register.elementIsPresent('#register')).toBeTruthy();
     });
 
     it('should show welcome walkthrough', async () => {
-        await register.clickElement(null, '#signup-button');
+        await register.clickElement('#signupButton');
         await app.waitUntilElementVisible('#welcomeSlides');
-        expect(await register.elementIsPresent(null, '#welcomeSlides')).toBeTruthy();
+        expect(await register.elementIsPresent('#welcomeSlides')).toBeTruthy();
     });
 
     it('should show, fill out, and submit email registration form', async () => {
-        await register.clickElement(null, '#signup-button');
+        await register.clickElement('#signup-button');
         await browser.waitForAngular();
         await register.fillSubmitCreateAccountEmailForm;
         await browser.waitForAngular();
-        expect(await register.elementIsPresent(null, '#login-button')).toBeTruthy();
+        expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 });

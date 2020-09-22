@@ -21,13 +21,16 @@ class PageObjectBase {
         return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 15000);
     }
 
-    waitUntilPresent() {
-        return browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
+    async waitUntilPresent() {
+        if (await element.all(by.css(this.tag)).isPresent()) {
+            return await browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
+        } else {
+            return false;
+        }
     }
 
     waitUntilNotPresent() {
-        return browser.wait(
-            ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
+        return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
             10000
         );
     }
@@ -68,10 +71,10 @@ class PageObjectBase {
         el.click();
     }
 
-    async clickElement(parentTag: string, sel: string) {
-        const els = element.all(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
+    async clickElement(sel: string) {
+        const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
-            if (el.isDisplayed()) {
+            if (await el.isDisplayed()) {
                 await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
                 el.click();
             }
@@ -82,22 +85,12 @@ class PageObjectBase {
         return await element.all(by.css(`${this.tag} ${sel}`)).count();
     }
 
-    async headerIsPresent(parentTag: string, sel: string) {
-        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
-        if (el) {
-            return el.isPresent();
-        } else {
-            return false;
-        }
+    async headerIsPresent(sel: string) {
+        return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 
-    async elementIsPresent(parentTag: string, sel: string) {
-        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
-        if (el) {
-            return el.isPresent();
-        } else {
-            return false;
-        }
+    async elementIsPresent(sel: string) {
+        return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 
     async signinButtonIsPresent() {
@@ -123,8 +116,8 @@ export class AppPage {
         return element(by.id('title')).getText();
     }
 
-    headerIsPresent(parentTag, sel) {
-        return element(by.id(`${sel}`)).isPresent();
+    headerIsPresent(sel) {
+        return element.all(by.id(`${sel}`)).isPresent();
     }
 
     async waitUntilElementVisible(sel) {
@@ -194,7 +187,7 @@ export class ShowfeaturePage extends PageObjectBase {
     }
 
     clickSigninButton(button) {
-        this.clickButton(null, button);
+        this.clickElement(button);
     }
 }
 
@@ -224,7 +217,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     async submitLoginForm() {
-        await this.clickButton(null, '#login-button');
+        await this.clickElement('#login-button');
     }
 
     async fillSubmitCreateAccountEmailForm() {
@@ -273,7 +266,7 @@ export class DiscoverPage extends PageObjectBase {
     }
 
     clickMenuToggle(el) {
-        this.clickElement(null, el);
+        this.clickElement(el);
     }
 }
 
@@ -289,11 +282,11 @@ export class AboutPage extends PageObjectBase {
     }
 
     clickEditAll() {
-        this.clickElement(null, '#editall');
+        this.clickElement('#editall');
     }
 
     clickBack() {
-        this.clickElement(null, '#clickback');
+        this.clickElement('#clickback');
     }
 }
 
@@ -303,7 +296,7 @@ export class PreferencesPage extends PageObjectBase {
     }
 
     clickBack() {
-        this.clickElement(null, '#clickback');
+        this.clickElement('#clickback');
     }
 }
 
@@ -313,11 +306,11 @@ export class DashboardPage extends PageObjectBase {
     }
 
     clickCreate() {
-        this.clickElement(null, '#create-mentoring');
+        this.clickElement('#create-mentoring');
     }
 
     clickPersonProfileCard() {
-        this.clickElement(null, '#person-profile-card');
+        this.clickElement('#person-profile-card');
     }
 
     deleteEvent() {
@@ -331,7 +324,7 @@ export class DashboardPage extends PageObjectBase {
     }
 
     clickMenuToggle(el) {
-        this.clickElement(null, el);
+        this.clickElement(el);
     }
 }
 
@@ -341,7 +334,7 @@ export class PickfeaturePopoverPage extends PageObjectBase {
     }
 
     chooseCategory(sel) {
-        this.clickElement(null, sel);
+        this.clickElement(sel);
     }
 
     clickBackButton() {
@@ -353,7 +346,7 @@ export class PickfeaturePopoverPage extends PageObjectBase {
     }
 
     clickCreateNewMoment() {
-        this.clickElement(null, '#create-new-moment');
+        this.clickElement('#create-new-moment');
     }
 
     async countNumberOfNewPrograms() {
@@ -367,7 +360,7 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     }
 
     clickRecent() {
-        this.clickElement(null, '#recent-');
+        this.clickElement('#recent-');
     }
 }
 

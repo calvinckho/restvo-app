@@ -13,7 +13,7 @@ import {
     CreateFeaturePage,
     AboutPage,
     PreferencesPage
-} from './app.po';
+} from '../app.po';
 import {browser} from 'protractor';
 
 describe('add and remove user from group', () => {
@@ -53,21 +53,15 @@ describe('add and remove user from group', () => {
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/app/activity/5e0012f714001a7dbf712de2');
         await showfeature.waitUntilPresent();
-        // await browser.sleep(5000);
-    });
-
-    it('should show unauthenticated group page', async () => {
-        await browser.sleep(5000);
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
-    });
-
-    it('should login and show authenticated group page', async () => {
         await showfeature.clickSigninButton('#signin');
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-        await showfeature.waitUntilVisible();
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+    });
+
+    it('should show authenticated activity page', async () => {
+        await maintab.waitUntilVisible();
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 });

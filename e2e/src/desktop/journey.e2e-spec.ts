@@ -52,29 +52,29 @@ describe('join journey and leave journey', () => {
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
-        await showfeature.waitUntilPresent();
     });
 
     it('should show unauthenticated journey page', async () => {
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+        await showfeature.waitUntilVisible();
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 
     it('should login and show authenticated journey page', async () => {
-        await showfeature.clickElement(null, '#accept-invitation');
+        await showfeature.clickElement('#accept-invitation');
         await browser.waitForAngular();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
         await maintab.waitUntilVisible();
-        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeTruthy();
+        expect(await showfeature.headerIsPresent('#accept-invitation')).toBeTruthy();
     });
 
     it('should accept invitation and dismiss onboarding', async () => {
-        await showfeature.clickElement('app-main-tab', '#accept-invitation');
+        await showfeature.clickElement('#accept-invitation');
         await browser.waitForAngular();
         await onboardfeature.clickStartButton();
         await onboardfeature.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
-        expect(await showfeature.headerIsPresent('app-main-tab', '#accept-invitation')).toBeFalsy();
+        expect(await showfeature.headerIsPresent('#accept-invitation')).toBeFalsy();
     });
 
     it('should confirm success prompt', async () => {
@@ -84,10 +84,10 @@ describe('join journey and leave journey', () => {
     });
 
     it('should click to see more options', async () => {
-        await showfeature.clickElement(`app-main-tab`, '#show-event-title');
+        await showfeature.clickElement('#show-event-title');
         await browser.sleep(1000);
         //await app.waitUntilElementVisible('app-main-tab #toggle-more-options');
-        await showfeature.clickElement(`app-main-tab`, '#toggle-more-options');
+        await showfeature.clickElement('#toggle-more-options');
         await browser.sleep(3000);
         //await app.waitUntilElementVisible('ion-action-sheet');
         expect(await app.actionsheetIsPresent()).toBeTruthy();
@@ -96,7 +96,7 @@ describe('join journey and leave journey', () => {
     it('should click the leave action sheet button', async () => {
         await app.clickActionSheetButton('Leave');
         await app.waitUntilElementVisible('app-main-tab #click-to-join');
-        expect(await showfeature.headerIsPresent('app-main-tab', '#click-to-join')).toBeTruthy();
+        expect(await showfeature.headerIsPresent('#click-to-join')).toBeTruthy();
     });
 
     it('should click the Settings tab', async () => {
