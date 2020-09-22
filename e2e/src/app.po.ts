@@ -145,8 +145,10 @@ export class AppPage {
         });
     }
 
-    alertIsPresent() {
-        return element(by.css('ion-alert')).isPresent();
+    async alertIsPresent() {
+        const el = element(by.css('ion-alert'));
+        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+        return el.isPresent();
     }
 
     async clickActionSheetButton(text) {

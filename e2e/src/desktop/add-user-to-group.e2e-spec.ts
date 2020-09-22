@@ -61,7 +61,7 @@ describe('add and remove user from group', () => {
     });
 
     it('should show authenticated activity page', async () => {
-        await maintab.waitUntilVisible();
+        await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 });

@@ -278,7 +278,7 @@
                       <p *ngIf="loginMode === 'mobile'" class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
                       <ion-row>
                         <ion-col>
-                          <ion-button #createMobileAccount shape="round" color="primary" (click)="registerMobile()" [disabled]="!nameForm.valid || !mobileForm.valid">Send the SMS Code</ion-button>
+                          <ion-button id="createMobileAccount" shape="round" color="primary" (click)="registerMobile()" [disabled]="!nameForm.valid || !mobileForm.valid">Send the SMS Code</ion-button>
                         </ion-col>
                       </ion-row>
                     </div>

@@ -670,7 +670,7 @@ export class RegisterPage implements OnInit {
                     const alert = await this.alertCtrl.create({
                         header: 'Success',
                         subHeader: result.msg,
-                        buttons: [{ text: 'Ok',
+                        buttons: [{ text: 'OK',
                             handler: () => {
                                 const navTransition = alert.dismiss();
                                 navTransition.then(() => {

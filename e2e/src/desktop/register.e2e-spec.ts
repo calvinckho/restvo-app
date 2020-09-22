@@ -79,8 +79,12 @@ describe('register an account as a new user', () => {
 
     it('should fill out and submit email registration form', async () => {
         await register.fillSubmitCreateAccountEmailForm();
+        expect(await app.alertIsPresent()).toBeTruthy();
+    });
+
+    it('should confirm success prompt', async () => {
+        await app.clickAlertButton('OK');
         await register.waitUntilElementPresent('#login-form');
-        await browser.sleep(9000);
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 });
