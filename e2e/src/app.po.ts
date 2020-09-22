@@ -17,38 +17,94 @@ class PageObjectBase {
         return element(by.css(this.tag));
     }
 
-    waitUntilInvisible() {
-        return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 15000);
-    }
-
-    async waitUntilPresent() {
-        if (await element.all(by.css(this.tag)).isPresent()) {
-            return await browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
-        } else {
-            return false;
+    async waitUntilInvisible() {
+        const els = await element.all(by.css(this.tag));
+        for (const el of els) {
+            if (await el.isDisplayed()) {
+                return await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
+            }
         }
     }
 
-    waitUntilNotPresent() {
-        return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
-            10000
-        );
+    async waitUntilPresent() {
+        const els = await element.all(by.css(this.tag));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.presenceOf(element(by.css(this.tag))));
+        }
+    }
+
+    async waitUntilNotPresent() {
+        const els = await element.all(by.css(this.tag));
+        for (const el of els) {
+            if (await el.isDisplayed()) {
+                return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+            }
+        }
     }
 
     waitUntilUrlContains() {
         return browser.wait(ExpectedConditions.urlContains(this.path), 10000);
     }
 
-    waitUntilVisible() {
-        return browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
+    async waitUntilVisible() {
+        const els = await element.all(by.css(this.tag));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.visibilityOf(element(by.css(this.tag))));
+        }
     }
 
-    waitUntilElementPresent(sel: string) {
-        return browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    async waitUntilElementPresent(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+        }
+        //return await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
-    waitUntilElementVisible(sel: string) {
-        return browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    async waitUntilElementVisible(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+        }
+        //return browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    }
+
+    async waitUntilElementInvisible(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
+                }
+            }
+        } else {
+            return await browser.wait(ExpectedConditions.invisibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+        }
+        //return browser.wait(ExpectedConditions.invisibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
     getTitle() {
@@ -56,35 +112,26 @@ class PageObjectBase {
     }
 
     protected async enterInputText(sel: string, text: string) {
-        await this.waitUntilElementVisible(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-                const inp = el.element(by.css('input'));
-                for (let i = 0; i < text.length; i++) {
-                    inp.sendKeys(text.charAt(i));
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                    const inp = el.element(by.css('input'));
+                    await inp.sendKeys(text);
                 }
             }
-        });
-    }
-
-    protected async enterTextareaText(sel: string, text: string) {
-        await this.waitUntilElementVisible(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-                const inp = el.element(by.css('textarea'));
-                for (let i = 0; i < text.length; i++) {
-                    inp.sendKeys(text.charAt(i));
-                }
-            }
-        });
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            const inp = el.element(by.css('input'));
+            await inp.sendKeys(text);
+        }
+        await browser.sleep(1000); // needs to pause and wait for text to be inputed into element, otherwise the next sendKeys will stop the current one
     }
 
     async clickElement(sel: string) {
-        await this.waitUntilElementPresent(sel);
+        await this.waitUntilElementVisible(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {
@@ -116,9 +163,9 @@ class PageObjectBase {
     }
 }
 
-export class AppPage {
-    navigateTo() {
-        return browser.get('/register');
+export class AppPage extends PageObjectBase {
+    constructor() {
+        super('ion-app', '/');
     }
 
     currentUrl() {
@@ -129,37 +176,21 @@ export class AppPage {
         return element(by.id('title')).getText();
     }
 
-    headerIsPresent(sel) {
-        return element.all(by.id(`${sel}`)).isPresent();
-    }
-
-    async waitUntilElementVisible(sel) {
-        const el = element(by.css(sel));
-        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-    }
-
-    async waitUntilElementInvisible(sel) {
-        const el = element(by.css(sel));
-        await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
-    }
-
     async clickAlertButton(text) {
+        await this.waitUntilElementVisible('.alert-button.sc-ion-alert-md');
         element.all(by.css('.alert-button.sc-ion-alert-md')).each(async (el) => {
             if (await el.getText() === text) {
-                el.click();
+                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+                return el.click();
             }
         });
     }
 
-    async alertIsPresent() {
-        const el = element(by.css('ion-alert'));
-        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-        return el.isPresent();
-    }
-
     async clickActionSheetButton(text) {
+        await this.waitUntilElementVisible('.action-sheet-button');
         element.all(by.css('.action-sheet-button')).each(async (el) => {
             if (await el.getText() === text) {
+                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
                 el.click();
             }
         });
@@ -333,7 +364,7 @@ export class DashboardPage extends PageObjectBase {
     }
 
     async createEvent() {
-        this.enterTextareaText('#add-event-title', 'Protractor Test Event');
+        this.enterInputText('#add-event-title', 'Protractor Test Event');
         await this.clickElement('#all-day');
         await this.clickElement('#save-event');
     }

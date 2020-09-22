@@ -61,7 +61,7 @@ describe('add and remove user from group', () => {
     });
 
     it('should show authenticated activity page', async () => {
-        await register.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
+        await register.waitUntilInvisible();
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 });

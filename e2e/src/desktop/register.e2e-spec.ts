@@ -79,7 +79,8 @@ describe('register an account as a new user', () => {
 
     it('should fill out and submit email registration form', async () => {
         await register.fillSubmitCreateAccountEmailForm();
-        expect(await app.alertIsPresent()).toBeTruthy();
+        await app.waitUntilElementPresent('ion-alert');
+        expect(await app.elementIsPresent('ion-alert')).toBeTruthy();
     });
 
     it('should confirm success prompt', async () => {

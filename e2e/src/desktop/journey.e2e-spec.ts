@@ -55,41 +55,38 @@ describe('join journey and leave journey', () => {
     });
 
     it('should show unauthenticated journey page', async () => {
-        await showfeature.waitUntilVisible();
+        await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 
     it('should login and show authenticated journey page', async () => {
         await showfeature.clickElement('#accept-invitation');
-        await browser.waitForAngular();
+        await register.waitUntilVisible();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-        await maintab.waitUntilVisible();
-        expect(await showfeature.headerIsPresent('#accept-invitation')).toBeTruthy();
+        await register.waitUntilInvisible();
+        expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 
     it('should accept invitation and dismiss onboarding', async () => {
         await showfeature.clickElement('#accept-invitation');
-        await browser.waitForAngular();
-        await onboardfeature.clickStartButton();
-        await onboardfeature.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
+        await onboardfeature.clickElement('#get-started');
+        await showfeature.waitUntilElementInvisible('#accept-invitation');
         expect(await showfeature.headerIsPresent('#accept-invitation')).toBeFalsy();
     });
 
     it('should confirm success prompt', async () => {
         await app.clickAlertButton('OK');
         await app.waitUntilElementInvisible('ion-alert');
-        expect(await app.alertIsPresent()).toBeFalsy();
+        expect(await app.elementIsPresent('ion-alert')).toBeFalsy();
     });
 
     it('should click to see more options', async () => {
         await showfeature.clickElement('#show-event-title');
-        await browser.sleep(1000);
-        //await showfeature.waitUntilElementPresent('#toggle-more-options');
+        await showfeature.waitUntilElementVisible('#toggle-more-options');
         await showfeature.clickElement('#toggle-more-options');
-        await browser.sleep(3000);
-        //await showfeature.waitUntilElementPresent('ion-action-sheet');
+        await app.waitUntilElementVisible('ion-action-sheet');
         expect(await app.actionsheetIsPresent()).toBeTruthy();
     });
 
