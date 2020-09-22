@@ -80,6 +80,7 @@ describe('register an account as a new user', () => {
     it('should fill out and submit email registration form', async () => {
         await register.fillSubmitCreateAccountEmailForm();
         await register.waitUntilElementPresent('#login-form');
+        await browser.sleep(9000);
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 });

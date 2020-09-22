@@ -229,7 +229,7 @@ export class RegisterPage extends PageObjectBase {
 
     async fillSubmitCreateAccountEmailForm() {
         await this.enterInputText('#firstName', 'Tammy');
-        await this.enterInputText('#LastName', 'Ho');
+        await this.enterInputText('#lastName', 'Ho');
         await this.enterInputText('#newEmail', 'calvin+4@restvo.com');
         await this.enterInputText('#newPassword1', 'makenodifference');
         await this.enterInputText('#newPassword2', 'makenodifference');
