@@ -142,7 +142,7 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
         <ion-col size-sm="12" size-md="7" class="full-height">
-          <ion-slides [options]="slidesOpts" scrollbar (ionSlidesDidLoad)="registerSlidesLoaded()">
+          <ion-slides id="createAccount" [options]="slidesOpts" scrollbar (ionSlidesDidLoad)="registerSlidesLoaded()">
             <!--First Name-->
             <!--slide index 0-->
             <ion-slide>
@@ -167,8 +167,8 @@
                     <div *ngIf="loginMode === 'email'" lines="none">
                       <form [formGroup]="nameForm">
                         <ion-item lines="full">
-                          <ion-input #firstName type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on"></ion-input>
-                          <ion-input #lastName type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on"></ion-input>
+                          <ion-input id="firstName" type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on"></ion-input>
+                          <ion-input id="lastName" type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on"></ion-input>
                         </ion-item>
 
                         <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
@@ -193,7 +193,7 @@
                       <form [formGroup]="emailPassForm">
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
                           <!-- <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input> -->
-                          <ion-input #newEmail type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
+                          <ion-input id="newEmail" type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
                         </ion-item>
                         <div *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
                           <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.email.pristine && emailPassForm.controls.email.hasError('required')">
@@ -204,7 +204,7 @@
                           </div>
                         </div>
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
-                          <ion-input #newPassword1 [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
+                          <ion-input id="newPassword1" [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
                           <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
                         </ion-item>
                         <div *ngIf="!emailPassForm.controls.password.pristine && !emailPassForm.controls.password.valid">
@@ -216,7 +216,7 @@
                           </div>
                         </div>
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
-                          <ion-input #newPassword2 type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
+                          <ion-input id="newPassword2" type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
                         </ion-item>
                         <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
                           <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation.hasError('required')">
@@ -234,7 +234,7 @@
                       <p *ngIf="loginMode === 'email'" class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
                       <ion-row *ngIf="loginMode === 'email'" >
                         <ion-col>
-                          <ion-button #createEmailAccount [disabled]="!nameForm.valid || !emailPassForm.valid" shape="round" color="primary" (click)="registerEmail()">Create Account</ion-button>
+                          <ion-button id="createEmailAccount" [disabled]="!nameForm.valid || !emailPassForm.valid" shape="round" color="primary" (click)="registerEmail()">Create Account</ion-button>
                         </ion-col>
                       </ion-row>
                     </div>

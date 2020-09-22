@@ -52,11 +52,10 @@ describe('register an account as a new user', () => {
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/');
-        await browser.waitForAngular();
-        await showfeature.waitUntilPresent();
     });
 
     it('should show unauthenticated main page', async () => {
+        await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 
@@ -72,12 +71,15 @@ describe('register an account as a new user', () => {
         expect(await register.elementIsPresent('#welcomeSlides')).toBeTruthy();
     });
 
-    it('should show, fill out, and submit email registration form', async () => {
+    it('should show create account form', async () => {
         await register.clickElement('#leaveWelcomeSlides');
-        await browser.sleep(5000);
-        await browser.waitForAngular();
-        await register.fillSubmitCreateAccountEmailForm;
-        await browser.waitForAngular();
+        await register.waitUntilElementPresent('#createAccount');
+        expect(await register.elementIsPresent('#createAccount')).toBeTruthy();
+    });
+
+    it('should fill out and submit email registration form', async () => {
+        await register.fillSubmitCreateAccountEmailForm();
+        await register.waitUntilElementPresent('#login-form');
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 });

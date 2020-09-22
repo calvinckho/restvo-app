@@ -52,31 +52,33 @@ class PageObjectBase {
     }
 
     protected async enterInputText(sel: string, text: string) {
-        const el = element(by.css(`${this.tag} ${sel}`));
-        await browser.wait(ExpectedConditions.presenceOf(el), 10000);
-        const inp = el.element(by.css('input'));
-        for (let i = 0; i < text.length; i++) {
-            inp.sendKeys(text.charAt(i));
-        }
+        const els = element.all(by.css(`${this.tag} ${sel}`));
+        els.each(async (el) => {
+            if (await el.isDisplayed()) {
+                await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                const inp = el.element(by.css('input'));
+                for (let i = 0; i < text.length; i++) {
+                    inp.sendKeys(text.charAt(i));
+                }
+            }
+        });
     }
 
     protected async enterTextareaText(sel: string, text: string) {
-        const el = element(by.css(`${this.tag} ${sel}`));
-        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-        const inp = el.element(by.css('textarea'));
-        for (let i = 0; i < text.length; i++) {
-            inp.sendKeys(text.charAt(i));
-        }
-    }
-
-    protected async clickButton(parentTag: string, sel: string) {
-        const el = element(by.css(parentTag ? `${parentTag} ${this.tag} ${sel}` : `${this.tag} ${sel}`));
-        await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-        el.click();
+        const els = element.all(by.css(`${this.tag} ${sel}`));
+        els.each(async (el) => {
+            if (await el.isDisplayed()) {
+                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                const inp = el.element(by.css('textarea'));
+                for (let i = 0; i < text.length; i++) {
+                    inp.sendKeys(text.charAt(i));
+                }
+            }
+        });
     }
 
     async clickElement(sel: string) {
-        this.waitUntilElementPresent(sel);
+        await this.waitUntilElementPresent(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {
@@ -175,7 +177,7 @@ export class MaintabPage extends PageObjectBase {
     }
 
     clickTabButton(button) {
-        this.clickButton(null, button);
+        this.clickElement(button);
     }
 }
 export class ShowfeaturePage extends PageObjectBase {
@@ -206,7 +208,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     clickTabButton(button) {
-        this.clickButton(null, button);
+        this.clickElement(button);
     }
 
     async fillEmail() {
@@ -231,7 +233,7 @@ export class RegisterPage extends PageObjectBase {
         await this.enterInputText('#newEmail', 'calvin+4@restvo.com');
         await this.enterInputText('#newPassword1', 'makenodifference');
         await this.enterInputText('#newPassword2', 'makenodifference');
-        await this.clickButton(null, '#createEmailAccount');
+        await this.clickElement('#createEmailAccount');
     }
 
     currentUrl() {
@@ -255,7 +257,7 @@ export class OnboardingfeaturePage extends PageObjectBase {
     }
 
     async clickStartButton() {
-        await this.clickButton(null, '#get-started');
+        await this.clickElement('#get-started');
     }
 }
 
@@ -324,8 +326,8 @@ export class DashboardPage extends PageObjectBase {
 
     async createEvent() {
         this.enterTextareaText('#add-event-title', 'Protractor Test Event');
-        await this.clickButton(null, '#all-day');
-        await this.clickButton(null, '#save-event');
+        await this.clickElement('#all-day');
+        await this.clickElement('#save-event');
     }
 
     clickMenuToggle(el) {
@@ -343,11 +345,11 @@ export class PickfeaturePopoverPage extends PageObjectBase {
     }
 
     clickBackButton() {
-        this.clickButton(null, '#back-button');
+        this.clickElement('#back-button');
     }
 
     clickNextButton() {
-        this.clickButton(null, '#next-button');
+        this.clickElement('#next-button');
     }
 
     clickCreateNewMoment() {
