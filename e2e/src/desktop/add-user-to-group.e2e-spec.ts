@@ -51,7 +51,7 @@ describe('add and remove user from group', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/app/activity/5e0012f714001a7dbf712de2');
+        await browser.get('/activity/5e0012f714001a7dbf712de2');
         await showfeature.waitUntilPresent();
         await showfeature.clickSigninButton('#signin');
         await browser.waitForAngular();
