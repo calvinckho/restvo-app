@@ -65,4 +65,9 @@ describe('add and remove user from group', () => {
         await browser.sleep(5000);
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
+
+    it('should click to add user to group', async () => {
+        await showfeature.clickSigninButton("#add-user-to-group");
+        await browser.sleep(5000);
+    });
 });
