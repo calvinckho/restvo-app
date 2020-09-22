@@ -52,7 +52,7 @@ describe('add and remove user from group', () => {
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/app/activity/5e0012f714001a7dbf712de2');
-        await showfeature.waitUntilPresent();
+        await showfeature.waitUntilElementPresent('#signin');
         await showfeature.clickSigninButton('#signin');
         await browser.waitForAngular();
         await register.fillEmail();
@@ -61,7 +61,8 @@ describe('add and remove user from group', () => {
     });
 
     it('should show authenticated activity page', async () => {
-        await showfeature.waitUntilElementPresent('#showfeature-header');
-        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+        await register.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
+        await browser.sleep(5000);
+        expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 });
