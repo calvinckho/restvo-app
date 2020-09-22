@@ -47,16 +47,20 @@ class PageObjectBase {
         return browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
+    waitUntilElementVisible(sel: string) {
+        return browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    }
+
     getTitle() {
         return element(by.css(`${this.tag} ion-title`)).getText();
     }
 
     protected async enterInputText(sel: string, text: string) {
-        await this.waitUntilElementPresent(sel);
+        await this.waitUntilElementVisible(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
                 const inp = el.element(by.css('input'));
                 for (let i = 0; i < text.length; i++) {
                     inp.sendKeys(text.charAt(i));
@@ -66,7 +70,7 @@ class PageObjectBase {
     }
 
     protected async enterTextareaText(sel: string, text: string) {
-        await this.waitUntilElementPresent(sel);
+        await this.waitUntilElementVisible(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {

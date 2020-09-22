@@ -84,7 +84,7 @@ describe('register an account as a new user', () => {
 
     it('should confirm success prompt', async () => {
         await app.clickAlertButton('OK');
-        await register.waitUntilElementPresent('#login-form');
+        await register.waitUntilElementPresent('#login-button');
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 });
