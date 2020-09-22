@@ -43,6 +43,10 @@ class PageObjectBase {
         return browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
     }
 
+    waitUntilElementPresent(sel: string) {
+        return browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    }
+
     getTitle() {
         return element(by.css(`${this.tag} ion-title`)).getText();
     }
@@ -72,6 +76,7 @@ class PageObjectBase {
     }
 
     async clickElement(sel: string) {
+        this.waitUntilElementPresent(sel);
         const els = element.all(by.css(`${this.tag} ${sel}`));
         els.each(async (el) => {
             if (await el.isDisplayed()) {

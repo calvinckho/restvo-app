@@ -64,7 +64,7 @@
         <ion-col class="right-signUp" *ngIf="platform.width() >= 768">
           <img class="background-img" src="assets/img/signUp.png"/>
           <div class="welcome-subtitle">Not a user yet? Sign up here</div>
-          <ion-button color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'welcome'" id="signup-button">Sign up</ion-button>
+          <ion-button id="switchToSignUp" color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'welcome'">Sign up</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -78,7 +78,7 @@
               <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
             </ion-button>
           </ion-buttons>
-          <ion-slides #welcomeSlides pager class="ion-padding-bottom">
+          <ion-slides id="welcomeSlides" pager class="ion-padding-bottom">
             <!--Intro slide 1-->
             <ion-slide>
               <ion-list>
@@ -130,7 +130,7 @@
           </ion-slides>
           <ion-row class="form">
             <ion-col>
-              <ion-button shape="round" fill="outline clear" (click)="loadRegisterSlides()">Sign up</ion-button>
+              <ion-button shape="round" fill="outline clear" (click)="loadRegisterSlides()" id="leaveWelcomeSlides">Sign up</ion-button>
             </ion-col>
           </ion-row>
         </ion-list>
@@ -500,7 +500,7 @@
           <img class="background-img" src="assets/img/signUp.png"/>
           <div [hidden]="exitType === 'dashboard'">
             <div class="welcome-subtitle">Already a user? Sign in here</div>
-            <ion-button #signupButton color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'">Sign in</ion-button>
+            <ion-button id="switchToSignIn" color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'">Sign in</ion-button>
             <ion-button (click)="view = 'signin'; toggleRecoveryMode()" class="create-account" fill="clear">I forgot my password</ion-button>
           </div>
         </ion-col>

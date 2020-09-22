@@ -86,10 +86,10 @@ describe('join journey and leave journey', () => {
     it('should click to see more options', async () => {
         await showfeature.clickElement('#show-event-title');
         await browser.sleep(1000);
-        //await app.waitUntilElementVisible('app-main-tab #toggle-more-options');
+        //await showfeature.waitUntilElementPresent('#toggle-more-options');
         await showfeature.clickElement('#toggle-more-options');
         await browser.sleep(3000);
-        //await app.waitUntilElementVisible('ion-action-sheet');
+        //await showfeature.waitUntilElementPresent('ion-action-sheet');
         expect(await app.actionsheetIsPresent()).toBeTruthy();
     });
 

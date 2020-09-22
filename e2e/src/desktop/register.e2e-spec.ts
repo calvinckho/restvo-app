@@ -52,6 +52,7 @@ describe('register an account as a new user', () => {
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/');
+        await browser.waitForAngular();
         await showfeature.waitUntilPresent();
     });
 
@@ -66,13 +67,14 @@ describe('register an account as a new user', () => {
     });
 
     it('should show welcome walkthrough', async () => {
-        await register.clickElement('#signupButton');
-        await app.waitUntilElementVisible('#welcomeSlides');
+        await register.clickElement('#switchToSignUp');
+        await register.waitUntilElementPresent('#welcomeSlides');
         expect(await register.elementIsPresent('#welcomeSlides')).toBeTruthy();
     });
 
     it('should show, fill out, and submit email registration form', async () => {
-        await register.clickElement('#signup-button');
+        await register.clickElement('#leaveWelcomeSlides');
+        await browser.sleep(5000);
         await browser.waitForAngular();
         await register.fillSubmitCreateAccountEmailForm;
         await browser.waitForAngular();

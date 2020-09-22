@@ -167,13 +167,15 @@ app-register {
     line-height: 24px;
   }
 
-  .right-signUp #signup-button {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    border-color: white;
+  .right-signUp  {
+    #switchToSignUp, #switchToSignIn {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      border-color: white;
+    }
   }
 
   .right-signUp .create-account {
