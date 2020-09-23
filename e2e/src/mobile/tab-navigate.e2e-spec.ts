@@ -95,6 +95,6 @@ describe('navigate around the maintab', () => {
     it('should click the logout button', async () => {
         await app.clickElement('#logoutButton') //click the logout button
         await browser.sleep(1000); // tell webdriver to wait so sign in page can be seen
-        expect(await showfeature.signinButtonIsPresent()).toBeTruthy(); //it should contain signin button in header
+        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy(); //it should contain signin button in header
     });
 });

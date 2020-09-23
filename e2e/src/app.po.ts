@@ -48,8 +48,8 @@ class PageObjectBase {
         }
     }
 
-    waitUntilUrlContains() {
-        return browser.wait(ExpectedConditions.urlContains(this.path), 10000);
+    waitUntilUrlContains(path) {
+        return browser.wait(ExpectedConditions.urlContains(path), 10000);
     }
 
     async waitUntilVisible() {
@@ -153,15 +153,6 @@ class PageObjectBase {
 
     async elementIsPresent(sel: string) {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
-    }
-
-    async signinButtonIsPresent() {
-        const signinButton = element(by.css('#signin'));
-        if (signinButton) {
-            return signinButton.isPresent();
-        } else {
-            return false;
-        }
     }
 }
 

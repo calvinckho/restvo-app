@@ -98,13 +98,13 @@ describe('join journey and leave journey', () => {
 
     it('should click the Settings tab', async () => {
         await app.clickElement('#userProfileSettings');
-        await browser.waitForAngular();
+        await app.waitUntilUrlContains('profile');
         expect(await app.currentUrl()).toContain('profile');
     });
 
     it('should click the logout button', async () => {
         await app.clickElement('#logoutButton');
         await browser.waitForAngular();
-        expect(await showfeature.signinButtonIsPresent()).toBeTruthy();
+        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
     });
 });
