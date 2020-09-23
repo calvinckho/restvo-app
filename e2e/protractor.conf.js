@@ -8,12 +8,15 @@ exports.config = {
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
     //'./src/mobile/tab-navigate.e2e-spec.ts',
-    './src/desktop/add-user-to-group.e2e-spec.ts', // run this specific script
-    //'./src/desktop/register.e2e-spec.ts', // run this specific script
     //'./src/desktop/journey.e2e-spec.ts', // run this specific script
+    './src/desktop/register.e2e-spec.ts', // run this specific script
+    //'./src/desktop/add-user-to-group.e2e-spec.ts', // run this specific script
   ],
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    chromeOptions: {
+      args: [ "--headless" ]
+    },
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',

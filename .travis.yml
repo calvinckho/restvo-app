@@ -13,7 +13,7 @@ jobs:
     - stage: test
       name: "Join Journey Test"
       script: ng e2e --protractor-config='e2e/src/desktop/journey.conf.js'
-    - name: "Register as new user"
+    - name: "Register New Account Test"
       script: ng e2e --protractor-config='e2e/src/desktop/register.conf.js'
     - name: "Tab Navigation Test"
       script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
