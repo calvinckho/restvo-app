@@ -127,18 +127,23 @@ class PageObjectBase {
             const inp = el.element(by.css('input'));
             await inp.sendKeys(text);
         }
-        await browser.sleep(1000); // needs to pause and wait for text to be inputed into element, otherwise the next sendKeys will stop the current one
+        await browser.sleep(2000); // needs to pause and wait for text to be inputed into element, otherwise the next sendKeys will stop the current one
     }
 
     async clickElement(sel: string) {
-        await this.waitUntilElementVisible(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-                el.click();
-            }
-        });
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            els.forEach(async (el) => {
+                if (await el.isDisplayed()) {
+                    await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+                    el.click();
+                }
+            });
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+            el.click();
+        }
     }
 
     protected async countElements(sel: string) {
