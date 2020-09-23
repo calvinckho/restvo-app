@@ -281,7 +281,7 @@
               </ion-item>
               <ion-grid class="tile-grid">
                 <ion-row class="tile-row">
-                  <ion-col class="tile-col" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue" class="ion-align-self-center" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
+                  <ion-col *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue" class="ion-align-self-center" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
                     <ion-card class="tile-card" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
                       <ion-card-header class="ion-no-padding">
                         <div class="tile-photo-container">
@@ -315,7 +315,7 @@
 <ion-footer *ngIf="!ionSpinner">
   <ion-toolbar>
     <ion-row>
-      <ion-button *ngIf="loadCompleted && !reachedEnd" expand="full" shape="round" class="centered" [disabled]="!nextButtonReady" (click)="clickNextButton('next')">
+      <ion-button id="next" *ngIf="loadCompleted && !reachedEnd" expand="full" shape="round" class="centered" [disabled]="!nextButtonReady" (click)="clickNextButton('next')">
         <div *ngIf="nextButtonReady">Next</div>
         <div *ngIf="!nextButtonReady">Saving ...</div>
       </ion-button>

@@ -168,22 +168,18 @@ export class AppPage extends PageObjectBase {
 
     async clickAlertButton(text) {
         await this.waitUntilElementVisible('.alert-button.sc-ion-alert-md');
-        element.all(by.css('.alert-button.sc-ion-alert-md')).each(async (el) => {
-            if (await el.getText() === text) {
-                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-                return el.click();
-            }
-        });
+        await element.all(by.css('.alert-button.sc-ion-alert-md'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
     }
 
     async clickActionSheetButton(text) {
         await this.waitUntilElementVisible('.action-sheet-button');
-        element.all(by.css('.action-sheet-button')).each(async (el) => {
-            if (await el.getText() === text) {
-                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-                el.click();
-            }
-        });
+        await element.all(by.css('.action-sheet-button'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
     }
 
     actionsheetIsPresent() {
@@ -259,7 +255,9 @@ export class RegisterPage extends PageObjectBase {
     async fillSubmitCreateAccountEmailForm() {
         await this.enterInputText('#firstName', 'Tammy');
         await this.enterInputText('#lastName', 'Ho');
-        await this.enterInputText('#newEmail', 'calvin+4@restvo.com');
+        // calvin+e2e1@restvo.com is a special email that is handled differently in the backend for testing purposes.
+        // No email is sent to it, but instead, token 9LL1tFgDTH9skXdYmoofMmPmgwYLaAQ78elfIWu6xRebj2L7 can be used to authenticate the fake user
+        await this.enterInputText('#newEmail', 'calvin+e2e1@restvo.com');
         await this.enterInputText('#newPassword1', 'makenodifference');
         await this.enterInputText('#newPassword2', 'makenodifference');
         await this.clickElement('#createEmailAccount');
@@ -285,7 +283,10 @@ export class OnboardingfeaturePage extends PageObjectBase {
         super('app-onboardfeature', '/');
     }
 
-    async clickStartButton() {
+    async finishOnboarding() {
+        await element.all(by.css('.tile-card')).first().click();
+        await this.clickElement('#next');
+        await this.waitUntilElementVisible('#get-started');
         await this.clickElement('#get-started');
     }
 }

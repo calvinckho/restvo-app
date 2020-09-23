@@ -42,7 +42,7 @@
             <ion-icon slot="start" name="calendar" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/calendar')}">Calendar</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('privacy')">
+          <ion-item (click)="clickManageMenu('privacy')" id="privacy-tab">
             <ion-icon slot="start" name="settings" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/privacy')}">Privacy & Security</ion-label>
           </ion-item>
