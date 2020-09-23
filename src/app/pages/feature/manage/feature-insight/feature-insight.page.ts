@@ -119,6 +119,10 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     }
   };
 
+  onClickMe($event) {
+    console.log($event.target.value)
+  }
+
   async loadMetrics() {
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
     const results: any = await this.systemlogService.loadMetrics(this.moment._id);
