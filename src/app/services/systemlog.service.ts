@@ -38,8 +38,7 @@ export class Systemlog {
     }
 
     async loadMetrics(activityId) {
+        // return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=day&type=activity&durationValue=7&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions).toPromise();
         return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=day&type=activity&durationValue=7&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions).toPromise();
     }
 }
-
-
