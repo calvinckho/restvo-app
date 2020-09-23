@@ -104,7 +104,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         this.moment._id = this.route.snapshot.paramMap.get('id');
       }
       this.loadInsight();
-      this.loadMetrics();
+      this.loadMetrics(7);
     }
   }
 
@@ -115,17 +115,18 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       // ready to check authentication status
       this.setup(data);
       this.loadInsight();
-      this.loadMetrics();
+      this.loadMetrics(7);
     }
   };
 
   onClickMe($event) {
     console.log($event.target.value)
+    this.loadMetrics(2)
   }
 
-  async loadMetrics() {
+  async loadMetrics(number) {
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
-    const results: any = await this.systemlogService.loadMetrics(this.moment._id);
+    const results: any = await this.systemlogService.loadMetrics(this.moment._id, number);
     console.log("check for load metrics", results)
     this.multi = [{
       name: 'Activity',
