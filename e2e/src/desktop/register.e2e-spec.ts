@@ -66,7 +66,6 @@ describe('register an account as a new user', () => {
     });
 
     it('should show welcome walkthrough', async () => {
-        console.log("check 1")
         await register.clickElement('#switchToSignUp');
         console.log("check 2")
         await register.waitUntilElementPresent('#welcomeSlides');

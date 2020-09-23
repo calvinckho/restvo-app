@@ -67,14 +67,17 @@ class PageObjectBase {
 
     async waitUntilElementPresent(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
+        console.log("wait", els.length)
         if (els.length) {
             for (const el of els) {
                 if (await el.isDisplayed()) {
-                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                    console.log("wait 2", els.length)
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 18000);
                 }
             }
         } else {
-            await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+            console.log("wait 3", els.length)
+            await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
         }
     }
 
@@ -129,7 +132,6 @@ class PageObjectBase {
 
     async clickElement(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
-        console.log("click", els.length);
         if (els.length) {
             els.forEach(async (el) => {
                 if (await el.isDisplayed()) {
