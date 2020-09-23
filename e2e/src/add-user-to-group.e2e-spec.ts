@@ -56,6 +56,6 @@ describe('add and remove user from group', () => {
     });
 
     it('should show unauthenticated group page', async () => {
-        expect(await showfeature.headerIsPresent(null, '#showfeature-header')).toBeTruthy();
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 });
