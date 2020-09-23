@@ -76,7 +76,6 @@ class PageObjectBase {
         } else {
             await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
         }
-        //return await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
     async waitUntilElementVisible(sel: string) {
@@ -90,7 +89,6 @@ class PageObjectBase {
         } else {
             await browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
         }
-        //return browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
     async waitUntilElementInvisible(sel: string) {
@@ -104,7 +102,6 @@ class PageObjectBase {
         } else {
             return await browser.wait(ExpectedConditions.invisibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
         }
-        //return browser.wait(ExpectedConditions.invisibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
     }
 
     getTitle() {
@@ -132,6 +129,7 @@ class PageObjectBase {
 
     async clickElement(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
+        console.log("click", els.length);
         if (els.length) {
             els.forEach(async (el) => {
                 if (await el.isDisplayed()) {
@@ -141,6 +139,7 @@ class PageObjectBase {
             });
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
             el.click();
         }
