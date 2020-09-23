@@ -111,20 +111,17 @@ class PageObjectBase {
     protected async enterInputText(sel: string, text: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
-            for (const el of els) {
-                if (await el.isPresent()) {
-                    await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-                    const inp = el.element(by.css('input'));
-                    await inp.sendKeys(text);
-                }
-            }
+            await element.all(by.css(`${this.tag} ${sel}`))
+                .filter(async (el, index) => await el.isPresent())
+                .first()
+                .element(by.css('input'))
+                .sendKeys(text);
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             const inp = el.element(by.css('input'));
             await inp.sendKeys(text);
         }
-        await browser.sleep(2000); // needs to pause and wait for text to be inputed into element, otherwise the next sendKeys will stop the current one
     }
 
     async clickElement(sel: string) {

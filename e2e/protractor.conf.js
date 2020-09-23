@@ -11,9 +11,9 @@ exports.config = {
     './src/desktop/journey.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
-    chromeOptions: {
+    /*chromeOptions: {
       args: [ "--headless" ]
-    },
+    },*/
     'browserName': 'chrome'
   },
   directConnect: true,
