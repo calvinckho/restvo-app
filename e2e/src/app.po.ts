@@ -30,7 +30,7 @@ class PageObjectBase {
         const els = await element.all(by.css(this.tag));
         if (els.length) {
             for (const el of els) {
-                if (await el.isDisplayed()) {
+                if (await el.isPresent()) {
                     return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
                 }
             }
@@ -67,16 +67,13 @@ class PageObjectBase {
 
     async waitUntilElementPresent(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
-        console.log("wait", els.length)
         if (els.length) {
             for (const el of els) {
-                if (await el.isDisplayed()) {
-                    console.log("wait 2", els.length)
+                if (await el.isPresent()) {
                     return await browser.wait(ExpectedConditions.presenceOf(el), 18000);
                 }
             }
         } else {
-            console.log("wait 3", els.length)
             await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
         }
     }
@@ -85,8 +82,8 @@ class PageObjectBase {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
             for (const el of els) {
-                if (await el.isDisplayed()) {
-                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                if (await el.isPresent()) {
+                    return await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
                 }
             }
         } else {
@@ -115,7 +112,7 @@ class PageObjectBase {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
             for (const el of els) {
-                if (await el.isDisplayed()) {
+                if (await el.isPresent()) {
                     await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
                     const inp = el.element(by.css('input'));
                     await inp.sendKeys(text);
@@ -134,14 +131,13 @@ class PageObjectBase {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
             els.forEach(async (el) => {
-                if (await el.isDisplayed()) {
-                    await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+                if (await el.isPresent()) {
+                    await browser.wait(ExpectedConditions.elementToBeClickable(el), 18000);
                     el.click();
                 }
             });
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
-            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
             el.click();
         }
