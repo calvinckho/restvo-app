@@ -58,6 +58,11 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   yAxisLabel: string = 'Activity';
   timeline: boolean = true;
 
+  //duration unit and value
+  durationValue: number = 7;
+  durationUnit: string = 'day';
+  currentDayValue: string = '7'
+
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
@@ -113,7 +118,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       // ready to check authentication status
       this.setup(data, !!(this.authService.token && this.userData.user));
       this.loadInsight();
-      this.loadMetrics(7);
+      this.loadMetrics(this.currentDayValue);
     }
   };
 
@@ -123,10 +128,35 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   //   this.loadMetrics(2)
   // }
 
-  async loadMetrics(durationValue) {
+  async loadMetrics(dayValue) {
+    this.currentDayValue = dayValue;
+    switch (dayValue){
+      case '7':
+        this.durationValue = 7
+        this.durationUnit = 'day'
+        break;
+      case '30':
+        this.durationValue = 1
+        this.durationUnit = 'month'
+        break;
+      case '90':
+        this.durationValue = 3
+        this.durationUnit = 'month'
+        break;
+      case '365':
+        this.durationValue = 1
+        this.durationUnit = 'year'
+        break;
+        default:
+        this.durationValue = 7
+        this.durationUnit = 'day'
+    }
+
+    console.log('dayValue', dayValue, 'this.durationValue', this.durationValue, 'this.durationUnit', this.durationUnit)
+
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
     // console.log(durationUnit, durationValue)
-    const results: any = await this.systemlogService.loadMetrics(this.moment._id, durationValue);
+    const results: any = await this.systemlogService.loadMetrics(this.moment._id, this.durationUnit, this.durationValue);
     console.log("check for load metrics", results)
     this.multi = [{
       name: 'Activity',
