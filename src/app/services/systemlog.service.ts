@@ -37,8 +37,8 @@ export class Systemlog {
         return this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
     }
 
-    async loadMetrics(activityId, number) {
-        // return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=day&type=activity&durationValue=7&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions).toPromise();
-        return this.http.get(this.networkService.domain + `/api/systemlog/loadmetrics?durationUnit=day&type=activity&durationValue=${number}&timeMeasurement=day&topic=Load Activity&activity=` + activityId, this.authService.httpAuthOptions).toPromise();
+    async loadMetrics(activityId, durationValue) {
+        // return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=month&type=activity&durationValue=1&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions).toPromise();
+        return this.http.get(this.networkService.domain + `/api/systemlog/loadmetrics?durationUnit=day&type=activity&durationValue=${durationValue}&timeMeasurement=day&topic=Load Activity&activity=` + activityId, this.authService.httpAuthOptions).toPromise();
     }
 }
