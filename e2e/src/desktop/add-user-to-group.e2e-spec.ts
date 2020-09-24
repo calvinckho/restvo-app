@@ -63,12 +63,19 @@ describe('add and remove user from group', () => {
 
     it('should show authenticated activity page', async () => {
         await register.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
-        await browser.sleep(5000);
+        await browser.sleep(2000);
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 
     it('should click to add user to group', async () => {
         await showfeature.clickSigninButton("#add-user-to-group");
-        await browser.sleep(5000);
+        await browser.sleep(2000);
+    });
+
+    it('should select new user and add them', async () => {
+        await pickpeople.userSelect();
+        await browser.sleep(2000);
+        await pickpeople.done();
+        await browser.sleep(2000);
     });
 });
