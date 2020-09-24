@@ -399,6 +399,14 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     clickRecent() {
         this.clickElement('#recent-');
     }
+
+    userSelect() {
+      this.clickElement("#user-select");
+    }
+
+    done() {
+      this.clickElement("#done");
+    }
 }
 
 export class CreateFeaturePage extends PageObjectBase {
