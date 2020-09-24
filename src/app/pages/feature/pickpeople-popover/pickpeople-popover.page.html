@@ -31,7 +31,7 @@
       <ion-icon slot="end" color="tertiary" *ngIf="this.selfConversationObj.select" name="checkmark-circle"></ion-icon>
     </ion-item>
     <ion-virtual-scroll [items]="conversations" approxItemHeight="60px">
-      <div *virtualItem="let obj">
+      <div id="user-select" *virtualItem="let obj">
         <ion-item (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
           <ion-avatar slot="start">
             <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
