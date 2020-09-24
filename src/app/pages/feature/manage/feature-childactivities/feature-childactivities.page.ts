@@ -267,7 +267,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     this.selectedSample = await this.momentService.load(this.categorySampleMap.find((c) => c.categoryId === this.categoryId).sampleId);
   }
 
-  async createPlan() {
+  async createActivity() {
     this.ionSpinner = true;
     this.selectedSample.matrix_string[0][0] = this.newActivityName;
     // prepare relationship object for cloning. copy everything except calendar and add programId to parent_programs property
@@ -286,10 +286,18 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
     this.selectedSample.parent_programs = [this.moment._id];
     const clonedMoments: any = await this.momentService.clone([this.selectedSample], 'admin'); // clone and do not add admin as participants
     if (clonedMoments && clonedMoments.length) {
-      if (this.platform.width() >= 768) {
-        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + clonedMoments[0]._id + '/overview/' + clonedMoments[0]._id, { visibleComponents: '10000,10010,10050,10300' }]);
-      } else {
-        this.momentService.openCreator({ moment: clonedMoments[0], modalPage: true });
+      if (this.categoryId === '5c915475e172e4e64590e348') { // creating new program
+        if (this.platform.width() >= 768) {
+          this.router.navigate(['/app/manage/activity/' + clonedMoments[0]._id + '/profile/' + clonedMoments[0]._id]);
+        } else {
+          this.momentService.manageMoment({ moment: clonedMoments[0], modalPage: true });
+        }
+      } else { // mentoring, journey, group
+        if (this.platform.width() >= 768) {
+          this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + clonedMoments[0]._id + '/overview/' + clonedMoments[0]._id, { visibleComponents: '10000,10010,10050,10300' }]);
+        } else {
+          this.momentService.openCreator({ moment: clonedMoments[0], modalPage: true });
+        }
       }
       this.newActivityName = ''; // reset name
     }
