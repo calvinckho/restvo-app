@@ -55,6 +55,7 @@ describe('add and remove user from group', () => {
         await showfeature.waitUntilPresent();
         await showfeature.clickSigninButton('#signin');
         await browser.waitForAngular();
+        await browser.sleep(1000);
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
