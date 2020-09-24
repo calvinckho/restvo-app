@@ -138,8 +138,8 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         this.durationUnit = 'day'
         break;
       case '30':
-        this.durationValue = 1
-        this.durationUnit = 'month'
+        this.durationValue = 30
+        this.durationUnit = 'day'
         break;
       case '90':
         this.durationValue = 3
@@ -155,9 +155,11 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     }
 
     console.log('dayValue', dayValue, 'this.durationValue', this.durationValue, 'this.durationUnit', this.durationUnit)
-
+    // this.multi = [{
+    //   name: 'Activity',
+    //   series: []
+    // }];
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
-    // console.log(durationUnit, durationValue)
     const results: any = await this.systemlogService.loadMetrics(this.moment._id, this.durationUnit, this.durationValue);
     console.log("check for load metrics", results)
     this.multi = [{
