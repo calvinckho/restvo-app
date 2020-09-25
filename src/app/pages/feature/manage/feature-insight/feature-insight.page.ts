@@ -124,12 +124,6 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     }
   };
 
-  // v to delete
-  // onClickMe($event) {
-  //   console.log($event.target.value)
-  //   this.loadMetrics(2)
-  // }
-
   async loadMetrics(dayValue) {
     this.currentDayValue = dayValue;
     switch (dayValue){
@@ -155,10 +149,10 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     }
 
     console.log('dayValue', dayValue, 'this.durationValue', this.durationValue, 'this.durationUnit', this.durationUnit)
-    // this.multi = [{
-    //   name: 'Activity',
-    //   series: []
-    // }];
+    this.multi = [{
+      name: 'Activity',
+      series: []
+    }];
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
     const results: any = await this.systemlogService.loadMetrics(this.moment._id, this.durationUnit, this.durationValue);
     console.log("check for load metrics", results)
