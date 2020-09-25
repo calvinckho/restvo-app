@@ -69,12 +69,12 @@ describe('add and remove user from group', () => {
 
     it('should click to add user to group', async () => {
         await showfeature.clickSigninButton("#add-user-to-group");
-        await browser.sleep(20000);
+        await browser.sleep(2000);
     });
 
     it('should select new user and add them', async () => {
         await pickpeople.userSelect();
-        await browser.sleep(20000);
+        await browser.sleep(2000);
         await pickpeople.done();
         await browser.sleep(2000);
     });
