@@ -9,17 +9,9 @@
 
 <ion-content>
   <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
-    <ion-select interface="action-sheet" slot="end" placeholder="see options" (ionChange)="loadMetrics($event.target.value)">
-      <!-- 30 days, 90 days, this year, last year -->
-      <ion-select-option value=7>This Week</ion-select-option>
-      <ion-select-option value=30>This Month</ion-select-option>
-      <ion-select-option value=30>30 Days</ion-select-option>
-      <ion-select-option value=90>90 Days</ion-select-option>
-      <ion-select-option value=365>This Year</ion-select-option>
-      <ion-select-option>Last Year (n/a yet)</ion-select-option>
-    </ion-select>
     <ngx-charts-line-chart
             [scheme]="colorScheme"
+            [schemeType]="schemeType"
             [legend]="legend"
             [showXAxisLabel]="showXAxisLabel"
             [showYAxisLabel]="showYAxisLabel"
@@ -27,11 +19,22 @@
             [xAxisTickFormatting]="dateTickFormatting"
             [yAxis]="yAxis"
             [xAxisLabel]="xAxisLabel"
+            [xScaleMin]="xScaleMin"
             [yAxisLabel]="yAxisLabel"
             [timeline]="timeline"
             [results]="multi"
     >
     </ngx-charts-line-chart>
+        <ion-select interface="action-sheet" slot="end" placeholder="see options"
+          (ionChange)="loadMetrics($event.target.value)">
+          <!-- 30 days, 90 days, this year, last year -->
+          <ion-select-option value=7>This Week</ion-select-option>
+          <ion-select-option value=30>This Month</ion-select-option>
+          <ion-select-option value=30>30 Days</ion-select-option>
+          <ion-select-option value=90>90 Days</ion-select-option>
+          <ion-select-option value=365>This Year</ion-select-option>
+          <ion-select-option>Last Year (n/a yet)</ion-select-option>
+        </ion-select>
   </ion-toolbar>
   <ion-toolbar>
     <ion-item>
