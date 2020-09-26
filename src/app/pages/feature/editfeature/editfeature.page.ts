@@ -1434,10 +1434,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      if (this.subscriptions.hasOwnProperty('refreshUserStatus')) {
+      if (this.subscriptions && this.subscriptions.refreshUserStatus)  {
           this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
       }
-      if (this.subscriptions.hasOwnProperty('refreshMoment')) {
+      if (this.subscriptions && this.subscriptions.refreshMoment)  {
           this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       }
   }
