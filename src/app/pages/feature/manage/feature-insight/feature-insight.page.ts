@@ -48,7 +48,10 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   multi: any[];
   //view: any[] = [700, 300];
 
+  date = new Date();
+
   // options
+  schemeType: string = "linear"
   legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
@@ -57,6 +60,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = false;
   xAxisLabel: string = 'Day';
+  xScaleMin: string;
   yAxisLabel: string = 'Activity';
   timeline: boolean = true;
 
@@ -125,9 +129,18 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   };
 
   async loadMetrics(dayValue) {
+    //find a way to utilize xmin on chart
     this.currentDayValue = dayValue;
     switch (dayValue){
       case '7':
+        // v work on this tomorrow
+        const currentDay = this.date.getDay();
+        const difference = this.date.getDate() - currentDay;
+        const firstDayInMilliSeconds = this.date.setDate(difference)
+        let firstDayOfWeek = new Date(firstDayInMilliSeconds).toISOString()
+        console.log('firstDayOfWeek', firstDayOfWeek, typeof firstDayOfWeek)
+        this.xScaleMin = firstDayOfWeek
+        console.log('this.xScaleMin', this.xScaleMin)
         this.durationValue = 7
         this.durationUnit = 'day'
         break;
@@ -149,10 +162,12 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     }
 
     console.log('dayValue', dayValue, 'this.durationValue', this.durationValue, 'this.durationUnit', this.durationUnit)
-    this.multi = [{
-      name: 'Activity',
-      series: []
-    }];
+    console.log('this.xScaleMin', this.xScaleMin)
+
+    // this.multi = [{
+    //   name: 'Activity',
+    //   series: []
+    // }];
     //possibly add parameters for duationUnit and durationValue to loadMetrics method?
     const results: any = await this.systemlogService.loadMetrics(this.moment._id, this.durationUnit, this.durationValue);
     console.log("check for load metrics", results)
