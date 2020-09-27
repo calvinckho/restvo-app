@@ -108,8 +108,7 @@ export class CommunityPopoverPage implements OnInit {
                 cssClass: 'level-15'
             });
             await alert.present();
-        }
-        catch(err){
+        } catch (err) {
             console.log("failed to add to My Community");
         }
     }
