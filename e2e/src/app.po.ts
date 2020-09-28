@@ -408,14 +408,11 @@ export class PickpeoplePopoverPage extends PageObjectBase {
       this.clickElement('#recent-');
     }
 
-<<<<<<< HEAD
     async clickPopoverChoice(text) {
       await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
       this.clickElement('.select-interface-option.sc-ion-select-popover');
     }
 
-=======
->>>>>>> 86e8ed632830f4d32be791b8ed96e1a3f9696f78
     userSelect() {
       this.clickElement("#user-select");
     }
