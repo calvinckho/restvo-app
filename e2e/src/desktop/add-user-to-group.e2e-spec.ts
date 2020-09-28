@@ -75,7 +75,7 @@ describe('add and remove user from group', () => {
     it('should select new user and add them', async () => {
         await pickpeople.userSelect();
         await browser.sleep(2000);
-        await pickpeople.clickAlertButton();
+        await pickpeople.clickPopoverChoice();
         await browser.sleep(2000);
         await pickpeople.done();
         await browser.sleep(2000);
