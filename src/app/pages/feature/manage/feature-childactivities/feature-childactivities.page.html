@@ -90,7 +90,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <!--In the create step, show a form to collect basic info about a new Plan-->
+  <!--In the create step, show a form to collect basic info about a new Activity-->
   <ion-card *ngIf="view === '2'">
     <ion-grid class="full-height">
       <ion-row class="ion-justify-content-center ion-align-items-center full-height form-container">
@@ -103,7 +103,7 @@
             <ion-input class="ion-text-start" type="text" [(ngModel)]="newActivityName" placeholder="Type a name here" (ionFocus)="loadSample()"></ion-input>
           </ion-item>
           <ion-row class="ion-margin-vertical">
-            <ion-button style="width: 100%;" [disabled]="!newActivityName || !selectedSample" expand="full" shape="round" (click)="createPlan()">
+            <ion-button style="width: 100%;" [disabled]="!newActivityName || !selectedSample" expand="full" shape="round" (click)="createActivity()">
               <div>Create new {{categoryLabel}}</div>
             </ion-button>
           </ion-row>

@@ -1418,8 +1418,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           await this.momentService.delete(moment);
       });
       await Promise.all(promises);*/
-      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
-      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+      if (this.subscriptions.hasOwnProperty('refreshUserStatus')) {
+          this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      }
+      if (this.subscriptions.hasOwnProperty('refreshMoment')) {
+          this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+      }
       if (this.modalPage) {
           this.modalCtrl.dismiss(refreshNeeded);
       } else {
@@ -1430,7 +1434,11 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
-      this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+      if (this.subscriptions && this.subscriptions.refreshUserStatus)  {
+          this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+      }
+      if (this.subscriptions && this.subscriptions.refreshMoment)  {
+          this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+      }
   }
 }

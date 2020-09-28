@@ -645,7 +645,7 @@ export class RegisterPage implements OnInit {
     }
 
     async registerEmail() {
-        if(this.emailPassForm.get('email').value &&this.emailPassForm.get('passwordConfirmation').value && this.emailPassForm.get('password').value == this.emailPassForm.get('passwordConfirmation').value){
+        if(this.emailPassForm.get('email').value && this.emailPassForm.get('passwordConfirmation').value && this.emailPassForm.get('password').value == this.emailPassForm.get('passwordConfirmation').value){
             const loading = await this.loadingCtrl.create({
                 message: 'Processing...'
             });

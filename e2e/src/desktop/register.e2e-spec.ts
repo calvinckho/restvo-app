@@ -79,12 +79,44 @@ describe('register an account as a new user', () => {
 
     it('should fill out and submit email registration form', async () => {
         await register.fillSubmitCreateAccountEmailForm();
-        expect(await app.alertIsPresent()).toBeTruthy();
+        await app.waitUntilElementPresent('ion-alert');
+        expect(await app.elementIsPresent('ion-alert')).toBeTruthy();
     });
 
     it('should confirm success prompt', async () => {
         await app.clickAlertButton('OK');
-        await register.waitUntilElementPresent('#login-form');
+        await register.waitUntilElementPresent('#login-button');
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
+    });
+
+    it('should authenticate the new user', async () => {
+        await browser.get('/activity/5d5785b462489003817fee18;verify=9LL1tFgDTH9skXdYmoofMmPmgwYLaAQ78elfIWu6xRebj2L7');
+        expect(await maintab.waitUntilPresent()).toBeTruthy();
+    });
+
+    it('should finish the onboarding process', async () => {
+        await onboardfeature.waitUntilVisible();
+        await onboardfeature.waitUntilElementVisible('.tile-card');
+        await onboardfeature.finishOnboarding();
+        await onboardfeature.waitUntilInvisible();
+        expect(await onboardfeature.elementIsPresent('#get-started')).toBeFalsy();
+    });
+
+    it('should open Privacy & Security page', async () => {
+        await app.clickElement('#userProfileSettings');
+        await app.waitUntilUrlContains('profile');
+        await app.clickElement('#privacy-tab');
+        await app.waitUntilUrlContains('privacy');
+        expect(await app.currentUrl()).toContain('privacy');
+    });
+
+    it('should delete the new user', async () => {
+        await app.clickElement('#delete-user');
+        await app.waitUntilElementVisible('ion-alert');
+        await app.clickAlertButton('Yes, delete my account.');
+        await app.waitUntilElementInvisible('ion-alert');
+        await browser.waitForAngular();
+        await showfeature.waitUntilElementVisible('#signin');
+        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
     });
 });

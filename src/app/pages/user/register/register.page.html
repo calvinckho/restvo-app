@@ -8,7 +8,7 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
         <ion-col size-sm="12" size-md="7">
-          <form (ngSubmit)="login()" [formGroup]="loginForm" class="login-form">
+          <form [formGroup]="loginForm" class="login-form">
             <ion-list lines="none" class="ion-no-padding">
               <ion-buttons *ngIf="!authService.token" slot="start">
                 <ion-button (click)="close()"><ion-icon name="chevron-back-outline" color="primary"></ion-icon></ion-button>
@@ -42,17 +42,16 @@
                 <ion-input id="phone_number" class="phone_number" type="tel" formControlName="phone_number" placeholder="Mobile Number"></ion-input>
               </ion-item>
               <ion-item [hidden]="recovery_mode" lines="full">
-                <ion-input id="password" class="password" (key.enter) = "login()" placeholder="Password" formControlName="password" [type]="passwordType"></ion-input>
+                <ion-input id="password" class="password" (keyup.enter)="login()" placeholder="Password" formControlName="password" [type]="passwordType"></ion-input>
                 <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
               </ion-item>
             </ion-list>
             <div>
-              <p class="ion-padding-horizontal" color="red" *ngIf="loginStatus">{{loginStatus}}</p>
+              <p class="ion-padding-horizontal" *ngIf="loginStatus">{{loginStatus}}</p>
             </div>
             <ion-button expand="block" shape="round" *ngIf="!recovery_mode" (click)="login()" color="primary" id="login-button">Login</ion-button>
             <ion-button expand="block" shape="round" *ngIf="recovery_mode && loginMode === 'mobile'" (click)="recover()" color="primary">Send Recovery Code</ion-button>
             <ion-button expand="block" shape="round" *ngIf="recovery_mode && loginMode === 'email'" (click)="recover()" color="primary">Send Recovery Link</ion-button>
-            <input style="display: none;" type="submit">
           </form>
           <div style="margin-top: 10px">
              <ion-button *ngIf="!recovery_mode && platform.width() < 768" (click)="view = 'welcome'" class="create-account" fill="clear">Create an Account</ion-button>
@@ -60,7 +59,6 @@
             <ion-button *ngIf="recovery_mode" (click)="toggleRecoveryMode()" class="create-account" fill="clear" expand="full">Back to Login</ion-button>
           </div>
         </ion-col>
-          
         <ion-col class="right-signUp" *ngIf="platform.width() >= 768">
           <img class="background-img" src="assets/img/signUp.png"/>
           <div class="welcome-subtitle">Not a user yet? Sign up here</div>

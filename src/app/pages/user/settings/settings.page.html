@@ -47,7 +47,7 @@
     <span *ngIf="!userData.user.password">Create Password</span>
   </ion-button>
   <ion-button color='light' (click)="changePhone()" shape="round" expand="full" class="ion-margin-vertical">Register a New Phone</ion-button>
-  <ion-button color='light' (click)="permanentlyEraseUser()" shape="round" expand="full" class="ion-margin-vertical">Delete Account</ion-button>
+  <ion-button color='light' (click)="permanentlyEraseUser()" shape="round" expand="full" class="ion-margin-vertical" id="delete-user">Delete Account</ion-button>
   <ion-button color='light' (click)="logout($event)" shape="round" expand="full" class="ion-margin-vertical">Sign Out</ion-button>
   <p class="ion-padding" style="text-align: center; color: black; margin-top: 15px;">{{appName}} {{appVersionNumber}}</p>
 </ion-content>

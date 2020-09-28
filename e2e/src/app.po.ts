@@ -17,34 +17,91 @@ class PageObjectBase {
         return element(by.css(this.tag));
     }
 
-    waitUntilInvisible() {
-        return browser.wait(ExpectedConditions.invisibilityOf(this.rootElement()), 15000);
-    }
-
-    async waitUntilPresent() {
-        if (await element.all(by.css(this.tag)).isPresent()) {
-            return await browser.wait(ExpectedConditions.presenceOf(this.rootElement()), 10000);
-        } else {
-            return false;
+    async waitUntilInvisible() {
+        const els = await element.all(by.css(this.tag));
+        for (const el of els) {
+            if (await el.isDisplayed()) {
+                return await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
+            }
         }
     }
 
-    waitUntilNotPresent() {
-        return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.rootElement())),
-            10000
-        );
+    async waitUntilPresent() {
+        const els = await element.all(by.css(this.tag));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isPresent()) {
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.presenceOf(element(by.css(this.tag))));
+        }
     }
 
-    waitUntilUrlContains() {
-        return browser.wait(ExpectedConditions.urlContains(this.path), 10000);
+    async waitUntilNotPresent() {
+        const els = await element.all(by.css(this.tag));
+        for (const el of els) {
+            if (await el.isDisplayed()) {
+                return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
+            }
+        }
     }
 
-    waitUntilVisible() {
-        return browser.wait(ExpectedConditions.visibilityOf(this.rootElement()), 10000);
+    waitUntilUrlContains(path) {
+        return browser.wait(ExpectedConditions.urlContains(path), 10000);
     }
 
-    waitUntilElementPresent(sel: string) {
-        return browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+    async waitUntilVisible() {
+        const els = await element.all(by.css(this.tag));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.visibilityOf(element(by.css(this.tag))));
+        }
+    }
+
+    async waitUntilElementPresent(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isPresent()) {
+                    return await browser.wait(ExpectedConditions.presenceOf(el), 18000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
+        }
+    }
+
+    async waitUntilElementVisible(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isPresent()) {
+                    return await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                }
+            }
+        } else {
+            await browser.wait(ExpectedConditions.visibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+        }
+    }
+
+    async waitUntilElementInvisible(sel: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            for (const el of els) {
+                if (await el.isDisplayed()) {
+                    return await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
+                }
+            }
+        } else {
+            return await browser.wait(ExpectedConditions.invisibilityOf(element(by.css(`${this.tag} ${sel}`))), 10000);
+        }
     }
 
     getTitle() {
@@ -52,42 +109,35 @@ class PageObjectBase {
     }
 
     protected async enterInputText(sel: string, text: string) {
-        await this.waitUntilElementPresent(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.presenceOf(el), 10000);
-                const inp = el.element(by.css('input'));
-                for (let i = 0; i < text.length; i++) {
-                    inp.sendKeys(text.charAt(i));
-                }
-            }
-        });
-    }
-
-    protected async enterTextareaText(sel: string, text: string) {
-        await this.waitUntilElementPresent(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-                const inp = el.element(by.css('textarea'));
-                for (let i = 0; i < text.length; i++) {
-                    inp.sendKeys(text.charAt(i));
-                }
-            }
-        });
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            await element.all(by.css(`${this.tag} ${sel}`))
+                .filter(async (el, index) => await el.isPresent())
+                .first()
+                .element(by.css('input'))
+                .sendKeys(text);
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            const inp = el.element(by.css('input'));
+            await inp.sendKeys(text);
+        }
     }
 
     async clickElement(sel: string) {
-        await this.waitUntilElementPresent(sel);
-        const els = element.all(by.css(`${this.tag} ${sel}`));
-        els.each(async (el) => {
-            if (await el.isDisplayed()) {
-                await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
-                el.click();
-            }
-        });
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            els.forEach(async (el) => {
+                if (await el.isPresent()) {
+                    await browser.wait(ExpectedConditions.elementToBeClickable(el), 18000);
+                    el.click();
+                }
+            });
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);
+            el.click();
+        }
     }
 
     protected async countElements(sel: string) {
@@ -101,20 +151,11 @@ class PageObjectBase {
     async elementIsPresent(sel: string) {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
     }
-
-    async signinButtonIsPresent() {
-        const signinButton = element(by.css('#signin'));
-        if (signinButton) {
-            return signinButton.isPresent();
-        } else {
-            return false;
-        }
-    }
 }
 
-export class AppPage {
-    navigateTo() {
-        return browser.get('/register');
+export class AppPage extends PageObjectBase {
+    constructor() {
+        super('ion-app', '/');
     }
 
     currentUrl() {
@@ -125,40 +166,28 @@ export class AppPage {
         return element(by.id('title')).getText();
     }
 
-    headerIsPresent(sel) {
-        return element.all(by.id(`${sel}`)).isPresent();
-    }
-
-    async waitUntilElementVisible(sel) {
-        const el = element(by.css(sel));
-        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-    }
-
-    async waitUntilElementInvisible(sel) {
-        const el = element(by.css(sel));
-        await browser.wait(ExpectedConditions.invisibilityOf(el), 10000);
-    }
-
     async clickAlertButton(text) {
-        element.all(by.css('.alert-button.sc-ion-alert-md')).each(async (el) => {
-            if (await el.getText() === text) {
-                el.click();
-            }
-        });
+        await this.waitUntilElementVisible('.alert-button.sc-ion-alert-md');
+        await element.all(by.css('.alert-button.sc-ion-alert-md'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
     }
 
-    async alertIsPresent() {
-        const el = element(by.css('ion-alert'));
-        await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-        return el.isPresent();
+    async clickPopoverChoice(text) {
+        await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
+        await element.all(by.css('.select-interface-option.sc-ion-select-popover'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
     }
 
     async clickActionSheetButton(text) {
-        element.all(by.css('.action-sheet-button')).each(async (el) => {
-            if (await el.getText() === text) {
-                el.click();
-            }
-        });
+        await this.waitUntilElementVisible('.action-sheet-button');
+        await element.all(by.css('.action-sheet-button'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
     }
 
     actionsheetIsPresent() {
@@ -234,7 +263,9 @@ export class RegisterPage extends PageObjectBase {
     async fillSubmitCreateAccountEmailForm() {
         await this.enterInputText('#firstName', 'Tammy');
         await this.enterInputText('#lastName', 'Ho');
-        await this.enterInputText('#newEmail', 'calvin+4@restvo.com');
+        // calvin+e2e1@restvo.com is a special email that is handled differently in the backend for testing purposes.
+        // No email is sent to it, but instead, token 9LL1tFgDTH9skXdYmoofMmPmgwYLaAQ78elfIWu6xRebj2L7 can be used to authenticate the fake user
+        await this.enterInputText('#newEmail', 'calvin+e2e1@restvo.com');
         await this.enterInputText('#newPassword1', 'makenodifference');
         await this.enterInputText('#newPassword2', 'makenodifference');
         await this.clickElement('#createEmailAccount');
@@ -260,7 +291,10 @@ export class OnboardingfeaturePage extends PageObjectBase {
         super('app-onboardfeature', '/');
     }
 
-    async clickStartButton() {
+    async finishOnboarding() {
+        await element.all(by.css('.tile-card')).first().click();
+        await this.clickElement('#next');
+        await this.waitUntilElementVisible('#get-started');
         await this.clickElement('#get-started');
     }
 }
@@ -329,7 +363,7 @@ export class DashboardPage extends PageObjectBase {
     }
 
     async createEvent() {
-        this.enterTextareaText('#add-event-title', 'Protractor Test Event');
+        this.enterInputText('#add-event-title', 'Protractor Test Event');
         await this.clickElement('#all-day');
         await this.clickElement('#save-event');
     }
@@ -374,11 +408,14 @@ export class PickpeoplePopoverPage extends PageObjectBase {
       this.clickElement('#recent-');
     }
 
+<<<<<<< HEAD
     async clickPopoverChoice(text) {
       await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
       this.clickElement('.select-interface-option.sc-ion-select-popover');
     }
 
+=======
+>>>>>>> 86e8ed632830f4d32be791b8ed96e1a3f9696f78
     userSelect() {
       this.clickElement("#user-select");
     }
