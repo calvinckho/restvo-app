@@ -67,8 +67,9 @@ describe('add and remove user from group', () => {
     });
 
     it('should click to add user to group', async () => {
-        await showfeature.clickElement("#add-user-to-group");
-        expect(await pickpeople.waitUntilPresent()).toBeTruthy();
+        await showfeature.clickElement('#add-user-to-group');
+        await app.waitUntilElementVisible('app-editfeature');
+        expect(await app.elementIsPresent('app-editfeature')).toBeTruthy();
     });
 
     it('should select new user and add them', async () => {
