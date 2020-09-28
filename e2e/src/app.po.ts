@@ -400,7 +400,7 @@ export class PickpeoplePopoverPage extends PageObjectBase {
       this.clickElement('#recent-');
     }
 
-    async clickAlertButton(text) {
+    async clickPopoverChoice(text) {
       await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
       this.clickElement('.select-interface-option.sc-ion-select-popover');
     }
