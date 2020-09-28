@@ -409,11 +409,17 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     }
 
     userSelect() {
-      this.clickElement("#user-select");
+      this.clickElement('#user-select');
     }
 
     done() {
       this.clickElement("#done");
+    }
+}
+
+export class EditfeaturePage extends PageObjectBase {
+    constructor() {
+        super('app-editfeature', '/');
     }
 }
 
