@@ -51,7 +51,7 @@ describe('add and remove user from group', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/app/activity/5e0012f714001a7dbf712de2');
+        await browser.get('/app/activity/5f72454627cf747d0ccb16d0');
         await showfeature.waitUntilElementPresent('#signin');
         await showfeature.clickSigninButton('#signin');
         await browser.waitForAngular();
@@ -74,6 +74,8 @@ describe('add and remove user from group', () => {
 
     it('should select new user and add them', async () => {
         await pickpeople.userSelect();
+        await browser.sleep(2000);
+        await pickpeople.clickAlertButton();
         await browser.sleep(2000);
         await pickpeople.done();
         await browser.sleep(2000);

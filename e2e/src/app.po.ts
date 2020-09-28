@@ -393,11 +393,16 @@ export class PickfeaturePopoverPage extends PageObjectBase {
 
 export class PickpeoplePopoverPage extends PageObjectBase {
     constructor() {
-        super('app-pickpeople-popover', '/');
+      super('app-pickpeople-popover', '/');
     }
 
     clickRecent() {
-        this.clickElement('#recent-');
+      this.clickElement('#recent-');
+    }
+
+    async clickAlertButton(text) {
+      await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
+      this.clickElement('.select-interface-option.sc-ion-select-popover');
     }
 
     userSelect() {
