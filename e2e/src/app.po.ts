@@ -174,6 +174,14 @@ export class AppPage extends PageObjectBase {
             .click();
     }
 
+    async clickPopoverChoice(text) {
+        await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
+        await element.all(by.css('.select-interface-option.sc-ion-select-popover'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
+    }
+
     async clickActionSheetButton(text) {
         await this.waitUntilElementVisible('.action-sheet-button');
         await element.all(by.css('.action-sheet-button'))
@@ -398,11 +406,6 @@ export class PickpeoplePopoverPage extends PageObjectBase {
 
     clickRecent() {
       this.clickElement('#recent-');
-    }
-
-    async clickPopoverChoice(text) {
-      await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
-      this.clickElement('.select-interface-option.sc-ion-select-popover');
     }
 
     userSelect() {
