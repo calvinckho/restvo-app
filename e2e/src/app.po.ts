@@ -409,8 +409,8 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     }
 
     async clickPopoverChoice(text) {
-      await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
-      this.clickElement('.select-interface-option.sc-ion-select-popover');
+      await this.waitUntilElementVisible('ion-color.ion-color-grey.md.button.button-clear.in-toolbar.ion-activatable.ion-focusable hydrated.ion-activated');
+      this.clickElement('ion-color.ion-color-grey.md.button.button-clear.in-toolbar.ion-activatable.ion-focusable hydrated.ion-activated');
     }
 
     userSelect() {
