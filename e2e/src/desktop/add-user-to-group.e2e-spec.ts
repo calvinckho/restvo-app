@@ -9,6 +9,7 @@ import {
     ShowfeaturePage,
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
+    EditfeaturePage,
     OnboardingfeaturePage,
     CreateFeaturePage,
     AboutPage,
@@ -29,6 +30,7 @@ describe('add and remove user from group', () => {
     let me: DashboardPage;
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
+    let editfeature: EditfeaturePage;
     let createfeature: CreateFeaturePage;
     let onboardfeature: OnboardingfeaturePage;
 
@@ -50,12 +52,13 @@ describe('add and remove user from group', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
+        editfeature = new EditfeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/app/activity/5f72454627cf747d0ccb16d0');
-        await showfeature.waitUntilElementPresent('#signin');
-        await showfeature.clickSigninButton('#signin');
-        await browser.waitForAngular();
-        await browser.sleep(1000);
+        await browser.get('/activity/5f72454627cf747d0ccb16d0');
+        //await browser.waitForAngular(); // wait for angular to direct /app/activity to /activity since it is still unauthenticated
+        await showfeature.waitUntilElementVisible('#signin');
+        await showfeature.clickElement('#signin');
+        await register.waitUntilVisible();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
@@ -63,21 +66,20 @@ describe('add and remove user from group', () => {
 
     it('should show authenticated activity page', async () => {
         await register.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
-        await browser.sleep(2000);
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 
     it('should click to add user to group', async () => {
-        await showfeature.clickSigninButton("#add-user-to-group");
-        await browser.sleep(2000);
+        await showfeature.clickElement('#add-user-to-group');
+        await editfeature.waitUntilElementVisible('#add-people');
+        expect(await editfeature.elementIsPresent('#add-people')).toBeTruthy();
     });
 
     it('should select new user and add them', async () => {
-        await pickpeople.userSelect();
-        await browser.sleep(2000);
+        await editfeature.clickElement('#add-people');
+        await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
-        await browser.sleep(2000);
-        await pickpeople.done();
-        await browser.sleep(2000);
+        await browser.sleep(5000);
+        expect(await pickpeople.waitUntilPresent()).toBeTruthy();
     });
 });
