@@ -21,7 +21,7 @@
 <ion-content>
   <ion-list>
     <ion-list-header *ngIf="hasOrganizerAccess">Friends</ion-list-header>
-    <ion-item [id]="man" (click)="selectFriend(this.selfConversationObj)" *ngIf="selfConversationObj && includeSelf && (userData.user.first_name + ' ' + userData.user.last_name).toLowerCase().includes(searchKeyword.toLowerCase())">
+    <ion-item (click)="selectFriend(this.selfConversationObj)" *ngIf="selfConversationObj && includeSelf && (userData.user.first_name + ' ' + userData.user.last_name).toLowerCase().includes(searchKeyword.toLowerCase())">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user.avatar" [src]="userData.user.avatar"></ion-img>
         <ion-img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -32,7 +32,7 @@
     </ion-item>
     <ion-virtual-scroll [items]="conversations" approxItemHeight="60px">
       <div *virtualItem="let obj">
-        <ion-item [id]="boi" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
+        <ion-item (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
           <ion-avatar slot="start">
             <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
             <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -54,7 +54,7 @@
     </ion-virtual-scroll>
     <ion-list-header *ngIf="hasOrganizerAccess">{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list *ngIf="hasOrganizerAccess">
-      <ion-item *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
+      <ion-item [id]="person.name == 'Asia Ho' ? 'user-select' : ''" *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
         <ion-avatar slot="start">
           <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
           <ion-img *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
