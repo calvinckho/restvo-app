@@ -59,6 +59,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   showXAxisLabel: boolean = false;
   xAxisLabel: string = 'Day';
   xScaleMin: string;
+  xScaleMax: string;
   yAxisLabel: string = 'Activity';
   timeline: boolean = true;
 
@@ -111,7 +112,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         this.moment._id = this.route.snapshot.paramMap.get('id');
       }
       this.loadInsight();
-      this.loadMetrics(7);
+      this.loadMetrics('thisWeek');
     }
   }
 
@@ -130,27 +131,31 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     //find a way to utilize xmin on chart
     this.currentDayValue = dayValue;
     switch (dayValue){
-      case '7':
-        // v work on this tomorrow
+      case 'thisWeek':
+        // line area chart doc link https://swimlane.gitbook.io/ngx-charts/v/docs-test/examples/line-area-charts/line-chart
         const currentDay = this.date.getDay();
         const difference = this.date.getDate() - currentDay;
         const firstDayInMilliSeconds = this.date.setDate(difference)
         let firstDayOfWeek = new Date(firstDayInMilliSeconds).toISOString()
-        console.log('firstDayOfWeek', firstDayOfWeek, typeof firstDayOfWeek)
-        this.xScaleMin = firstDayOfWeek
-        console.log('this.xScaleMin', this.xScaleMin)
+        console.log('check for firstDayOfWeek', firstDayOfWeek, typeof firstDayOfWeek)
+        this.xScaleMin = firstDayOfWeek;
+        console.log('check if this.xScaleMin updated', this.xScaleMin)
         this.durationValue = 7
         this.durationUnit = 'day'
         break;
-      case '30':
-        this.durationValue = 30
+      case 'thisMonth':
+        this.durationValue = 30 //to change later when xScaleMin works
         this.durationUnit = 'day'
+        break;
+      case '30':
+        this.durationValue = 1
+        this.durationUnit = 'month'
         break;
       case '90':
         this.durationValue = 3
         this.durationUnit = 'month'
         break;
-      case '365':
+      case 'thisYear':
         this.durationValue = 1
         this.durationUnit = 'year'
         break;
@@ -158,9 +163,6 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         this.durationValue = 7
         this.durationUnit = 'day'
     }
-
-    console.log('dayValue', dayValue, 'this.durationValue', this.durationValue, 'this.durationUnit', this.durationUnit)
-    console.log('this.xScaleMin', this.xScaleMin)
 
     // this.multi = [{
     //   name: 'Activity',
