@@ -9,7 +9,7 @@
         <ion-select-option value="d">day<span *ngIf="timeValue > 1">s</span>  before</ion-select-option>
         <ion-select-option value="w">week<span *ngIf="timeValue > 1">s</span>  before</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-list>
   <ion-button color="primary" expand="block" shape="round" (click)="close()">Done</ion-button>
 </ion-content>

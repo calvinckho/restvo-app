@@ -25,7 +25,7 @@
       </ion-label>
       <ion-badge *ngIf="!group.flagged" slot="end" class="ion-margin-start">{{group.members.length}}{{" member"}}<span *ngIf="group.members?.length >= 2">s</span></ion-badge>
       <ion-badge *ngIf="group.flagged" color="danger" slot="end" class="ion-margin-start">Review Required</ion-badge>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{groups.length}} group<span *ngIf="groups.length > 1">s</span>
     </ion-item-divider>

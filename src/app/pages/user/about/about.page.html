@@ -25,15 +25,15 @@
           <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
         </div>
         <ion-button class="edit-button" fill="clear" *ngIf="!modalPage" (click)="openOnbaordingProcess('')">Edit All</ion-button>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin">
         <div class="browser-upload">
           <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
         </div>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item lines="none">
         <p class="name ion-text-center ion-text-md-uppercase">{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></p>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-row class="ion-justify-content-center">
         <ion-badge shape="round">{{role}}</ion-badge>
       </ion-row>
@@ -42,7 +42,7 @@
           <ion-item>
             About Me
             <ion-button shape="round" (click)="openOnbaordingProcess(program._id)" slot="end">Edit</ion-button>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <div *ngFor="let leader of program.leader" style="margin: 0 16px">
             <div class="question-answer-container">
               <div *ngIf="leader._id === 1570150762856667" class="question">I am...</div>
@@ -57,7 +57,7 @@
           <ion-item>
             {{program.name}}
             <ion-button shape="round" (click)="openOnbaordingProcess(program._id)" slot="end">Edit</ion-button>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <div *ngFor="let leader of program.leader" style="margin-left: 16px">
             <div class="question-answer-container" *ngIf="leader.user_answer?.length && leader.user_answer[0] && leader.user_answer[0].length">
               <div class="question">{{leader.question}}</div>

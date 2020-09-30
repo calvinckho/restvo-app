@@ -9,7 +9,7 @@
 
 <ion-content *ngIf="userData && userData.user">
   <!--Push Notifications-->
-  <ion-item lines="none" color="lightgrey">Push Notifications</ion-item>
+  <ion-item lines="none" color="lightgrey">Push Notifications<div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>Chat Messages</ion-label>
     <ion-select [(ngModel)]="UIpushNotifyUnreadChatMessages" (ionChange)="saveChange('Push', $event)" slot="end">
@@ -17,7 +17,7 @@
       <ion-select-option value="instant">Instant</ion-select-option>
       <!--<ion-select-option value="daily">Daily</ion-select-option>-->
     </ion-select>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>System Messages</ion-label>
     <ion-select [(ngModel)]="UIpushNotifySystemMessages" (ionChange)="saveChange('Push', $event)" slot="end">
@@ -25,9 +25,9 @@
       <ion-select-option value="instant">Instant</ion-select-option>
       <!--<ion-select-option value="daily">Daily</ion-select-option>-->
     </ion-select>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
   <!--Email Notifications-->
-  <ion-item lines="none" color="lightgrey">Email Notifications</ion-item>
+  <ion-item lines="none" color="lightgrey">Email Notifications<div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>Chat Messages</ion-label>
     <ion-select [(ngModel)]="UIemailNotifyUnreadChatMessages" (ionChange)="saveChange('Email', $event)" slot="end">
@@ -35,7 +35,7 @@
       <!--<ion-select-option value="instant">Instant</ion-select-option>-->
       <ion-select-option value="daily">Daily</ion-select-option>
     </ion-select>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>System Messages</ion-label>
     <ion-select [(ngModel)]="UIemailNotifySystemMessages" (ionChange)="saveChange('Email', $event)" slot="end">
@@ -43,5 +43,5 @@
       <!--<ion-select-option value="instant">Instant</ion-select-option>-->
       <ion-select-option value="daily">Daily</ion-select-option>
     </ion-select>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
 </ion-content>

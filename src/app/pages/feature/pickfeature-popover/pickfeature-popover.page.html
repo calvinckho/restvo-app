@@ -143,7 +143,7 @@
             </ion-label>
           </div>
           <div class="type-col"><ion-badge color="button1" class="ion-text-wrap">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
       </ion-virtual-scroll>
     </ion-grid>
   </div>
@@ -152,11 +152,11 @@
       <ion-col>
         <ion-item lines="none">
           <div style="font-size: 14px" class="ion-text-wrap">Enter a Name for the {{selectedMoments[0].resource['en-US'].value[0]}}</div>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
           <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
           <ion-textarea [(ngModel)]="selectedMoments[0].matrix_string[0][0]" rows="1" [minRows]="1" [maxRows]="2" autosize></ion-textarea>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -216,11 +216,11 @@
       <ion-col>
         <ion-item lines="none">
           <div style="font-size: 14px" class="ion-text-wrap">When do you plan to start {{selectedMoments[0].matrix_string[0][0]}}?</div>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
           <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
           <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
 
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
@@ -258,7 +258,7 @@
     <ion-item lines="none" *ngIf="maxMomentCount === 1">
       <ion-label *ngIf="selectedMoments[0].cloned">This {{selectedMoments[0].resource['en-US'].value[0]}} template will be cloned:</ion-label>
       <ion-label *ngIf="!selectedMoments[0].cloned">You have selected this {{selectedMoments[0].resource['en-US'].value[0]}}:</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-grid class="selected-grid">
       <ion-row>
         <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size="auto">

@@ -31,7 +31,7 @@
         <ion-select-option value='all'>Show All</ion-select-option>
         <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-toolbar>
   <ion-list>  <!--*ngIf="platform.width() > 768"-->
     <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
@@ -40,7 +40,7 @@
       <div class="column column-label" (click)="sortDisplay('program')">Program</div>
       <div class="progress column-label ion-no-margin" slot="end" (click)="sortDisplay('progress')">Progress</div>
       <div class="last-date column-label ion-no-margin" slot="end" (click)="sortDisplay('lastDate')">Last Check-in</div>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngFor="let relationship of relationshipCompletion" (click)="openProgram($event, relationship)" [hidden]="selectedProgramId && ![relationship.program._id, 'all'].includes(selectedProgramId)">
       <div *ngFor="let participant of relationship.participants | slice : 0 : 1" (click)="seeUserInfo($event, relationship.participants[0])" class="column">
         <ion-avatar class="insight-person-avatar">
@@ -61,6 +61,6 @@
       </div>
       <ion-progress-bar class="progress ion-no-margin" [value]="relationship.completed_count/relationship.content_calendar_count" [buffer]="relationship.past_due_count/relationship.content_calendar_count" slot="end"></ion-progress-bar>
       <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{relationship.last_response_date | datetime: 'm:n,d:n,y:n'}}</div>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-list>
 </ion-content>

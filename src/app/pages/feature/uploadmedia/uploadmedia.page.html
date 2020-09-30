@@ -25,12 +25,12 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose Photo File</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></ion-label>
             <div *ngIf="platform.is('cordova')" class="moment-input" (click)="selectPhotoFromDeviceAndUpload($event)">Choose from Photo Album</div>
             <input *ngIf="!platform.is('cordova')" type="file" class="moment-input" name="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card>
       </ion-col>
       <ion-col size-xs="12" style="padding-top: 20px;">
@@ -40,7 +40,7 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label class="ion-text-wrap">Choose from Pixabay</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
           <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
             <ion-row>
@@ -62,11 +62,11 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose Video File</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
             <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card>
       </ion-col>
       <ion-col size-xs="12" style="padding-top: 20px;">
@@ -76,13 +76,13 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Add Youtube</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
             <div class="moment-input" (click)="promptMediaUrl('youtube')">
               <span>Input Youtube Video Url</span>
             </div>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -93,11 +93,11 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose File</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item lines="none">
             <label class="moment-label"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
             <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -108,13 +108,13 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Add Media Link</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item lines="none">
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="link-outline"></ion-icon></div>
             <div class="moment-input" (click)="promptMediaUrl('media')">
               <span>Select Media Link</span>
             </div>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card>
       </ion-col>
     </ion-row>

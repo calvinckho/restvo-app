@@ -11,7 +11,7 @@
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
           Dismiss
@@ -35,7 +35,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-buttons slot="end" *ngIf="!userData.user">
       <ion-button routerLink="/register" color="grey">
         Sign In
@@ -61,7 +61,7 @@
           <p class="message-detail">Get notified when other Restvo users message you.</p>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="dismissEnablePushNotification()">
           Dismiss
@@ -78,7 +78,7 @@
           <p class="message-detail">Connect with friends, family, and coworkers on Restvo.</p>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="dismissImportContactList()">
           Dismiss
@@ -116,7 +116,7 @@
                   </div>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
                   <ion-badge *ngIf="obj.data.badge > 0" slot="end" mode="md">{{obj.data.badge}}</ion-badge>
-                </ion-item>
+                <div tabindex="0"></div></ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'all'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'connect', obj)">
                     <ion-icon name="volume-off"></ion-icon>
@@ -141,7 +141,7 @@
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
                   <ion-badge slot="end" *ngIf="obj.data.badge !== 0" mode="md">{{obj.data.badge}}</ion-badge>
-                </ion-item>
+                <div tabindex="0"></div></ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'group', obj)">
                     <ion-icon name="volume-off"></ion-icon>
@@ -170,7 +170,7 @@
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'none'" name="volume-off" slot="end"></ion-icon>
                   <ion-icon color="primary" *ngIf="obj.data.pushNotification === 'leaders-only'" name="person" slot="end"></ion-icon>
                   <ion-badge slot="end" *ngIf="obj.data.badge !== 0" mode="md">{{obj.data.badge}}</ion-badge>
-                </ion-item>
+                <div tabindex="0"></div></ion-item>
                 <ion-item-options>
                   <ion-item-option *ngIf="obj.data.pushNotification === 'leaders-only'" style="width: 15.8%; height: 100%; --background: #f67453;" (click)="togglePushNotification($event, 'moment', obj)">
                     <ion-icon name="volume-off"></ion-icon>
