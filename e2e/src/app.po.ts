@@ -111,7 +111,7 @@ class PageObjectBase {
     protected async enterInputText(sel: string, text: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
-            if (await element.all(by.css(`${this.tag} ${sel} native-input`)).isPresent()) { // if ion-input
+            if (await element.all(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
                 await element.all(by.css(`${this.tag} ${sel}`))
                     .filter(async (el, index) => await el.isPresent())
                     .first()
@@ -127,7 +127,7 @@ class PageObjectBase {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             let inp = el;
-            if (await element(by.css(`${this.tag} ${sel} native-input`)).isPresent()) {
+            if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) {
                 inp = el.element(by.css('input'));
             }
             await inp.sendKeys(text);
