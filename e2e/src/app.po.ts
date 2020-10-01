@@ -114,7 +114,7 @@ class PageObjectBase {
             await element.all(by.css(`${this.tag} ${sel}`))
                 .filter(async (el, index) => await el.isPresent())
                 .first()
-                .element(by.css('input'))
+                //.element(by.css('input')) // only need it for ion-input. but now it is replaced with input in register
                 .sendKeys(text);
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
