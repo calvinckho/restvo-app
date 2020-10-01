@@ -127,9 +127,9 @@ class PageObjectBase {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             let inp = el;
-            if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) {
-                inp = el.element(by.css('input'));
-            }
+            if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
+                inp = el.element(by.css('input')); // needs to select the nested input tag
+            } // else, if it is just the input tag
             await inp.sendKeys(text);
         }
     }
