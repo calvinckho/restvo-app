@@ -32,17 +32,17 @@
                   <ion-label>Mobile</ion-label>
                 </ion-segment-button>
               </ion-segment>
-              <ion-card *ngIf="loginMode === 'email'" lines="full">
+              <ion-card *ngIf="loginMode === 'email'">
                 <input id="email" class="email ion-input" type="text" formControlName="email" placeholder="Email" inputmode="email" autocomplete="username" />
               </ion-card>
-              <ion-card *ngIf="loginMode === 'mobile'" lines="full">
+              <ion-card *ngIf="loginMode === 'mobile'">
                 <ion-label hidden>Calling Code</ion-label>
                 <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code ion-no-margin" formControlName="calling_code" value="+1">
                   <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
                 </ion-select>
                 <input id="phone_number" class="phone_number ion-input" type="tel" formControlName="phone_number" placeholder="Mobile Number" inputmode="tel" autocomplete="username" />
               </ion-card>
-              <ion-card [hidden]="recovery_mode" lines="full">
+              <ion-card [hidden]="recovery_mode">
                 <input id="password" class="password ion-input" (keyup.enter)="login()" placeholder="Password" formControlName="password" [type]="passwordType" inputmode="text" autocomplete="current-password" />
                 <ion-icon [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
               </ion-card>
