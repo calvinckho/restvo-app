@@ -80,8 +80,9 @@ describe('add and remove user from group', () => {
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
         await pickpeople.userSelect();
+        await browser.sleep(20000);
         await pickpeople.done();
-        await browser.sleep(5000);
+        await browser.sleep(20000);
         expect(await pickpeople.waitUntilPresent()).toBeTruthy();
     });
 });

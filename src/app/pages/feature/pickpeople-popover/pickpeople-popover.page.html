@@ -32,7 +32,7 @@
     </ion-item>
     <ion-virtual-scroll [items]="conversations" approxItemHeight="60px">
       <div *virtualItem="let obj">
-        <ion-item (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
+        <ion-item [id]="person.name == 'Asia Ho' ? 'user-remove' : ''" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
           <ion-avatar slot="start">
             <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
             <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
