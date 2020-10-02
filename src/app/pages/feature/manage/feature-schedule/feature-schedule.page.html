@@ -31,11 +31,11 @@
           </ion-buttons>
         <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
-          <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+          <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
           <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
         <div tabindex="0"></div></ion-item>
         <ion-item lines="none" *ngIf="dateType != 'start'">
-          <ion-label (click)="focusCalendarDateField('end')"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
+          <ion-label (click)="focusCalendarDateField('end')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
           <ion-datetime *ngIf="recurrenceEndTime" placeholder="12:00 pm" (ionCancel)="dateType=''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
         <div tabindex="0"></div></ion-item>
 
@@ -66,7 +66,7 @@
           </div>
         </ion-card>
         <ion-item lines="none" *ngIf="!allDay && dateType == 'start'">
-          <ion-label (click)="dateType = 'end'">End: {{recurrenceEndDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
+          <ion-label (click)="dateType = 'end'" class="cursor-pointer" >End: {{recurrenceEndDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
           <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
         <div tabindex="0"></div></ion-item>
       </ion-item-group>

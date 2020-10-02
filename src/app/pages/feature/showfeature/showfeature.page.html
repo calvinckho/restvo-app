@@ -189,15 +189,15 @@
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">
           <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
-          <ion-label color="tertiary" class="moment-label" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
-          <ion-datetime color="tertiary" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
+          <ion-label color="tertiary" class="cursor-pointer" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
+          <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
         <div tabindex="0"></div></ion-item>
 
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
-            <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+            <ion-icon name="chevron-back-outline" class="calendar-arrow left cursor-pointer" (click)="calendarService.changeDate($event, 4)"></ion-icon>
             <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-            <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+            <ion-icon name="chevron-forward-outline" class="calendar-arrow right cursor-pointer" (click)="calendarService.changeDate($event, 2)"></ion-icon>
           </div>
           <div class="monthview-day-headers">S</div>
           <div class="monthview-day-headers">M</div>
@@ -208,7 +208,7 @@
           <div class="monthview-day-headers">S</div>
 
           <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div (click)="changeCalendarItemSelectedDate(dayOfMonth.date)" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" class="monthview-element-content">
+            <div (click)="changeCalendarItemSelectedDate(dayOfMonth.date)" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" class="monthview-element-content cursor-pointer">
               <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
               <div *ngIf="dayOfMonth.date != ' ' ">
                 {{dayOfMonth.date.getDate()}}
@@ -238,7 +238,7 @@
         </ion-list>
       </ion-item-group>
       <!--Assign to Goals-->
-      <ion-item (click)="select.open($event); anyChangeMade = true" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
+      <ion-item class="cursor-pointer" (click)="select.open($event); anyChangeMade = true" *ngIf="parentRelationshipListOfGoals.length && calendarItem.users && calendarItem.users.length">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="warning" name="pricetag"></ion-icon></div>
         <div class="moment-input" *ngIf="parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.length">
           <ion-badge [ngStyle]="{'--background': goal[3] }" *ngFor="let goal of parentRelationshipListOfGoals" [hidden]="!(parentRelationshipGoalAttributes && parentRelationshipGoalAttributes.includes(goal[0]))">{{ goal[5] }}</ion-badge>

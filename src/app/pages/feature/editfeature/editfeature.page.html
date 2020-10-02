@@ -59,7 +59,7 @@
           <ion-checkbox [(ngModel)]="moment.array_boolean[3]"></ion-checkbox>
         <div tabindex="0"></div></ion-item>
       </ion-item-group>
-      <ion-item> <!--Advanced Features: TODO: Debugging required-->
+      <ion-item> <!--Advanced Features-->
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="code-working"></ion-icon></div>
         <ion-label>{{resource['en-US'].value[26]}}</ion-label>
         <ion-toggle [(ngModel)]="advancedFeature" (ionChange)="loadPeerOnboardActivities(null)"></ion-toggle>
@@ -248,11 +248,11 @@
               <ion-label>{{calendarService.calendar.selectedDate | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none" *ngIf="!allDay">
-              <ion-label (click)="dateType = 'start'"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}: {{startDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--Start, Choose a date below-->
+              <ion-label class="cursor-pointer" (click)="dateType = 'start'"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}: {{startDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--Start, Choose a date below-->
               <ion-datetime *ngIf="startTime" (ionChange)="changeStartTime()" (ionCancel)="dateType = 'end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="startTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none" *ngIf="!allDay && dateType != 'start'">
-              <ion-label (click)="dateType = 'end'"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}: {{endDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--End, Choose a date below-->
+              <ion-label class="cursor-pointer" (click)="dateType = 'end'"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}: {{endDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--End, Choose a date below-->
               <ion-datetime *ngIf="endTime" placeholder="12:00 pm" (ionCancel)="dateType = ''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="endTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
             <div tabindex="0"></div></ion-item>
             <ion-card class="monthview" *ngIf="dateType || allDay">
@@ -298,7 +298,7 @@
               </div>
             </ion-list>
             <ion-item lines="none" *ngIf="!allDay && dateType == 'start'">
-              <ion-label (click)="dateType = 'end'">End: {{endDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
+              <ion-label (click)="dateType = 'end'" class="cursor-pointer" >End: {{endDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
               <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="endTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
             <div tabindex="0"></div></ion-item>
           </ion-item-group>
