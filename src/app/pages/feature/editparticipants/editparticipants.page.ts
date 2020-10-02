@@ -157,6 +157,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   async openPopUpModalAddParticipants(event) {
     if (event.detail.value) {
       this.addParticipants(event, 'connect', event.detail.value.user_list, event.detail.value.label);
+      this.inviteSelect.value = null;
     }
   }
 
@@ -242,6 +243,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
           this.selectedParticipants = []; // empty the selected array
         }}, { text: 'Cancel' }]
     });
+    this.removeSelect.value = null;
     await alert.present();
   }
 }
