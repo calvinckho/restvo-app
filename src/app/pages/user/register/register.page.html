@@ -364,7 +364,7 @@
                       <div class="title" style="margin-bottom: 20%">My Password</div>
                       <ion-item lines="full">
                         <ion-input #password [type]="passwordType" formControlName="password" placeholder="Pick a Password"></ion-input>
-                        <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
+                        <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
                       <div tabindex="0"></div></ion-item>
                       <div *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
                         <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
