@@ -17,7 +17,7 @@
         <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
+    <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap cursor-pointer">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
     <ion-buttons slot="end">
       <div *ngIf="userData.user && ['owner','admin','staff'].includes(userData.user.role)">
         <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'" color="grey">
