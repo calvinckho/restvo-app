@@ -32,7 +32,7 @@
     </ion-item>
     <ion-virtual-scroll [items]="conversations" approxItemHeight="60px">
       <div *virtualItem="let obj">
-        <ion-item (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
+        <ion-item class="pickpeople-user" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
           <ion-avatar slot="start">
             <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
             <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
@@ -54,7 +54,7 @@
     </ion-virtual-scroll>
     <ion-list-header *ngIf="hasOrganizerAccess">{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list *ngIf="hasOrganizerAccess">
-      <ion-item *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
+      <ion-item class="pickpeople-user" *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
         <ion-avatar slot="start">
           <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
           <ion-img *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>

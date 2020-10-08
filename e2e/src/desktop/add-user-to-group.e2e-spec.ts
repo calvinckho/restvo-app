@@ -79,7 +79,7 @@ describe('add and remove user from group', () => {
         await editfeature.clickElement('#add-people');
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
-        await pickpeople.userSelect();
+        await pickpeople.userSelect("Asia Ho");
         await browser.sleep(20000);
         await pickpeople.done();
         await browser.sleep(20000);

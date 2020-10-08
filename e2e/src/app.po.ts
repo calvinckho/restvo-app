@@ -413,8 +413,12 @@ export class PickpeoplePopoverPage extends PageObjectBase {
       this.clickElement('ion-color.ion-color-grey.md.button.button-clear.in-toolbar.ion-activatable.ion-focusable hydrated.ion-activated');
     }
 
-    userSelect() {
-      this.clickElement('#user-select');
+    async userSelect(text) {
+      await this.waitUntilElementVisible('.pickpeople-user');
+      await element.all(by.css('.pickpeople-user'))
+          .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+          .first()
+          .click();
     }
 
     done() {
