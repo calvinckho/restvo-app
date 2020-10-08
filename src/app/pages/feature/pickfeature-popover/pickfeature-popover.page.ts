@@ -333,6 +333,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             data.modalPage = true;
             this.momentService.editMoment(data);
         }
+        this.cleanup();
     }
 
     async changeView(event) {

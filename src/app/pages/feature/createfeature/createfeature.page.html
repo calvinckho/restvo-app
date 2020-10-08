@@ -212,7 +212,7 @@
       <ion-button *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="closeModal(true)">
+      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="completeSetup(true)">
         {{resource['en-US'].value[40]}}
       </ion-button>
     </ion-row>
