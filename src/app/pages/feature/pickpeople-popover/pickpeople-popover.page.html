@@ -54,7 +54,7 @@
     </ion-virtual-scroll>
     <ion-list-header *ngIf="hasOrganizerAccess">{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list *ngIf="hasOrganizerAccess">
-      <ion-item [id]="person.name == 'Asia Ho' ? 'user-select' : ''" *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
+      <ion-item *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">
         <ion-avatar slot="start">
           <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
           <ion-img *ngIf="!person.avatar" src="assets/img/avatar-default.jpg"></ion-img>
