@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header id="createChatHeader">
   <ion-toolbar>
     <ion-buttons slot="start">
     <ion-button (click)="backButton()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
@@ -67,4 +67,3 @@
       <ion-button expand="full" shape="round" size="medium" (click)="selectAppUsers()" color="primary" [disabled]="totalSelected < 1 || (totalSelected > 1 && chatForm.hasError('required'))">Select {{totalSelected}}&nbsp;<span *ngIf="totalSelected <= 1">Person</span><span *ngIf="totalSelected > 1">People</span></ion-button>
   </ion-toolbar>
 </ion-footer>
-

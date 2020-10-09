@@ -75,4 +75,11 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.waitUntilUrlContains('myconversations');
     expect(await app.currentUrl()).toContain('myconversations');
   });
+
+  it('should show the Create Chat page', async () => {
+    await app.clickElement('#createNewChatButton');
+    await app.waitUntilElementVisible('#createChatHeader');
+    expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
+  });
+
 });
