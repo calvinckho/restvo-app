@@ -113,7 +113,7 @@
       </ion-item-options>
     </ion-item-sliding>
     <!--Special Privileges-->
-    <ion-item *ngIf="hasOrganizerAccess || hasLeaderAccess" (click)="this.expandPrivilegesView()" lines="none">
+    <ion-item *ngIf="hasOrganizerAccess || hasLeaderAccess" (click)="this.expandPrivilegesView()" lines="none" class="cursor-pointer">
       <ion-icon name="key" slot="start" color="danger"></ion-icon>
       <div class="ion-text-wrap message-container">
         <ion-label class="ion-margin-top">You have Special Privileges</ion-label>
@@ -144,7 +144,7 @@
       <ion-item lines="none">
         <ion-label>{{organizerLabel}}</ion-label>
       <div tabindex="0"></div></ion-item>
-      <ion-item-group class="ion-margin-start">
+      <ion-item-group class="ion-margin-start cursor-pointer">
         <ion-item (click)="moreOrganizerActions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
           <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -155,7 +155,7 @@
       <ion-item lines="none">
         <ion-label>{{leaderLabel}}</ion-label>
       <div tabindex="0"></div></ion-item>
-      <ion-item-group class="ion-margin-start">
+      <ion-item-group class="ion-margin-start cursor-pointer">
         <ion-item (click)="moreLeaderOptions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
           <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -166,7 +166,7 @@
       <ion-item lines="none">
         <ion-label>{{participantLabel}}</ion-label>
       <div tabindex="0"></div></ion-item>
-      <ion-item-group class="ion-margin-start">
+      <ion-item-group class="ion-margin-start cursor-pointer">
         <ion-item (click)="moreParticipantOptions()">
           <ion-label class="ion-margin-top">View Actions</ion-label>
           <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
@@ -264,7 +264,7 @@
         <quill-view
             [content]="interactableDisplay[moment.resource.matrix_number[2][i]].content.ops"
             format="object"
-            *ngIf="(moment.matrix_string[i].length > 2) && moment.matrix_string[i][2] && interactableDisplay[moment.resource.matrix_number[2][i]].content?.ops">
+            *ngIf="(moment.matrix_string[i].length > 2) && moment.matrix_string[i][2] && interactableDisplay[moment.resource.matrix_number[2][i]] && interactableDisplay[moment.resource.matrix_number[2][i]].content?.ops">
         </quill-view>
       <div tabindex="0"></div></ion-item>
       <ion-item class="section" color="secondary" *ngIf="item === 10050" lines="none"> <!--section header-->

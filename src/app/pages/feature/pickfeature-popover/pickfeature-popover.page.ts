@@ -126,6 +126,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step = 1;
             this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
         }
+        console.log("category", this.categoryId, this.selectedCategoryId)
     }
 
     refreshAfterCreateMomentHandler = async () => {
