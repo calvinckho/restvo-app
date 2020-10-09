@@ -69,4 +69,10 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await register.waitUntilInvisible();
     expect(await maintab.waitUntilPresent()).toBeTruthy();
   });
+
+  it('should click the Chat tab', async () => {
+    await app.clickElement('#chat');
+    await app.waitUntilUrlContains('myconversations');
+    expect(await app.currentUrl()).toContain('myconversations');
+  });
 });
