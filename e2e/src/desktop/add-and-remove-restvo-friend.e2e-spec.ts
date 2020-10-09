@@ -13,10 +13,10 @@ import {
   CreateFeaturePage,
   AboutPage,
   PreferencesPage
-} from './app.po';
+} from '../app.po';
 import { browser } from 'protractor';
 
-describe('join journey and leave journey', () => {
+describe(' Add and Remove a Restvo User as friend', () => {
   let app: AppPage;
   let showfeature: ShowfeaturePage;
   let maintab: MaintabPage;
@@ -51,16 +51,17 @@ describe('join journey and leave journey', () => {
     pickpeople = new PickpeoplePopoverPage();
     createfeature = new CreateFeaturePage();
     onboardfeature = new OnboardingfeaturePage();
-    await browser.get('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
+    await browser.get('/');
   });
 
-  it('should show unauthenticated journey page', async () => {
+  it('should show unauthenticated main page', async () => {
     await showfeature.waitUntilElementPresent('#showfeature-header');
     expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
   });
 
-  it('should login and show authenticated journey page', async () => {
-    await showfeature.clickElement('#accept-invitation');
+  it('should login as Ted Ho', async () => {
+    await showfeature.waitUntilElementVisible('#signin');
+    await showfeature.clickElement('#signin');
     await register.waitUntilVisible();
     await register.fillEmail();
     await register.fillPassword();
