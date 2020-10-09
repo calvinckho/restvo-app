@@ -665,7 +665,7 @@
             (onEditorCreated)="createQuillEditor($event, moment.resource.matrix_number[2][i])"
             (onContentChanged)="respondToTextArea($event, i)"
             [modules]="{ toolbar: moment.matrix_number[i][2] ? this.quillEditorToolbarConfig : false }" [placeholder]="(moment.matrix_string[i][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
-            [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (['owner','admin','staff'].includes(userData.user.role)) ? 42 : 0) + 'px'}" format="object">
+            [styles]="{'height': moment.matrix_number[i][0] * 30 + ((platform.width() >= 768) && (userData.user.role && ['owner','admin','staff'].includes(userData.user.role)) ? 42 : 0) + 'px'}" format="object">
           </quill-editor>
         <div tabindex="0"></div></ion-item>
         <ion-list class="results-list" *ngIf="(hasOrganizerAccess || hasLeaderAccess) && moment.categories.includes('5e17acd47b00ea76b75e5a71') && !interactableDisplay[moment.resource.matrix_number[2][i]].collaborative">
