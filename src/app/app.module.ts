@@ -43,6 +43,7 @@ import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.mod
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {ErrorService} from "./services/error.service";
+import {OnboardfeaturePageModule} from "./pages/feature/onboardfeature/onboardfeature.module";
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import {ErrorService} from "./services/error.service";
       PickpeoplePopoverPageModule,
       ProgramsPageModule,
       UploadmediaPageModule,
+      OnboardfeaturePageModule,
       NgxChartsModule,
       BrowserAnimationsModule,
       NgxStripeModule.forRoot(),

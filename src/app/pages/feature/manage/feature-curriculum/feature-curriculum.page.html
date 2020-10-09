@@ -21,10 +21,10 @@
     </ion-row>
     <ion-item *ngIf="this.schedule._id && !timeline.length">
       <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="!this.schedule._id">
       <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
       <!--Favorite Goals-->
       <ion-card mode="md" class="ion-no-padding">
@@ -32,7 +32,7 @@
           <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
           <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
             <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal)" fill="clear" size="small">
             <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
           </ion-buttons>
@@ -44,7 +44,7 @@
           <ion-card-content class="ion-no-padding goal-content">
             <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
               <ion-textarea class=" ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
               <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
             </ion-buttons>
@@ -58,12 +58,12 @@
                   <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
                   <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
                 </ion-buttons>
-              </ion-item>
+              <div tabindex="0"></div></ion-item>
             </div>
             <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
               <span class="content-count"><ion-icon name="add"></ion-icon></span>
               <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
           </ion-card-content>
         </ion-card>
       </div>
@@ -74,7 +74,7 @@
         <ion-card-content class="goal-content ion-no-padding">
           <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
             <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
             <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
           </ion-buttons>
@@ -88,12 +88,12 @@
                 <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
                 <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-buttons>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
           </div>
           <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
             <span class="content-count"><ion-icon name="add"></ion-icon></span>
             <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-card-content>
       </ion-card>
     </div>
@@ -102,7 +102,7 @@
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
           <ion-icon name="add"></ion-icon>
           <ion-label class="ion-margin-start" >Add New Section</ion-label>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
       </ion-card-content>
     </ion-card>
     <!--Uncategorized-->
@@ -110,7 +110,7 @@
       <ion-card-content class="goal-content overall ion-no-padding">
         <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
           <ion-label class="ion-margin-start">Uncategorized</ion-label>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
           <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">
             <span class="content-count">{{j+1}}.</span>
@@ -121,12 +121,12 @@
               <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
               <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
             </ion-buttons>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </div>
         <!--<ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(null)">
           <span class="content-count"><ion-icon name="add"></ion-icon></span>
           <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-        </ion-item>-->
+        <div tabindex="0"></div></ion-item>-->
       </ion-card-content>
     </ion-card>
     <ion-item hidden>
@@ -134,6 +134,6 @@
       <ion-select #SelectGoals [(ngModel)]="selectCalendarItem.goals" (ionChange)="assignGoal()" interface="alert" multiple="true" slot="end">
         <ion-select-option *ngFor="let goal of listOfDisplayGoals" [value]="goal[0]" [class.selected]="selectCalendarItem.goals && selectCalendarItem.goals.includes(goal[0])">{{goal[5]}}</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-list>
 </ion-content>

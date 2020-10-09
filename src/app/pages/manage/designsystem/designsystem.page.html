@@ -32,33 +32,33 @@
 
     <ion-item lines="none">
       <ion-label>Roboto</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-note color="grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</ion-note>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-item lines="none">
       <ion-label style="font-size: 20px;">Header 1 - 20</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label style="font-size: 18px;">Header 2 - 18</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label style="font-size: 16px;">Header 3 - 16</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-item lines="none" class="ion-margin-top">
       <ion-label style="font-size: 16px;">Body Large - 16</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label style="font-size: 14px;">Body Regular - 14</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label style="font-size: 12px;">Body Small - 12</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label style="font-size: 10px;">Body Micro - 10</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label" *ngIf="!this.prefersDark.matches">Light Mode Color</ion-badge>
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label" *ngIf="this.prefersDark.matches">Dark Mode Color</ion-badge>
@@ -202,7 +202,7 @@
               <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
             </div>
             <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item-options>
             <ion-item-option color="primary">
               Dismiss
@@ -220,7 +220,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide">
                 <ion-card class="program-card">
@@ -273,7 +273,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide">
                 <ion-card class="program-card">
@@ -326,7 +326,7 @@
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide">
                 <ion-card class="program-card">
@@ -421,11 +421,11 @@
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Item with Underline + Label</ion-badge>
     <ion-item>
       <ion-label>Name</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Item without Underline + Label</ion-badge>
     <ion-item lines="none">
       <ion-label>Name</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Select</ion-badge>
     <ion-item lines="none">
@@ -434,27 +434,27 @@
         <ion-select-option>Option 1</ion-select-option>
         <ion-select-option>Option 2</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label>Program</ion-label>
       <ion-select placeholder="Alert" interface="alert">
         <ion-select-option>Option 1</ion-select-option>
         <ion-select-option>Option 2</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item lines="none">
       <ion-label>Program</ion-label>
       <ion-select placeholder="Popover" interface="popover" [interfaceOptions]="{header: 'Program'}">
         <ion-select-option>Option 1</ion-select-option>
         <ion-select-option>Option 2</ion-select-option>
       </ion-select>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Checkbox</ion-badge>
     <ion-item lines="none">
       <ion-label>Name</ion-label>
       <ion-checkbox></ion-checkbox>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
 
     <ion-list>  <!--*ngIf="platform.width() > 768"-->
       <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
@@ -463,7 +463,7 @@
         <div class="column column-label">Program</div>
         <div class="progress column-label ion-no-margin" slot="end">Progress</div>
         <div class="last-date column-label ion-no-margin" slot="end">Last Check-in</div>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <div class="column">
           <ion-avatar class="insight-person-avatar">
@@ -482,7 +482,7 @@
         </div>
         <ion-progress-bar class="progress ion-no-margin" value=".2" buffer="1" slot="end"></ion-progress-bar>
         <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{null | datetime: 'm:n,d:n,y:n'}}</div>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <div class="column">
           <ion-avatar class="insight-person-avatar">
@@ -501,7 +501,7 @@
         </div>
         <ion-progress-bar class="progress ion-no-margin" value=".6" buffer="1" slot="end"></ion-progress-bar>
         <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{null | datetime: 'm:n,d:n,y:n'}}</div>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </ion-list>
   </div>
 </ion-content>

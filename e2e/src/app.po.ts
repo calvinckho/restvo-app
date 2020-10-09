@@ -111,15 +111,25 @@ class PageObjectBase {
     protected async enterInputText(sel: string, text: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
-            await element.all(by.css(`${this.tag} ${sel}`))
-                .filter(async (el, index) => await el.isPresent())
-                .first()
-                .element(by.css('input'))
-                .sendKeys(text);
+            if (await element.all(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
+                await element.all(by.css(`${this.tag} ${sel}`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .element(by.css('input')) // because it is a web component, needs to select its nested input tag
+                    .sendKeys(text);
+            } else { // else, if it is just the input tag
+                await element.all(by.css(`${this.tag} ${sel}`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .sendKeys(text);
+            }
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-            const inp = el.element(by.css('input'));
+            let inp = el;
+            if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
+                inp = el.element(by.css('input')); // needs to select the nested input tag
+            } // else, if it is just the input tag
             await inp.sendKeys(text);
         }
     }

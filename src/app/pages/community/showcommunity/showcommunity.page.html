@@ -20,52 +20,52 @@
     </div>
   </div>
   <ion-list>
-    <ion-item lines="none" color="grey">About</ion-item>
+    <ion-item lines="none" color="grey">About<div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.hasOwnProperty('verified') && !community.verified">
       <ion-label class="label-title">Status</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">Pending Approval</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.industry">
       <ion-label class="label-title">Category</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.industry['en-US'].value[0]}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.industry && community.industry._id === '5a83f63925d7c040d3625938' && community.denomination">
       <ion-label class="label-title">Denomination</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.denomination}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.meeting_location">
       <ion-label class="label-title">Address</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.meeting_location.street}} {{community.meeting_location.city}} {{community.meeting_location.state}} {{community.meeting_location.zip}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.keywords">
       <ion-label class="label-title" >Tags</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.keywords}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.website">
       <ion-label class="label-title" >Website</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.website}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.social">
       <ion-label class="label-title" >Social</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.social}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item *ngIf="community.email">
       <ion-label class="label-title" >Email</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.email}}</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <!--<ion-item *ngIf="community.short_id">
       <ion-label class="label-title" >Code</ion-label>
       <ion-label class="community-detail" class="ion-text-wrap">{{community.short_id}}</ion-label>
-    </ion-item>-->
-    <ion-item lines="none" color="grey">Administrators</ion-item>
+    <div tabindex="0"></div></ion-item>-->
+    <ion-item lines="none" color="grey">Administrators<div tabindex="0"></div></ion-item>
     <ion-item *ngFor="let admin of community.admins" (click)="seeUserInfo($event, admin)">
       <ion-avatar slot="start">
         <img *ngIf="admin.avatar" [src]="admin.avatar"/>
         <img *ngIf="!admin.avatar" src="assets/img/avatar-default.jpg"/>
       </ion-avatar>
       {{admin.first_name}} {{admin.last_name}}
-    </ion-item>
-    <ion-item lines="none" color="grey">Community Topics</ion-item>
+    <div tabindex="0"></div></ion-item>
+    <ion-item lines="none" color="grey">Community Topics<div tabindex="0"></div></ion-item>
     <ion-list>
       <ion-item lines="none" class="community-board" *ngFor="let board of community.boards; index as i">
         <ion-avatar slot="start">
@@ -73,7 +73,7 @@
         </ion-avatar>
         <ion-input class="board-title" [(ngModel)]="board.name" (blur)="editBoard($event, board)" [disabled]="!currentPageAdminStatus"></ion-input>
         <ion-icon slot="end" [hidden]="!currentPageAdminStatus || community.boards?.length < 2" name="trash" color="lightgrey" (click)="deleteBoard($event, board)"></ion-icon>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </ion-list>
     <!--Add Board-->
     <ion-item *ngIf="currentPageAdminStatus" lines="none">
@@ -81,8 +81,8 @@
       <ion-buttons slot="end">
         <ion-button shape="round" fill="solid" color="primary" (click)="addBoard()" [disabled]="!newBoardName?.length">Add</ion-button>
       </ion-buttons>
-    </ion-item>
-    <ion-item lines="none" color="grey">Community Actions</ion-item>
+    <div tabindex="0"></div></ion-item>
+    <ion-item lines="none" color="grey">Community Actions<div tabindex="0"></div></ion-item>
     <div *ngIf="userData && userData.user">
       <ion-row *ngIf="!community.verified && (['owner','admin','staff']).indexOf(userData.user.role) > -1"><ion-col class="padding-horizontal"><ion-button shape="round" expand="full" (click)="approveCommunity()" color='tertiary' >Approve Community</ion-button></ion-col></ion-row>
       <ion-row *ngIf="community.verified && (['owner','admin','staff']).indexOf(userData.user.role) > -1"><ion-col class="padding-horizontal"><ion-button shape="round" expand="full" (click)="unlistCommunity()" color='warning' >Unlist Community</ion-button></ion-col></ion-row>

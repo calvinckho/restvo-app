@@ -27,12 +27,11 @@ app-pickfeature-popover {
   }
 
   .avatar-col {
-    //width: 20%
-    margin-right: 10px;
+    margin-right: 12px;
   }
 
   .name-col {
-    width: 50%;
+    //width: 50%;
   }
 
   .user-avatar {
@@ -40,13 +39,15 @@ app-pickfeature-popover {
   }
 
   .name-label {
-    margin: 5px auto 0 auto;
+    margin: auto;
     color: grey;
     font-size: 12px;
   }
 
   .type-col {
-    width: 30%;
+    width: auto;
+    max-width: 30%;
+    float: right;
   }
 
   .actions-col {
@@ -65,6 +66,7 @@ app-pickfeature-popover {
     width: 220px;
     opacity: 0.3;
     height: 100%;
+    cursor: default;
   }
 
   .program-row {

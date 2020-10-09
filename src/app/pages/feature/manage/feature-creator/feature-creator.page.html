@@ -27,21 +27,21 @@
           <ion-item (click)="clickManageMenu('overview', null)">
             <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': router.url.includes('/overview/')}">Overview</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('curriculum', null)">
             <ion-icon slot="start" name="bicycle" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': router.url.includes('/curriculum/')}">Curriculum</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item-divider></ion-item-divider>
           <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210)"> <!--if Schedule is enabled-->
             <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(schedule._id)}">Schedule {{i + 1}}</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item (click)="clickManageMenu('new-schedule', null)">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
               <ion-label [ngClass]="{ 'bold-font': router.url.includes('/new-schedule')}">+ Schedule</ion-label>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
           </ion-item-group>
         </ion-list>
       </ion-col>

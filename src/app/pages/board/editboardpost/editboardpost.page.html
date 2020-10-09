@@ -24,7 +24,7 @@
         <ion-item lines="none">
             <ion-label class="post-label"><ion-icon name="chatbox" color="grey"></ion-icon></ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="8" autosize autocorrect="on" [placeholder]="resource['en-US'].matrix_string[0][4]" [(ngModel)]="post.body"></ion-textarea>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item *ngIf="awsService.sessionAssets?.length" lines="none">
             <div class="event-photo-container" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) > -1" >
                 <img #photo class="event-photo" [src]="awsService.sessionAssets[0]"/>
@@ -38,14 +38,14 @@
             <ion-button class="remove-photo" fill="clear" size="large" (click)="removePhoto()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)" lines="none">
             <div plyr class="event-photo-container" [plyrSources]="post.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event"></div>
 
             <ion-button class="remove-photo" fill="clear" size="large" (click)="removeVideo()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <div class="photo-frame" *ngIf="post.moments && post.moments.length && post.moments[0]._id && post.moments[0].resource && ['User Defined Activity','Track','Event','Goal','Meetup'].indexOf(post.moments[0].resource.field) > -1">
             <img class="photo" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
         </div>
@@ -96,7 +96,7 @@
             <ion-button size="large" fill="clear" slot="end" (click)="removeMoment()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
 
         <div *ngIf="resourceService.showPixabay > -1">
             <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords to search Pixabay" debounce="500"></ion-searchbar>

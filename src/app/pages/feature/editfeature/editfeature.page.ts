@@ -463,7 +463,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
           });
           if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
-              this.addressURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
+              this.addressURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center='+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
           }
           if (this.moment.calendar && this.moment.calendar._id) {
               this.startDate = new Date(this.moment.calendar.startDate);
@@ -501,7 +501,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.initialSetupCompleted = true;
           console.log('editfeature setup completed', this.moment, this.interactableDisplay);
       } catch (err) {
-          console.log("editfeature setup error", err)
+          console.log('editfeature setup error', err)
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
           this.router.navigate(['/app/me']);
       }
@@ -513,8 +513,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             const createdResource: any = await this.resourceService.create(this.moment.resource); // template returned from server, with template id
             this.moment.resource._id = createdResource._id; // the only thing needed from the server is the newly generated template ID
             this.templateChanged = false;
-            // TODO: Isaiah
-            console.log("template ID", createdResource._id);
         }
     }
 
@@ -603,21 +601,26 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.moment.resource.matrix_number[2].splice(index, 1);
       this.moment.resource.matrix_number[3].splice(index, 1);
       this.moment.resource['en-US'].matrix_string.splice(index, 1);
+      this.templateChanged = true;
   }
 
   reorderComponents(event) {
       this.templateChanged = true;
       this.resourceService.showPixabay = -1;
+      // reorder resource first, because of how Quill editor interactableDisplay is designed
+      this.moment.resource.matrix_number[1] = this.reorderArray(this.moment.resource.matrix_number[1], event.detail.from, event.detail.to);
+      this.moment.resource.matrix_number[2] = this.reorderArray(this.moment.resource.matrix_number[2], event.detail.from, event.detail.to);
+      this.moment.resource.matrix_number[3] = this.reorderArray(this.moment.resource.matrix_number[3], event.detail.from, event.detail.to);
+      // then reorder matrix's
       if (this.moment.matrix_number && this.moment.matrix_number.length) {
           this.moment.matrix_number = this.reorderArray(this.moment.matrix_number, event.detail.from, event.detail.to);
       }
       this.moment.matrix_string = this.reorderArray(this.moment.matrix_string, event.detail.from, event.detail.to);
-      this.moment.resource.matrix_number[1] = this.reorderArray(this.moment.resource.matrix_number[1], event.detail.from, event.detail.to);
-      this.moment.resource.matrix_number[2] = this.reorderArray(this.moment.resource.matrix_number[2], event.detail.from, event.detail.to);
-      this.moment.resource.matrix_number[3] = this.reorderArray(this.moment.resource.matrix_number[3], event.detail.from, event.detail.to);
 
       this.moment.resource['en-US'].matrix_string = this.reorderArray(this.moment.resource['en-US'].matrix_string, event.detail.from, event.detail.to);
-      this.moment.resource.matrix_number[0] = event.detail.complete(this.moment.resource.matrix_number[0]);
+      setTimeout(() => {
+          this.moment.resource.matrix_number[0] = event.detail.complete(this.moment.resource.matrix_number[0]);
+      }, 50);
   }
 
   reorderPlanItems(event) {
@@ -1131,7 +1134,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         this.moment.matrix_string[componentIndex][0] = event.text;
         this.moment.matrix_string[componentIndex][2] = JSON.stringify(event.content);
         this.moment.matrix_string[componentIndex][3] = JSON.stringify(event.delta);
-        console.log("quill changed", this.moment.matrix_string);
     }
 
   async saveActivity(closeModal) {
@@ -1144,10 +1146,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.presentToast("Please enter a name for this " + this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0]);
           return;
       }
-      if (this.editTemplate || this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
+      if (this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
           const createdResource: any = await this.resourceService.create(this.moment.resource);
           this.moment.resource._id = createdResource._id;
-          //this.editTemplate = false; // turn edit mode off
       }
 
       // for all day events, start time is set to 12a on selected date and end time is set to 12a the following day
@@ -1393,15 +1394,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             }
             this.moment.matrix_string[i].push(...media_list);
         }
-        console.log("after media upload", this.moment);
     }
 
     async createQuillEditor(event, interactableId) {
         if (this.interactableDisplay[interactableId] && this.interactableDisplay[interactableId].content) {
             event.setContents(this.interactableDisplay[interactableId].content.ops, 'silent');
             this.interactableDisplay[interactableId]['editor'] = event;
-        } else {
-            //this.interactableDisplay[interactableId] = { editor: null, content:  };
         }
     }
 

@@ -17,67 +17,67 @@
         <ion-list *ngIf="user && user._id">
             <!--<ion-item lines="none" color="lightgrey">
                 <ion-label color="darkgrey">Profile Picture</ion-label>
-            </ion-item>-->
+            <div tabindex="0"></div></ion-item>-->
             <ion-item lines="none">
                 <ion-note class="ion-padding-vertical text-wrap">Upload your photo to help your friends see you more easily on Restvo.</ion-note>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item class="ion-text-wrap" lines="none">
                 <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
                     <img *ngIf="!user.avatar" class="profile-pic" src="assets/img/avatar-default.jpg"/>
                     <img *ngIf="user.avatar" [src]="user.avatar" class="profile-pic" onerror="this.src='assets/img/avatar-default.jpg'"/>
                     <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
                 </div>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin">
                 <div class="browser-upload">
                     <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
                 </div>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item>
                 <ion-label position="stacked">First Name *</ion-label>
                 <ion-input type="text" formControlName="first_name"></ion-input>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item class="form-error-list" *ngIf="!userForm.controls.first_name.pristine && !userForm.controls.first_name.valid">
                 <p class="form-error" slot="end" *ngIf="!userForm.controls.first_name.pristine && userForm.controls.first_name.hasError('required')">
                     This is a required field.
                 </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item>
                 <ion-label position="stacked">Last Name *</ion-label>
                 <ion-input type="text" formControlName="last_name"></ion-input>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item class="form-error-list" *ngIf="!userForm.controls.last_name.pristine && !userForm.controls.last_name.valid">
                 <p class="form-error" slot="end" *ngIf="!userForm.controls.last_name.pristine && userForm.controls.last_name.hasError('required')">
                     This is a required field.
                 </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item-divider></ion-item-divider>
             <!--<ion-item lines="none"  color="lightgrey">
                 <ion-label color="darkgrey">Account Information</ion-label>
-            </ion-item>-->
+            <div tabindex="0"></div></ion-item>-->
             <ion-item class="ion-text-wrap" lines="none">
                 <ion-note class="ion-padding-vertical">Verify your email and phone number to ensure that you can recover your account in the future if you forget your password.</ion-note>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item *ngIf="user.email">
                 <ion-label position="stacked">Verified Email Address</ion-label>
                 <ion-input type="text" formControlName="email"></ion-input>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item>
                 <ion-label position="stacked">Email Address</ion-label>
                 <ion-input class="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" formControlName="primary_email"></ion-input>
                 <ion-buttons class="verify_button" slot="end">
                     <ion-button fill="solid" shape="round" color="primary" (click)="registerEmail()" [disabled]="(user.email == userForm.value.primary_email) || !userForm.controls.primary_email.valid">{{this.user.email && (this.user.email === userForm.value.primary_email) ? 'Verified' : 'Verify'}}</ion-button>
                 </ion-buttons>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item class="form-error-list" *ngIf="!userForm.controls.primary_email.pristine && !userForm.controls.primary_email.valid">
                 <p class="form-error" slot="end" *ngIf="!userForm.controls.primary_email.pristine && !userForm.controls.primary_email.valid">
                     Invalid email address.
                 </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item *ngIf="user.mobile">
                 <ion-label position="stacked">Verified Mobile Phone</ion-label>
                 <ion-input type="tel" formControlName="mobile"></ion-input>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item>
                 <ion-label position="stacked">Mobile Phone</ion-label>
                 <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code" formControlName="mobile_calling_code" name='Country Code'>
@@ -87,24 +87,24 @@
                 <ion-buttons class="verify_button" slot="end">
                     <ion-button fill="solid" shape="round" color="primary" (click)="registerMobile()" [disabled]="user.mobile == (userForm.value.mobile_calling_code + userForm.value.mobile_sig_number) || !userForm.controls.mobile_sig_number.valid">{{this.user.mobile && (this.user.mobile === (userForm.value.mobile_calling_code + userForm.value.mobile_sig_number)) ? 'Verified' : 'Verify'}}</ion-button>
                 </ion-buttons>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item class="form-error-list" *ngIf="!userForm.controls.mobile_sig_number.pristine && !userForm.controls.mobile_sig_number.valid">
                 <p class="form-error" slot="end" *ngIf="!userForm.controls.mobile_sig_number.pristine && !userForm.controls.mobile_sig_number.valid">
                     Invalid mobile number.
                 </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item-divider></ion-item-divider>
             <!--<ion-item lines="none"  color="lightgrey">
                 <ion-label color="darkgrey">Contact Info</ion-label>
-            </ion-item>-->
+            <div tabindex="0"></div></ion-item>-->
             <ion-item class="ion-text-wrap" lines="none">
                 <ion-note class="ion-padding-vertical">Your contact information is private and can only be viewed by people with whom you choose to share.</ion-note>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item-group>
                 <ion-item lines="none" *ngIf="!showContactInfo" (click)="showContactInfo = !showContactInfo">
                     <ion-label slot="start">Optional</ion-label>
                     <ion-button size="small" slot="end" fill="outline" *ngIf="!showOptional">Show More</ion-button>
-                </ion-item>
+                <div tabindex="0"></div></ion-item>
                 <div *ngIf="showContactInfo">
                     <ion-item>
                         <ion-label position="stacked">Home Phone</ion-label>
@@ -112,34 +112,34 @@
                             <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.value}}</ion-select-option>
                         </ion-select>
                         <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="home_sig_number"></ion-input>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item class="form-error-list" *ngIf="!userForm.controls.home_sig_number.pristine && !userForm.controls.home_sig_number.valid">
                         <p class="form-error" slot="end" *ngIf="!userForm.controls.home_sig_number.pristine && !userForm.controls.home_sig_number.valid">
                             Invalid home phone number.
                         </p>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item>
                         <ion-label position="stacked">Street</ion-label>
                         <ion-input type="text" formControlName="street"></ion-input>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item>
                         <ion-label position="stacked">City</ion-label>
                         <ion-input type="text" formControlName="city"></ion-input>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item>
                         <ion-label position="stacked">State</ion-label>
                         <ion-input type="text" formControlName="state"></ion-input>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item>
                         <ion-label position="stacked">Zip Code</ion-label>
                         <ion-input type="number" formControlName="zip"></ion-input>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                     <ion-item>
                         <ion-label position="stacked">Country</ion-label>
                         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="country">
                             <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
                         </ion-select>
-                    </ion-item>
+                    <div tabindex="0"></div></ion-item>
                 </div>
             </ion-item-group>
         </ion-list>
@@ -152,7 +152,7 @@
             <ion-note class="ion-text-wrap">
                 You are already sharing your contact info with {{recipient.first_name}} {{recipient.last_name}}
             </ion-note>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-button *ngIf="mode === 'save'" (click)="updateUserProfile(mode)" expand="full" shape="round" fill="solid" color="primary" [disabled]="!userForm.valid">Save</ion-button>
         <ion-button *ngIf="mode === 'share'" (click)="updateUserProfile(mode)" expand="full" shape="round" fill="solid" color="primary" [disabled]="!userForm.valid">Save and Share with {{recipient.first_name}}</ion-button>
         <ion-button *ngIf="mode === 'cancel share'" (click)="modalCtrl.dismiss(mode)" expand="full" shape="round" fill="solid" color="primary" [disabled]="!userForm.valid">Turn Off Sharing My Contact</ion-button>

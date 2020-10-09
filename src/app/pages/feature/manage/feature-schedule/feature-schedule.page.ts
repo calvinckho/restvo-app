@@ -167,9 +167,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       await this.loadGoals();
     }
-/*    setTimeout(() => {
-      this.loadCompleted = true;
-    }, 500);*/
   }
 
   async loadGoals() {

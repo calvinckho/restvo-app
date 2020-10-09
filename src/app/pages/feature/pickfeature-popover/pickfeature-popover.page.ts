@@ -126,6 +126,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step = 1;
             this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
         }
+        console.log("category", this.categoryId, this.selectedCategoryId)
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -333,6 +334,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             data.modalPage = true;
             this.momentService.editMoment(data);
         }
+        this.cleanup();
     }
 
     async changeView(event) {

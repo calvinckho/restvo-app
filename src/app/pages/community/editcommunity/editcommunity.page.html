@@ -25,80 +25,80 @@
       <ion-item>
         <ion-label position="stacked">Community Name *</ion-label>
         <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item class="form-error-list" *ngIf="!communityForm.controls.name.pristine && !communityForm.controls.name.valid">
         <p class="form-error" slot="end" *ngIf="!communityForm.controls.name.pristine && communityForm.controls.name.hasError('required')">
           This is a required field.
         </p>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-divider class="ion-text-wrap" *ngIf="community.short_id">
         <p>Community Code is a code you can send to your members to quickly find your community in Restvo.</p>
       </ion-item-divider>
       <ion-item *ngIf="community.short_id">
         <ion-label position="stacked">Community Code: {{community.short_id}}</ion-label>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Category *</ion-label>
         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="industry" interface="alert">
           <ion-select-option *ngFor="let industry of industries" [value]="industry._id" [class.selected]="industry.selected">{{industry.name}}</ion-select-option>
         </ion-select>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-divider class="ion-text-wrap">
         <p>Choose up to 5 keywords, separate by commas, that best describe your organization.</p>
       </ion-item-divider>
       <ion-item>
         <ion-label position="stacked">Keywords</ion-label>
         <ion-textarea autosize rows="1" [minRows]="1" [maxRows]="3" autocorrect="on" formControlName="keywords" placeholder="ex. Advocacy, mercy and justice, worship etc." ></ion-textarea>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input type="email" formControlName="email"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Phone</ion-label>
         <ion-input type="tel" formControlName="phone"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Website</ion-label>
         <ion-input type="url" formControlName="website"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Social</ion-label>
         <ion-input type="text" formControlName="social"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Street</ion-label>
         <ion-input type="text" formControlName="meeting_street"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">City *</ion-label>
         <ion-input type="text" formControlName="meeting_city"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item class="form-error-list" *ngIf="!communityForm.controls.meeting_city.pristine && !communityForm.controls.meeting_city.valid">
         <p class="form-error" slot="end" *ngIf="!communityForm.controls.meeting_city.pristine && communityForm.controls.meeting_city.hasError('required')">
           This is a required field.
         </p>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">State *</ion-label>
         <ion-input type="text" formControlName="meeting_state"></ion-input>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item class="form-error-list" *ngIf="!communityForm.controls.meeting_state.pristine && !communityForm.controls.meeting_state.valid">
         <p class="form-error" slot="end" *ngIf="!communityForm.controls.meeting_state.pristine && communityForm.controls.meeting_state.hasError('required')">
           This is a required field.
         </p>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item>
         <ion-label position="stacked">Country *</ion-label>
         <ion-select [interfaceOptions]="{cssClass: 'level-15'}" formControlName="meeting_country">
           <ion-select-option *ngFor="let country of countries" [value]="country.name" [class.selected]="country.selected">{{country.name}}</ion-select-option>
         </ion-select>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item class="form-error-list" *ngIf="!communityForm.controls.meeting_country.pristine && !communityForm.controls.meeting_country.valid">
         <p class="form-error" slot="end" *ngIf="!communityForm.controls.meeting_country.pristine && communityForm.controls.meeting_country.hasError('required')">
           This is a required field.
         </p>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </form>
   </ion-list>
 </ion-content>

@@ -37,6 +37,10 @@ app-showfeature {
     --background: transparent !important;
   }
 
+  ion-item-sliding {
+    cursor: default;
+  }
+
   #permissionBar {
     position: absolute;
     top: 0;

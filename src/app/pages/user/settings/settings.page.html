@@ -11,37 +11,37 @@
 
   <!--CONTACTS-->
   <div *ngIf="platform.is('cordova')">
-    <ion-item lines="none" color="lightgrey">Find Friends on Restvo</ion-item>
+    <ion-item lines="none" color="lightgrey">Find Friends on Restvo<div tabindex="0"></div></ion-item>
     <ion-item>
       <ion-label>Import Address Book</ion-label>
       <ion-toggle slot="end" [(ngModel)]="UIimportContactList" (ionChange)="toggleImportContactList()"></ion-toggle>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </div>
 
 <!--  &lt;!&ndash;ACCOUNT&ndash;&gt;
-  <ion-item lines="none" color="lightgrey">Account</ion-item>
+  <ion-item lines="none" color="lightgrey">Account<div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>Restvo ID</ion-label>
     <ion-label *ngIf="userData.user.mobile" color="grey" style="text-align: right;">{{userData.user.mobile}}</ion-label>
     <ion-label *ngIf="!userData.user.mobile" color="grey" style="text-align: right;">{{userData.user.email}}</ion-label>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
   <ion-item>
     <ion-label>Full Name</ion-label>
     <ion-label color="lightgrey" style="text-align: right;">{{userData.user.first_name}} {{userData.user.last_name}}</ion-label>
-  </ion-item>-->
+  <div tabindex="0"></div></ion-item>-->
 
-  <ion-item lines="none" color="lightgrey">Privacy</ion-item>
+  <ion-item lines="none" color="lightgrey">Privacy<div tabindex="0"></div></ion-item>
   <ion-item class="ion-text-wrap">
     <ion-label>Allow to be Discovered <ion-icon name="information-circle" (click)="explainDiscover()"></ion-icon></ion-label>
     <ion-toggle [(ngModel)]="UIAllowedDiscovered" (ionChange)="toggleAllowedDiscovered()"></ion-toggle>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
   <ion-item class="ion-text-wrap">
     <ion-label>Allow All Friends to View Contact Info</ion-label>
     <ion-toggle [(ngModel)]="UIShareContactInfo" (ionChange)="toggleShareContactInfo()"></ion-toggle>
-  </ion-item>
+  <div tabindex="0"></div></ion-item>
 
   <!--SECURITY-->
-  <ion-item lines="none" color="lightgrey">Security</ion-item>
+  <ion-item lines="none" color="lightgrey">Security<div tabindex="0"></div></ion-item>
   <ion-button color='light' (click)="resetPassword()" shape="round" expand="full" class="ion-margin-vertical">
     <span *ngIf="userData.user.password">Reset Password</span>
     <span *ngIf="!userData.user.password">Create Password</span>
