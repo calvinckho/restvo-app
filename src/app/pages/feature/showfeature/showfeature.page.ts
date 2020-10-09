@@ -1671,7 +1671,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async openProgram(event, moment) {
     if (event) event.stopPropagation();
     if (!this.authService.token) {
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+        this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
     } else if (!this.modalPage && this.platform.width() >= 992) {
         this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
     } else if (!this.modalPage && this.platform.width() >= 768) {
