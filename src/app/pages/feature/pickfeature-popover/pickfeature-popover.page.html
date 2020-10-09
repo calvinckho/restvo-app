@@ -133,7 +133,7 @@
     </div>
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
       <ion-virtual-scroll [items]="recentCalendarItems" approxItemHeight="100px">
-        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)">
+        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)" class="cursor-pointer">
           <ion-avatar class="avatar-col" *ngIf="calendarItem.moment">
             <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
           </ion-avatar>
@@ -154,7 +154,7 @@
           <div style="font-size: 14px" class="ion-text-wrap">Enter a Name for the {{selectedMoments[0].resource['en-US'].value[0]}}</div>
         <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
-          <div slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
+          <ion-icon class="side-icon" color="grey" name="brush" slot="start"></ion-icon>
           <ion-textarea [(ngModel)]="selectedMoments[0].matrix_string[0][0]" rows="1" [minRows]="1" [maxRows]="2" autosize></ion-textarea>
         <div tabindex="0"></div></ion-item>
       </ion-col>

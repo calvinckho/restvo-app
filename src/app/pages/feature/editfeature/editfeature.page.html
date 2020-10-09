@@ -605,15 +605,15 @@
             <div tabindex="0"></div></ion-item>
             <ion-item> <!--Question-->
               <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
-              <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="moment.matrix_string[i][0]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
+              <ion-textarea rows="1" autoGrow maxlength="500" [(ngModel)]="moment.matrix_string[i][0]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]" (ionChange)="templateChanged = true"></ion-textarea>
             <div tabindex="0"></div></ion-item>
             <ion-item> <!--Label-->
               <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}</ion-label>
-              <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][1]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
+              <ion-textarea rows="1" [(ngModel)]="moment.matrix_string[i][1]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][5]" (ionChange)="templateChanged = true"></ion-textarea>
             <div tabindex="0"></div></ion-item>
             <ion-item> <!--Placeholder-->
               <ion-label style="width: 90%" position="stacked">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][9]}}</ion-label>
-              <ion-textarea rows="1" [minRows]="1" [maxRows]="2" autosize [(ngModel)]="moment.matrix_string[i][4]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]" (ionChange)="templateChanged = true" (focus)="change.detach()" (blur)="change.reattach();"></ion-textarea>
+              <ion-textarea rows="1" [(ngModel)]="moment.matrix_string[i][4]" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10]" (ionChange)="templateChanged = true"></ion-textarea>
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none"> <!--number of lines-->
               <ion-label style="width: 90%" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</ion-label>
@@ -1247,7 +1247,7 @@
 <ion-footer style="max-height: 20%; overflow: scroll" *ngIf="addComponentActivated && resource && resource._id && moment.resource && moment.resource.field">
   <ion-toolbar>
     <div class="component-options" *ngIf="addComponentActivated">
-      <ion-button *ngFor="let componentOption of resource['en-US'].matrix_string; index as i;" shape="round" fill="outline clear" size="small" [hidden]="(resource.matrix_number[1][i] < 1) || (resource.matrix_number[0][i] >= 10310 && resource.matrix_number[0][i] <= 10360) || (resource.matrix_number[0][i] === 40000) || (visibleComponents.length && !visibleComponents.includes(resource.matrix_number[0][i]))" (click)="templateChanged = true; addComponent(resource.matrix_number[0][i])">
+      <ion-button *ngFor="let componentOption of resource['en-US'].matrix_string; index as i;" (click)="templateChanged = true; addComponent(resource.matrix_number[0][i])" [hidden]="(resource.matrix_number[1][i] < 1) || (resource.matrix_number[0][i] >= 10310 && resource.matrix_number[0][i] <= 10360) || (resource.matrix_number[0][i] === 40000) || (visibleComponents.length && !visibleComponents.includes(resource.matrix_number[0][i]))" shape="round" fill="outline clear" size="small">
         <div class="addRemoveText">+ {{componentOption[0]}}</div>
       </ion-button>
       <ion-button shape="round" fill="outline clear" size="small" (click)="addComponentActivated = false"><div class="addRemoveText">Cancel</div></ion-button>
