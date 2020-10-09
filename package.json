@@ -10,7 +10,7 @@
     "build": "ng build --prod; npx cap copy",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --webdriverUpdate=false"
   },
   "private": true,
   "dependencies": {
