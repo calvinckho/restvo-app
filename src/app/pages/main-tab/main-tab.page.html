@@ -12,7 +12,7 @@
     <ion-tab-button tab="news" *ngIf="!userData.UIAdminMode">
       <ion-icon name="newspaper"></ion-icon>
     </ion-tab-button>
-    <ion-tab-button tab="myconversations">
+    <ion-tab-button tab="myconversations/chat" [ngClass]="{'tab-selected': router.url.includes('myconversations')}">
       <ion-badge *ngIf="chatService && chatService.connectTabBadge" mode="md">{{chatService.connectTabBadge}}</ion-badge>
       <ion-icon name="chatbox"></ion-icon>
     </ion-tab-button>
