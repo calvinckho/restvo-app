@@ -33,10 +33,10 @@
         </ion-button>
       </div>
       <div *ngIf="authService.token && setupPermissionCompleted && loadStatus">
-        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="!subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length >= 5) && moment.array_boolean[5]" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
+        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="!subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length > 1) && !moment.array_boolean[1] && (moment.array_boolean.length >= 5) && moment.array_boolean[5]" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
           <ion-icon name="chatbubbles"></ion-icon>
         </ion-button>
-        <ion-button id="add-user-to-group" (click)="inviteToJoin()" [hidden]="subpanel || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
+        <ion-button id="add-user-to-group" (click)="inviteToJoin()" [hidden]="subpanel || moment.array_boolean && (moment.array_boolean.length > 1) && moment.array_boolean[1] || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
           <ion-icon name="person-add"></ion-icon>
         </ion-button>
         <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
@@ -132,8 +132,8 @@
         </div>
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       <div tabindex="0"></div></ion-item>
-      <!--Not yet Joined - permission check-->
-      <ion-item id="click-to-join" *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess" (click)="joinActivity()" lines="none" class="cursor-pointer">
+      <!--Not yet Joined and not a marketplace sample - permission check-->
+      <ion-item id="click-to-join" *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess && (moment.array_boolean.length > 1) && !moment.array_boolean[1]" (click)="joinActivity()" lines="none" class="cursor-pointer">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
