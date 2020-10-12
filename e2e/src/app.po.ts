@@ -435,10 +435,6 @@ export class PickpeoplePopoverPage extends PageObjectBase {
           .first()
           .click();
     }
-
-    done() {
-      this.clickElement("#done");
-    }
 }
 
 export class EditfeaturePage extends PageObjectBase {
