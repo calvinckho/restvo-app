@@ -83,4 +83,10 @@ describe(' Add and Remove a Restvo User as friend', () => {
     expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
   });
 
+  it('should put string input into searchbar', async () => {
+    await app.enterSearchbarInputText('#chatSearchBar', 'Kevin');
+    await browser.sleep(5000);
+    expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
+  });
+
 });

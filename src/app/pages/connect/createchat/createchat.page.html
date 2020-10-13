@@ -8,7 +8,7 @@
   </ion-toolbar>
   <ion-toolbar>
     <div>
-      <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
+      <ion-searchbar id="chatSearchBar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
       <div class="selected-buttons">
         <ion-button size="small" *ngFor="let person of selectedAppUsers" (click)="unselect(person)">{{person.name}}<ion-icon name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
       </div>

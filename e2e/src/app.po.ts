@@ -124,6 +124,22 @@ class PageObjectBase {
         }
     }
 
+    async enterSearchbarInputText(sel: string, text: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            await element.all(by.css(`${this.tag} ${sel}`))
+                .filter(async (el, index) => await el.isPresent())
+                .first()
+                .element(by.css('.searchbar-input'))
+                .sendKeys(text);
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            const inp = el.element(by.css('.searchbar-input'));
+            await inp.sendKeys(text);
+        }
+    }
+
     async clickElement(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
