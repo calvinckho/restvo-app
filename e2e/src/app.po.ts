@@ -418,6 +418,11 @@ export class PickpeoplePopoverPage extends PageObjectBase {
       this.clickElement('#recent-');
     }
 
+    async exitModal() {
+      await this.waitUntilElementVisible('md.button.button-clear.in-toolbar.ion-activatable.ion-focusable.hydrated');
+      this.clickElement('md.button.button-clear.in-toolbar.ion-activatable.ion-focusable.hydrated');
+    }
+
     async clickPopoverChoice(text) {
       await this.waitUntilElementVisible('ion-color.ion-color-grey.md.button.button-clear.in-toolbar.ion-activatable.ion-focusable hydrated.ion-activated');
       this.clickElement('ion-color.ion-color-grey.md.button.button-clear.in-toolbar.ion-activatable.ion-focusable hydrated.ion-activated');
@@ -429,10 +434,6 @@ export class PickpeoplePopoverPage extends PageObjectBase {
           .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
           .first()
           .click();
-    }
-
-    done() {
-      this.clickElement("#done");
     }
 }
 
