@@ -80,10 +80,19 @@ describe('add and remove user from group', () => {
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
         await pickpeople.searchUser('Asia Ho');
-        browser.sleep(5000);
+        await browser.sleep(1000);
         await pickpeople.userSelect('Asia Ho');
         await pickpeople.clickElement('#done');
         await pickpeople.waitUntilInvisible();
+        // await editfeature.clickElement('#exit-pickpeople'); // I don't know which modal/page this is rendered in
+        expect(await editfeature.waitUntilInvisible()).toBeTruthy();
+    });
+
+    it('should select added user and remove them', async () => {
+        // await editfeature.clickElement('#add-people'); // never exited modal
+        await app.waitUntilElementVisible('ion-popover');
+        await browser.sleep(1000);
+        await pickpeople.userSelect('Asia Ho');
         await editfeature.clickElement('#exit-pickpeople');
         expect(await editfeature.waitUntilInvisible()).toBeTruthy();
     });

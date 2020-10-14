@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(this.anyChangeMade)" *ngIf="!subpanel">
+      <ion-button id="exit-pickpeople" (click)="closeModal(this.anyChangeMade)" *ngIf="!subpanel">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
       <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
