@@ -78,6 +78,25 @@ class PageObjectBase {
         }
     }
 
+    async waitUntilElementTextPresent(sel: string, text: string) {
+        // const els = await element.all(by.css(`${this.tag} ${sel}`));
+        // if (els.length) {
+        //     for (const el of els) {
+        //         console.log('element inner', el.getText())
+        //         if (await el.getText() === text) {
+        //             console.log('element matched name', browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000))
+        //             return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
+        //         }
+        //     }
+        // } else {
+        //     await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
+        // }
+        let el = await element(by.css(`${sel}`));
+        // console.log('el:', el);
+        console.log('el text', el.getText());
+        return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
+    }
+
     async waitUntilElementVisible(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
@@ -166,6 +185,12 @@ class PageObjectBase {
 
     async elementIsPresent(sel: string) {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
+    }
+
+    async selectSubElement (sel: string) {
+        // let foo = await element.all(by.css(sel)).all(by.tagName(sel2)).getText();
+        let foo = await element.all(by.css(`${this.tag} ${sel}`)).getText();
+        console.log('text for test', foo)
     }
 }
 

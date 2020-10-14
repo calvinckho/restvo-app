@@ -14,7 +14,7 @@ import {
   AboutPage,
   PreferencesPage
 } from '../app.po';
-import { browser } from 'protractor';
+import { browser, by } from 'protractor';
 
 describe(' Add and Remove a Restvo User as friend', () => {
   let app: AppPage;
@@ -83,10 +83,16 @@ describe(' Add and Remove a Restvo User as friend', () => {
     expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
   });
 
-  it('should put string input into searchbar', async () => {
-    await app.enterSearchbarInputText('#chatSearchBar', 'Kevin');
-    await browser.sleep(5000);
-    expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
+  it('should select Asia Ho', async () => {
+    await app.enterSearchbarInputText('#chatSearchBar', 'Asia');
+    await browser.sleep(5000); //change to ensure intended user shows up on list
+    // await app.waitUntilElementPresent('#restvoGroup .restvoGroup')
+    // await app.waitUntilElementTextPresent('#restvoGroup', 'Asia Ho')
+    // await browser.sleep(5000);
+    await app.clickElement('#restvoGroup ion-item')
+    // await app.selectSubElement('#restvoGroup')
+    expect(await app.waitUntilElementTextPresent('.selectedAppUsers', 'Asia')).toBeTruthy();//expect button to be truthy
+    // expect(await browser.wait(ExpectedConditions.textToBePresentInElement(el, text))  elementIsPresent('#createChatHeader')).toBeTruthy();//expect button to be truthy
   });
 
 });
