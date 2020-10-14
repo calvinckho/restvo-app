@@ -69,7 +69,7 @@ describe('add and remove user from group', () => {
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 
-    it('should click to add user to group', async () => {
+    it('should open People view', async () => {
         await showfeature.clickElement('#add-user-to-group');
         await editfeature.waitUntilElementVisible('#add-people');
         expect(await editfeature.elementIsPresent('#add-people')).toBeTruthy();
@@ -79,21 +79,30 @@ describe('add and remove user from group', () => {
         await editfeature.clickElement('#add-people');
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
+        await pickpeople.waitUntilVisible();
+        expect(await pickpeople.elementIsPresent('#done')).toBeTruthy();
+    });
+
+    it('should search, select, and add user', async () => {
         await pickpeople.searchUser('Asia Ho');
-        await browser.sleep(1000);
+        await browser.sleep(2000);
         await pickpeople.userSelect('Asia Ho');
         await pickpeople.clickElement('#done');
         await pickpeople.waitUntilInvisible();
-        // await editfeature.clickElement('#exit-pickpeople'); // I don't know which modal/page this is rendered in
+        expect(await pickpeople.elementIsPresent('#done')).toBeFalsy();
+    });
+
+    it('should exit out the People view', async () => {
+        await editfeature.clickElement('#exit-pickpeople');
         expect(await editfeature.waitUntilInvisible()).toBeTruthy();
     });
 
-    it('should select added user and remove them', async () => {
+    /*it('should select added user and remove them', async () => {
         // await editfeature.clickElement('#add-people'); // never exited modal
         await app.waitUntilElementVisible('ion-popover');
         await browser.sleep(1000);
         await pickpeople.userSelect('Asia Ho');
         await editfeature.clickElement('#exit-pickpeople');
         expect(await editfeature.waitUntilInvisible()).toBeTruthy();
-    });
+    });*/
 });
