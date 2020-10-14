@@ -435,6 +435,10 @@ export class PickpeoplePopoverPage extends PageObjectBase {
           .first()
           .click();
     }
+
+    async searchUser(name) {
+      await this.enterInputText('.searchbar-input', name);
+    }
 }
 
 export class EditfeaturePage extends PageObjectBase {
