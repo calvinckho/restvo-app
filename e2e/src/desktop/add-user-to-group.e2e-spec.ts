@@ -10,6 +10,7 @@ import {
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
     EditfeaturePage,
+    EditparticipantsPage,
     OnboardingfeaturePage,
     CreateFeaturePage,
     AboutPage,
@@ -31,6 +32,7 @@ describe('add and remove user from group', () => {
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
     let editfeature: EditfeaturePage;
+    let editparticipants: EditparticipantsPage;
     let createfeature: CreateFeaturePage;
     let onboardfeature: OnboardingfeaturePage;
 
@@ -53,6 +55,7 @@ describe('add and remove user from group', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
         editfeature = new EditfeaturePage();
+        editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/activity/5f72454627cf747d0ccb16d0');
         //await browser.waitForAngular(); // wait for angular to direct /app/activity to /activity since it is still unauthenticated
@@ -97,12 +100,11 @@ describe('add and remove user from group', () => {
         expect(await editfeature.waitUntilInvisible()).toBeTruthy();
     });
 
-    /*it('should select added user and remove them', async () => {
-        // await editfeature.clickElement('#add-people'); // never exited modal
+    it('should select added user and remove them', async () => {
+        await showfeature.clickElement('#add-user-to-group');
         await app.waitUntilElementVisible('ion-popover');
-        await browser.sleep(1000);
-        await pickpeople.userSelect('Asia Ho');
-        await editfeature.clickElement('#exit-pickpeople');
-        expect(await editfeature.waitUntilInvisible()).toBeTruthy();
-    });*/
+        await editparticipants.userSelect('Asia Ho');
+        // await editfeature.clickElement('#exit-pickpeople');
+        // expect(await editfeature.waitUntilInvisible()).toBeTruthy();
+    });
 });

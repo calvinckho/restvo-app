@@ -447,6 +447,20 @@ export class EditfeaturePage extends PageObjectBase {
     }
 }
 
+export class EditparticipantsPage extends PageObjectBase {
+    constructor() {
+        super('app-editparticipants', '/');
+    }
+
+    async userSelect(text) {
+      await this.waitUntilElementVisible('.editparticipants-user');
+      await element.all(by.css('.editparticipants-user'))
+          .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+          .first()
+          .click();
+    }
+}
+
 export class CreateFeaturePage extends PageObjectBase {
     constructor() {
         super('app-createfeature', '/');
