@@ -54,7 +54,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   recurrenceStartTime: string;
   recurrenceEndTime: string;
   recurrenceByDay = [];
-  allDay = false;
   dateType = ''; // specifies if user is changing start date or end date
 
   scheduleObj = {       // create the schedule object

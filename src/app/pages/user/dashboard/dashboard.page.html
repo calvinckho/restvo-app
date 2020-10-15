@@ -531,7 +531,7 @@
         <!--month view-->
         <div *ngIf="calendarService.calendar.mode == 'month'">
           <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+            <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
               <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
               <div *ngIf="dayOfMonth.date != ' ' ">
                 {{dayOfMonth.date.getDate()}}
@@ -546,7 +546,7 @@
         <!--week view-->
         <div *ngIf="calendarService.calendar.mode == 'week'">
           <div class="monthview-element" *ngFor="let dayOfWeek of calendarService.calendar.daysInViewWeek; trackBy: customTrackBy">
-            <div class="monthview-element-content" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate( dayOfWeek.date )">
+            <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate( dayOfWeek.date )">
               <div *ngIf="dayOfWeek.date == ' ' ">&nbsp;&nbsp;</div>
               <div *ngIf="dayOfWeek.date != ' ' ">
                 {{dayOfWeek.date.getDate()}}
