@@ -15,6 +15,7 @@ import {
   PreferencesPage
 } from '../app.po';
 import { browser, by } from 'protractor';
+import { AotCompiler } from '@angular/compiler';
 
 describe(' Add and Remove a Restvo User as friend', () => {
   let app: AppPage;
@@ -83,16 +84,24 @@ describe(' Add and Remove a Restvo User as friend', () => {
     expect(await app.elementIsPresent('#createChatHeader')).toBeTruthy();
   });
 
-  it('should select Asia Ho', async () => {
-    await app.enterSearchbarInputText('#chatSearchBar', 'Asia');
+  it('should select Asia Ho and show confirmation alert', async () => {
+    await app.enterSearchbarInputText('#chatSearchBar', 'Asia Ho');
     await browser.sleep(5000); //change to ensure intended user shows up on list
     // await app.waitUntilElementPresent('#restvoGroup .restvoGroup')
     // await app.waitUntilElementTextPresent('#restvoGroup', 'Asia Ho')
     // await browser.sleep(5000);
-    await app.clickElement('#restvoGroup ion-item')
+    await app.clickElement('#restvoGroup ion-item');
+    await app.clickElement('#selectAppUsersButton')
+    await app.waitUntilElementVisible('ion-alert');
     // await app.selectSubElement('#restvoGroup')
-    expect(await app.waitUntilElementTextPresent('.selectedAppUsers', 'Asia')).toBeTruthy();//expect button to be truthy
+    expect(await app.elementIsPresent('ion-alert')).toBeTruthy();//expect button to be truthy
     // expect(await browser.wait(ExpectedConditions.textToBePresentInElement(el, text))  elementIsPresent('#createChatHeader')).toBeTruthy();//expect button to be truthy
   });
+
+
+  //await app.clickAlertButton('yes');
+  //
+
+  //add spec to ch
 
 });

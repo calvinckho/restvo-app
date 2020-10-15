@@ -64,6 +64,6 @@
 
 <ion-footer>
   <ion-toolbar>
-      <ion-button expand="full" shape="round" size="medium" (click)="selectAppUsers()" color="primary" [disabled]="totalSelected < 1 || (totalSelected > 1 && chatForm.hasError('required'))">Select {{totalSelected}}&nbsp;<span *ngIf="totalSelected <= 1">Person</span><span *ngIf="totalSelected > 1">People</span></ion-button>
+      <ion-button id="selectAppUsersButton" expand="full" shape="round" size="medium" (click)="selectAppUsers()" color="primary" [disabled]="totalSelected < 1 || (totalSelected > 1 && chatForm.hasError('required'))">Select {{totalSelected}}&nbsp;<span *ngIf="totalSelected <= 1">Person</span><span *ngIf="totalSelected > 1">People</span></ion-button>
   </ion-toolbar>
 </ion-footer>
