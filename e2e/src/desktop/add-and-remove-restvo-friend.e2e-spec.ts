@@ -104,9 +104,14 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should sender selected user a chat message', async () => {
-    await browser.sleep(5000);
+    await app.waitUntilElementPresent('ion-textarea[ng-reflect-name="Asia Ho"]')
     await app.enterNonRegistrationInputText('ion-textarea[ng-reflect-name="Asia Ho"]', 'This is an e2e test message', 'textarea');
+    // await app.clickElement('#sendButton')
+    await browser.sleep(5000);
+    await app.clickModalChatSendButton()
+    //click ion-button.action-button
     //await app.enterTextareaInputText('ion-textarea[ng-reflect-name="Asia Ho"] textarea', 'This is an e2e test message');
+    //compare from ion-list chat list
     await browser.sleep(5000);
   });
 

@@ -236,9 +236,14 @@ export class AppPage extends PageObjectBase {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-    async clickElement(elementId) {
-        const selectedEl = element(by.css(elementId));
-        selectedEl.click();
+    // async clickElement(elementId) {
+    //     const selectedEl = element(by.css(elementId));
+    //     selectedEl.click();
+    // }
+
+    async clickModalChatSendButton() {
+        await element(by.css('ion-modal #sendButton'))
+        .click();
     }
 
     logoutButtonIsPresent() {

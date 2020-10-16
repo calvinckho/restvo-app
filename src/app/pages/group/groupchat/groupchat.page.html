@@ -521,7 +521,7 @@
         </ion-grid>
       </ion-textarea>
       <ion-buttons>
-        <ion-button class="actionButton" (click)="sendMessage()" fill="clear" *ngIf="((composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length) && !listening) || !platform.is('cordova')" [disabled]="!(composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length)">
+        <ion-button id="sendButton" class="actionButton" (click)="sendMessage()" fill="clear" *ngIf="((composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length) && !listening) || !platform.is('cordova')" [disabled]="!(composedMessage.length || (this.awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && this.awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId].length) || selectedMoments.length)">
           <!--<img class="sendImage" src="assets/img/Send_Gray.png"/>-->
           <ion-icon name="send" size="large" color="grey"></ion-icon>
         </ion-button>
