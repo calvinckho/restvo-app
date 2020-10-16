@@ -100,11 +100,12 @@ describe('add and remove user from group', () => {
         expect(await editfeature.waitUntilInvisible()).toBeTruthy();
     });
 
-    it('should select added user and remove them', async () => {
+    it('should open People view', async () => {
         await showfeature.clickElement('#add-user-to-group');
-        await app.waitUntilElementVisible('ion-popover');
-        await editparticipants.userSelect('Asia Ho');
-        // await editfeature.clickElement('#exit-pickpeople');
-        // expect(await editfeature.waitUntilInvisible()).toBeTruthy();
+        await editfeature.waitUntilElementVisible('#add-people');
+    });
+
+    it('should select added user and remove them', async () => {
+        await editfeature.userSelect('Asia Ho');
     });
 });
