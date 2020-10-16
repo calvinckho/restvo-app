@@ -11,7 +11,7 @@
         <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="chatService.currentChatProps[propIndex]" (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
+    <ion-title id="chatTitle" *ngIf="chatService.currentChatProps[propIndex]" (click)="seeMoreInfo()">{{chatService.currentChatProps[propIndex].name}}</ion-title>
     <ion-buttons slot="end" *ngIf="chatService.currentChatProps[propIndex]">
       <ion-button *ngIf="modalPage && platform.width() >= 768" (click)="expandChatView(false)" color="grey">
         <ion-icon name="open"></ion-icon>
@@ -479,7 +479,7 @@
           <ion-icon name="chevron-forward-outline" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-textarea autosize rows="1" [minRows]="1" [maxRows]="5" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
+      <ion-textarea name="{{chatService.currentChatProps[propIndex].name}}" autosize rows="1" [minRows]="1" [maxRows]="5" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
         <ion-grid *ngIf="awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId]?.length">
           <ion-row>

@@ -143,20 +143,27 @@ class PageObjectBase {
         }
     }
 
-    async enterSearchbarInputText(sel: string, text: string) {
+    async enterNonRegistrationInputText(sel: string, text: string, filterSelector: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
             await element.all(by.css(`${this.tag} ${sel}`))
                 .filter(async (el, index) => await el.isPresent())
                 .first()
-                .element(by.css('.searchbar-input'))
+                .element(by.css(filterSelector))
                 .sendKeys(text);
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-            const inp = el.element(by.css('.searchbar-input'));
+            const inp = el.element(by.css(filterSelector));
+            console.log('element input:', inp)
             await inp.sendKeys(text);
         }
+    }
+
+    async enterTextareaInputText(sel: string, text: string) {
+        await element(by.css(sel)).sendKeys(text);
+       //console.log('THIS IS THE ELEMENTTTT:', el);
+    //    el.sendKeys(text);
     }
 
     async clickElement(sel: string) {
@@ -185,12 +192,6 @@ class PageObjectBase {
 
     async elementIsPresent(sel: string) {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
-    }
-
-    async selectSubElement (sel: string) {
-        // let foo = await element.all(by.css(sel)).all(by.tagName(sel2)).getText();
-        let foo = await element.all(by.css(`${this.tag} ${sel}`)).getText();
-        console.log('text for test', foo)
     }
 }
 

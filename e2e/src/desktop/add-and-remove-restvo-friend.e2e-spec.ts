@@ -85,7 +85,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should select Asia Ho and show confirmation alert', async () => {
-    await app.enterSearchbarInputText('#chatSearchBar', 'Asia Ho');
+    await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
     await browser.sleep(5000); //change to ensure intended user shows up on list
     // await app.waitUntilElementPresent('#restvoGroup .restvoGroup')
     // await app.waitUntilElementTextPresent('#restvoGroup', 'Asia Ho')
@@ -93,11 +93,24 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.clickElement('#restvoGroup ion-item');
     await app.clickElement('#selectAppUsersButton')
     await app.waitUntilElementVisible('ion-alert');
-    // await app.selectSubElement('#restvoGroup')
-    expect(await app.elementIsPresent('ion-alert')).toBeTruthy();//expect button to be truthy
-    // expect(await browser.wait(ExpectedConditions.textToBePresentInElement(el, text))  elementIsPresent('#createChatHeader')).toBeTruthy();//expect button to be truthy
+    expect(await app.elementIsPresent('ion-alert')).toBeTruthy();//expect confirmation alert to be truthy
   });
 
+  it('should confirm selected user to chat with', async () => {
+    await app.clickAlertButton('yes');
+    await browser.sleep(5000); //change to ensure intended user shows up on list
+    await app.waitUntilElementInvisible('ion-alert');
+    expect(await app.elementIsPresent('ion-alert')).toBeFalsy();//expect confirmation alert to be truthy
+  });
+
+  it('should sender selected user a chat message', async () => {
+    await browser.sleep(5000);
+    await app.enterNonRegistrationInputText('ion-textarea[ng-reflect-name="Asia Ho"]', 'This is an e2e test message', 'textarea');
+    //await app.enterTextareaInputText('ion-textarea[ng-reflect-name="Asia Ho"] textarea', 'This is an e2e test message');
+    await browser.sleep(5000);
+  });
+
+  //ion-textarea[name="descriptionField"]
 
   //await app.clickAlertButton('yes');
   //
