@@ -19,7 +19,7 @@
       <ion-button (click)="startVideoChat()" [ngClass]="{'fade': (chatService.liveVideoChats.hasOwnProperty(this.chatService.currentChatProps[propIndex].conversationId) && chatService.liveVideoChats[this.chatService.currentChatProps[propIndex].conversationId].users.length)}" color="grey">
         <ion-icon name="videocam"></ion-icon>
       </ion-button>
-      <ion-button (click)="seeMoreInfo()" *ngIf="!subpanel" color="grey">
+      <ion-button id="seeMoreInfo" (click)="seeMoreInfo()" *ngIf="!subpanel" color="grey">
         <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
       <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" *ngIf ="subpanel" color="grey">

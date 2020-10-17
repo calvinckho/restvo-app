@@ -107,18 +107,17 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.waitUntilElementPresent('ion-textarea[ng-reflect-name="Asia Ho"]')
     await app.countChatElements();
     await app.enterNonRegistrationInputText('ion-textarea[ng-reflect-name="Asia Ho"]', 'This is an e2e test message', 'textarea');
-    // await app.clickElement('#sendButton')
-    await browser.sleep(5000);
     await app.clickModalChatSendButton()
     await browser.waitForAngular();
-    await browser.sleep(3000);
     await app.countChatElements();
-    //click ion-button.action-button
-    //await app.enterTextareaInputText('ion-textarea[ng-reflect-name="Asia Ho"] textarea', 'This is an e2e test message');
-    //compare from ion-list chat list
     expect (await app.countChatElements()).toBe(2)
   });
 
+  it('should click the more button', async () => {
+    await app.clickElement('ion-modal #seeMoreInfo')
+    await browser.sleep(5000); //change to ensure intended user shows up on list
+    expect(await app.elementIsPresent('ion-alert')).toBeTruthy()
+  });
   //ion-textarea[name="descriptionField"]
 
   //await app.clickAlertButton('yes');
