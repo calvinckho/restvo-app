@@ -246,6 +246,12 @@ export class AppPage extends PageObjectBase {
         .click();
     }
 
+    async countChatElements(){
+        let num = await element.all(by.css('ion-modal .chat-list p.message')).count();
+        console.log('num of elements:', num)
+        return num
+    }
+
     logoutButtonIsPresent() {
         return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
