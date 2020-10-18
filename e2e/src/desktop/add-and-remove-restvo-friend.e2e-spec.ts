@@ -16,6 +16,7 @@ import {
 } from '../app.po';
 import { browser, by } from 'protractor';
 import { AotCompiler } from '@angular/compiler';
+import { async } from '@angular/core/testing';
 
 describe(' Add and Remove a Restvo User as friend', () => {
   let app: AppPage;
@@ -87,9 +88,6 @@ describe(' Add and Remove a Restvo User as friend', () => {
   it('should select Asia Ho and show confirmation alert', async () => {
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
     await browser.sleep(5000); //change to ensure intended user shows up on list
-    // await app.waitUntilElementPresent('#restvoGroup .restvoGroup')
-    // await app.waitUntilElementTextPresent('#restvoGroup', 'Asia Ho')
-    // await browser.sleep(5000);
     await app.clickElement('#restvoGroup ion-item');
     await app.clickElement('#selectAppUsersButton')
     await app.waitUntilElementVisible('ion-alert');
@@ -98,7 +96,6 @@ describe(' Add and Remove a Restvo User as friend', () => {
 
   it('should confirm selected user to chat with', async () => {
     await app.clickAlertButton('yes');
-    await browser.sleep(5000); //change to ensure intended user shows up on list
     await app.waitUntilElementInvisible('ion-alert');
     expect(await app.elementIsPresent('ion-alert')).toBeFalsy();//expect confirmation alert to be truthy
   });
@@ -115,8 +112,21 @@ describe(' Add and Remove a Restvo User as friend', () => {
 
   it('should click the more button', async () => {
     await app.clickElement('ion-modal #seeMoreInfo')
-    await browser.sleep(5000); //change to ensure intended user shows up on list
-    expect(await app.elementIsPresent('ion-alert')).toBeTruthy()
+    await app.waitUntilElementPresent('#reportUserAbuse')
+    expect(await app.elementIsPresent('#reportUserAbuse')).toBeTruthy()
+  });
+
+  it('should report selected user then delete and unfriend', async () => {
+    await app.clickElement('#reportUserAbuse');
+    await app.waitUntilElementVisible('ion-action-sheet');
+    await app.clickActionSheetButton('Delete and Unfriend');
+    await app.waitUntilElementInvisible('ion-action-sheet');
+    await app.waitUntilElementVisible('ion-alert');
+    await app.clickAlertButton('Proceed');
+    await browser.waitForAngular();
+    await app.clickAlertButton('Cancel');
+    await browser.sleep(5000);
+
   });
   //ion-textarea[name="descriptionField"]
 
