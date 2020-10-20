@@ -64,7 +64,7 @@
         <ion-label class="role-label column-label" (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
         <div class="chat-label" *ngIf="!modalPage"></div>
       <div tabindex="0"></div></ion-item>
-      <ion-item class="editparticipants-user" *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+      <ion-item *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
         <ion-icon slot="start" color="tertiary" *ngIf="!user.select" name="radio-button-off" (click)="selectParticipant(user)"></ion-icon>
         <ion-icon slot="start" color="tertiary" *ngIf="user.select" name="checkmark-circle" (click)="unselectParticipant(user)"></ion-icon>
         <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
