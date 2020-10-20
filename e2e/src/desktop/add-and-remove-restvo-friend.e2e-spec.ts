@@ -87,7 +87,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
 
   it('should select Asia Ho and show confirmation alert', async () => {
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
-    await browser.sleep(5000); //change to ensure intended user shows up on list
+    await browser.sleep(3000); //change to ensure intended user shows up on list
     await app.clickElement('#restvoGroup ion-item');
     await app.clickElement('#selectAppUsersButton')
     await app.waitUntilElementVisible('ion-alert');
@@ -125,14 +125,12 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.clickAlertButton('Proceed');
     await browser.waitForAngular();
     await app.clickAlertButton('Cancel');
-    await browser.sleep(5000);
-
   });
-  //ion-textarea[name="descriptionField"]
 
-  //await app.clickAlertButton('yes');
-  //
-
-  //add spec to ch
+  it('should ensure Asia Ho no longer shows up in the chat list', async () => {
+    await app.enterNonRegistrationInputText('ion-searchbar', 'Asia Ho', 'input');
+    await browser.sleep(3000);
+    expect(await app.checkForChatListName('ion-virtual-scroll ion-item-sliding', 'Asia Ho')).toBeFalsy()
+  });
 
 });

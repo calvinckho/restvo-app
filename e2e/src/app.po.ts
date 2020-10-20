@@ -78,25 +78,6 @@ class PageObjectBase {
         }
     }
 
-    async waitUntilElementTextPresent(sel: string, text: string) {
-        // const els = await element.all(by.css(`${this.tag} ${sel}`));
-        // if (els.length) {
-        //     for (const el of els) {
-        //         console.log('element inner', el.getText())
-        //         if (await el.getText() === text) {
-        //             console.log('element matched name', browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000))
-        //             return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
-        //         }
-        //     }
-        // } else {
-        //     await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
-        // }
-        let el = await element(by.css(`${sel}`));
-        // console.log('el:', el);
-        console.log('el text', el.getText());
-        return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
-    }
-
     async waitUntilElementVisible(sel: string) {
         const els = await element.all(by.css(`${this.tag} ${sel}`));
         if (els.length) {
@@ -141,29 +122,6 @@ class PageObjectBase {
             const inp = el.element(by.css('input'));
             await inp.sendKeys(text);
         }
-    }
-
-    async enterNonRegistrationInputText(sel: string, text: string, filterSelector: string) {
-        const els = await element.all(by.css(`${this.tag} ${sel}`));
-        if (els.length) {
-            await element.all(by.css(`${this.tag} ${sel}`))
-                .filter(async (el, index) => await el.isPresent())
-                .first()
-                .element(by.css(filterSelector))
-                .sendKeys(text);
-        } else {
-            const el = element(by.css(`${this.tag} ${sel}`));
-            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-            const inp = el.element(by.css(filterSelector));
-            console.log('element input:', inp)
-            await inp.sendKeys(text);
-        }
-    }
-
-    async enterTextareaInputText(sel: string, text: string) {
-        await element(by.css(sel)).sendKeys(text);
-       //console.log('THIS IS THE ELEMENTTTT:', el);
-    //    el.sendKeys(text);
     }
 
     async clickElement(sel: string) {
@@ -255,6 +213,55 @@ export class AppPage extends PageObjectBase {
     logoutButtonIsPresent() {
         return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
+
+    async checkForChatListName(sel: string, text: string) {
+        const elsText = await element.all(by.css(`${this.tag} ${sel}`)).getText()
+        console.log(elsText);
+        return elsText.includes('Asia Ho')
+    }
+
+    async enterTextareaInputText(sel: string, text: string) {
+        await element(by.css(sel)).sendKeys(text);
+        //console.log('THIS IS THE ELEMENTTTT:', el);
+        //    el.sendKeys(text);
+    }
+
+    async enterNonRegistrationInputText(sel: string, text: string, filterSelector: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            await element.all(by.css(`${this.tag} ${sel}`))
+                .filter(async (el, index) => await el.isPresent())
+                .first()
+                .element(by.css(filterSelector))
+                .sendKeys(text);
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            const inp = el.element(by.css(filterSelector));
+            console.log('element input:', inp)
+            await inp.sendKeys(text);
+        }
+    }
+
+    async waitUntilElementTextPresent(sel: string, text: string) {
+        // const els = await element.all(by.css(`${this.tag} ${sel}`));
+        // if (els.length) {
+        //     for (const el of els) {
+        //         console.log('element inner', el.getText())
+        //         if (await el.getText() === text) {
+        //             console.log('element matched name', browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000))
+        //             return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
+        //         }
+        //     }
+        // } else {
+        //     await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
+        // }
+        let el = await element(by.css(`${sel}`));
+        // console.log('el:', el);
+        console.log('el text', el.getText());
+        return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
+    }
+
 }
 
 export class MaintabPage extends PageObjectBase {
