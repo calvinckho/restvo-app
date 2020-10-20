@@ -447,8 +447,8 @@ export class EditfeaturePage extends PageObjectBase {
     }
 
     async userSelect(text) {
-      await this.waitUntilElementVisible('.item.md.item-lines-none.in-list.ion-focusable.hydrated.item-label');
-      await element.all(by.css('.item.md.item-lines-none.in-list.ion-focusable.hydrated.item-label'))
+      await this.waitUntilElementVisible('.item-label');
+      await element.all(by.css('.item-label'))
           .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
           .first()
           .click();
