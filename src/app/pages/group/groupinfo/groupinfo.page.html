@@ -27,7 +27,7 @@
     </div>-->
     <p *ngIf="chatService.currentChatProps[propIndex].group.details" [innerHTML]="chatService.currentChatProps[propIndex].group.details | nl2br"></p>
   </div>
-  <ion-item lines="none" color="grey" class="ion-margin-vertical">Leaders</ion-item>
+  <ion-item lines="none" color="grey" class="ion-margin-vertical">Leaders<div tabindex="0"></div></ion-item>
   <ion-list class="leaders-list">
     <ion-item *ngFor="let leader of chatService.currentChatProps[propIndex].group.leaders" (click)="seeUserInfo($event, leader)">
       <ion-avatar [ngClass]="{'online': (userData.user && chatService.onlineUsers.indexOf(leader._id) > -1)}" slot="start">
@@ -35,10 +35,10 @@
         <ion-img *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"></ion-img>
       </ion-avatar>
       {{leader.first_name}} {{leader.last_name}}
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-list>
   <ion-row *ngIf="joinGroupTag"><ion-col><ion-button [hidden]="!joinGroupTag" expand="full" shape="round" color="primary" fill="solid" (click)="joinGroup()">Join Group</ion-button></ion-col></ion-row>
-  <ion-item lines="none" color="grey" class="ion-margin-vertical">Members</ion-item>
+  <ion-item lines="none" color="grey" class="ion-margin-vertical">Members<div tabindex="0"></div></ion-item>
   <ion-toolbar>
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
   </ion-toolbar>
@@ -50,7 +50,7 @@
       </ion-avatar>
       {{member.name}} <span *ngFor="let icon of member.icons"><ion-icon name={{icon}}></ion-icon> </span><ion-badge *ngIf="member.badge">{{member.role}}</ion-badge>
       <ion-icon slot="end" [hidden]="!editMemberTag" name="cog" (click)="editMember($event, member)"></ion-icon>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <div style="margin-top: 20%;"></div>
   </ion-list>
   <ion-infinite-scroll position="bottom" (ionInfinite)="listgroupmembers($event)">

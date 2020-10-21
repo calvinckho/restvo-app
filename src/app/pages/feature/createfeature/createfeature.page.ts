@@ -118,4 +118,31 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
     async inviteToJoinProgram(index) {
       this.momentService.initiateParticipantsView(this.referenceActivities[index], null);
     }
+
+    async completeSetup(refreshNeeded) {
+        this.destroyPlayers(null);
+        this.awsService.cleanUp(this.moment._id, true); // clean up the temporarily uploaded media
+        /*const promises = this.removedMoments.map( async (moment) => {
+            console.log('removing abandoned Programs', moment);
+            await this.momentService.delete(moment);
+        });
+        await Promise.all(promises);*/
+        if (this.subscriptions.hasOwnProperty('refreshUserStatus')) {
+            this.subscriptions['refreshUserStatus'].unsubscribe(this.reloadEditPage);
+        }
+        if (this.subscriptions.hasOwnProperty('refreshMoment')) {
+            this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+        }
+        if (this.modalPage) {
+            this.modalCtrl.dismiss(refreshNeeded);
+            setTimeout(() => {
+                this.momentService.manageMoment({ moment: this.moment, modalPage: true });
+            }, 500);
+        } else {
+            //this.location.back();
+            //this.userData.refreshUserStatus({});
+            this.router.navigate(['/app/manage/activity/' + this.moment._id + '/profile/' + this.moment._id], {replaceUrl: false});
+        }
+        this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
+    }
 }

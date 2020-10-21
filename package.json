@@ -1,6 +1,6 @@
 {
   "name": "restvo-app",
-  "version": "1.8.22",
+  "version": "1.8.23",
   "author": "Restvo Inc.",
   "homepage": "https://app.restvo.com",
   "scripts": {
@@ -55,7 +55,7 @@
     "blob-util": "^2.0.2",
     "call-number": "^1.0.1",
     "capacitor-jitsi-meet": "^1.5.3",
-    "capacitor-share-extension": "^0.0.17",
+    "capacitor-share-extension": "0.0.18",
     "compressorjs": "^1.0.6",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-badge": "^0.8.8",
@@ -83,14 +83,12 @@
     "electron-push-receiver": "^2.1.3",
     "es6-promise-plugin": "^4.2.2",
     "fix-orientation-capacitor": "^0.1.1",
-    "googleapis": "^41.0.1",
     "hammerjs": "^2.0.8",
     "intl": "^1.2.5",
     "ionic-cache": "^4.1.0",
     "ionicons": "^5.1.2",
     "jetifier": "^1.6.6",
     "minimist": "^1.2.5",
-    "moment": "^2.29.0",
     "ngx-autosize": "^1.8.0",
     "ngx-electron": "^2.2.0",
     "ngx-pinch-zoom": "^2.4.4",
@@ -139,8 +137,7 @@
     "protractor": "^7.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.4.3",
-    "webdriver-manager": "^12.1.7"
+    "typescript": "~3.4.3"
   },
   "description": "An Ionic project",
   "cordova": {

@@ -82,6 +82,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   reloadEditPage = async () => { // refresh the Manage Feature Page if desktop is in Manage view, or if opened by modalPage
     if (this.userData.user && (this.router.url.includes('manage') || this.modalPage)) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
+      console.log("refresh manage menu")
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;
         this.storage.set('currentManageActivityId', momentId);

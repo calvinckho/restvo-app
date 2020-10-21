@@ -8,7 +8,7 @@
             <ion-item lines="full">
               <ion-input #password [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
               <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
               <p class="form-error" slot="end" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
                 This is a required field.
@@ -16,10 +16,10 @@
               <p class="form-error" slot="end" *ngIf="!passForm.controls.password.pristine && passForm.controls.password?.errors?.minlength">
                 Password must have more than 5 characters
               </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item lines="full">
               <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <ion-item  *ngIf="!passForm.controls.passwordConfirmation.pristine && (!passForm.controls.passwordConfirmation.valid || passForm.hasError('mismatchedPasswords'))">
               <p class="form-error" slot="end" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation.hasError('required')">
                 This is a required field.
@@ -30,7 +30,7 @@
               <p class="form-error" slot="end" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.hasError('mismatchedPasswords')">
                 Password do not match
               </p>
-            </ion-item>
+            <div tabindex="0"></div></ion-item>
             <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
           </ion-list>
           <ion-row style="margin-top: 20%;">

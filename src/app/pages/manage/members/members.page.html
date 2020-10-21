@@ -25,7 +25,7 @@
       <ion-label>{{member.name}}</ion-label>
       <ion-icon *ngIf="member.reportStatus?.length" name="alert-circle"></ion-icon>
       <ion-badge slot="end" color={{member.color}}>{{member.role}}</ion-badge>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{members.length}} member<span *ngIf="members.length > 1">s</span>
     </ion-item-divider>

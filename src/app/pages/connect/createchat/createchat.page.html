@@ -19,7 +19,7 @@
             <span *ngIf="totalSelected >= 2">Group </span>
             Name *</ion-label>
           <ion-input type="text" formControlName="name"></ion-input>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
       </form>
     </div>
   </ion-toolbar>
@@ -42,7 +42,7 @@
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
         <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </ion-list>
     <ion-list-header>{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list id="restvoGroup">
@@ -54,7 +54,7 @@
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
         <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </ion-list>
     <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>

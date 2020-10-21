@@ -133,17 +133,15 @@
     </div>
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
       <ion-virtual-scroll [items]="recentCalendarItems" approxItemHeight="100px">
-        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)">
-          <ion-avatar class="avatar-col" *ngIf="calendarItem.moment">
+        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)" class="cursor-pointer">
+          <ion-avatar class="ion-margin-end" *ngIf="calendarItem.moment">
             <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
           </ion-avatar>
-          <div class="name-col" *ngIf="calendarItem.moment">
-            <ion-label class="name-label ion-text-wrap">
-              {{calendarItem.moment.matrix_string[0][0]}}
-            </ion-label>
-          </div>
-          <div class="type-col"><ion-badge color="button1" class="ion-text-wrap">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
-        </ion-item>
+          <ion-label class="name-label ion-text-wrap" *ngIf="calendarItem.moment">
+            {{calendarItem.moment.matrix_string[0][0]}}
+          </ion-label>
+          <ion-badge color="button1" class="type-col ion-text-wrap" slot="end">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
+        <div tabindex="0"></div></ion-item>
       </ion-virtual-scroll>
     </ion-grid>
   </div>
@@ -152,11 +150,11 @@
       <ion-col>
         <ion-item lines="none">
           <div style="font-size: 14px" class="ion-text-wrap">Enter a Name for the {{selectedMoments[0].resource['en-US'].value[0]}}</div>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
-          <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
+          <ion-icon class="side-icon" color="grey" name="brush" slot="start"></ion-icon>
           <ion-textarea [(ngModel)]="selectedMoments[0].matrix_string[0][0]" rows="1" [minRows]="1" [maxRows]="2" autosize></ion-textarea>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -216,11 +214,11 @@
       <ion-col>
         <ion-item lines="none">
           <div style="font-size: 14px" class="ion-text-wrap">When do you plan to start {{selectedMoments[0].matrix_string[0][0]}}?</div>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
         <ion-item lines="none">
-          <ion-label (click)="focusCalendarDateField('start')" style="cursor: pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
+          <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
           <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
-        </ion-item>
+        <div tabindex="0"></div></ion-item>
 
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
@@ -237,7 +235,7 @@
           <div class="monthview-day-headers">S</div>
 
           <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div class="monthview-element-content" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+            <div class="monthview-element-content cursor-pointer" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
               <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
               <div *ngIf="dayOfMonth.date != ' ' ">
                 {{dayOfMonth.date.getDate()}}
@@ -258,7 +256,7 @@
     <ion-item lines="none" *ngIf="maxMomentCount === 1">
       <ion-label *ngIf="selectedMoments[0].cloned">This {{selectedMoments[0].resource['en-US'].value[0]}} template will be cloned:</ion-label>
       <ion-label *ngIf="!selectedMoments[0].cloned">You have selected this {{selectedMoments[0].resource['en-US'].value[0]}}:</ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-grid class="selected-grid">
       <ion-row>
         <ion-col class="ion-align-self-center" *ngFor="let moment of selectedMoments; index as i" size="auto">

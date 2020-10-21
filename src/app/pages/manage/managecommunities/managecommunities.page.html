@@ -15,7 +15,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
     <ion-buttons slot="end" *ngIf="!userData.user">
       <ion-button routerLink="/register">
         Sign In
@@ -32,47 +32,47 @@
           <ion-item (click)="clickManageMenu('insight')">
             <ion-icon slot="start" name="stats-chart" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'insight')}">Insight</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('activities')" *ngIf="restvoStaff">
             <ion-icon slot="start" name="american-football" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'activities')}">Activities</ion-label>
             <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.activities?.length" name="alert-circle"></ion-icon>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('members')">
             <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'members')}">Members</ion-label>
             <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.members?.length" name="alert-circle"></ion-icon>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('topics')">
             <ion-icon slot="start" name="chatbubbles" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'topics')}">Topics</ion-label>
             <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.topics?.length" name="alert-circle"></ion-icon>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('groups')">
             <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
             <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.groups?.length" name="alert-circle"></ion-icon>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('administrators')">
             <ion-icon slot="start" name="key" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'administrators')}">Administrators</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <!--<ion-item (click)="clickManageMenu('plan')">
             <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'plan')}">Plan</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('billing')" *ngIf="stripeCustomer">
             <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'billing')}">Billing</ion-label>
-          </ion-item>-->
+          <div tabindex="0"></div></ion-item>-->
           <ion-item (click)="clickManageMenu('platforms')" *ngIf="restvoStaff">
             <ion-icon slot="start" name="cog" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'platforms')}">Platforms</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item (click)="clickManageMenu('development')" *ngIf="restvoStaff">
             <ion-icon slot="start" name="code-working" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'development')}">Development</ion-label>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
         </ion-list>
       </ion-col>
       <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">

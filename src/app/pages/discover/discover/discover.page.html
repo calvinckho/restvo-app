@@ -11,7 +11,7 @@
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
           Dismiss
@@ -37,7 +37,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-toolbar>
 </ion-header>
 

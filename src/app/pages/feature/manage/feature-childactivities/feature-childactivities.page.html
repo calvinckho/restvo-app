@@ -9,19 +9,19 @@
     <ion-list>
       <ion-item lines="none">
         <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item *ngIf="selectedActivities.length" lines="none">
         <ion-label>{{selectedActivities.length}} Selected</ion-label>
         <ion-button slot="end" (click)="multiSelectAction('Archive')" *ngIf="['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{this.resourceService.resource['en-US'].value[44]}}</ion-button> <!--Archive for Staff-->
         <ion-button slot="end" (click)="multiSelectAction('Delete')" *ngIf="['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{resourceService.resource['en-US'].value[19]}}</ion-button> <!--Delete for Staff-->
         <ion-button slot="end" (click)="multiSelectAction('Archive')" *ngIf="!['owner', 'admin', 'staff'].includes(this.userData.user.role)">{{resourceService.resource['en-US'].value[19]}}</ion-button> <!--Archive for General User, the label says Delete-->
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
       <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}" lines="none">
         <div class="select-col"></div>
         <div class="user-col column-label" (click)="sortDisplay('activity')">{{this.categoryLabel}}s<ion-icon [name]="activityAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
         <div class="status-col column-label" (click)="sortDisplay('share')">Sharing<ion-icon [name]="shareAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></div>
         <div class="actions-col column-label">Actions</div>
-      </ion-item>
+      <div tabindex="0"></div></ion-item>
     </ion-list>
   </ion-toolbar>
 </ion-header>
@@ -66,7 +66,7 @@
         <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>
         <ion-button (click)="$event.stopPropagation(); chatService.openChat({ conversationId: moment.conversation, moment: activity, subpanel: this.platform.width() >= 768 })" fill="clear"><ion-icon name="chatbubbles-outline"></ion-icon></ion-button>
       </ion-buttons>
-    </ion-item>
+    <div tabindex="0"></div></ion-item>
   </ion-list>
   <ion-grid *ngIf="view === '1'">
     <ion-row class="grid-row">
@@ -97,11 +97,11 @@
         <ion-col>
           <ion-item lines="none">
             <div class="moment-label" slot="start">Create Your Own {{categoryLabel}}</div>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-item class="ion-margin-vertical">
             <ion-label position="stacked">{{categoryLabel}} Name</ion-label>
             <ion-input class="ion-text-start" type="text" [(ngModel)]="newActivityName" placeholder="Type a name here" (ionFocus)="loadSample()"></ion-input>
-          </ion-item>
+          <div tabindex="0"></div></ion-item>
           <ion-row class="ion-margin-vertical">
             <ion-button style="width: 100%;" [disabled]="!newActivityName || !selectedSample" expand="full" shape="round" (click)="createActivity()">
               <div>Create new {{categoryLabel}}</div>

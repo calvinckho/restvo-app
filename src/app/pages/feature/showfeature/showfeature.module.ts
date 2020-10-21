@@ -9,8 +9,8 @@ import { ShowfeaturePage } from './showfeature.page';
 import { PlyrModule } from 'ngx-plyr';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import { QuillModule } from 'ngx-quill';
-import {AutosizeModule} from "ngx-autosize";
-import {ProgressBarModule} from "angular-progress-bar";
+import {AutosizeModule} from 'ngx-autosize';
+import {ProgressBarModule} from 'angular-progress-bar';
 
 const routes: Routes = [
   {

@@ -8,7 +8,6 @@ exports.config = {
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
     './src/desktop/add-and-remove-restvo-friend.e2e-spec.ts',
-    // './src/desktop/add-user-to-group.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
     /*chromeOptions: {
@@ -16,9 +15,9 @@ exports.config = {
     },*/
     'browserName': 'chrome'
   },
-  directConnect: true,
   baseUrl: 'http://localhost:4200/',
   framework: 'jasmine',
+  directConnect: true,
   SELENIUM_PROMISE_MANAGER: false,
   jasmineNodeOpts: {
     showColors: true,

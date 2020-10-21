@@ -116,7 +116,7 @@ app-register {
   //login
 
   .login-form {
-    width: 70%;
+    width: 80%;
     margin: 0 auto;
   }
 
@@ -228,25 +228,71 @@ app-register {
   }
 
   .calling_code {
-    padding-left: 5px;
+    position: absolute;
+    left: 5px;
+//    padding-left: 5px;
     width: 35%;
   }
 
   .phone_number {
-    //position: absolute;
     margin: auto 10px;
     bottom: 0;
     right: 0;
     width: 60%;
+    text-align: right !important;
   }
 
-  .password-icon{
-    //color: var(--ion-color-secondary);
-    font-size:2rem !important;
+  .new-password-icon {
+    font-size: 2rem !important;
     position: relative !important;
-    top: 5px !important;
+    top: 2px !important;
     margin: 0 auto !important;
     width: 15px;
+  }
+
+  .ion-input {
+    border-radius: var(--border-radius);
+    padding-left: var(--padding-start);
+    padding-right: var(--padding-end);
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-decoration: inherit;
+    text-indent: inherit;
+    text-overflow: inherit;
+    text-transform: inherit;
+    text-align: inherit;
+    white-space: inherit;
+    color: inherit;
+    display: inline-block;
+    -ms-flex: 1;
+    flex: 1;
+    //width: 100%;
+    //max-width: 100%;
+    max-height: 100%;
+    height: 42px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  .password-icon {
+    position: absolute;
+    font-size: 2rem;
+    top: 6px;
+    left: 5px;
+    width: 15px;
+    z-index: 5;
+    cursor: pointer;
   }
 
   .create-account {

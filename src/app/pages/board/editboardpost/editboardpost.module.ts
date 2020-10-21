@@ -9,7 +9,6 @@ import { EditboardpostPage } from './editboardpost.page';
 import {AutosizeModule} from "ngx-autosize";
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import { PlyrModule } from 'ngx-plyr';
-import {EditfeaturePageModule} from "../../feature/editfeature/editfeature.module";
 
 const routes: Routes = [
   {
