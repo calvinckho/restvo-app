@@ -125,12 +125,22 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.clickAlertButton('Proceed');
     await browser.waitForAngular();
     await app.clickAlertButton('Cancel');
+    await app.waitUntilElementInvisible('ion-alert');
+    expect(await app.elementIsPresent('#ion-alert')).toBeFalsy()
   });
 
   it('should ensure Asia Ho no longer shows up in the chat list', async () => {
     await app.enterNonRegistrationInputText('ion-searchbar', 'Asia Ho', 'input');
     await browser.sleep(3000);
-    expect(await app.checkForChatListName('ion-virtual-scroll ion-item-sliding', 'Asia Ho')).toBeFalsy()
+    expect(await app.checkForChatListName('ion-virtual-scroll ion-item-sliding', 'Asia Ho')).toBeFalsy();
+  });
+
+  it('should log the user out', async () => {
+    await app.clickElement('#userProfileSettings');
+    await app.waitUntilUrlContains('profile');
+    await app.clickElement('#logoutButton');
+    await app.waitUntilElementPresent('#signin')
+    expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
   });
 
 });

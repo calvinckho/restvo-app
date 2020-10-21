@@ -194,11 +194,6 @@ export class AppPage extends PageObjectBase {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-    // async clickElement(elementId) {
-    //     const selectedEl = element(by.css(elementId));
-    //     selectedEl.click();
-    // }
-
     async clickModalChatSendButton() {
         await element(by.css('ion-modal #sendButton'))
         .click();
@@ -216,14 +211,7 @@ export class AppPage extends PageObjectBase {
 
     async checkForChatListName(sel: string, text: string) {
         const elsText = await element.all(by.css(`${this.tag} ${sel}`)).getText()
-        console.log(elsText);
         return elsText.includes('Asia Ho')
-    }
-
-    async enterTextareaInputText(sel: string, text: string) {
-        await element(by.css(sel)).sendKeys(text);
-        //console.log('THIS IS THE ELEMENTTTT:', el);
-        //    el.sendKeys(text);
     }
 
     async enterNonRegistrationInputText(sel: string, text: string, filterSelector: string) {
@@ -238,30 +226,9 @@ export class AppPage extends PageObjectBase {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
             const inp = el.element(by.css(filterSelector));
-            console.log('element input:', inp)
             await inp.sendKeys(text);
         }
     }
-
-    async waitUntilElementTextPresent(sel: string, text: string) {
-        // const els = await element.all(by.css(`${this.tag} ${sel}`));
-        // if (els.length) {
-        //     for (const el of els) {
-        //         console.log('element inner', el.getText())
-        //         if (await el.getText() === text) {
-        //             console.log('element matched name', browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000))
-        //             return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
-        //         }
-        //     }
-        // } else {
-        //     await browser.wait(ExpectedConditions.presenceOf(element(by.css(`${this.tag} ${sel}`))), 18000);
-        // }
-        let el = await element(by.css(`${sel}`));
-        // console.log('el:', el);
-        console.log('el text', el.getText());
-        return await browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 18000);
-    }
-
 }
 
 export class MaintabPage extends PageObjectBase {
