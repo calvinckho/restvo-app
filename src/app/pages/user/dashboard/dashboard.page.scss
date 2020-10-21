@@ -586,4 +586,32 @@ app-dashboard {
     line-height: 21px;
     color: var(--ion-color-button1);
   }
+
+  .background-white {
+    background: white;
+  }
+
+  .person-name {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+  }
+
+  .margin-bottom-13 {
+    margin-bottom: 13px;
+  }
+
+  .rounded-circle {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .between {
+    justify-content: space-between;
+  }
+
+  .center {
+    display: flex;
+    justify-content: center;
+  }
 }
