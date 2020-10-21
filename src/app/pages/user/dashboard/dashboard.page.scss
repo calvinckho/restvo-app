@@ -69,8 +69,8 @@ app-dashboard {
   }
 
   .image-cropper {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
   }
 
   .current-date-display {
@@ -586,4 +586,30 @@ app-dashboard {
     line-height: 21px;
     color: var(--ion-color-button1);
   }
+}
+
+
+// Intern design implementation
+
+.user-img {
+  border-radius: 50%;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.img-col {
+  margin-right: 10px;
+  padding: auto 0;
+}
+
+.user-fname-lname {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-tagline {
+  padding: 9px 0;
+  font-size: 11px;
+  line-height: 1.2;
 }

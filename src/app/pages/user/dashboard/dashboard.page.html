@@ -58,17 +58,31 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
+
   <div class="content-container" [ngStyle]="{'background': platform.width() >= 768 ? 'var(--ion-color-secondary)' : 'var(--ion-color-lightgrey)'}">
     <div>
       <ion-item lines="none">
-        <div class="image-cropper">
-          <img *ngIf="userData.user.avatar" [src]="userData.user.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
-          <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg"/>
-        </div>
-      </ion-item>
-      <div>{{userData.user.first_name}} {{userData.user.last_name}} <span *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span></div>
-      <div>I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
-      <ion-button (click)="openAboutMe()" >Edit Profile</ion-button>
+        <ion-grid>
+          <ion-row class="ion-padding-vertical ion-align-items-center ion-justify-content-evenly">
+            <ion-col size="5" class="img-col">
+              <div class="image-cropper">
+                <img class="user-img" *ngIf="userData.user.avatar" [src]="userData.user.avatar"
+                  onerror="this.src='assets/img/avatar-default.jpg'" />
+                <img *ngIf="!userData.user.avatar" src="assets/img/avatar-default.jpg" />
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="user-fname-lname">{{userData.user.first_name}} {{userData.user.last_name}} <span
+                  *ngIf="userData.user.role === 'Contact' || userData.user.role === 'Pending'">{{userData.user.name}}</span>
+              </div>
+              <div class="user-tagline">I am interested in joining the Restvo team and learn more as a software engineering intern.</div>
+              <ion-button fill="outline" shape="round" expand="block" (click)="openAboutMe()">Edit Profile</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+</ion-item>
+
+
     </div>
 
     <!-- Complete your Profile Banner -->
