@@ -106,7 +106,7 @@ describe('add and remove user from group', () => {
     });
 
     it('should select added user and remove them', async () => {
-        await browser.sleep(10000);
+        await browser.sleep(20000);
         await editfeature.userSelect('Asia Ho');
     });
 });
