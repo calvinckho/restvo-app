@@ -64,14 +64,15 @@
         <ion-label class="role-label column-label" (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
         <div class="chat-label" *ngIf="!modalPage"></div>
       <div tabindex="0"></div></ion-item>
-      <ion-item *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+      <ion-item id="user-select" *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
         <ion-icon slot="start" color="tertiary" *ngIf="!user.select" name="radio-button-off" (click)="selectParticipant(user)"></ion-icon>
         <ion-icon slot="start" color="tertiary" *ngIf="user.select" name="checkmark-circle" (click)="unselectParticipant(user)"></ion-icon>
         <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
           <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
           <ion-img *ngIf="!user.avatar" src="assets/img/avatar-default.jpg"></ion-img>
         </ion-avatar>
-        <ion-label class="ion-text-wrap name-label" (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label>
+        <!-- <ion-label id="user-select-label" class="ion-text-wrap name-label" (click)="seeUserInfo($event, user)">{{user.first_name}} {{user.last_name}}</ion-label> -->
+        <ion-label id="user-select-label" class="ion-text-wrap name-label" (click)="selectParticipant(user)">{{user.first_name}} {{user.last_name}}</ion-label>
         <ion-label class="ion-text-wrap role-label column-label">{{user.roles.join(" / ")}}</ion-label>
         <ion-button class="chat-label" (click)="pushToMessagePage($event, user)" [disabled]="userData.user._id === user._id" *ngIf="!modalPage">Chat</ion-button>
       <div tabindex="0"></div></ion-item>
