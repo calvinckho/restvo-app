@@ -38,9 +38,9 @@
       <div tabindex="0"></div></ion-item>
       <ion-item *ngIf="selectedParticipants.length" lines="none">
         <ion-label>{{selectedParticipants.length}} Selected</ion-label>
-        <ion-button (click)="removeSelect.open($event)" slot="end">Remove Role</ion-button>
+        <ion-button id="remove-role" (click)="removeSelect.open($event)" slot="end">Remove Role</ion-button>
         <ion-select #RemoveSelect (ionChange)="multiSelectAction($event)" placeholder="Remove Role" interface="alert" [interfaceOptions]="{header: 'Remove Role'}" [multiple]="true" style="width: 20%; min-width: 40px" hidden>
-          <ion-select-option [value]="{user_list: 'user_list_1', singularLabel: this.participantLabel, pluralLabel: this.participantsLabel}">{{participantLabel}}</ion-select-option>
+          <ion-select-option id="remove-member-role" [value]="{user_list: 'user_list_1', singularLabel: this.participantLabel, pluralLabel: this.participantsLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: 'user_list_2', singularLabel: this.organizerLabel, pluralLabel: this.organizersLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: 'user_list_3', singularLabel: this.leaderLabel, pluralLabel: this.leadersLabel}">{{leaderLabel}}</ion-select-option>
         </ion-select>

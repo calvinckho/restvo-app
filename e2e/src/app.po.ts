@@ -453,6 +453,16 @@ export class EditfeaturePage extends PageObjectBase {
           .first()
           .click();
     }
+
+    async removeRole() {
+      await this.waitUntilElementVisible('#remove-role');
+      await element.all(by.css('#remove-role')) .click();
+    }
+
+    async removeMemberRole() {
+      await this.waitUntilElementVisible('#remove-member-role');
+      await element.all(by.css('#remove-member-role')).click();
+    }
 }
 
 export class EditparticipantsPage extends PageObjectBase {
