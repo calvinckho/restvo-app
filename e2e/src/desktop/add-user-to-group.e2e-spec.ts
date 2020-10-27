@@ -109,6 +109,8 @@ describe('add and remove user from group', () => {
         await editfeature.userSelect('Asia Ho');
         await editfeature.removeRole();
         await editfeature.removeMemberRole();
-        await browser.sleep(30000);
+        await editfeature.removeMember();
+        await editfeature.confirmRemoval(); // ERROR: .alert-button IS NOT ATTACHED TO PAGE
+        // await browser.sleep(30000);
     });
 });

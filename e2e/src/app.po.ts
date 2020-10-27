@@ -460,8 +460,19 @@ export class EditfeaturePage extends PageObjectBase {
     }
 
     async removeMemberRole() {
-      await this.waitUntilElementVisible('#remove-member-role');
-      await element.all(by.css('#remove-member-role')).click();
+      await element.all(by.css('.select-interface-option')).first().click();
+    }
+
+    async removeMember() {
+      await element.all(by.css('.alert-button'))
+          .last()
+          .click();
+    }
+
+    async confirmRemoval() {
+      await element.all(by.css('.alert-button'))
+          .first()
+          .click();
     }
 }
 
