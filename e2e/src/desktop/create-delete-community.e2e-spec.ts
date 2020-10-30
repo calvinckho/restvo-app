@@ -18,7 +18,7 @@ import { browser, by } from 'protractor';
 import { AotCompiler } from '@angular/compiler';
 import { async } from '@angular/core/testing';
 
-describe(' Add and Remove a Restvo User as friend', () => {
+describe(' Create and Delete a Community', () => {
   let app: AppPage;
   let showfeature: ShowfeaturePage;
   let maintab: MaintabPage;
@@ -71,6 +71,12 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await register.waitUntilInvisible();
     await browser.sleep(3000); //change to ensure intended user shows up on list
     expect(await maintab.waitUntilPresent()).toBeTruthy();
+  });
+
+  it('should click the Invite menu toggle', async () => {
+    await app.clickElement('#inviteLabel')
+    await browser.sleep(3000); //change to ensure intended user shows up on list
+    expect(await app.currentUrl()).toContain('invite');
   });
 
 });
