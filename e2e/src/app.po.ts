@@ -212,6 +212,12 @@ export class AppPage extends PageObjectBase {
     logoutButtonIsPresent() {
         return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
+
+    async confirmRemoval() {
+      await element.all(by.css('.alert-button'))
+          .first()
+          .click();
+    }
 }
 
 export class MaintabPage extends PageObjectBase {
@@ -466,12 +472,6 @@ export class EditfeaturePage extends PageObjectBase {
     async removeMember() {
       await element.all(by.css('.alert-button'))
           .last()
-          .click();
-    }
-
-    async confirmRemoval() {
-      await element.all(by.css('.alert-button'))
-          .first()
           .click();
     }
 }
