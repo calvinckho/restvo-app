@@ -74,9 +74,20 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should click the Invite menu toggle', async () => {
-    await app.clickElement('#inviteLabel')
+    await app.clickElement('#inviteLabel');
     await browser.sleep(3000); //change to ensure intended user shows up on list
     expect(await app.currentUrl()).toContain('invite');
   });
+
+  it('should click Community card then Create card', async () => {
+    await app.clickElement('#communityCard');
+    await pickfeature.waitUntilVisible();
+    await pickfeature.clickNextButton();
+    await pickfeature.clickCreateNewMoment();
+    await browser.sleep(3000); //change to ensure intended user shows up on list
+    expect(await app.currentUrl()).toContain('community');
+
+  });
+
 
 });
