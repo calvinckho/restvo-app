@@ -7,7 +7,9 @@ exports.config = {
   allScriptsTimeout: 110000,
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    './src/desktop/add-and-remove-restvo-friend.e2e-spec.ts',
+    //'./src/app.e2e-spec.ts',
+    //'./src/desktop/journey.e2e-spec.ts' // run this specific script
+    './src/desktop/create-delete-community.e2e-spec.ts'
   ],
   capabilities: {
     /*chromeOptions: {
