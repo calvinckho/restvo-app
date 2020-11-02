@@ -110,7 +110,7 @@ describe('add and remove user from group', () => {
         await editfeature.removeRole();
         await editfeature.removeMemberRole();
         await editfeature.removeMember();
-        await app.confirmRemoval(); // ERROR: .alert-button IS NOT ATTACHED TO PAGE
-        // await browser.sleep(30000);
+        await app.clickAlertButton("REMOVE");
+        // EXPECT CONDITION -> CAN'T FIGURE OUT WHAT TO VALIDATE
     });
 });
