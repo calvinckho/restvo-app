@@ -8,7 +8,7 @@ exports.config = {
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
     //'./src/app.e2e-spec.ts',
-    './src/desktop/journey.e2e-spec.ts' // run this specific script
+    './src/desktop/unauthenticated-pages.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
     /*chromeOptions: {
