@@ -69,13 +69,13 @@ describe(' Create and Delete a Community', () => {
     await register.fillPassword();
     await register.submitLoginForm();
     await register.waitUntilInvisible();
-    await browser.sleep(3000); //change to ensure intended user shows up on list
+    await browser.sleep(3000);
     expect(await maintab.waitUntilPresent()).toBeTruthy();
   });
 
   it('should click the Invite menu toggle', async () => {
     await app.clickElement('#inviteLabel');
-    await browser.sleep(3000); //change to ensure intended user shows up on list
+    await browser.sleep(3000);
     expect(await app.currentUrl()).toContain('invite');
   });
 
@@ -84,9 +84,15 @@ describe(' Create and Delete a Community', () => {
     await pickfeature.waitUntilVisible();
     await pickfeature.clickNextButton();
     await pickfeature.clickCreateNewMoment();
-    await browser.sleep(3000); //change to ensure intended user shows up on list
+    await browser.sleep(3000);
     expect(await app.currentUrl()).toContain('community');
+  });
 
+  it('should click Community card then Create card', async () => {
+    await createfeature.waitUntilVisible();
+    await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test')
+    await browser.sleep(3000);
+    expect(await app.currentUrl()).toContain('community');
   });
 
 
