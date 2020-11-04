@@ -491,19 +491,15 @@ export class CreateFeaturePage extends PageObjectBase {
         super('app-createfeature', '/');
     }
 
-    async enterInfoInputText(sel: string, text: string, filterSelector: string) {
-        const els = await element.all(by.css(`${this.tag} ${sel}`));
-        if (els.length) {
-            await element.all(by.css(`${this.tag} ${sel}`))
-                .filter(async (el, index) => await el.isPresent())
-                .first()
-                .element(by.css(filterSelector))
-                .sendKeys(text);
-        } else {
-            const el = element(by.css(`${this.tag} ${sel}`));
-            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-            const inp = el.element(by.css(filterSelector));
-            await inp.sendKeys(text);
-        }
+    clickBackButton() {
+        this.clickElement('#backButton');
+    }
+
+    clickNextButton() {
+        this.clickElement('#nextButton');
+    }
+
+    clickSaveButton() {
+        this.clickElement('#saveButton');
     }
 }

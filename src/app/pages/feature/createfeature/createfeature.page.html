@@ -1,7 +1,7 @@
 <ion-header id="createfeature-header">
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button id="backButton" (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title class="ion-text-wrap">{{moment.matrix_string[0][0] || 'Create Community'}}</ion-title>
   </ion-toolbar>
@@ -76,7 +76,7 @@
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none"> <!--Description-->
               <ion-label class="summary-label">Description:</ion-label>
-              <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
+              <ion-textarea name="communityDescription" rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none" *ngIf="moment.assets?.length">
               <ion-label class="summary-label">Media:</ion-label>
@@ -199,10 +199,10 @@
 <ion-footer>
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'create'">
     <ion-row>
-      <ion-button *ngIf="!createReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
+      <ion-button id="nextButton" *ngIf="!createReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="createReachedEnd" expand="full" shape="round" class="centered" (click)="saveStep1()" [disabled]="!moment.matrix_string[0][0]">
+      <ion-button id="saveButton" *ngIf="createReachedEnd" expand="full" shape="round" class="centered" (click)="saveStep1()" [disabled]="!moment.matrix_string[0][0]">
         {{resource['en-US'].value[39]}}
       </ion-button>
     </ion-row>
