@@ -94,10 +94,19 @@ describe(' Create and Delete a Community', () => {
     await createfeature.clickNextButton();
     await browser.sleep(500); // just for us observe the click to the next page
     await createfeature.clickNextButton();
-    await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityDescription"]', 'This is a community for E2E testing purposes');
+    await browser.sleep(500); // just for us observe the click to the next page
+    await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
-    await browser.sleep(3000);
-    expect(await app.currentUrl()).toContain('community');
+    await browser.waitForAngular();
+    // await createfeature.waitUntilElementInvisible('#communityDescription');
+    // await createfeature.waitUntilElementVisible('#tutorialNext');
+    await createfeature.clickTutorialNextButton();
+    // await browser.sleep(500); // just for us observe the click to the next page
+    await createfeature.clickTutorialDoneButton();
+    // await browser.sleep(500); // just for us observe the click to the next page
+    await createfeature.waitUntilInvisible();
+    await browser.sleep(5000);
+    expect(await app.currentUrl()).toContain('manage');
   });
 
 

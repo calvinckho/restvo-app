@@ -76,7 +76,7 @@
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none"> <!--Description-->
               <ion-label class="summary-label">Description:</ion-label>
-              <ion-textarea name="communityDescription" rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
+              <ion-textarea id="communityDescription" name="communityDescription" rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none" *ngIf="moment.assets?.length">
               <ion-label class="summary-label">Media:</ion-label>
@@ -209,10 +209,10 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'tutorial' && moment._id">
     <ion-row>
-      <ion-button *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
+      <ion-button id="tutorialNext" *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="completeSetup(true)">
+      <ion-button id="tutorialDone" *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="completeSetup(true)">
         {{resource['en-US'].value[40]}}
       </ion-button>
     </ion-row>
