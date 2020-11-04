@@ -491,6 +491,32 @@ export class CreateFeaturePage extends PageObjectBase {
         super('app-createfeature', '/');
     }
 
+    async clearDescription(){ //work on this tomorrow (11/4)
+            const els = await element.all(by.css(`${this.tag} ${sel}`));
+            if (els.length) {
+                if (await element.all(by.css(`${this.tag} ${sel} .native-textarea`)).isPresent()) { // if ion-textarea
+                    await element.all(by.css(`${this.tag} ${sel}`))
+                        .filter(async (el, index) => await el.isPresent())
+                        .first()
+                        .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
+                        .sendKeys(text);
+                } else { // else, if it is just the input tag
+                    await element.all(by.css(`${this.tag} ${sel}`))
+                        .filter(async (el, index) => await el.isPresent())
+                        .first()
+                        .sendKeys(text);
+                }
+            } else {
+                const el = element(by.css(`${this.tag} ${sel}`));
+                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                let inp = el;
+                if (await element(by.css(`${this.tag} ${sel} .native-textarea`)).isPresent()) { // if ion-textarea
+                    inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
+                } // else, if it is just the input tag
+                await inp.sendKeys(text);
+            }
+        }
+
     clickBackButton() {
         this.clickElement('#backButton');
     }
