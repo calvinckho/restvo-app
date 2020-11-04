@@ -17,3 +17,5 @@ jobs:
       script: ng e2e --protractor-config='e2e/src/desktop/register.conf.js'
     - name: "Tab Navigation Test"
       script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
+    - name: "Add and Remove Friend"
+      script: ng e2e --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
