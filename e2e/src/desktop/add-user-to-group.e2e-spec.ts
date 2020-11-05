@@ -58,7 +58,6 @@ describe('add and remove user from group', () => {
         editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/activity/5f72454627cf747d0ccb16d0');
-        //await browser.waitForAngular(); // wait for angular to direct /app/activity to /activity since it is still unauthenticated
         await showfeature.waitUntilElementVisible('#signin');
         await showfeature.clickElement('#signin');
         await register.waitUntilVisible();
@@ -73,44 +72,50 @@ describe('add and remove user from group', () => {
     });
 
     it('should open People view', async () => {
+        debugger;
         await showfeature.clickElement('#add-user-to-group');
         await editfeature.waitUntilElementVisible('#add-people');
         expect(await editfeature.elementIsPresent('#add-people')).toBeTruthy();
     });
 
-    it('should select new user and add them', async () => {
+    it('should open pick member view', async () => {
         await editfeature.clickElement('#add-people');
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
-        await pickpeople.waitUntilVisible();
-        expect(await pickpeople.elementIsPresent('#done')).toBeTruthy();
+        expect(await pickpeople.waitUntilVisible()).toBeTruthy();
     });
 
     it('should search, select, and add user', async () => {
         await pickpeople.searchUser('Asia Ho');
-        await browser.sleep(2000);
+        await pickpeople.waitUntilElementInvisible('.pickpeople-user');
+        await pickpeople.waitUntilElementVisible('.pickpeople-user');
         await pickpeople.userSelect('Asia Ho');
         await pickpeople.clickElement('#done');
-        await pickpeople.waitUntilInvisible();
-        expect(await pickpeople.elementIsPresent('#done')).toBeFalsy();
+        expect(await pickpeople.waitUntilInvisible()).toBeTruthy();
     });
 
-    it('should exit out the People view', async () => {
-        await editfeature.clickElement('#exit-pickpeople');
-        expect(await editfeature.waitUntilInvisible()).toBeTruthy();
+    it('should have added Asia Ho', async () => {
+        await editfeature.searchUser('Asia Ho');
+        await editfeature.waitUntilElementVisible('.user-select');
+        expect(await editfeature.elementIsPresent('.user-select')).toBeTruthy();
     });
 
-    it('should open People view', async () => {
-        await showfeature.clickElement('#add-user-to-group');
-        await editfeature.waitUntilElementVisible('#add-people');
-    });
-
-    it('should select added user and remove them', async () => {
+    it('should try to select Asia Ho and remove her', async () => {
         await editfeature.userSelect('Asia Ho');
-        await editfeature.removeRole();
-        await editfeature.removeMemberRole();
-        await editfeature.removeMember();
-        await app.clickAlertButton("REMOVE");
-        // EXPECT CONDITION -> CAN'T FIGURE OUT WHAT TO VALIDATE
+        await editfeature.clickElement('#remove-role');
+        await app.waitUntilElementVisible('ion-alert');
+        await app.clickAlertChoice('Member');
+        await app.clickAlertButton('OK');
+        await app.waitUntilElementInvisible('ion-alert .alert-head');
+        await app.waitUntilElementVisible('ion-alert .alert-head');
+        await app.clickAlertButton('Remove');
+        await browser.waitForAngular();
+        expect(await editfeature.waitUntilVisible()).toBeTruthy();
+    });
+
+    it('should have removed Asia Ho', async () => {
+        //await editfeature.searchUser('Asia Ho');
+        await editfeature.waitUntilElementInvisible('.user-select');
+        expect(await editfeature.elementIsPresent('.user-select')).toBeFalsy();
     });
 });

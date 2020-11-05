@@ -150,8 +150,8 @@ class PageObjectBase {
         }
     }
 
-    protected async countElements(sel: string) {
-        return await element.all(by.css(`${this.tag} ${sel}`)).count();
+    async countElements(sel: string) {
+        return element.all(by.css(`${this.tag} ${sel}`)).count();
     }
 
     async headerIsPresent(sel: string) {
@@ -160,6 +160,10 @@ class PageObjectBase {
 
     async elementIsPresent(sel: string) {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
+    }
+
+    async searchUser(name) {
+        this.enterInputText('.searchbar-input', name);
     }
 }
 
@@ -187,6 +191,14 @@ export class AppPage extends PageObjectBase {
     async clickPopoverChoice(text) {
         await this.waitUntilElementVisible('.select-interface-option.sc-ion-select-popover');
         await element.all(by.css('.select-interface-option.sc-ion-select-popover'))
+            .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
+            .first()
+            .click();
+    }
+
+    async clickAlertChoice(text) {
+        await this.waitUntilElementVisible('ion-alert .alert-head');
+        await element.all(by.css('ion-alert .select-interface-option.sc-ion-alert-md'))
             .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
             .first()
             .click();
@@ -411,7 +423,7 @@ export class PickfeaturePopoverPage extends PageObjectBase {
     }
 
     async countNumberOfNewPrograms() {
-        return await this.countElements('.program-card');
+        return this.countElements('.program-card');
     }
 }
 
@@ -441,10 +453,6 @@ export class PickpeoplePopoverPage extends PageObjectBase {
           .first()
           .click();
     }
-
-    async searchUser(name) {
-      await this.enterInputText('.searchbar-input', name);
-    }
 }
 
 export class EditfeaturePage extends PageObjectBase {
@@ -453,20 +461,11 @@ export class EditfeaturePage extends PageObjectBase {
     }
 
     async userSelect(text) {
-      await this.waitUntilElementVisible('#user-select');
-      await element.all(by.css('#user-select-label'))
+      await this.waitUntilElementVisible('.user-select');
+      await element.all(by.css('.user-select-label'))
           .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
           .first()
           .click();
-    }
-
-    async removeRole() {
-      await this.waitUntilElementVisible('#remove-role');
-      await element.all(by.css('#remove-role')) .click();
-    }
-
-    async removeMemberRole() {
-      await element.all(by.css('.select-interface-option')).first().click();
     }
 
     async removeMember() {
