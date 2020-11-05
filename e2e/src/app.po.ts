@@ -231,7 +231,6 @@ export class AppPage extends PageObjectBase {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
-<<<<<<< HEAD
     async clickModalChatSendButton() {
         await element(by.css('ion-modal #sendButton'))
         .click();
@@ -243,8 +242,6 @@ export class AppPage extends PageObjectBase {
         return num;
     }
 
-=======
->>>>>>> added spec to select elipses in manage feature and delete community in spec
     logoutButtonIsPresent() {
         return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
@@ -507,12 +504,12 @@ export class CreateFeaturePage extends PageObjectBase {
                         .filter(async (el, index) => await el.isPresent())
                         .first()
                         .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
                 } else { // else, if it is just the input tag
                     await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
                         .filter(async (el, index) => await el.isPresent())
                         .first()
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
                 }
             } else {
                 const el = element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
@@ -521,7 +518,7 @@ export class CreateFeaturePage extends PageObjectBase {
                 if (await element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
                     inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
                 } // else, if it is just the input tag
-                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
+                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
             }
         }
 

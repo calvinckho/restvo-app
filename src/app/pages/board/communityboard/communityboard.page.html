@@ -54,7 +54,7 @@
         <ion-badge style="margin: 0 auto;">Tap on a topic below to write a post:</ion-badge>
       </ion-grid>
       <ion-grid class="moreoptions-grid" *ngFor="let community of communitiesboards">
-        <ion-row id="TESTTTT" class="moreoptions-community-name ion-text-center">{{community.name}}</ion-row>
+        <ion-row class="moreoptions-community-name ion-text-center">{{community.name}}</ion-row>
         <ion-row class="moreoptions-row">
           <ion-col *ngIf="community._id !== '5ab62be8f83e2c1a8d41f894'" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
             <ion-item lines="none" (click)="createNewBoard(community)">
