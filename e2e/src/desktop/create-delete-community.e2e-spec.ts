@@ -12,7 +12,8 @@ import {
   OnboardingfeaturePage,
   CreateFeaturePage,
   AboutPage,
-  PreferencesPage
+  PreferencesPage,
+  ManagePage
 } from '../app.po';
 import { browser, by } from 'protractor';
 import { AotCompiler } from '@angular/compiler';
@@ -33,6 +34,7 @@ describe(' Create and Delete a Community', () => {
   let pickpeople: PickpeoplePopoverPage;
   let createfeature: CreateFeaturePage;
   let onboardfeature: OnboardingfeaturePage;
+  let manage: ManagePage;
 
   beforeAll(async () => {
     // testing on desktop sized screen
@@ -53,6 +55,7 @@ describe(' Create and Delete a Community', () => {
     pickpeople = new PickpeoplePopoverPage();
     createfeature = new CreateFeaturePage();
     onboardfeature = new OnboardingfeaturePage();
+    manage = new ManagePage();
     await browser.get('/');
   });
 
@@ -84,12 +87,11 @@ describe(' Create and Delete a Community', () => {
     await pickfeature.waitUntilVisible();
     await pickfeature.clickNextButton();
     await pickfeature.clickCreateNewMoment();
-    await browser.sleep(3000);
+    await createfeature.waitUntilVisible();
     expect(await app.currentUrl()).toContain('community');
   });
 
   it('should fill out community info', async () => {
-    await createfeature.waitUntilVisible();
     await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test')
     await createfeature.clickNextButton();
     await browser.sleep(500); // just for us observe the click to the next page
@@ -97,15 +99,11 @@ describe(' Create and Delete a Community', () => {
     await browser.sleep(500); // just for us observe the click to the next page
     await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
-    await browser.waitForAngular();
-    // await createfeature.waitUntilElementInvisible('#communityDescription');
-    // await createfeature.waitUntilElementVisible('#tutorialNext');
+    await createfeature.waitUntilElementPresent('#chooseProgramText')
     await createfeature.clickTutorialNextButton();
-    // await browser.sleep(500); // just for us observe the click to the next page
     await createfeature.clickTutorialDoneButton();
-    // await browser.sleep(500); // just for us observe the click to the next page
     await createfeature.waitUntilInvisible();
-    await browser.sleep(5000);
+    // await browser.sleep(5000);
     expect(await app.currentUrl()).toContain('manage');
   });
 
@@ -114,6 +112,16 @@ describe(' Create and Delete a Community', () => {
     await app.waitUntilUrlContains('me');
     await app.waitUntilElementPresent('#E2E-Community-Test')
     expect(await app.elementIsPresent('#E2E-Community-Test')).toBeTruthy();
+  });
+
+  it('should click into the community, then delete through elipses button to delete', async () => {
+    await app.clickElement('#E2E-Community-Test');
+    await manage.waitUntilVisible();
+    await manage.clickMoreOrganizerActions();
+    await app.clickActionSheetButton('Delete');
+    await app.clickAlertButton('OK');
+    await browser.waitForAngular();
+    expect(await app.elementIsPresent('#E2E-Community-Test')).toBeFalsy();
   });
 
 

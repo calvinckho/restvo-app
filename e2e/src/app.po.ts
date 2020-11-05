@@ -231,6 +231,7 @@ export class AppPage extends PageObjectBase {
         return element(by.css('ion-action-sheet')).isPresent();
     }
 
+<<<<<<< HEAD
     async clickModalChatSendButton() {
         await element(by.css('ion-modal #sendButton'))
         .click();
@@ -242,6 +243,8 @@ export class AppPage extends PageObjectBase {
         return num;
     }
 
+=======
+>>>>>>> added spec to select elipses in manage feature and delete community in spec
     logoutButtonIsPresent() {
         return element(by.css('#logoutButton')).isPresent(); // is this always present on the DOM?
     }
@@ -381,7 +384,11 @@ export class DiscoverPage extends PageObjectBase {
 
 export class ManagePage extends PageObjectBase {
     constructor() {
-        super('app-manage', 'app/manage');
+        super('app-managefeature', 'app/manage');
+    }
+
+    async clickMoreOrganizerActions(){
+        this.clickElement('#moreOrganizerActions')
     }
 }
 
