@@ -58,4 +58,9 @@ describe('click around unauthenticated pages', () => {
         await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
+
+    it('should click on the first mentor', async () => {
+        await showfeature.clickFirstMentor();
+        await browser.sleep(3000);
+    });
 });

@@ -239,6 +239,14 @@ export class ShowfeaturePage extends PageObjectBase {
     clickSigninButton(button) {
         this.clickElement(button);
     }
+
+    async clickFirstMentor() {
+        // console.log("person cards", element.all(by.css('.person-card')).first());
+        await this.waitUntilElementVisible('.person-card');
+        element.all(by.css('.person-card'))
+            .first()
+            .click();
+    }
 }
 
 export class RegisterPage extends PageObjectBase {
