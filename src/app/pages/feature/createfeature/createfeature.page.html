@@ -19,7 +19,7 @@
             <div tabindex="0"></div></ion-item>
             <ion-item lines="none">
               <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-              <ion-textarea name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
+              <ion-textarea id="communityName" name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
             <div tabindex="0"></div></ion-item>
           </ion-col>
         </ion-row>
@@ -30,7 +30,7 @@
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col class="ion-align-self-center">
             <ion-item lines="none">
-              <div style="font-size: 14px" class="ion-text-wrap">Add a Program to Your Community:</div>
+              <div id="addProgramPrompt" style="font-size: 14px" class="ion-text-wrap">Add a Program to Your Community:</div>
             <div tabindex="0"></div></ion-item>
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">

@@ -93,17 +93,18 @@ describe(' Create and Delete a Community', () => {
 
   it('should fill out community info', async () => {
     await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test')
+    await createfeature.waitUntilElementPresent('#communityName');
     await createfeature.clickNextButton();
-    await browser.sleep(500); // just for us observe the click to the next page
+    await createfeature.waitUntilElementPresent('#addProgramPrompt');
     await createfeature.clickNextButton();
-    await browser.sleep(500); // just for us observe the click to the next page
+    await createfeature.waitUntilElementPresent('#communityDescription');
     await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
     await createfeature.waitUntilElementPresent('#chooseProgramText')
     await createfeature.clickTutorialNextButton();
+    await createfeature.waitUntilElementPresent('#tutorialDone')
     await createfeature.clickTutorialDoneButton();
     await createfeature.waitUntilInvisible();
-    // await browser.sleep(5000);
     expect(await app.currentUrl()).toContain('manage');
   });
 
