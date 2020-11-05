@@ -41,7 +41,7 @@
             <div tabindex="0"></div></ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/me']" mode="md">
+            <ion-item id="meDashboard" [routerLink]="['/app/me']" mode="md">
               <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>
               <ion-label>Me</ion-label>
               <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="clickRestToggle($event)" *ngIf="chatService && userData.user">

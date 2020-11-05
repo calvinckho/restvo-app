@@ -109,5 +109,12 @@ describe(' Create and Delete a Community', () => {
     expect(await app.currentUrl()).toContain('manage');
   });
 
+  it('should have new community present on the My Community list', async () => {
+    await app.clickElement('#meDashboard');
+    await app.waitUntilUrlContains('me');
+    await app.waitUntilElementPresent('#E2E-Community-Test')
+    expect(await app.elementIsPresent('#E2E-Community-Test')).toBeTruthy();
+  });
+
 
 });
