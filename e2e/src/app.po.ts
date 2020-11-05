@@ -507,12 +507,12 @@ export class CreateFeaturePage extends PageObjectBase {
                         .filter(async (el, index) => await el.isPresent())
                         .first()
                         .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
                 } else { // else, if it is just the input tag
                     await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
                         .filter(async (el, index) => await el.isPresent())
                         .first()
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
                 }
             } else {
                 const el = element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
@@ -521,7 +521,7 @@ export class CreateFeaturePage extends PageObjectBase {
                 if (await element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
                     inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
                 } // else, if it is just the input tag
-                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community'); //may need to be changed to protractor.Key.COMMAND for mac
             }
         }
 

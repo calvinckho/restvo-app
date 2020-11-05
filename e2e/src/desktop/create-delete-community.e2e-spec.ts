@@ -78,13 +78,12 @@ describe(' Create and Delete a Community', () => {
 
   it('should click the Invite menu toggle', async () => {
     await app.clickElement('#inviteLabel');
-    await browser.sleep(3000);
+    await pickfeature.waitUntilVisible();
     expect(await app.currentUrl()).toContain('invite');
   });
 
   it('should click Community card then Create card', async () => {
     await app.clickElement('#communityCard');
-    await pickfeature.waitUntilVisible();
     await pickfeature.clickNextButton();
     await pickfeature.clickCreateNewMoment();
     await createfeature.waitUntilVisible();
@@ -119,10 +118,21 @@ describe(' Create and Delete a Community', () => {
     await app.clickElement('#E2E-Community-Test');
     await manage.waitUntilVisible();
     await manage.clickMoreOrganizerActions();
+    await app.waitUntilElementVisible('ion-action-sheet');
     await app.clickActionSheetButton('Delete');
+    await app.waitUntilElementInvisible('ion-action-sheet');
+    await app.waitUntilElementVisible('ion-alert');
     await app.clickAlertButton('OK');
     await browser.waitForAngular();
     expect(await app.elementIsPresent('#E2E-Community-Test')).toBeFalsy();
+  });
+
+  it('should log the user out', async () => {
+    await app.clickElement('#userProfileSettings');
+    await app.waitUntilUrlContains('profile');
+    await app.clickElement('#logoutButton');
+    await app.waitUntilElementPresent('#signin')
+    expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
   });
 
 
