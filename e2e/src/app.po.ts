@@ -242,7 +242,8 @@ export class ShowfeaturePage extends PageObjectBase {
 
     async clickFirstMentor() {
         // console.log("person cards", element.all(by.css('.person-card')).first());
-        await this.waitUntilElementVisible('.person-card');
+        // await this.waitUntilElementVisible('.person-card');
+        // console.log("first", element.all(by.css('.person-card')).first())
         element.all(by.css('.person-card'))
             .first()
             .click();
