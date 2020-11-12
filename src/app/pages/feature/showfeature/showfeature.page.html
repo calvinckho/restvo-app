@@ -805,7 +805,7 @@
               </ion-card>
             </ion-slide>
             <ion-slide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
-              <ion-card class="person-card" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+              <ion-card class="person-card person-card-active" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header>
                   <div class="person-photo-container">
                     <ion-img class="person-photo" *ngIf="person.avatar" [src]="person.avatar"></ion-img>
