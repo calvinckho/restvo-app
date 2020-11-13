@@ -11,7 +11,7 @@
           <form [formGroup]="loginForm" class="login-form">
             <ion-list lines="none" class="ion-no-padding">
               <ion-buttons *ngIf="!authService.token" slot="start">
-                <ion-button (click)="close()"><ion-icon name="chevron-back-outline" color="primary"></ion-icon></ion-button>
+                <ion-button id="close-register-page" (click)="close()"><ion-icon name="chevron-back-outline" color="primary"></ion-icon></ion-button>
               </ion-buttons>
               <ion-row>
                 <ion-col *ngIf="platform.width() >= 768">

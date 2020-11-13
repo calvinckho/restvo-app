@@ -61,6 +61,8 @@ describe('click around unauthenticated pages', () => {
 
     it('should click on the first mentor', async () => {
         await showfeature.clickFirstMentor();
-        await browser.sleep(10000);
+        await browser.sleep(1000);
+        await register.closePage();
+        await browser.sleep(5000);
     });
 });

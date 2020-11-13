@@ -257,6 +257,10 @@ export class RegisterPage extends PageObjectBase {
         return this.load();
     }
 
+    async closePage() {
+        this.clickElement("#close-register-page");
+    }
+
     clickTabButton(button) {
         this.clickElement(button);
     }
