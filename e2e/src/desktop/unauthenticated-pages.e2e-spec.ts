@@ -63,6 +63,8 @@ describe('click around unauthenticated pages', () => {
         await showfeature.clickFirstMentor();
         await browser.sleep(1000);
         await register.closePage();
+        await browser.sleep(3000);
+        await.showfeature.clickFirstCommunity();
         await browser.sleep(5000);
     });
 });

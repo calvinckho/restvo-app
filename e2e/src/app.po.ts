@@ -246,6 +246,13 @@ export class ShowfeaturePage extends PageObjectBase {
             .first()
             .click();
     }
+
+    async clickFirstCommunity() {
+        await this.waitUntilElementVisible('.program-card');
+        await element.all(by.css('.program-card'))
+            .first()
+            .click();
+    }
 }
 
 export class RegisterPage extends PageObjectBase {
