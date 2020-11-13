@@ -61,10 +61,10 @@ describe('click around unauthenticated pages', () => {
 
     it('should click on the first mentor', async () => {
         await showfeature.clickFirstMentor();
-        await browser.sleep(1000);
         await register.closePage();
-        await browser.sleep(3000);
-        await.showfeature.clickFirstCommunity();
-        await browser.sleep(5000);
+    });
+
+    it('should click on the first community', async () => {
+        await showfeature.clickFirstCommunity();
     });
 });
