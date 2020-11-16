@@ -7,8 +7,7 @@ exports.config = {
   allScriptsTimeout: 110000,
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    //'./src/app.e2e-spec.ts',
-    './src/desktop/unauthenticated-pages.e2e-spec.ts' // run this specific script
+    './src/desktop/unauthenticated-pages.e2e-spec.ts'
   ],
   capabilities: {
     /*chromeOptions: {

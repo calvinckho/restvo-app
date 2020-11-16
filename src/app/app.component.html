@@ -28,7 +28,7 @@
             <div tabindex="0"></div></ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/myconversations/chat']" mode="md">
+            <ion-item id="chat" [routerLink]="['/app/myconversations']" mode="md">
               <ion-icon slot="start" name="chatbox"></ion-icon>
               <ion-label>Chat</ion-label>
               <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>

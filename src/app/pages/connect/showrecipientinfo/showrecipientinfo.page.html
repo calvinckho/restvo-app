@@ -146,7 +146,7 @@
         <ion-row *ngIf="!userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="shareContactInfo()">Share My Contact Info</ion-button></ion-col></ion-row>
         <ion-row *ngIf="userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="shareContactInfo()">Turn Off Sharing My Contact Info</ion-button></ion-col></ion-row>
         <ion-row *ngIf="!isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="createRelationship()">Invite to Start Plan</ion-button></ion-col></ion-row>
-        <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
+        <ion-row><ion-col><ion-button id="reportUserAbuse" expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 
       <div style="margin-top: 5px;" *ngIf="userData.hasPlatformAdminAccess && manageMode">
