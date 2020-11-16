@@ -66,5 +66,7 @@ describe('click around unauthenticated pages', () => {
 
     it('should click on the first community', async () => {
         await showfeature.clickFirstCommunity();
+        await browser.sleep(1000);
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
 });
