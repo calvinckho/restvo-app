@@ -31,7 +31,7 @@
       <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
         <ion-icon name="chatbubbles"></ion-icon>
       </ion-button>
-      <ion-button (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="grey"></ion-icon></ion-button> <!--More-->
+      <ion-button id="moreOrganizerActions" (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="grey"></ion-icon></ion-button> <!--More-->
     </ion-buttons>
   </ion-toolbar>
 
