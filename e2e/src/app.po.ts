@@ -1,4 +1,5 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions, WebDriver } from 'protractor';
+import { protractor } from 'protractor/built/ptor';
 
 class PageObjectBase {
     private path: string;
@@ -129,6 +130,32 @@ class PageObjectBase {
             let inp = el;
             if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
                 inp = el.element(by.css('input')); // needs to select the nested input tag
+            } // else, if it is just the input tag
+            await inp.sendKeys(text);
+        }
+    }
+
+    async enterTextareaText(sel: string, text: string) {
+        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length) {
+            if (await element.all(by.css(`${this.tag} ${sel} .native-textarea`)).isPresent()) { // if ion-textarea
+                await element.all(by.css(`${this.tag} ${sel}`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
+                    .sendKeys(text);
+            } else { // else, if it is just the input tag
+                await element.all(by.css(`${this.tag} ${sel}`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .sendKeys(text);
+            }
+        } else {
+            const el = element(by.css(`${this.tag} ${sel}`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            let inp = el;
+            if (await element(by.css(`${this.tag} ${sel} .native-textarea`)).isPresent()) { // if ion-textarea
+                inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
             } // else, if it is just the input tag
             await inp.sendKeys(text);
         }
@@ -372,7 +399,11 @@ export class DiscoverPage extends PageObjectBase {
 
 export class ManagePage extends PageObjectBase {
     constructor() {
-        super('app-manage', 'app/manage');
+        super('app-managefeature', 'app/manage');
+    }
+
+    async clickMoreOrganizerActions(){
+        this.clickElement('#moreOrganizerActions')
     }
 }
 
@@ -481,5 +512,51 @@ export class EditfeaturePage extends PageObjectBase {
 export class CreateFeaturePage extends PageObjectBase {
     constructor() {
         super('app-createfeature', '/');
+    }
+
+    async enterNewCommunityDescription(){
+            const els = await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
+            if (els.length) {
+                if (await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
+                    await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
+                        .filter(async (el, index) => await el.isPresent())
+                        .first()
+                        .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+                } else { // else, if it is just the input tag
+                    await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
+                        .filter(async (el, index) => await el.isPresent())
+                        .first()
+                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+                }
+            } else {
+                const el = element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
+                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+                let inp = el;
+                if (await element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
+                    inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
+                } // else, if it is just the input tag
+                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+            }
+        }
+
+    async clickBackButton() {
+        this.clickElement('#backButton');
+    }
+
+    async clickNextButton() {
+        this.clickElement('#nextButton');
+    }
+
+    async clickSaveButton() {
+        this.clickElement('#saveButton');
+    }
+
+    async clickTutorialNextButton() {
+        this.clickElement('#tutorialNext');
+    }
+
+    async clickTutorialDoneButton() {
+        this.clickElement('#tutorialDone');
     }
 }
