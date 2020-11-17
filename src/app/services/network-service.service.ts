@@ -15,7 +15,7 @@ export class NetworkService {
     //  dev endpoint
     //domain = 'https://server.dev.restvo.com';
     webapp_domain = 'https://app.restvo.com';
-    assets = 'https://wee.nyc3.digitaloceanspaces.com/';
+    assets = 'https://d2z4pehxidbzz4.cloudfront.net/';
     networkSuccess = false;
 
     onDevice: boolean;
