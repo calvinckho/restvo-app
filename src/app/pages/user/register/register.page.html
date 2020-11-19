@@ -85,7 +85,7 @@
                   <div class="graphics-container">
                     <img src="assets/img/intro_1.png" />
                   </div>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-row class="ion-justify-content-center" lines="none">
                   <div class="intro-title">Connect with mentors</div>
                 </ion-row>
@@ -101,7 +101,7 @@
                   <div class="graphics-container">
                     <img src="assets/img/intro_2.png" />
                   </div>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-row class="ion-justify-content-center" lines="none">
                   <div class="intro-title">Build deeper relationships</div>
                 </ion-row>
@@ -117,7 +117,7 @@
                   <div class="graphics-container">
                     <img src="assets/img/intro_3.png" />
                   </div>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-row class="ion-justify-content-center" lines="none">
                   <div class="intro-title">Discover new communities</div>
                 </ion-row>
@@ -168,7 +168,7 @@
                         <ion-item lines="full">
                           <ion-input id="firstName" type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" autocomplete="given-name"></ion-input>
                           <ion-input id="lastName" type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" autocomplete="family-name"></ion-input>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
 
                         <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
                           <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
@@ -193,7 +193,7 @@
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
                           <!-- <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input> -->
                           <ion-input id="newEmail" type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
                         <div *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
                           <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.email.pristine && emailPassForm.controls.email.hasError('required')">
                             This is a required field.
@@ -205,7 +205,7 @@
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
                           <ion-input id="newPassword1" [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
                           <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
                         <div *ngIf="!emailPassForm.controls.password.pristine && !emailPassForm.controls.password.valid">
                           <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.password.pristine && emailPassForm.controls.password.hasError('required')">
                             This is a required field.
@@ -216,7 +216,7 @@
                         </div>
                         <ion-item *ngIf="loginMode === 'email'" lines="full">
                           <ion-input id="newPassword2" type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
                         <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
                           <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation.hasError('required')">
                             This is a required field.
@@ -242,7 +242,7 @@
                         <ion-item *ngIf="loginMode === 'mobile'" lines="full">
                           <ion-input type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" id="first-name"></ion-input>
                           <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" id="last-name"></ion-input>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
 
                         <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
                           <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
@@ -268,7 +268,7 @@
                             <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
                           </ion-select>
                           <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number"></ion-input>
-                        <div tabindex="0"></div></ion-item>
+                        </ion-item>
                         <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
                           Invalid mobile number.
                         </div>
@@ -304,7 +304,7 @@
                       </ion-buttons>
                       <ion-item lines="full">
                         <ion-input type="text" inputmode="numeric" pattern="[0-9]*" formControlName="verification_code" placeholder="6-digit Verification Code" autocomplete="one-time-code" maxlength="6"></ion-input>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                         <div class="form-error" *ngIf="!verifyCodeForm.controls.verification_code.pristine && !verifyCodeForm.controls.verification_code.valid">
                           Invalid code.
                         </div>
@@ -330,7 +330,7 @@
                       <ion-item lines="full">
                         <ion-label position="stacked" color="secondary">Email Address</ion-label>
                         <ion-input type="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="Enter Email Address"></ion-input>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                       <div *ngIf="!emailForm.controls.email.pristine && !emailForm.controls.email.valid">
                         <div class="form-error" *ngIf="!emailForm.controls.email.pristine && emailForm.controls.email.hasError('required')">
                           This is a required field.
@@ -365,7 +365,7 @@
                       <ion-item lines="full">
                         <ion-input #password [type]="passwordType" formControlName="password" placeholder="Pick a Password"></ion-input>
                         <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                       <div *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
                         <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
                           This is a required field.
@@ -376,7 +376,7 @@
                       </div>
                       <ion-item lines="full">
                         <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                       <div *ngIf="!passForm.controls.passwordConfirmation.pristine && (!passForm.controls.passwordConfirmation.valid || passForm.hasError('mismatchedPasswords'))">
                         <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation.hasError('required')" >
                           This is a required field.
@@ -412,12 +412,12 @@
                         <img class="profile-pic" *ngIf="userData && userData.user && userData.user.avatar" [src]="userData.user.avatar" onerror="this.style.display='none'"/>
                         <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
                       </div>
-                    <div tabindex="0"></div></ion-item>
+                    </ion-item>
                     <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin" lines="none">
                       <div class="browser-upload">
                         <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
                       </div>
-                    <div tabindex="0"></div></ion-item>
+                    </ion-item>
                     <ion-row>
                       <ion-col>
                         <ion-button *ngIf="!userData || !userData.user || !userData.user.avatar" expand="full" shape="round" color="primary" (click)="finish()">Skip</ion-button>
@@ -472,7 +472,7 @@
                           <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
                         </ion-select>
                         <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number" autocomplete="tel"></ion-input>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                       <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
                         Invalid mobile number.
                       </div>

@@ -15,10 +15,10 @@
     <ion-item>
       <ion-label>Group Leader</ion-label>
       <ion-toggle [(ngModel)]="UIisLeaderTag" (ionChange)="leaderStatusChange($event)" [disabled]="disableTag"></ion-toggle>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item *ngIf="!this.group.churchId && this.group.leaders.length === 1 && this.UIisLeaderTag">
       <ion-icon name="alert-circle" class="ion-margin-right"></ion-icon><p>You cannot remove this user's leadership status because this user is the only leader in this group.</p>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-list>
 </ion-content>
 <ion-footer no-shadow>

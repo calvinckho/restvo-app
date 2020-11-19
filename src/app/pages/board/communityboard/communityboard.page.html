@@ -11,7 +11,7 @@
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
           Dismiss
@@ -36,7 +36,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-buttons slot="end" *ngIf="!userData.user" color="grey">
       <ion-button routerLink="/register">
         Sign In
@@ -65,7 +65,7 @@
                 <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">Topic</ion-label>
               </div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-col>
           <ion-col *ngFor="let board of community.boards" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
             <ion-item lines="none" (click)="openBoard($event, board, community)">
@@ -76,7 +76,7 @@
                 <ion-icon class="moreoptions-joined" color="tertiary" name="create"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">{{board.name}}</ion-label>
               </div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-col>
           <ion-col *ngFor="let topic of community.topics" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
             <ion-item lines="none" (click)="showGroupProfile(topic)">
@@ -87,7 +87,7 @@
                 <ion-icon class="moreoptions-joined" color="tertiary" *ngIf="topic.joined" name="checkmark"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">{{topic.name}}</ion-label>
               </div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -109,7 +109,7 @@
     <div *ngFor="let community of communitiesboards">
       <!--<ion-item (click)="showCommunityProfile(community)"  [hidden]="!community.postCount" lines="none" color="grey">
         <div class="community-title">{{community.name}}</div>
-      <div tabindex="0"></div></ion-item>-->
+      </ion-item>-->
       <div *ngFor="let board of community.boards">
         <ion-row class="ion-justify-content-center">
           <ion-card *ngFor="let post of board.preview_posts" (click)="openPost($event, board, post)">
@@ -130,7 +130,7 @@
                 <p class="note ion-text-end">{{post.updatedAt | datetime: 'm:l,d:n,y:n'}}</p>
                 <p class="note ion-text-end">{{displayTimeElapsed(post.updatedAt)}}</p>
               </ion-col>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <div class="photo-frame" *ngIf="post.attachments?.length">
               <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" />
               <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
@@ -206,7 +206,7 @@
                   <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
                 </div>
               </div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-row>
               <ion-col>
                 <ion-button fill="clear" size="small" (click)="likePost($event, board, post)">

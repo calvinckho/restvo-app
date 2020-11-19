@@ -24,7 +24,7 @@
           <div class="action-card-message">Let other users see who they’re connecting with</div>
         </div>
         <ion-icon [name]="userData.user.avatar ? 'checkmark-circle' : 'add-circle'" slot=end [color]="userData.user.avatar ? 'success' : 'danger'"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-card>
     <ion-card [ngClass]="{'opacity': userData.user && !authService.incompleteOnboardProcess}">
       <ion-item lines="none" class="card-item" (click)="authService.openOnboarding({ modalPage: true })">
@@ -34,7 +34,7 @@
           <div class="action-card-message">Answer a few questions to complete your profile</div>
         </div>
         <ion-icon [name]="!authService.incompleteOnboardProcess ? 'checkmark-circle' : 'add-circle'" slot=end [color]="!authService.incompleteOnboardProcess ? 'success' : 'danger'"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-card>
   </div>
 
@@ -51,7 +51,7 @@
           <div class="action-card-message">Get notified when you recieve a new message or request</div>
         </div>
         <ion-icon [name]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) ? 'checkmark-circle' : 'add-circle'" slot=end [color]="((userData.user && userData.user.enablePushNotification) || userData.delayPushNotificationReminder) ? 'success' : 'danger'"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-card>
     <ion-card [ngClass]="{'opacity': !platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder}">
       <ion-item lines="none" class="card-item" (click)="pressImportContactList($event)">
@@ -61,7 +61,7 @@
           <div class="action-card-message">Find out who you know has already joined Restvo</div>
         </div>
         <ion-icon [name]="(!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder) ? 'checkmark-circle' : 'add-circle'" slot=end [color]="(!platform.is('cordova') || (userData.user && userData.user.importContactList) || userData.delayImportContactListReminder) ? 'success' : 'danger'"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-card>
   </div>
 </ion-content>

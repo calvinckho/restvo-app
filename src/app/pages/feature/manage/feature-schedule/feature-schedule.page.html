@@ -29,15 +29,15 @@
           <ion-buttons slot="end" class="ion-no-margin">
             <ion-button fill="clear" (click)="deleteSchedule()" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
           </ion-buttons>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none">
           <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
           <ion-datetime *ngIf="recurrenceStartTime" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none" *ngIf="dateType != 'start'">
           <ion-label (click)="focusCalendarDateField('end')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
           <ion-datetime *ngIf="recurrenceEndTime" placeholder="12:00 pm" (ionCancel)="dateType=''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
 
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
@@ -68,7 +68,7 @@
         <ion-item lines="none" *ngIf="dateType == 'start'">
           <ion-label (click)="dateType = 'end'" class="cursor-pointer" >End: {{recurrenceEndDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
           <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="recurrenceEndTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-item-group>
       <ion-item lines="none">
         <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Frequency</ion-label>
@@ -79,11 +79,11 @@
           <ion-select-option value='monthly'>Monthly</ion-select-option>
           <ion-select-option value='yearly'>Yearly</ion-select-option>
         </ion-select>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
         <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
         <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence === 'weekly'">
         <ion-label style="width: 90%" class="ion-margin-left" slot="start">Days of the Week</ion-label>
         <ion-select [(ngModel)]="recurrenceByDay" slot="end" [multiple]="true">
@@ -95,7 +95,7 @@
           <ion-select-option value='SA'>Saturday</ion-select-option>
           <ion-select-option value='SU'>Sunday</ion-select-option>
         </ion-select>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-row class="ion-justify-content-center">
         <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
           <span>Create Schedule</span>
@@ -110,10 +110,10 @@
       <ion-item-divider></ion-item-divider>
       <ion-item *ngIf="this.schedule._id && !timeline.length">
         <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item *ngIf="!this.schedule._id">
         <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
         <!--Favorite Goals-->
         <ion-card mode="md" class="ion-no-padding">
@@ -121,7 +121,7 @@
             <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
             <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
               <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, favoriteGoal)" fill="clear" size="small">
               <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
             </ion-buttons>
@@ -133,7 +133,7 @@
             <ion-card-content class="ion-no-padding goal-content">
               <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                 <ion-textarea class=" ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
                 <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
               </ion-buttons>
@@ -147,12 +147,12 @@
                     <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
                     <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
                   </ion-buttons>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
               </div>
               <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
                 <span class="content-count"><ion-icon name="add"></ion-icon></span>
                 <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </ion-card-content>
           </ion-card>
         </div>
@@ -163,7 +163,7 @@
           <ion-card-content class="goal-content ion-no-padding">
             <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
               <ion-textarea class="ion-margin-start" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name"></ion-textarea>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-buttons class="more-goal-options" (click)="moreGoalFunctions($event, goal)" fill="clear" size="small">
               <ion-button><ion-icon ios="ellipsis-horizontal" md="ellipsis-horizontal" color="darkgrey"></ion-icon></ion-button>
             </ion-buttons>
@@ -177,12 +177,12 @@
                   <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
                   <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
                 </ion-buttons>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
               <span class="content-count"><ion-icon name="add"></ion-icon></span>
               <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-card-content>
         </ion-card>
       </div>
@@ -191,7 +191,7 @@
           <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
             <ion-icon name="add"></ion-icon>
             <ion-label class="ion-margin-start" >Add New Section</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card-content>
       </ion-card>
       <!--Uncategorized-->
@@ -199,7 +199,7 @@
         <ion-card-content class="goal-content overall ion-no-padding">
           <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
             <ion-label class="ion-margin-start" >Uncategorized</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <div *ngFor="let calendaritem of timeline; index as j; trackBy: customTrackBy">
             <ion-item class="calendar-item ion-no-padding" *ngIf="!calendaritem.goals.length">
               <span class="content-count">{{j+1}}.</span>
@@ -210,7 +210,7 @@
                 <ion-button fill="clear" color="grey" (click)="promptEditContentCalendar($event, calendaritem)"><ion-icon name="cog"></ion-icon></ion-button>
                 <ion-button fill="clear" (click)="removeTimelineItem($event, programId, calendaritem)" class="close-button" *ngIf="calendaritem._id"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-buttons>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </div>
         </ion-card-content>
       </ion-card>
@@ -219,13 +219,13 @@
         <ion-select #SelectGoals [(ngModel)]="selectCalendarItem.goals" (ionChange)="assignGoal()" interface="alert" multiple="true" slot="end">
           <ion-select-option *ngFor="let goal of listOfDisplayGoals" [value]="goal[0]" [class.selected]="selectCalendarItem.goals && selectCalendarItem.goals.includes(goal[0])">{{goal[5]}}</ion-select-option>
         </ion-select>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
     <ion-list *ngIf="view === 'content'">
       <ion-item lines="none">
         <div class="moment-label"><img class="side-image" src="assets/img/Folder_Gray.png"></div>
         <div class="moment-input">{{this.categoryLabel}}</div>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-toolbar>
         <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" placeholder="Search"></ion-searchbar>
       </ion-toolbar>
@@ -268,7 +268,7 @@
         </ion-row>
       </ion-grid>
       <ion-item-divider></ion-item-divider>
-      <ion-item lines="none">Content List<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">Content List</ion-item>
       <ion-row *ngIf="!timeline.length" class="ion-justify-content-center">
         <p>You have not selected any content yet.</p>
       </ion-row>
@@ -284,35 +284,35 @@
             <ion-button fill="clear" [color]="content.user_list_2 && content.user_list_2.includes(userData.user._id) ? 'grey' : 'lightgrey'" (click)="openChildActivity($event, content, 'edit')" *ngIf="content.user_list_2 && content.user_list_2.includes(userData.user._id) || ['owner', 'admin', 'staff'].includes(userData.user.role)"><ion-icon name="cog"></ion-icon></ion-button>
             <ion-button fill="clear" (click)="removeContent($event, j)" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
           </ion-buttons>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-reorder-group>
     </ion-list>
     <ion-list *ngIf="view === 'settings'">
       <ion-item lines="none">
         <div class="moment-label"><img class="side-image" src="assets/img/Settings_Gray.png"></div>
         <div class="moment-input">Settings</div>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item-group class="ion-margin-left" lines="full">
         <ion-item lines="none">
           <ion-label class="ion-margin-left">Prompt Users for Custom Start Date</ion-label>
           <ion-checkbox [(ngModel)]="schedule.array_boolean[0]"></ion-checkbox>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none">
           <ion-label class="ion-margin-left">Unique Answers for Each Repeated Content</ion-label>
           <ion-checkbox [(ngModel)]="schedule.array_boolean[1]"></ion-checkbox>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none">
           <ion-label class="ion-margin-left">Add to Participant's Timeline</ion-label>
           <ion-checkbox [(ngModel)]="schedule.array_boolean[2]"></ion-checkbox>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none">
           <ion-label class="ion-margin-left">Add to Leader's Timeline</ion-label>
           <ion-checkbox [(ngModel)]="schedule.array_boolean[4]"></ion-checkbox>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item lines="none">
           <ion-label class="ion-margin-left">Add to Admin's Timeline</ion-label>
           <ion-checkbox [(ngModel)]="schedule.array_boolean[3]"></ion-checkbox>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-item-group>
     </ion-list>
   </div>

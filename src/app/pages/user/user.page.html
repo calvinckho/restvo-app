@@ -17,7 +17,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 
@@ -29,31 +29,31 @@
           <ion-item (click)="clickManageMenu('profile')">
             <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/profile')}">User Profile</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item (click)="clickManageMenu('about')">
             <ion-icon slot="start" name="bicycle" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/about')}">About Me</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item (click)="clickManageMenu('programs')">
             <ion-icon slot="start" name="home" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/programs')}">Home</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item (click)="clickManageMenu('calendar')">
             <ion-icon slot="start" name="calendar" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/calendar')}">Calendar</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item (click)="clickManageMenu('privacy')" id="privacy-tab">
             <ion-icon slot="start" name="settings" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/privacy')}">Privacy & Security</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item (click)="clickManageMenu('notifications')">
             <ion-icon slot="start" name="notifications" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (platform.width() >= 768) && router.url.includes('/notifications')}">Notifications</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item id="logoutButton" (click)="logout($event)">
             <ion-icon slot="start" name="log-out" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label>Log Out</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-list>
       </ion-col>
       <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">

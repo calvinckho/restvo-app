@@ -11,7 +11,7 @@
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
         <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
           Dismiss
@@ -39,7 +39,7 @@
       <ion-label>
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-button id="dashboardSettingsButton" [routerLink]="['/app/user/profile']" *ngIf="!modalPage && userData.user && platform.width() < 768" slot="end" fill="clear" color="grey">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-button>
@@ -74,7 +74,7 @@
             <div class="person-bio" [innerHTML]="userData.user.bio"></div>
             <ion-button id="edit-profile-button" shape="round" class="person-edit-profile" fill="outline" (click)="openAboutMe()" >Edit Profile</ion-button>
           </div>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-card>
     </ion-row>
 
@@ -91,7 +91,7 @@
               <p class="message-detail">Complete these steps to help you get the most out of Restvo</p>
             </div>
             <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item-options>
             <ion-item-option color="primary" (click)="authService.incompleteOnboardProcess = null">
               Dismiss
@@ -111,7 +111,7 @@
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
 
             <!-- Loading skeleton text -->
             <ion-grid *ngIf="loading && platform.width() >= 768">
@@ -178,7 +178,7 @@
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
 
             <!-- Loading skeleton text -->
             <ion-grid *ngIf="loading && platform.width() >= 768">
@@ -277,7 +277,7 @@
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
 
             <!-- Loading skeleton text -->
             <ion-grid *ngIf="loading && platform.width() >= 768">
@@ -376,7 +376,7 @@
               <ion-button slot="end" [routerLink]="['../choose', { categoryId: '5e9fe35cc8bf1a622fec69d7' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
 
             <ion-grid *ngIf="loading && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
@@ -442,7 +442,7 @@
               <ion-button slot="end" [routerLink]="['/app/create/community', { categoryId: '5c915324e172e4e64590e346' }]" fill="clear">
                 <ion-icon name="add"></ion-icon>
               </ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-slides class="program-slides" [options]="{slidesPerView: 2.2, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
                 <ion-card class="program-card" (click)="openProgram($event, program)">
@@ -477,19 +477,19 @@
           <ion-card class="ion-no-margin ion-no-padding" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none" *ngIf="platform.width() >= 768"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">System Notifications</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-list class="system-message-container ion-padding">
               <ion-item>
                 <ion-buttons slot="end">
                   <ion-button fill="solid" color="primary" size="small" (click)="handleSystemMessages('accept')">Accept All</ion-button>
                   <ion-button fill="clear" color="primary" size="small" (click)="handleSystemMessages('clear')">Clear All</ion-button>
                 </ion-buttons>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <div *ngFor="let pendingNotification of pendingNotifications; trackBy: customTrackBy">
                 <ion-item class="ion-text-wrap" (click)="viewMessage($event, pendingNotification)" *ngIf="pendingNotification.message.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" lines="none">
                   <p style="color: var(--ion-color-dark);">{{pendingNotification.message}}</p>
                   <ion-icon color="primary" ios="ellipsis-horizontal" md="ellipsis-vertical" slot="end"></ion-icon>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
               </div>
             </ion-list>
           </ion-card>
@@ -510,7 +510,7 @@
               <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'upcoming'}">Upcoming</div>
             </ion-col>
           </ion-row>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-toolbar>
       <!--CALENDAR SECTION-->
       <ion-card class="calendar-container" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
@@ -572,7 +572,7 @@
               <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
               <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
             </div>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </div>
       </ion-list>
     </div>

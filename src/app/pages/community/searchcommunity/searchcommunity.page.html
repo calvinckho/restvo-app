@@ -24,7 +24,7 @@
         <p><ion-icon name="pin"></ion-icon>{{" "}}{{community.meeting_location.city}}<span [hidden]="(community.meeting_location.city.length==0)||(community.meeting_location.state.length==0)">{{", "}}</span>{{community.meeting_location.state}}<span [hidden]="(community.meeting_location.city.length==0)&&(community.meeting_location.state.length==0)">{{" "}}</span>{{community.meeting_location.country}}</p>
       </ion-label>
       <ion-icon slot="end" *ngIf="community.alreadyJoined == true" name="checkmark"></ion-icon>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-infinite-scroll position="bottom" (ionInfinite)="listcommunities($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>

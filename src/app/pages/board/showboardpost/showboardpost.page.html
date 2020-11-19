@@ -34,7 +34,7 @@
         <p class="note" class="ion-text-end">{{post.createdAt | datetime: 'm:l,d:n,y:n'}}</p>
         <p class="note" class="ion-text-end">{{displayTimeElapsed(post.createdAt)}}</p>
       </ion-col>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <div class="photo-frame" *ngIf="post.attachments?.length">
       <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" (click)="focusPhoto($event, post.attachments[0])"/>
       <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
@@ -110,7 +110,7 @@
           <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
         </div>
       </div>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-row>
       <ion-col>
         <ion-button fill="clear" size="small" (click)="likePost($event)">
@@ -174,7 +174,7 @@
           <!--<ion-icon class="reply-icon" name="arrow-undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
         </div>
       </div>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-card>
 </ion-content>
 

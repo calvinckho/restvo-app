@@ -49,25 +49,25 @@
       <p *ngIf="group.details" [innerHTML]="group.details"></p>
     </div>
     <ion-list>
-      <ion-item lines="none" color="grey">Leaders<div tabindex="0"></div></ion-item>
+      <ion-item lines="none" color="grey">Leaders</ion-item>
       <ion-item *ngFor="let leader of group.leaders" (click)="seeUserInfo($event, leader)">
         <ion-avatar slot="start">
           <img *ngIf="leader.avatar" [src]="leader.avatar"/>
           <img *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"/>
         </ion-avatar>
         {{leader.first_name}} {{leader.last_name}}
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
     <ion-row *ngIf="joinGroupTag"><ion-col><ion-button [hidden]="!joinGroupTag" expand="full" shape="round" color="primary" fill="solid" (click)="joinGroup()">Subscribe to Topic</ion-button></ion-col></ion-row>
 
-    <ion-item lines="none" color="grey">News<div tabindex="0"></div></ion-item>
+    <ion-item lines="none" color="grey">News</ion-item>
     <ion-refresher (ionRefresh)="refresh($event)" slot="fixed">
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <!--get new data when page is refreshed-->
     <ion-item *ngIf="noPost" lines="none">
       <p class="no-post-message ion-text-center">This feed is empty.</p>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-card *ngFor="let post of boardposts" (click)="openPost(post)">
       <ion-item lines="none">
         <ion-avatar slot="start" (click)="seeUserInfo($event, post.author)">
@@ -84,7 +84,7 @@
           <p class="note" class="ion-text-end">{{post.updatedAt | datetime: 'm:l,d:n,y:n'}}</p>
           <p class="note" class="ion-text-end">{{displayTimeElapsed(post.updatedAt)}}</p>
         </ion-col>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <div class="photo-frame" *ngIf="post.attachments?.length">
         <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" (click)="focusPhoto($event, post.attachments[0])"/>
         <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
@@ -173,7 +173,7 @@
             <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
           </div>
         </div>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-row>
         <ion-col>
           <ion-button fill="clear" size="small" (click)="likePost($event, post)">
@@ -209,7 +209,7 @@
         </ion-avatar>
         {{member.name}} <span *ngFor="let icon of member.icons"><ion-icon name={{icon}}></ion-icon> </span><ion-badge *ngIf="member.badge">{{member.role}}</ion-badge>
         <ion-icon slot="end" [hidden]="!editMemberTag" name="cog" (click)="editMember($event, member)"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <div style="margin-top: 20%;"></div>
     </ion-list>
     <ion-infinite-scroll position="bottom" (ionInfinite)="listgroupmembers($event)">

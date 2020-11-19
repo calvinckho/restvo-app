@@ -22,7 +22,7 @@
       </ion-label>
       <ion-badge color="primary" *ngIf="activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1]">Marketplace</ion-badge>
       <ion-badge color="grey" *ngIf="!(activity.array_boolean && (activity.array_boolean.length > 1) && activity.array_boolean[1])">Private</ion-badge>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{activities.length}}&nbsp;<span *ngIf="activities.length <= 1"> activity</span><span *ngIf="activities.length > 1"> activities</span>
     </ion-item-divider>
