@@ -109,13 +109,10 @@ describe('add and remove user from group', () => {
         await app.waitUntilElementInvisible('ion-alert .alert-head');
         await app.waitUntilElementVisible('ion-alert .alert-head');
         await app.clickAlertButton('Remove');
-        await browser.waitForAngular();
         expect(await editfeature.waitUntilVisible()).toBeTruthy();
     });
 
     it('should have removed Asia Ho', async () => {
-        //await editfeature.searchUser('Asia Ho');
-        await editfeature.waitUntilElementInvisible('.user-select');
         expect(await editfeature.elementIsPresent('.user-select')).toBeFalsy();
     });
 });
