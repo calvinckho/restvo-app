@@ -73,6 +73,13 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
         momentService, resourceService, responseService, calendarService);
   }
 
+    ionViewWillEnter() {
+        // re-entering edit on Desktop only, overrides Editfeature ionViewWillEnter()
+        if (this.userData.user && !this.modalPage) {
+            this.setup();
+        }
+    }
+
     async clickNextButton(direction) {
         if (!this.moment) return;
         if (direction === 'prev') {
@@ -136,13 +143,23 @@ export class CreatefeaturePage extends EditfeaturePage implements OnInit {
         if (this.modalPage) {
             this.modalCtrl.dismiss(refreshNeeded);
             setTimeout(() => {
+                this.resetPage();
                 this.momentService.manageMoment({ moment: this.moment, modalPage: true });
             }, 500);
         } else {
             //this.location.back();
             //this.userData.refreshUserStatus({});
             this.router.navigate(['/app/manage/activity/' + this.moment._id + '/profile/' + this.moment._id], {replaceUrl: false});
+            this.resetPage();
         }
         this.awsService.sessionAllowedCount = 1; // reset the allowed files count to 1
+    }
+
+    resetPage() {
+        this.initialSetupCompleted = false;
+        this.moment = null;
+        this.view = 'create';
+        this.createReachedEnd = false;
+        this.tutorialReachedEnd = false;
     }
 }

@@ -1,5 +1,5 @@
 <ion-header id="createfeature-header">
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.matrix_string && moment.matrix_string.length">
     <ion-buttons slot="start">
       <ion-button id="backButton" (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
@@ -7,8 +7,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && moment.resource.matrix_number.length">
-  <ion-slides [options]="slidesOpts" (ionSlideWillChange)="changeSlide('create')" pager *ngIf="view === 'create'">
+<ion-content *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.resource.matrix_number.length && moment.matrix_string && moment.matrix_string.length">
+  <ion-slides (ionSlideWillChange)="changeSlide('create')" pager *ngIf="view === 'create'">
     <!--Collect Community Name-->
     <ion-slide *ngIf="moment.resource.matrix_number[0].indexOf(10000) > -1">
       <ion-grid class="slide-grid">
@@ -18,7 +18,7 @@
               <div style="font-size: 14px" class="ion-text-wrap">{{resource['en-US'].value[37]}}</div>
             </ion-item>
             <ion-item lines="none">
-              <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
+              <ion-icon slot="start" color="grey" name="brush"></ion-icon>
               <ion-textarea id="communityName" name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
             </ion-item>
           </ion-col>
@@ -197,7 +197,7 @@
   </ion-grid>
 </ion-content>
 <ion-footer>
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'create'">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && view === 'create'">
     <ion-row>
       <ion-button id="nextButton" *ngIf="!createReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
@@ -207,7 +207,7 @@
       </ion-button>
     </ion-row>
   </ion-toolbar>
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'tutorial' && moment._id">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && view === 'tutorial' && moment._id">
     <ion-row>
       <ion-button id="tutorialNext" *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
