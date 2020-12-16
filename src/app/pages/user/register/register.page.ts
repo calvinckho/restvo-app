@@ -30,6 +30,7 @@ export class RegisterPage implements OnInit {
     view = 'signin';
     ionSpinner: any;
     loginMode = 'email';
+    registerMode = 'email';
     credentials: any;
     passwordType = 'password';
     passwordIcon = 'eye';
@@ -740,6 +741,10 @@ export class RegisterPage implements OnInit {
 
     changeLoginMode(event) { // this is necessary because form control wouldn't allow 2-way binding so we can't use [(ngModel)] to update this.loginMode
         this.loginMode = event.detail.value;
+    }
+
+    changeRegisterMode(event) { // this is necessary because form control wouldn't allow 2-way binding so we can't use [(ngModel)] to update this.loginMode
+        this.registerMode = event.detail.value;
     }
 
     async savePassword() {

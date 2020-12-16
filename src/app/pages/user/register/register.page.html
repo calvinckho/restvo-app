@@ -154,7 +154,7 @@
                       </ion-button>
                     </ion-buttons>
 
-                    <ion-segment [value]="loginMode" (ionChange)="changeLoginMode($event)">
+                    <ion-segment [value]="registerMode" (ionChange)="changeRegisterMode($event)">
                       <ion-segment-button value="email">
                         <ion-label>Email</ion-label>
                       </ion-segment-button>
@@ -163,7 +163,7 @@
                       </ion-segment-button>
                     </ion-segment>
 
-                    <div *ngIf="loginMode === 'email'" lines="none">
+                    <div [hidden]="registerMode !== 'email'">
                       <form [formGroup]="nameForm">
                         <ion-item lines="full">
                           <ion-input id="firstName" type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" autocomplete="given-name"></ion-input>
@@ -190,7 +190,7 @@
                       </form>
 
                       <form [formGroup]="emailPassForm">
-                        <ion-item *ngIf="loginMode === 'email'" lines="full">
+                        <ion-item lines="full">
                           <!-- <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input> -->
                           <ion-input id="newEmail" type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
                         </ion-item>
@@ -202,7 +202,7 @@
                             Invalid email address.
                           </div>
                         </div>
-                        <ion-item *ngIf="loginMode === 'email'" lines="full">
+                        <ion-item lines="full">
                           <ion-input id="newPassword1" [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
                           <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
                         </ion-item>
@@ -214,7 +214,7 @@
                             Password must have at least 6 characters
                           </div>
                         </div>
-                        <ion-item *ngIf="loginMode === 'email'" lines="full">
+                        <ion-item lines="full">
                           <ion-input id="newPassword2" type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
                         </ion-item>
                         <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
@@ -230,16 +230,16 @@
                         </div>
                       </form>
                       <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
-                      <p *ngIf="loginMode === 'email'" class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
-                      <ion-row *ngIf="loginMode === 'email'" >
+                      <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
+                      <ion-row>
                         <ion-col>
                           <ion-button id="createEmailAccount" [disabled]="!nameForm.valid || !emailPassForm.valid" shape="round" color="primary" (click)="registerEmail()">Create Account</ion-button>
                         </ion-col>
                       </ion-row>
                     </div>
-                    <div *ngIf="loginMode === 'mobile'" lines="none">
+                    <div [hidden]="registerMode !== 'mobile'">
                       <form [formGroup]="nameForm">
-                        <ion-item *ngIf="loginMode === 'mobile'" lines="full">
+                        <ion-item lines="full">
                           <ion-input type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" id="first-name"></ion-input>
                           <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" id="last-name"></ion-input>
                         </ion-item>
@@ -274,7 +274,7 @@
                         </div>
                       </form>
                       <p class="centered">We will send you a SMS message to verify this number. Standard SMS rate applies.</p>
-                      <p *ngIf="loginMode === 'mobile'" class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
+                      <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/privacy-policy.html" target="_blank">Terms of Service and Privacy Policy</a>.</p>
                       <ion-row>
                         <ion-col>
                           <ion-button id="createMobileAccount" shape="round" color="primary" (click)="registerMobile()" [disabled]="!nameForm.valid || !mobileForm.valid">Send the SMS Code</ion-button>
