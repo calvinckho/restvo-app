@@ -16,10 +16,10 @@
   <ion-item lines="none" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
     <ion-label>Show Admin View When Possible</ion-label>
     <ion-toggle [(ngModel)]="userData.UIAdminMode" (ionChange)="toggleAdminMode($event)" [disabled]="!userData.defaultProgram"></ion-toggle>
-  <div tabindex="0"></div></ion-item>
+  </ion-item>
   <ion-item lines="none">
     <ion-label>Choose Your Home Page:</ion-label>
-  <div tabindex="0"></div></ion-item>
+  </ion-item>
   <ion-grid class="program-grid">
     <ion-row class="program-row">
       <ion-col class="ion-align-self-center" *ngFor="let program of programs" size="auto">

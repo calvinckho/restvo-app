@@ -31,7 +31,7 @@
       <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
         <ion-icon name="chatbubbles"></ion-icon>
       </ion-button>
-      <ion-button (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="grey"></ion-icon></ion-button> <!--More-->
+      <ion-button id="moreOrganizerActions" (click)="moreOrganizerActions()"><ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" color="grey"></ion-icon></ion-button> <!--More-->
     </ion-buttons>
   </ion-toolbar>
 
@@ -57,73 +57,73 @@
           <ion-item class="ion-no-padding" [color]="router.url.includes('insight') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="stats-chart"></ion-icon>
             <ion-label class="menu-label">Insight</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('/profile')}" (click)="clickManageMenu('profile', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('/profile') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="clipboard"></ion-icon>
             <ion-label class="menu-label">Profile</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('people')}" (click)="clickManageMenu('people', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('people') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="people"></ion-icon>
             <ion-label class="menu-label">People</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('journey') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="walk-outline"></ion-icon>
             <ion-label class="menu-label">Journeys</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))" (click)="clickManageMenu('mentoring', null)"> <!--Mentoring-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('mentoring') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="grid"></ion-icon>
             <ion-label class="menu-label">Mentoring</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('groups')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))" (click)="clickManageMenu('groups', null)"> <!--Groups-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('groups') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="people-circle-outline"></ion-icon>
             <ion-label class="menu-label">Groups</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('programs')}" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346')" (click)="clickManageMenu('programs', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('programs') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="book"></ion-icon>
             <ion-label class="menu-label">Programs</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('creator')}" (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('creator') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="paper-plane"></ion-icon>
             <ion-label class="menu-label">Curriculum</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('onboarding')}" (click)="clickManageMenu('onboarding', null)" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e17acd47b00ea76b75e5a71'))">
           <ion-item class="ion-no-padding" [color]="router.url.includes('onboarding') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="list"></ion-icon>
             <ion-label class="menu-label">Onboarding</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('billing')}" (click)="clickManageMenu('billing', null)" *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346') && this.stripeCustomer">
           <ion-item class="ion-no-padding" [color]="router.url.includes('billing') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="card"></ion-icon>
             <ion-label class="menu-label">Billing</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('subscription')}" (click)="clickManageMenu('subscription', null)" *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')">
           <ion-item class="ion-no-padding" [color]="router.url.includes('subscription') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="planet"></ion-icon>
             <ion-label class="menu-label">Subscription</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
         <ion-col routerLink="/app/manage" *ngIf="moment._id === '5d5785b462489003817fee18' && userData.hasPlatformAdminAccess">
           <ion-item class="ion-no-padding" color="secondary" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="eye"></ion-icon>
             <ion-label class="menu-label">Platform</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -149,56 +149,56 @@
     <ion-item (click)="clickManageMenu('insight', null)">
       <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Insight</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item (click)="clickManageMenu('profile', null)">
       <ion-icon slot="start" name="clipboard" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Profile</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item (click)="clickManageMenu('people', null)">
       <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>People</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346') && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915475e172e4e64590e348')))">
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Programs</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Curriculum</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <!--Journey, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('journey', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))"> <!--Journey-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Journey</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <!--Mentoring, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('mentoring', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))"> <!--Mentoring-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Mentoring</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <!--Groups, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('groups', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe35cc8bf1a622fec69d7')))"> <!--Group-->
       <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Groups</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item (click)="clickManageMenu('onboarding', null)" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e17acd47b00ea76b75e5a71'))">
       <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Onboarding</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community Only Feature-->
       <ion-item (click)="clickManageMenu('billing', null)" [hidden]="!this.stripeCustomer">
         <ion-icon slot="start" name="card" *ngIf="platform.width() < 768"></ion-icon>
         <ion-label>Billing</ion-label>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item (click)="clickManageMenu('subscription', null)">
         <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
         <ion-label>Subscription</ion-label>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-item-group>
     <ion-item routerLink="/app/manage" *ngIf="moment._id === '5d5785b462489003817fee18' && userData.hasPlatformAdminAccess">
       <ion-icon slot="start" name="eye" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Platform</ion-label>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-list>
 </ion-content>
 

@@ -88,7 +88,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     } else { // desktop, laptap, touchscreen tablet, mobile browser
       get('https://meet.jit.si/external_api.js', () => {
         const domain = videoEndpoint.url;
-        const options = {
+        const options: any = {
           roomName: this.videoChatRoomId,
           width: '100%',
           height: '100%',
@@ -120,6 +120,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
           },
           onload: this.onJitsiLoaded()
         };
+        if (this.userData && this.userData.user) {
+          options.userInfo = {
+            displayName: this.userData.user.first_name + ' ' + this.userData.user.last_name
+          };
+        }
         this.jitsi = new JitsiMeetExternalAPI(domain, options);
       });
     }/* else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() < 768) { // mobile phone browser
@@ -133,14 +138,11 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     this.userData.videoChatRoomId = this.videoChatRoomId;
     if (!this.platform.is('cordova')) {
       setTimeout(async () => {
-        if (this.userData && this.userData.user) {
-          this.jitsi.executeCommand('displayName', this.userData.user.first_name + ' ' + this.userData.user.last_name);
-        }
         if (this.userData && this.userData.user && this.userData.user.avatar) {
           this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
         }
         this.jitsi.executeCommand('subject', (this.videoChatRoomSubject ? decodeURIComponent(this.videoChatRoomSubject) : ' '));
-        this.jitsi.on('readyToClose', this.onJitsiUnloaded);
+        this.jitsi.on('videoConferenceLeft', this.onJitsiUnloaded);
       }, 1000);
       if (this.authService.token && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.videoChatRoomId }); }
     }

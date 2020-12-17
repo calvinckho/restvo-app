@@ -22,7 +22,7 @@
         <ion-note *ngIf="type === 'SMS Message' && contact.type ==='contact'">{{contact.phoneNumbers[0].value}}</ion-note>
           <ion-note *ngIf="type === 'Email' && contact.type ==='contact'">{{contact.emails[0].value}}</ion-note>
         </div>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-spinner *ngIf="ionSpinner"></ion-spinner>
     </ion-virtual-scroll>
 
@@ -30,16 +30,16 @@
       <ion-item>
         <ion-label><ion-icon name="person"></ion-icon></ion-label>
         <ion-input [(ngModel)]="name" placeholder="Full name" type="name"></ion-input>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
 
       <ion-item *ngIf="type === 'SMS Message'">
         <ion-label><ion-icon name="phone-portrait"></ion-icon></ion-label>
         <ion-input [(ngModel)]="mobile_phone" placeholder="Mobile Number" type="tel" (input)="checkInputFields()"></ion-input>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
       <ion-item *ngIf="type === 'Email'">
         <ion-label><ion-icon name="mail"></ion-icon></ion-label>
         <ion-input [(ngModel)]="email" placeholder="Email" type="text" (input)="checkInputFields()"></ion-input>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
 
     <p class="ion-text-wrap ion-padding" *ngIf="!userData.user.importContactList" (click)="enableImportContact()" class="enable-import">Tired of manually typing in the contact info? Click here to access your phone's contact list.</p>
@@ -49,7 +49,7 @@
       <ion-item *ngFor="let church of mychurches" (click)="selectItem(church)">
         <ion-icon *ngIf="!church.select" name="radio-button-off" slot="start"></ion-icon>
         <ion-icon *ngIf="church.select" name="radio-button-on" slot="start"></ion-icon> {{church.name}}
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
   </div>
   <div *ngIf="page === 3">
@@ -59,7 +59,7 @@
         <ion-item *ngFor="let group of church.groups" (click)="selectItem(group)">
           <ion-icon *ngIf="!group.select" name="radio-button-off" slot="start"></ion-icon>
           <ion-icon *ngIf="group.select" name="radio-button-on" slot="start"></ion-icon> {{group.name}}
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </div>
 
     </ion-list>

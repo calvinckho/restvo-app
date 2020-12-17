@@ -33,10 +33,10 @@
             <img *ngIf="recipient.avatar" [src]="recipient.avatar" onerror="this.src='assets/img/avatar-default.jpg'"/>
             <img *ngIf="!recipient.avatar" src="assets/img/avatar-default.jpg"/>
           </div>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <!--<ion-item lines="none">
           <p class="name ion-text-center ion-text-md-uppercase">{{recipient.first_name}} {{recipient.last_name}} <span *ngIf="recipient.role === 'Contact' || recipient.role === 'Pending'">{{recipient.name}}</span></p>
-        <div tabindex="0"></div></ion-item>-->
+        </ion-item>-->
         <!--<ion-row class="ion-justify-content-center ion-text-md-uppercase ion-margin-bottom">
           <ion-badge shape="round">{{recipient.role}}</ion-badge>
         </ion-row>-->
@@ -44,7 +44,7 @@
           <div *ngIf="program._id === '5d5785b462489003817fee18'">
             <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">About Me</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <div *ngFor="let leader of program.leader" style="margin: 0 16px">
               <div class="question-answer-container">
                 <div *ngIf="leader._id === 1570150762856667" class="question">I am...</div>
@@ -58,7 +58,7 @@
         </div>
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Programs</ion-label>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-grid class="program-grid">
           <ion-row class="program-row">
             <ion-col class="ion-align-self-center" *ngFor="let program of result.programs" size="auto" [hidden]="program._id === '5d5785b462489003817fee18'">
@@ -79,7 +79,7 @@
             <ion-item>
               {{program.name}}
               <ion-button shape="round" (click)="openProgram(program._id)" slot="end">Learn More</ion-button>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <div *ngFor="let leader of program.leader" style="margin-left: 16px">
               <div class="question-answer-container" *ngIf="leader.user_answer?.length && leader.user_answer[0].length">
                 <div class="question">{{leader.question}}</div>
@@ -94,7 +94,7 @@
           <ion-item class="ion-text-wrap">
             <ion-label class="label-title" color="danger">Abuse Report Status</ion-label>
             <ion-badge color="primary">{{recipient.reportStatus}}</ion-badge>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-card *ngFor="let reportItem of recipient.reportHistory">
             <ion-card-header>
               <ion-card-title>
@@ -105,7 +105,7 @@
               <ion-item lines="none">
                 <ion-label class="label-title">Report Detail</ion-label>
                 <ion-label class="user-detail ion-text-wrap">{{reportItem.report}}</ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </ion-card-content>
           </ion-card>
           <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="clearAbuseReport()">Clear Report<span *ngIf="recipient.reportHistory?.length > 1">s</span></ion-button></ion-col></ion-row>
@@ -115,23 +115,23 @@
           <ion-item [hidden]="!recipient.email">
             <ion-label class="label-title" >Email</ion-label>
             <ion-label class="user-detail ion-text-wrap">{{recipient.email}}</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item [hidden]="!recipient.mobile" (click)="callAction(recipient.mobile)" class="ion-text-wrap">
             <ion-label class="label-title">Mobile</ion-label>
             <ion-label class="user-detail">{{recipient.mobile}}</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item [hidden]="!recipient.mobile_phone || (recipient.mobile === recipient.mobile_phone)" (click)="callAction(recipient.mobile_phone)" class="ion-text-wrap">
             <ion-label class="label-title">Mobile</ion-label>
             <ion-label class="user-detail">{{recipient.mobile_phone}}</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item [hidden]="!recipient.home_phone" (click)="callAction(recipient.home_phone)" class="ion-text-wrap">
             <ion-label class="label-title">Home</ion-label>
             <ion-label class="user-detail">{{recipient.home_phone}}</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item [hidden]="!(recipient.street || recipient.city || recipient.state || recipient.zip)">
             <ion-label class="label-title">Address</ion-label>
             <ion-label class="user-detail ion-text-wrap">{{recipient.street}} {{recipient.city}} {{recipient.state}} {{recipient.zip}}</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </div>
         <div class="padding-horizontal" *ngIf="isConnected && !isBlocked && (recipient._id !== userData.user._id)">
           <ion-row *ngIf="!recipientHasSharedContact"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="createContactMessage(2)">Request Contact Info</ion-button></ion-col></ion-row>
@@ -140,26 +140,26 @@
       <div class="padding-horizontal" *ngIf="userData.user && (recipient._id !== userData.user._id) && loadCompleted && (recipient.role !== 'Contact' || recipient.role === 'Pending')" [hidden]="manageMode === false">
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Relationship Actions</ion-label>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-row *ngIf="isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="messageRecipient()">Message</ion-button></ion-col></ion-row>
         <ion-row *ngIf="!isConnected"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="messageRecipient()">Add as Friend</ion-button></ion-col></ion-row>
         <ion-row *ngIf="!userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="shareContactInfo()">Share My Contact Info</ion-button></ion-col></ion-row>
         <ion-row *ngIf="userHasSharedContact && isConnected && !isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="shareContactInfo()">Turn Off Sharing My Contact Info</ion-button></ion-col></ion-row>
         <ion-row *ngIf="!isBlocked"><ion-col><ion-button expand='full' size="small" shape="round" color='primary' (click)="createRelationship()">Invite to Start Plan</ion-button></ion-col></ion-row>
-        <ion-row><ion-col><ion-button expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
+        <ion-row><ion-col><ion-button id="reportUserAbuse" expand='full' size="small" shape="round" color='warning' (click)="reportUserAbuse($event)">Report {{recipient.first_name}}</ion-button></ion-col></ion-row>
       </div>
 
       <div style="margin-top: 5px;" *ngIf="userData.hasPlatformAdminAccess && manageMode">
         <ion-item class="section" color="lightgrey" lines="none"> <!--section header-->
           <ion-label class="section-label" color="darkgrey">Management</ion-label>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item class="ion-text-wrap">
           Grant permission to let {{recipient.first_name}} manage {{userData.user.churches[userData.currentCommunityIndex].name}}.
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item>
           <ion-label>Administrator</ion-label>
           <ion-toggle [(ngModel)]="appUserIsAdmin" (ionChange)="toggleAdminStatus()" disabled={{!manageMode}}></ion-toggle>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </div>
     </div>
   </ion-list>

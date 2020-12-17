@@ -27,7 +27,7 @@
         </ion-label>
         <ion-badge [color]="momentService.loadIcon(moment.resource.field).color">{{moment.resource['en-US'].value[0]}}</ion-badge>
         <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </div>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> activity</span><span *ngIf="moments.length > 1"> activities</span>

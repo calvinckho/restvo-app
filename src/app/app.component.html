@@ -6,66 +6,66 @@
           <ion-item (click)="openSelectHomePage()" mode="md">
             <ion-label *ngIf="!userData.defaultProgram">Restvo <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
             <ion-label *ngIf="userData.defaultProgram" class="ion-text-wrap">{{userData.defaultProgram.matrix_string[0][0]}} <ion-note><ion-icon name="create-outline"></ion-icon></ion-note></ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-toolbar>
         <ion-list>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
             <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" mode="md">
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>Home</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
             <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" mode="md">
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>Home</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="!userData.defaultProgram">
             <ion-item [routerLink]="['/app/discover']" mode="md">
               <ion-icon slot="start" ios="people-sharp" md="people-sharp"></ion-icon>
               <ion-label>Discover</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/myconversations']" mode="md">
+            <ion-item id="chat" [routerLink]="['/app/myconversations']" mode="md">
               <ion-icon slot="start" name="chatbox"></ion-icon>
               <ion-label>Chat</ion-label>
               <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/news']" mode="md">
               <ion-icon slot="start" name="newspaper"></ion-icon>
               <ion-label>News</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/me']" mode="md">
+            <ion-item id="meDashboard" [routerLink]="['/app/me']" mode="md">
               <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>
               <ion-label>Me</ion-label>
               <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="clickRestToggle($event)" *ngIf="chatService && userData.user">
                 {{userData.UIrestStatus}}
               </ion-badge>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item id="userProfileSettings" [routerLink]="['/app/user/profile']" mode="md">
               <ion-icon slot="start" name="cog"></ion-icon>
               <ion-label>Settings</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerLink]="['/app/invite']" mode="md">
+            <ion-item id="inviteLabel" [routerLink]="['/app/invite']" mode="md">
               <ion-icon slot="start" name="share"></ion-icon>
               <ion-label>Invite</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
             <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]" mode="md">
               <ion-icon slot="start" name="bulb"></ion-icon>
               <ion-label>Admin</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </ion-menu-toggle>
 
           <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
@@ -80,10 +80,10 @@
                 <ion-select-option value="https://server3.dev.restvo.com" class="ion-text-wrap">13 Dev Server (4013)</ion-select-option>
                 <ion-select-option value="https://server4.dev.restvo.com" class="ion-text-wrap">14 Dev Server (4014)</ion-select-option>
               </ion-select>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item>
               <p style="font-size: 12px; color: var(--ion-color-dark)">Address: {{networkService.domain}}</p>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
           </div>
           <ion-item hidden>
             <ion-label>Online Status</ion-label>
@@ -91,7 +91,7 @@
               <ion-select-option value="active">Active</ion-select-option>
               <ion-select-option value="away">Away</ion-select-option>
             </ion-select>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-list>
         <div style="height: 100px;" *ngIf="userData.developerModeClick < 3 && networkService.domain === 'https://server.restvo.com'" (click)="userData.developerModeClick = userData.developerModeClick + 1"></div>
       </ion-content>

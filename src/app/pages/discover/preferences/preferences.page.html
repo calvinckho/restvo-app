@@ -40,7 +40,7 @@
         </ion-row>
     </ion-grid>
   <ion-list *ngIf="organizer">
-      <ion-item lines="none">Participants<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">Participants</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[2]">
         <ion-item lines="none">
             <ion-avatar slot="start">
@@ -61,9 +61,9 @@
             <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
             <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
             <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </ion-card>
-      <ion-item lines="none">Leaders<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">Leaders</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[4]">
           <ion-item lines="none">
               <ion-avatar slot="start">
@@ -84,9 +84,9 @@
               <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
               <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
               <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
       </ion-card>
-      <ion-item lines="none">Organizers<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">Organizers</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!moment.array_boolean[3]">
           <ion-item lines="none">
               <ion-avatar slot="start">
@@ -108,10 +108,10 @@
               <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
               <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
               <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
       </ion-card>
 
-      <ion-item lines="none">Unused<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">Unused</ion-item>
       <ion-card *ngFor="let moment of moments" (click)="openOnboardingProcess($event, moment, 'view')" [hidden]="!(!moment.array_boolean[2] && !moment.array_boolean[3] && !moment.array_boolean[4])">
           <ion-item lines="none">
               <ion-avatar slot="start">
@@ -132,7 +132,7 @@
               <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
               <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
               <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
       </ion-card>
     <ion-item-divider *ngIf="organizer" class="ion-text-wrap">
       Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> Onboarding process</span><span *ngIf="moments.length > 1"> Onboarding processes</span>
@@ -156,7 +156,7 @@
             <ion-badge *ngIf="moment.response && moment.status === 'Incomplete'" color="warning" slot="end">{{moment.status}}</ion-badge>
             <ion-badge *ngIf="moment.response && moment.status === 'Completed'" color="tertiary" slot="end">{{moment.status}}</ion-badge>
             <!--<ion-badge slot="end">{{moment.members.length}}</ion-badge>-->
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item-divider class="ion-text-wrap">
             Displaying {{moments.length}}&nbsp;<span *ngIf="moments.length <= 1"> About Me section</span><span *ngIf="moments.length > 1"> About Me sections</span>
         </ion-item-divider>

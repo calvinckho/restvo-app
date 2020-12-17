@@ -24,7 +24,7 @@
         <ion-item lines="none">
             <ion-label class="post-label"><ion-icon name="chatbox" color="grey"></ion-icon></ion-label>
             <ion-textarea rows="1" [minRows]="1" [maxRows]="8" autosize autocorrect="on" [placeholder]="resource['en-US'].matrix_string[0][4]" [(ngModel)]="post.body"></ion-textarea>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item *ngIf="awsService.sessionAssets?.length" lines="none">
             <div class="event-photo-container" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) > -1" >
                 <img #photo class="event-photo" [src]="awsService.sessionAssets[0]"/>
@@ -33,19 +33,19 @@
             <a [href]="awsService.sessionAssets[0]" *ngIf="(['xls', 'xlsx']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="awsService.sessionAssets[0]" *ngIf="(['pdf']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="awsService.sessionAssets[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('/') + 1)}}</p></a>
-            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
             <div class="event-photo-container" plyr [plyrSources]="[{ 'src': awsService.sessionAssets[0], 'type': 'video/' + (awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(awsService.sessionAssets[0].substring(awsService.sessionAssets[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
             <ion-button class="remove-photo" fill="clear" size="large" (click)="removePhoto()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <ion-item *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)" lines="none">
             <div plyr class="event-photo-container" [plyrSources]="post.media[0].sources" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event"></div>
 
             <ion-button class="remove-photo" fill="clear" size="large" (click)="removeVideo()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
         <div class="photo-frame" *ngIf="post.moments && post.moments.length && post.moments[0]._id && post.moments[0].resource && ['User Defined Activity','Track','Event','Goal','Meetup'].indexOf(post.moments[0].resource.field) > -1">
             <img class="photo" *ngIf="post.moments[0].assets.length > 0" [src]="post.moments[0].assets[0]">
         </div>
@@ -96,7 +96,7 @@
             <ion-button size="large" fill="clear" slot="end" (click)="removeMoment()">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
 
         <div *ngIf="resourceService.showPixabay > -1">
             <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords to search Pixabay" debounce="500"></ion-searchbar>

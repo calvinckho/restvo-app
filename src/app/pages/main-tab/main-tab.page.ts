@@ -378,14 +378,6 @@ export class MainTabPage implements OnInit, OnDestroy {
     }
 
     startEventSubscription() {
-/*        //trying to fix the bug: Keyboard Dismissal Leaves Viewport Shifted in iOS 12 / XCode 10 #417
-        // this can be removed once Apple fixed the webview sdk 12
-        window.addEventListener('keyboardDidHide', function() {
-            if (window.pageYOffset != 0) {
-                window.scrollTo(0, 0);
-            }
-        });*/
-
         if (Capacitor.isPluginAvailable('App')) {
             App.addListener('appStateChange', async (appState: any) => {
                 if (appState.isActive) {
@@ -703,21 +695,21 @@ export class MainTabPage implements OnInit, OnDestroy {
                     badge: true,
                     modalPage: true,
                 });
-            } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
-                this.chatService.currentChatProps.push({
-                    conversationId: data.conversationId,
-                    name: data.author.first_name + ' ' + data.author.last_name,
-                    page: 'chat',
-                    recipient: data.author,
-                    badge: true,
-                    modalPage: true,
-                });
             } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
                 this.chatService.currentChatProps.push({
                     conversationId: data.conversationId,
                     name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
                     page: 'chat',
                     moment: data.moment,
+                    badge: true,
+                    modalPage: true,
+                });
+            } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
+                this.chatService.currentChatProps.push({
+                    conversationId: data.conversationId,
+                    name: data.author.first_name + ' ' + data.author.last_name,
+                    page: 'chat',
+                    recipient: data.author,
                     badge: true,
                     modalPage: true,
                 });

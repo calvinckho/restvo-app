@@ -278,8 +278,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       // load list of plans. it does not require authentication
       await this.loadPrograms();
 
-      // if user has not joined, or if token is provided
-      if ((isAuthenticated && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess) || this.token) {
+      // if user has not joined and not a marketplace sample, or if token is provided
+      if ((isAuthenticated && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess && (this.moment.array_boolean.length > 1) && !this.moment.array_boolean[1]) || this.token) {
           // do not hide special access toolbar
           this.showSpecialAccess = true;
       } else {
@@ -779,7 +779,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const modal = await this.modalCtrl.create({component: EditparticipantsPage, componentProps: { moment: this.moment, title: 'People in ' + this.moment.matrix_string[0][0], modalPage: true }});
                 await modal.present();
             } else {
-                this.momentService.addParticipants(this.moment, this.resource, 'both', ['user_list_1'], 'People in ' + this.moment.matrix_string[0][0], this.resource['en-US'].value[32]);
+                this.momentService.addParticipants(this.moment, this.resource, 'both', ['user_list_1'], 'Invite to ' + this.moment.matrix_string[0][0], this.resource['en-US'].value[32]);
             }
       } else {
           this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
@@ -1671,7 +1671,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async openProgram(event, moment) {
     if (event) event.stopPropagation();
     if (!this.authService.token) {
-        this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+        this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
     } else if (!this.modalPage && this.platform.width() >= 992) {
         this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
     } else if (!this.modalPage && this.platform.width() >= 768) {

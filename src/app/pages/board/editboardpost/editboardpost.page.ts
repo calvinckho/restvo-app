@@ -209,7 +209,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
                             let source = {
                                 type: 'video',
                                 sources: [{
-                                    src: 'https://wee.nyc3.digitaloceanspaces.com/app/test.mp4',
+                                    src: 'https://d2z4pehxidbzz4.cloudfront.net/app/test.mp4',
                                     type: 'video/mp4'
                                 }],
                                 author: this.userData.user._id

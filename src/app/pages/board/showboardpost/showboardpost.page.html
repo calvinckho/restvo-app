@@ -34,14 +34,14 @@
         <p class="note" class="ion-text-end">{{post.createdAt | datetime: 'm:l,d:n,y:n'}}</p>
         <p class="note" class="ion-text-end">{{displayTimeElapsed(post.createdAt)}}</p>
       </ion-col>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <div class="photo-frame" *ngIf="post.attachments?.length">
       <img class="photo" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1"  [src]="post.attachments[0]" (click)="focusPhoto($event, post.attachments[0])"/>
       <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/docx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
       <a [href]="post.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
       <a [href]="post.attachments[0]" *ngIf="(['pdf']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
       <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-      <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+      <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
       <div plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'video/' + (post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
     </div>
     <div class="photo-frame" *ngIf="post.media?.length" (click)="resourceService.clickVideo($event, post.media[0].sources)">
@@ -110,7 +110,7 @@
           <p>{{post.moments[0].resource['en-US'].matrix_string[1][6]}}: {{post.moments[0].calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
         </div>
       </div>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-row>
       <ion-col>
         <ion-button fill="clear" size="small" (click)="likePost($event)">
@@ -165,7 +165,7 @@
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/xlsx.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['pdf']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><img src="assets/img/pdf.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
             <a [href]="lv1_comment.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><img src="assets/img/file.svg" /><p>{{lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
             <div plyr [plyrSources]="[{ 'src': lv1_comment.attachments[0], 'type': 'video/' + (lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(lv1_comment.attachments[0].substring(lv1_comment.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
           </div>
           <div class="photo-frame" *ngIf="lv1_comment.media?.length" (click)="resourceService.clickVideo($event, lv1_comment.media[0].sources)">
@@ -174,7 +174,7 @@
           <!--<ion-icon class="reply-icon" name="arrow-undo" (click)="selectParentToReply(lv1_comment)"></ion-icon>-->
         </div>
       </div>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-card>
 </ion-content>
 

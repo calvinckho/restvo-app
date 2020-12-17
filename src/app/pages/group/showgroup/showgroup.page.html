@@ -25,14 +25,14 @@
     <p *ngIf="group.details" [innerHTML]="group.details"></p>
   </div>
   <ion-list>
-    <ion-item lines="none" color="grey">Leaders<div tabindex="0"></div></ion-item>
+    <ion-item lines="none" color="grey">Leaders</ion-item>
     <ion-item *ngFor="let leader of group.leaders" (click)="seeUserInfo($event, leader)">
       <ion-avatar slot="start">
         <img *ngIf="leader.avatar" [src]="leader.avatar"/>
         <img *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"/>
       </ion-avatar>
       {{leader.first_name}} {{leader.last_name}}
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
   </ion-list>
 
   <ion-row *ngIf="joinGroupTag"><ion-col><ion-button [hidden]="!joinGroupTag" expand="full" shape="round" color="primary" fill="solid" (click)="joinGroup()">Join Group</ion-button></ion-col></ion-row>

@@ -25,16 +25,16 @@
           <ion-col [ngClass]="{'slide-col': ((item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)) || (item === 40010)}">
             <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
               <div class="textarea center ion-text-wrap ion-justify-content-center" [innerHTML]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br"></div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item color="grey" *ngIf="item === 10050" lines="none"> <!--section header-->
               <div class="section-header">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item-group *ngIf="item === 10100"> <!--location-->
               <ion-item lines="none">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="navigate"></ion-icon></div>
                 <ion-label class="label-title">Location</ion-label>
                 <ion-label class="detail ion-text-wrap">{{moment.location.location}} </ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <a [href]="addressURL" target="_blank" *ngIf="mapURL.length">
                 <div class="map-container">
                   <img [src]="mapURL" />
@@ -46,36 +46,36 @@
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="home"></ion-icon></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]}}</ion-label>
                 <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let community of moment.array_community; index as j"><span *ngIf="j > 0">, </span>{{community.name}}</span></ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item *ngIf="moment.categories && moment.categories.length" lines="none">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="bookmark"></ion-icon></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][6]}}</ion-label>
                 <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as j"><span *ngIf="j > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </ion-item-group>
             <ion-item-group *ngIf="item === 10200"> <!--start/end date and time-->
               <ion-item *ngIf="moment.calendar">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
                 <ion-label class="label-title">Start Time</ion-label>
                 <ion-label class="detail ion-text-wrap">{{moment.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item *ngIf="moment.calendar">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="time"></ion-icon></div>
                 <ion-label class="label-title">End Time</ion-label>
                 <ion-label class="detail ion-text-wrap">{{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </ion-item-group>
             <div class="component" *ngIf="item === 10370"> <!--Plan-->
               <ion-item lines="none">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="jet"></ion-icon></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item *ngFor="let planModule of planModules; let j = index;" (click)="openModule(planModule)">
                 <ion-badge slot="start" class="moment-type">{{planModule.resource['en-US'].value[0]}}</ion-badge>
                 <span class="module-number">{{j+1}}.</span>
                 <span class="moment-input">{{planModule.matrix_string[0][0]}}</span>
                 <ion-note style="max-width: 30%" class="ion-text-wrap ion-no-margin" slot="end">{{planModule.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <!--Photo Viewer-->
             <div *ngIf="(item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010)">
@@ -89,7 +89,7 @@
                   <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                   <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                 </div>
-                <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
                 <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
                 <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
               </div>
@@ -97,26 +97,26 @@
             <!--Video Player-->
             <ion-item *ngIf="item === 10320 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].length" lines="none">
               <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0], 'type': 'video/' + (moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) > -1"  (click)="$event.stopPropagation()"></div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <!--Youtube Player-->
             <ion-item *ngIf="item === 10330 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].length" lines="none">
               <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0], 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <!--Video Conference-->
             <ion-item *ngIf="item === 10600" lines="none">
               <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="videocam"></ion-icon></div>
               <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item *ngIf="item === 10600" lines="none">
               <ion-button (click)="joinVideoConference($event, moment)" style="margin: 0 auto">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]}} {{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-button> <!--Join Conference-->
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <div class="component" *ngIf="item === 10500"> <!--Manage Participants-->
               <!--Show Participants-->
               <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]">
                 <ion-item lines="none">
                   <div class="moment-label" slot="start"> <ion-icon class="side-icon" color="grey" name="people"></ion-icon></div>
                   <ion-label class="label-title" *ngIf="moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][5]}}</ion-label>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-grid style="max-height: 20%; overflow: scroll">
                   <ion-row class="participant-row">
                     <ion-col *ngFor="let user of moment.user_list_1; index as j" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="2" size-lg="2" size-xl="1">
@@ -129,7 +129,7 @@
                           <!--<ion-icon class="moreoptions-joined" color="tertiary" name="create"></ion-icon>-->
                           <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
                         </div>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -139,7 +139,7 @@
                 <ion-item lines="none">
                   <div class="moment-label" slot="start"> <ion-icon class="side-icon" color="grey" name="people"></ion-icon></div>
                   <ion-label class="label-title" *ngIf="moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][7]}}</ion-label>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-grid style="max-height: 20%; overflow: scroll">
                   <ion-row class="participant-row">
                     <ion-col *ngFor="let user of moment.user_list_2; index as j" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="2" size-lg="2" size-xl="1">
@@ -152,7 +152,7 @@
                           <!--<ion-icon class="moreoptions-joined" color="tertiary" name="create"></ion-icon>-->
                           <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
                         </div>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -163,7 +163,7 @@
                   <div class="moment-label" slot="start"> <ion-icon class="side-icon" color="grey" name="people"></ion-icon></div>
                   <ion-label class="label-title" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] && moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][9]}}</ion-label>
                   <ion-label class="label-title" *ngIf="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-grid style="max-height: 20%; overflow: scroll">
                   <ion-row class="participant-row">
                     <ion-col *ngFor="let user of moment.user_list_3; index as j" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="2" size-lg="2" size-xl="1">
@@ -176,7 +176,7 @@
                           <!--<ion-icon class="moreoptions-joined" color="tertiary" name="create"></ion-icon>-->
                           <ion-label class="participant-label ion-text-center">{{user.first_name}} {{user.last_name}}</ion-label>
                         </div>
-                      <div tabindex="0"></div></ion-item>
+                      </ion-item>
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -186,10 +186,10 @@
               <ion-item lines="none">
                 <div class="moment-label"><img class="side-image" src="assets/img/Poll_Gray.png" /></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item lines="none">
                 <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <div class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as pollOptionIndex">
                 <div class="optionsContainer">
                   <p class="option ion-text-wrap">{{pollOptionIndex+1}}. {{display.option}}</p>
@@ -207,22 +207,22 @@
                   <p>{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4]}}: {{totalVoteCount[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]}}</p>
                   <p>{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][6]}}: {{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
                 </div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <div class="component" *ngIf="item === 40010"> <!--text answer-->
               <ion-item lines="none">
                 <div class="ion-text-wrap ion-padding-vertical ">{{moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item lines="none">
                 <quill-editor (onEditorCreated)="createQuillEditor($event, moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1])" [placeholder]="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][4] || resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][10])"
                               (onContentChanged)="respondToTextArea($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" [modules]= "{ toolbar: false }" [ngStyle]="{'height': moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] * 40 + 'px'}" format="object"></quill-editor>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <div class="component" style="margin-top: 30%" *ngIf="!userData.user && item === 50000">
               <ion-item lines="none">
                 <div class="moment-label"><ion-icon class="side-icon" color="grey" name="contacts"></ion-icon></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</ion-label>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <p>Matched results are only shown for authenticated users.</p>
             </div>
             <div class="component" *ngIf="userData.user && item === 50000"> <!--Directory-->
@@ -246,7 +246,7 @@
                   <ion-col slot="end" class="note-col">
                     <p class="note" class="ion-text-end">Score: {{person.score}}</p>
                   </ion-col>
-                <div tabindex="0"></div></ion-item>
+                </ion-item>
                 <ion-item-divider class="ion-text-wrap">
                   Displaying {{matchedPeople.length}} pe<span *ngIf="matchedPeople.length < 2">rson</span><span *ngIf="matchedPeople.length > 1">ople</span>
                 </ion-item-divider>
@@ -258,27 +258,27 @@
             <div class="component" *ngIf="item === 40000"> <!--Multiple Choice-->
               <ion-item lines="none">
                 <div class="ion-padding-vertical ion-text-wrap">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]]; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, interactableOptionIndex)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.option}}</ion-label>
                 <ion-icon color="button1" *ngIf="!display.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
                 <ion-icon color="button1" *ngIf="display.selectedByUser" name="checkmark-circle" slot="end"></ion-icon>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <div class="component" *ngIf="item === 40020 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] === 1"> <!--Multiple Choice-->
               <ion-item lines="none">
                 <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-item class="pollContainer" *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue; index as interactableOptionIndex" (click)="respondToInteractable($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1, display.value.createdAt)">
                 <ion-label class="ion-text-wrap">{{interactableOptionIndex+1}}. {{display.value.option}}</ion-label>
                 <ion-icon color="button1" *ngIf="!display.value.selectedByUser" name="radio-button-off" slot="end"></ion-icon>
                 <ion-icon color="button1" *ngIf="display.value.selectedByUser" name="checkmark-circle" slot="end"></ion-icon>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
             </div>
             <div class="component" *ngIf="item === 40020  && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2 && !moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]"> <!--Tile Choice with Photos-->
               <ion-item lines="none">
                 <div class="ion-text-wrap ion-padding-vertical">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
-              <div tabindex="0"></div></ion-item>
+              </ion-item>
               <ion-grid class="tile-grid">
                 <ion-row class="tile-row">
                   <ion-col *ngFor="let display of interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] | keyvalue" class="ion-align-self-center" size-xs="12" size-sm="6" size-md="4" size-lg="4" size-xl="3">
@@ -302,7 +302,7 @@
   </ion-slides>
   <div *ngIf="loadCompleted && reachedEnd" style="height: 100%"><!--[ngStyle]="{'height': (platform.width() < 768) ? '65vh' : '75vh'}">-->
     <ion-row class="ion-justify-content-center ion-align-items-center slide-row" style="height: 100%">
-      <ion-item lines="none">You have completed the onboarding process.<div tabindex="0"></div></ion-item>
+      <ion-item lines="none">You have completed the onboarding process.</ion-item>
     </ion-row>
   </div>
   <ion-grid style="height: 100%" *ngIf="ionSpinner">

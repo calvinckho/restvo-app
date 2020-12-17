@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header id="createChatHeader">
   <ion-toolbar>
     <ion-buttons slot="start">
     <ion-button (click)="backButton()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
@@ -8,9 +8,9 @@
   </ion-toolbar>
   <ion-toolbar>
     <div>
-      <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
+      <ion-searchbar id="chatSearchBar" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)"></ion-searchbar>
       <div class="selected-buttons">
-        <ion-button size="small" *ngFor="let person of selectedAppUsers" (click)="unselect(person)">{{person.name}}<ion-icon name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
+        <ion-button class="selectedAppUsers" size="small" *ngFor="let person of selectedAppUsers" (click)="unselect(person)">{{person.name}}<ion-icon name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
       </div>
       <form *ngIf="displayGroup" [formGroup]="chatForm">
         <ion-item>
@@ -19,7 +19,7 @@
             <span *ngIf="totalSelected >= 2">Group </span>
             Name *</ion-label>
           <ion-input type="text" formControlName="name"></ion-input>
-        <div tabindex="0"></div></ion-item>
+        </ion-item>
       </form>
     </div>
   </ion-toolbar>
@@ -42,10 +42,10 @@
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
         <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
     <ion-list-header>{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
-    <ion-list>
+    <ion-list id="restvoGroup">
       <ion-item *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="select(person)">
         <ion-avatar slot="start">
           <ion-img *ngIf="person.avatar" [src]="person.avatar"></ion-img>
@@ -54,7 +54,7 @@
         {{person.name}}
         <ion-icon color="button1" *ngIf="!person.select" name="radio-button-off" slot="end"></ion-icon>
         <ion-icon color="button1" *ngIf="person.select" name="checkmark-circle" slot="end"></ion-icon>
-      <div tabindex="0"></div></ion-item>
+      </ion-item>
     </ion-list>
     <ion-infinite-scroll position="bottom" (ionInfinite)="loadMorePeople($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -64,7 +64,6 @@
 
 <ion-footer>
   <ion-toolbar>
-      <ion-button expand="full" shape="round" size="medium" (click)="selectAppUsers()" color="primary" [disabled]="totalSelected < 1 || (totalSelected > 1 && chatForm.hasError('required'))">Select {{totalSelected}}&nbsp;<span *ngIf="totalSelected <= 1">Person</span><span *ngIf="totalSelected > 1">People</span></ion-button>
+      <ion-button id="selectAppUsersButton" expand="full" shape="round" size="medium" (click)="selectAppUsers()" color="primary" [disabled]="totalSelected < 1 || (totalSelected > 1 && chatForm.hasError('required'))">Select {{totalSelected}}&nbsp;<span *ngIf="totalSelected <= 1">Person</span><span *ngIf="totalSelected > 1">People</span></ion-button>
   </ion-toolbar>
 </ion-footer>
-

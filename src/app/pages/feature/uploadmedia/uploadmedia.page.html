@@ -25,12 +25,12 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose Photo File</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></ion-label>
             <div *ngIf="platform.is('cordova')" class="moment-input" (click)="selectPhotoFromDeviceAndUpload($event)">Choose from Photo Album</div>
             <input *ngIf="!platform.is('cordova')" type="file" class="moment-input" name="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card>
       </ion-col>
       <ion-col size-xs="12" style="padding-top: 20px;">
@@ -40,7 +40,7 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label class="ion-text-wrap">Choose from Pixabay</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
           <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
             <ion-row>
@@ -62,11 +62,11 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose Video File</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
             <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card>
       </ion-col>
       <ion-col size-xs="12" style="padding-top: 20px;">
@@ -76,13 +76,13 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Add Youtube</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item lines="none">
             <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
             <div class="moment-input" (click)="promptMediaUrl('youtube')">
               <span>Input Youtube Video Url</span>
             </div>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -93,11 +93,11 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Choose File</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item lines="none">
             <label class="moment-label"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
             <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -108,13 +108,13 @@
         <ion-card>
           <ion-item lines="none">
             <ion-label>Add Media Link</ion-label>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
           <ion-item lines="none">
             <div class="moment-label"><ion-icon class="side-icon" color="grey" name="link-outline"></ion-icon></div>
             <div class="moment-input" (click)="promptMediaUrl('media')">
               <span>Select Media Link</span>
             </div>
-          <div tabindex="0"></div></ion-item>
+          </ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -132,7 +132,7 @@
             <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
             <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
             <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-            <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+            <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
             <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
             <div *ngIf="url.toLowerCase().includes('youtu')" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
 

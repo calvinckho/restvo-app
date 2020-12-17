@@ -54,7 +54,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   recurrenceStartTime: string;
   recurrenceEndTime: string;
   recurrenceByDay = [];
-  allDay = false;
   dateType = ''; // specifies if user is changing start date or end date
 
   scheduleObj = {       // create the schedule object
@@ -292,15 +291,14 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   changeSelectedDate(inputDate) {
     if (inputDate === ' ') return;
+    this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.recurrenceStartDate = inputDate;
-      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
       this.calendarService.calendar.currentViewDate = this.recurrenceEndDate;
       this.dateType = 'end';
     } else if (this.dateType === 'end') {
       this.recurrenceEndDate = inputDate;
       this.dateType = '';
-      this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     }
     this.calendarService.updateViewCalendar();
   }

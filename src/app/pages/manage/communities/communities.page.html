@@ -28,7 +28,7 @@
         <p><ion-icon name="pin"></ion-icon>{{" "}}{{community.meeting_location.city}}<span [hidden]="(community.meeting_location.city.length==0)||(community.meeting_location.state.length==0)">{{", "}}</span>{{community.meeting_location.state}}<span [hidden]="(community.meeting_location.city.length==0)&&(community.meeting_location.state.length==0)">{{" "}}</span>{{community.meeting_location.country}}</p>
       </ion-label>
       <ion-badge slot="end">{{community.members.length}}</ion-badge>
-    <div tabindex="0"></div></ion-item>
+    </ion-item>
     <ion-item-divider class="ion-text-wrap">
       Displaying {{communities.length}}&nbsp;<span *ngIf="communities.length <= 1"> community</span><span *ngIf="communities.length > 1"> communities</span>
     </ion-item-divider>

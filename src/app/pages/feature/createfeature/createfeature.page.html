@@ -1,14 +1,14 @@
 <ion-header id="createfeature-header">
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.matrix_string && moment.matrix_string.length">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button id="backButton" (click)="closeModal(false)"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title class="ion-text-wrap">{{moment.matrix_string[0][0] || 'Create Community'}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && moment.resource.matrix_number.length">
-  <ion-slides [options]="slidesOpts" (ionSlideWillChange)="changeSlide('create')" pager *ngIf="view === 'create'">
+<ion-content *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.resource.matrix_number.length && moment.matrix_string && moment.matrix_string.length">
+  <ion-slides (ionSlideWillChange)="changeSlide('create')" pager *ngIf="view === 'create'">
     <!--Collect Community Name-->
     <ion-slide *ngIf="moment.resource.matrix_number[0].indexOf(10000) > -1">
       <ion-grid class="slide-grid">
@@ -16,11 +16,11 @@
           <ion-col>
             <ion-item lines="none">
               <div style="font-size: 14px" class="ion-text-wrap">{{resource['en-US'].value[37]}}</div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item lines="none">
-              <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-              <ion-textarea [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
-            <div tabindex="0"></div></ion-item>
+              <ion-icon slot="start" color="grey" name="brush"></ion-icon>
+              <ion-textarea id="communityName" name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -30,8 +30,8 @@
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col class="ion-align-self-center">
             <ion-item lines="none">
-              <div style="font-size: 14px" class="ion-text-wrap">Add a Program to Your Community:</div>
-            <div tabindex="0"></div></ion-item>
+              <div id="addProgramPrompt" style="font-size: 14px" class="ion-text-wrap">Add a Program to Your Community:</div>
+            </ion-item>
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col class="ion-align-self-center" *ngFor="let referenceActivity of referenceActivities; index as j; trackBy: customTrackBy" size="auto">
@@ -69,18 +69,18 @@
           <ion-col>
             <ion-item lines="none"> <!--Summary-->
               <div class="moment-label" style="font-style: italic; color: var(--ion-color-darkgrey)" slot="start">Here is a summary of your community:</div>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item lines="none"> <!--Name-->
               <ion-label class="summary-label">Name:</ion-label>
               <ion-input class="ion-text-start" type="text" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]"></ion-input>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-item lines="none"> <!--Description-->
               <ion-label class="summary-label">Description:</ion-label>
-              <ion-textarea rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
-            <div tabindex="0"></div></ion-item>
+              <ion-textarea id="communityDescription" name="communityDescription" rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
+            </ion-item>
             <ion-item lines="none" *ngIf="moment.assets?.length">
               <ion-label class="summary-label">Media:</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <div *ngIf="moment.assets?.length">
               <ion-grid class="selected-grid">
                 <ion-row>
@@ -92,7 +92,7 @@
                       <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                       <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
                       <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="center"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
-                      <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, url)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="true"></div>
+                      <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, url)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
                       <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, url)" (click)="$event.stopPropagation()"></div>
                       <div *ngIf="url.toLowerCase().includes('youtu')" class="moment-photo-frame" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
 
@@ -111,7 +111,7 @@
             </div>
             <ion-item lines="none">
               <ion-label class="summary-label">Programs:</ion-label>
-            <div tabindex="0"></div></ion-item>
+            </ion-item>
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col class="ion-align-self-center" *ngFor="let referenceActivity of referenceActivities; index as j; trackBy: customTrackBy" size="auto">
@@ -152,8 +152,8 @@
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col class="ion-align-self-center">
             <ion-item lines="none">
-              <div style="font-size: 14px" class="ion-text-wrap">Choose one to begin inviting leaders and members:</div>
-            <div tabindex="0"></div></ion-item>
+              <div id="chooseProgramText" style="font-size: 14px" class="ion-text-wrap">Choose one to begin inviting leaders and members:</div>
+            </ion-item>
             <ion-grid>
               <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col class="ion-align-self-center" size="auto">
@@ -185,7 +185,7 @@
     <ion-slide>
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
-          <ion-item lines="none">Congratulations! You have completed the set up process for {{moment.matrix_string[0][0]}}.<div tabindex="0"></div></ion-item>
+          <ion-item lines="none">Congratulations! You have completed the set up process for {{moment.matrix_string[0][0]}}.</ion-item>
         </ion-row>
       </ion-grid>
     </ion-slide>
@@ -197,22 +197,22 @@
   </ion-grid>
 </ion-content>
 <ion-footer>
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'create'">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && view === 'create'">
     <ion-row>
-      <ion-button *ngIf="!createReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
+      <ion-button id="nextButton" *ngIf="!createReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="createReachedEnd" expand="full" shape="round" class="centered" (click)="saveStep1()" [disabled]="!moment.matrix_string[0][0]">
+      <ion-button id="saveButton" *ngIf="createReachedEnd" expand="full" shape="round" class="centered" (click)="saveStep1()" [disabled]="!moment.matrix_string[0][0]">
         {{resource['en-US'].value[39]}}
       </ion-button>
     </ion-row>
   </ion-toolbar>
-  <ion-toolbar *ngIf="resource && resource._id && moment.resource && moment.resource.field && view === 'tutorial' && moment._id">
+  <ion-toolbar *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && view === 'tutorial' && moment._id">
     <ion-row>
-      <ion-button *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
+      <ion-button id="tutorialNext" *ngIf="!tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="clickNextButton('next')">
         <div>{{resource['en-US'].value[38]}}</div>
       </ion-button>
-      <ion-button *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="completeSetup(true)">
+      <ion-button id="tutorialDone" *ngIf="tutorialReachedEnd" expand="full" shape="round" class="centered" (click)="completeSetup(true)">
         {{resource['en-US'].value[40]}}
       </ion-button>
     </ion-row>

@@ -50,7 +50,7 @@ export class Resource {
     ];
     plyrOptions = { 'controls': this.controls,
         'ratio': '16:9',
-        'blankVideo': 'https://wee.nyc3.digitaloceanspaces.com/app/blank.mp4',
+        'blankVideo': 'https://d2z4pehxidbzz4.cloudfront.net/app/blank.mp4',
         'youtube': { origin: 'https://app.restvo.com' } };
 
     // System resource objects
