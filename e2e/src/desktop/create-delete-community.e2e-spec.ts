@@ -10,7 +10,7 @@ import {
   PickfeaturePopoverPage,
   PickpeoplePopoverPage,
   OnboardingfeaturePage,
-  CreateFeaturePage,
+  CreatefeaturePage,
   AboutPage,
   PreferencesPage,
   ManagePage
@@ -30,7 +30,7 @@ describe(' Create and Delete a Community', () => {
   let me: DashboardPage;
   let pickfeature: PickfeaturePopoverPage;
   let pickpeople: PickpeoplePopoverPage;
-  let createfeature: CreateFeaturePage;
+  let createfeature: CreatefeaturePage;
   let onboardfeature: OnboardingfeaturePage;
   let manage: ManagePage;
 
@@ -51,7 +51,7 @@ describe(' Create and Delete a Community', () => {
     preferences = new PreferencesPage();
     pickfeature = new PickfeaturePopoverPage();
     pickpeople = new PickpeoplePopoverPage();
-    createfeature = new CreateFeaturePage();
+    createfeature = new CreatefeaturePage();
     onboardfeature = new OnboardingfeaturePage();
     manage = new ManagePage();
     await browser.get('/');

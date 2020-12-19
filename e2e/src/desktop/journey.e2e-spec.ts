@@ -10,7 +10,7 @@ import {
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
     OnboardingfeaturePage,
-    CreateFeaturePage,
+    CreatefeaturePage,
     AboutPage,
     PreferencesPage
 } from '../app.po';
@@ -29,7 +29,7 @@ describe('join journey and leave journey', () => {
     let me: DashboardPage;
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
-    let createfeature: CreateFeaturePage;
+    let createfeature: CreatefeaturePage;
     let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
@@ -49,7 +49,7 @@ describe('join journey and leave journey', () => {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreateFeaturePage();
+        createfeature = new CreatefeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
     });

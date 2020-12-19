@@ -10,7 +10,7 @@ import {
   PickfeaturePopoverPage,
   PickpeoplePopoverPage,
   OnboardingfeaturePage,
-  CreateFeaturePage,
+  CreatefeaturePage,
   AboutPage,
   PreferencesPage
 } from '../app.po';
@@ -29,7 +29,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
   let me: DashboardPage;
   let pickfeature: PickfeaturePopoverPage;
   let pickpeople: PickpeoplePopoverPage;
-  let createfeature: CreateFeaturePage;
+  let createfeature: CreatefeaturePage;
   let onboardfeature: OnboardingfeaturePage;
 
   beforeAll(async () => {
@@ -49,7 +49,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
     preferences = new PreferencesPage();
     pickfeature = new PickfeaturePopoverPage();
     pickpeople = new PickpeoplePopoverPage();
-    createfeature = new CreateFeaturePage();
+    createfeature = new CreatefeaturePage();
     onboardfeature = new OnboardingfeaturePage();
     await browser.get('/');
   });

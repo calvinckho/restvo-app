@@ -9,7 +9,7 @@ import {
     ShowfeaturePage,
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
-    CreateFeaturePage,
+    CreatefeaturePage,
     AboutPage,
     PreferencesPage
 } from '../app.po';
@@ -28,7 +28,7 @@ describe('navigate around the maintab', () => {
     let me: DashboardPage;
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
-    let createfeature: CreateFeaturePage;
+    let createfeature: CreatefeaturePage;
 
     beforeAll(async () => {
         // testing on mobile sized screen
@@ -47,7 +47,7 @@ describe('navigate around the maintab', () => {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreateFeaturePage();
+        createfeature = new CreatefeaturePage();
         await showfeature.navigateTo(); // navigate to '/'
         await showfeature.waitUntilPresent(); // wait until showfeature is present
         await showfeature.clickSigninButton('#signin');
