@@ -162,7 +162,10 @@ class PageObjectBase {
     }
 
     async clickElement(sel: string) {
-        const els = await element.all(by.css(`${this.tag} ${sel}`));
+        let els = await element.all(by.css(`${this.tag} ${sel}`));
+        if (els.length > 1) { // if more than 1 element, use the authenticated version
+            els = await element.all(by.css(`app-main-tab ${this.tag} ${sel}`));
+        }
         if (els.length) {
             els.forEach(async (el) => {
                 if (await el.isPresent()) {
@@ -248,8 +251,8 @@ export class AppPage extends PageObjectBase {
         .click();
     }
 
-    async countChatElements(){
-        let num = await element.all(by.css('ion-modal .chat-list p.message')).count();
+    async countChatElements() {
+        const num = await element.all(by.css('ion-modal .chat-list p.message')).count();
         console.log('num of elements:', num);
         return num;
     }
@@ -265,8 +268,8 @@ export class AppPage extends PageObjectBase {
     }
 
     async checkForChatListName(sel: string, text: string) {
-        const elsText = await element.all(by.css(`${this.tag} ${sel}`)).getText()
-        return elsText.includes('Asia Ho')
+        const elsText = await element.all(by.css(`${this.tag} ${sel}`)).getText();
+        return elsText.includes('Asia Ho');
     }
 
     async enterNonRegistrationInputText(sel: string, text: string, filterSelector: string) {
@@ -402,8 +405,8 @@ export class ManagePage extends PageObjectBase {
         super('app-managefeature', 'app/manage');
     }
 
-    async clickMoreOrganizerActions(){
-        this.clickElement('#moreOrganizerActions')
+    async clickMoreOrganizerActions() {
+        this.clickElement('#moreOrganizerActions');
     }
 }
 
@@ -513,9 +516,9 @@ export class PickpeoplePopoverPage extends PageObjectBase {
     }
 }
 
-export class EditfeaturePage extends PageObjectBase {
+export class EditparticipantsPage extends PageObjectBase {
     constructor() {
-        super('app-editfeature', '/');
+        super('app-editparticipants', '/');
     }
 
     async userSelect(text) {
@@ -533,42 +536,36 @@ export class EditfeaturePage extends PageObjectBase {
     }
 }
 
-export class EditparticipantsPage extends PageObjectBase {
-    constructor() {
-        super('app-editparticipants', '/');
-    }
-}
-
 export class CreateFeaturePage extends PageObjectBase {
     constructor() {
         super('app-createfeature', '/');
     }
 
-    async enterNewCommunityDescription(){
-            const els = await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
-            if (els.length) {
-                if (await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
-                    await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
-                        .filter(async (el, index) => await el.isPresent())
-                        .first()
-                        .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
-                } else { // else, if it is just the input tag
-                    await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
-                        .filter(async (el, index) => await el.isPresent())
-                        .first()
-                        .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
-                }
-            } else {
-                const el = element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
-                await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
-                let inp = el;
-                if (await element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
-                    inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
-                } // else, if it is just the input tag
-                await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "a"), 'This is a test E2E community');
+    async enterNewCommunityDescription() {
+        const els = await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
+        if (els.length) {
+            if (await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
+                await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .element(by.css('textarea')) // because it is a web component, needs to select its nested textarea tag
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), 'This is a test E2E community');
+            } else { // else, if it is just the input tag
+                await element.all(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`))
+                    .filter(async (el, index) => await el.isPresent())
+                    .first()
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), 'This is a test E2E community');
             }
+        } else {
+            const el = element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"]`));
+            await browser.wait(ExpectedConditions.visibilityOf(el), 10000);
+            let inp = el;
+            if (await element(by.css(`${this.tag} ion-textarea[ng-reflect-name="communityDescription"] .native-textarea`)).isPresent()) { // if ion-textarea
+                inp = el.element(by.css('textarea')); // needs to select the nested textarea tag
+            } // else, if it is just the input tag
+            await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), 'This is a test E2E community');
         }
+    }
 
     async clickBackButton() {
         this.clickElement('#backButton');

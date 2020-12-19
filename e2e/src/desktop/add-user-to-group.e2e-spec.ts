@@ -9,7 +9,6 @@ import {
     ShowfeaturePage,
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
-    EditfeaturePage,
     EditparticipantsPage,
     OnboardingfeaturePage,
     CreateFeaturePage,
@@ -31,7 +30,6 @@ describe('add and remove user from group', () => {
     let me: DashboardPage;
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
-    let editfeature: EditfeaturePage;
     let editparticipants: EditparticipantsPage;
     let createfeature: CreateFeaturePage;
     let onboardfeature: OnboardingfeaturePage;
@@ -54,10 +52,10 @@ describe('add and remove user from group', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreateFeaturePage();
-        editfeature = new EditfeaturePage();
         editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/activity/5f72454627cf747d0ccb16d0');
+        await showfeature.waitUntilElementPresent('#showfeature-header');
         await showfeature.waitUntilElementVisible('#signin');
         await showfeature.clickElement('#signin');
         await register.waitUntilVisible();
@@ -72,48 +70,50 @@ describe('add and remove user from group', () => {
     });
 
     it('should open People view', async () => {
-        debugger;
         await showfeature.clickElement('#add-user-to-group');
-        await editfeature.waitUntilElementVisible('#add-people');
-        expect(await editfeature.elementIsPresent('#add-people')).toBeTruthy();
+        await editparticipants.waitUntilElementVisible('#add-people');
+        expect(await editparticipants.elementIsPresent('#add-people')).toBeTruthy();
     });
 
     it('should open pick member view', async () => {
-        await editfeature.clickElement('#add-people');
+        await editparticipants.clickElement('#add-people');
         await app.waitUntilElementVisible('ion-popover');
         await app.clickPopoverChoice('member');
-        expect(await pickpeople.waitUntilVisible()).toBeTruthy();
+        await pickpeople.waitUntilVisible();
+        expect(await pickpeople.elementIsPresent('#done')).toBeTruthy();
     });
 
-    it('should search, select, and add user', async () => {
+    it('should search, select, and add Asia Ho', async () => {
         await pickpeople.searchUser('Asia Ho');
         await pickpeople.waitUntilElementInvisible('.pickpeople-user');
         await pickpeople.waitUntilElementVisible('.pickpeople-user');
         await pickpeople.userSelect('Asia Ho');
         await pickpeople.clickElement('#done');
-        expect(await pickpeople.waitUntilInvisible()).toBeTruthy();
+        await pickpeople.waitUntilInvisible();
+        expect(await pickpeople.elementIsPresent('#done')).toBeFalsy();
     });
 
     it('should have added Asia Ho', async () => {
-        await editfeature.searchUser('Asia Ho');
-        await editfeature.waitUntilElementVisible('.user-select');
-        expect(await editfeature.elementIsPresent('.user-select')).toBeTruthy();
+        await editparticipants.searchUser('Asia Ho');
+        await editparticipants.waitUntilElementInvisible('.user-select');
+        await editparticipants.waitUntilElementVisible('.user-select');
+        expect(await editparticipants.elementIsPresent('.user-select')).toBeTruthy();
     });
 
-    it('should try to select Asia Ho and remove her', async () => {
-        await editfeature.userSelect('Asia Ho');
-        await editfeature.clickElement('#remove-role');
+    it('should try to remove Asia Ho and see role selection alert', async () => {
+        await editparticipants.userSelect('Asia Ho');
+        await editparticipants.clickElement('#remove-role');
         await app.waitUntilElementVisible('ion-alert');
+        expect(await app.elementIsPresent('ion-alert')).toBeTruthy();
+    });
+
+    it('should choose the member category and confirm remove', async () => {
         await app.clickAlertChoice('Member');
         await app.clickAlertButton('OK');
-        await app.waitUntilElementInvisible('ion-alert .alert-head');
-        await app.waitUntilElementVisible('ion-alert .alert-head');
         await app.clickAlertButton('Remove');
-        // expect(await editfeature.waitUntilVisible()).toBeTruthy(); <- THIS EXPECT STATEMENT CAUSES THE TIMEOUT ERROR -> PROBABLY THE "AWAIT"?
+        await browser.waitForAngular();
+        await editparticipants.searchUser('Asia Ho');
+        await browser.waitForAngular();
+        expect(await editparticipants.elementIsPresent('.user-select')).toBeFalsy();
     });
-
-    // THIS EXPECT STATEMENT ALSO CAUSES THE TIMEOUT ERROR
-    // it('should have removed Asia Ho', async () => {
-    //     expect(await editfeature.elementIsPresent('.user-select')).toBeFalsy();
-    // });
 });

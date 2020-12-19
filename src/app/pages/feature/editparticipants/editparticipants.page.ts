@@ -31,7 +31,7 @@ import { CalendarService } from "../../../services/calendar.service";
 import { EditfeaturePage } from "../editfeature/editfeature.page";
 
 @Component({
-  selector: "app-editfeature",
+  selector: "app-editparticipants",
   templateUrl: "./editparticipants.page.html",
   styleUrls: ["../editfeature/editfeature.page.scss"],
   encapsulation: ViewEncapsulation.None,

@@ -24,13 +24,13 @@
     <ion-list>
       <ion-item lines="none">
         <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
-        <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="renderUniqueParticipantList()" placeholder="Role" interface="alert" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px" *ngIf="!modalPage">
+        <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="renderUniqueParticipantList()" placeholder="Role" interface="popover" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px" *ngIf="!modalPage">
           <ion-select-option [value]="this.participantLabel">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="this.organizerLabel">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="this.leaderLabel">{{leaderLabel}}</ion-select-option>
         </ion-select>
         <ion-button slot="end" (click)="inviteSelect.value = null; inviteSelect.open($event)" *ngIf="!modalPage">Add</ion-button>
-        <ion-select #InviteSelect placeholder="Add" interface="alert" (ionChange)="openPopUpModalAddParticipants($event)" [interfaceOptions]="{header: 'Add'}" hidden>
+        <ion-select #InviteSelect placeholder="Add" interface="popover" (ionChange)="openPopUpModalAddParticipants($event)" [interfaceOptions]="{header: 'Add'}" hidden>
           <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>
@@ -39,7 +39,7 @@
       <ion-item *ngIf="selectedParticipants.length" lines="none">
         <ion-label>{{selectedParticipants.length}} Selected</ion-label>
         <ion-button id="remove-role" (click)="removeSelect.open($event)" slot="end">Remove Role</ion-button>
-        <ion-select #RemoveSelect (ionChange)="multiSelectAction($event)" placeholder="Remove Role" interface="alert" [interfaceOptions]="{header: 'Remove Role'}" [multiple]="true" style="width: 20%; min-width: 40px" hidden>
+        <ion-select #RemoveSelect (ionChange)="multiSelectAction($event)" placeholder="Remove Role" interface="popover" [interfaceOptions]="{header: 'Remove Role'}" [multiple]="true" style="width: 20%; min-width: 40px" hidden>
           <ion-select-option [value]="{user_list: 'user_list_1', singularLabel: this.participantLabel, pluralLabel: this.participantsLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: 'user_list_2', singularLabel: this.organizerLabel, pluralLabel: this.organizersLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: 'user_list_3', singularLabel: this.leaderLabel, pluralLabel: this.leadersLabel}">{{leaderLabel}}</ion-select-option>
@@ -64,7 +64,7 @@
         <ion-label class="role-label column-label" (click)="sortDisplay('role')">Role<ion-icon [name]="roleAscending === true ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon></ion-label>
         <div class="chat-label" *ngIf="!modalPage"></div>
       </ion-item>
-      <ion-item *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+      <ion-item class="user-select" *ngFor="let user of displayParticipantList; index as j" lines="full" [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
         <ion-icon slot="start" color="tertiary" *ngIf="!user.select" name="radio-button-off" (click)="selectParticipant(user)"></ion-icon>
         <ion-icon slot="start" color="tertiary" *ngIf="user.select" name="checkmark-circle" (click)="unselectParticipant(user)"></ion-icon>
         <ion-avatar slot="start" (click)="seeUserInfo($event, user)">
