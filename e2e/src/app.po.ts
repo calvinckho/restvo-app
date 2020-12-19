@@ -192,7 +192,7 @@ class PageObjectBase {
         return element.all(by.css(`${this.tag} ${sel}`)).isPresent();
     }
 
-    async searchUser(name) {
+    async enterTextInSearchBar(name) {
         this.enterInputText('.searchbar-input', name);
     }
 }
@@ -534,7 +534,7 @@ export class EditparticipantsPage extends PageObjectBase {
     }
 }
 
-export class CreateFeaturePage extends PageObjectBase {
+export class CreatefeaturePage extends PageObjectBase {
     constructor() {
         super('app-createfeature', '/');
     }

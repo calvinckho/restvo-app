@@ -11,7 +11,7 @@ import {
     PickpeoplePopoverPage,
     EditparticipantsPage,
     OnboardingfeaturePage,
-    CreateFeaturePage,
+    CreatefeaturePage,
     AboutPage,
     PreferencesPage
 } from '../app.po';
@@ -31,7 +31,7 @@ describe('add and remove user from group', () => {
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
     let editparticipants: EditparticipantsPage;
-    let createfeature: CreateFeaturePage;
+    let createfeature: CreatefeaturePage;
     let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
@@ -51,7 +51,7 @@ describe('add and remove user from group', () => {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreateFeaturePage();
+        createfeature = new CreatefeaturePage();
         editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/activity/5f72454627cf747d0ccb16d0');
@@ -84,7 +84,7 @@ describe('add and remove user from group', () => {
     });
 
     it('should search, select, and add Asia Ho', async () => {
-        await pickpeople.searchUser('Asia Ho');
+        await pickpeople.enterTextInSearchBar('Asia Ho');
         await pickpeople.waitUntilElementInvisible('.pickpeople-user');
         await pickpeople.waitUntilElementVisible('.pickpeople-user');
         await pickpeople.userSelect('Asia Ho');
@@ -94,7 +94,7 @@ describe('add and remove user from group', () => {
     });
 
     it('should have added Asia Ho', async () => {
-        await editparticipants.searchUser('Asia Ho');
+        await editparticipants.enterTextInSearchBar('Asia Ho');
         await editparticipants.waitUntilElementInvisible('.user-select');
         await editparticipants.waitUntilElementVisible('.user-select');
         expect(await editparticipants.elementIsPresent('.user-select')).toBeTruthy();
@@ -112,7 +112,7 @@ describe('add and remove user from group', () => {
         await app.clickAlertButton('OK');
         await app.clickAlertButton('Remove');
         await browser.waitForAngular();
-        await editparticipants.searchUser('Asia Ho');
+        await editparticipants.enterTextInSearchBar('Asia Ho');
         await browser.waitForAngular();
         expect(await editparticipants.elementIsPresent('.user-select')).toBeFalsy();
     });
