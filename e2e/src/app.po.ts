@@ -1,4 +1,4 @@
-import { browser, by, element, ExpectedConditions, WebDriver } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 import { protractor } from 'protractor/built/ptor';
 
 class PageObjectBase {
@@ -252,9 +252,7 @@ export class AppPage extends PageObjectBase {
     }
 
     async countChatElements() {
-        const num = await element.all(by.css('ion-modal .chat-list p.message')).count();
-        console.log('num of elements:', num);
-        return num;
+        return await element.all(by.css('ion-modal .chat-list p.message')).count();
     }
 
     logoutButtonIsPresent() {

@@ -15,9 +15,7 @@ import {
   PreferencesPage,
   ManagePage
 } from '../app.po';
-import { browser, by } from 'protractor';
-import { AotCompiler } from '@angular/compiler';
-import { async } from '@angular/core/testing';
+import { browser } from 'protractor';
 
 describe(' Create and Delete a Community', () => {
   let app: AppPage;

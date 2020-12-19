@@ -14,9 +14,7 @@ import {
   AboutPage,
   PreferencesPage
 } from '../app.po';
-import { browser, by } from 'protractor';
-import { AotCompiler } from '@angular/compiler';
-import { async } from '@angular/core/testing';
+import { browser } from 'protractor';
 
 describe(' Add and Remove a Restvo User as friend', () => {
   let app: AppPage;
