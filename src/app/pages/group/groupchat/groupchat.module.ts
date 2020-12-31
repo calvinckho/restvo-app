@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AutosizeModule } from 'ngx-autosize';
 import { IonicModule } from '@ionic/angular';
 import { PlyrModule } from 'ngx-plyr';
 
@@ -20,7 +19,6 @@ import {GroupinfoPageModule} from "../groupinfo/groupinfo.module";
     CommonModule,
     FormsModule,
     IonicModule,
-    AutosizeModule,
     PlyrModule,
     ApplicationPipesModule,
     GroupchatPageRoutingModule,

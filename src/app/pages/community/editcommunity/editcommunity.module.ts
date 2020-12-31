@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { EditcommunityPage } from './editcommunity.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
-import {AutosizeModule} from "ngx-autosize";
 
 const routes: Routes = [
   {
@@ -19,8 +18,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-      AutosizeModule,
-      FormsModule,
+    FormsModule,
     ReactiveFormsModule,
     IonicModule,
     ApplicationPipesModule,

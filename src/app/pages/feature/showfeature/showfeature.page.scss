@@ -35,6 +35,7 @@ app-showfeature {
 
   ion-textarea {
     --background: transparent !important;
+    max-height: 160px;
   }
 
   ion-item-sliding {

@@ -4,6 +4,11 @@ app-feature-schedule {
     position:relative !important;
   }
 
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 160px;
+  }
+
   .moment-label {
     width: 25px;
     height: 25px;

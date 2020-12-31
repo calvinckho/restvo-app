@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';

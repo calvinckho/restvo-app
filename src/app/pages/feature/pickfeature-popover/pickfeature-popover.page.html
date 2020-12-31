@@ -153,7 +153,7 @@
         </ion-item>
         <ion-item lines="none">
           <ion-icon class="side-icon" color="grey" name="brush" slot="start"></ion-icon>
-          <ion-textarea [(ngModel)]="selectedMoments[0].matrix_string[0][0]" rows="1" [minRows]="1" [maxRows]="2" autosize></ion-textarea>
+          <ion-textarea autoGrow="true" rows="1" [(ngModel)]="selectedMoments[0].matrix_string[0][0]"></ion-textarea>
         </ion-item>
       </ion-col>
     </ion-row>

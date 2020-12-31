@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { FeatureSchedulePage } from './feature-schedule.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
 import {FeatureScheduleRoutingModule} from "./feature-schedule-routing.module";
-import {AutosizeModule} from "ngx-autosize";
 
 @NgModule({
   imports: [
@@ -15,7 +14,6 @@ import {AutosizeModule} from "ngx-autosize";
     FormsModule,
     IonicModule,
     ApplicationPipesModule,
-      AutosizeModule,
     FeatureScheduleRoutingModule,
   ],
   declarations: [FeatureSchedulePage]

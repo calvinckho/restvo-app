@@ -56,7 +56,6 @@ app-groupchat {
     width: 100%;
   }
 
-
   .chat-list {
     padding-top: 5%;
     //min-height: 100%;
@@ -548,12 +547,9 @@ app-groupchat {
       border-color: var(--ion-color-lightgrey);
       border-width: 1px;
       --padding-start: 4px;
+      max-height: 120px;
     }
 
-    /*.textarea-wrapper {
-      background-color:var(--ion-color-grey);
-      border-radius: 10px;
-    }*/
     .sendImage {
       margin: 16px 0 16px 3%;
       height: 30px;

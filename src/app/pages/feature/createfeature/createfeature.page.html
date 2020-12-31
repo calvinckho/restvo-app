@@ -19,7 +19,7 @@
             </ion-item>
             <ion-item lines="none">
               <ion-icon slot="start" color="grey" name="brush"></ion-icon>
-              <ion-textarea id="communityName" name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" rows="1" [minRows]="1" [maxRows]="2" autosize autocorrect="on" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
+              <ion-textarea id="communityName" name="communityName" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" autoGrow="true" rows="1" [placeholder]="moment.resource['en-US'].value[0] + ' ' + moment.resource['en-US'].matrix_string[0][1]" ></ion-textarea>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -76,7 +76,7 @@
             </ion-item>
             <ion-item lines="none"> <!--Description-->
               <ion-label class="summary-label">Description:</ion-label>
-              <ion-textarea id="communityDescription" name="communityDescription" rows="1" [minRows]="1" [maxRows]="5" autosize class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
+              <ion-textarea id="communityDescription" name="communityDescription" autoGrow="true" rows="1" class="ion-text-start ion-text-wrap" [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10010)][0]"></ion-textarea>
             </ion-item>
             <ion-item lines="none" *ngIf="moment.assets?.length">
               <ion-label class="summary-label">Media:</ion-label>

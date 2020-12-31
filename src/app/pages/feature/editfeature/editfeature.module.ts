@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { EditfeaturePage } from './editfeature.page';
-import {AutosizeModule} from "ngx-autosize";
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import { PlyrModule } from 'ngx-plyr';
 import { QuillModule } from 'ngx-quill';
@@ -23,7 +22,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     ApplicationPipesModule,
-    AutosizeModule,
     PlyrModule,
     IonicModule,
     QuillModule.forRoot(),

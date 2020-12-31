@@ -269,6 +269,7 @@ app-showboardpost {
       border-color: var(--ion-color-lightgrey);
       border-width: 1px;
       --padding-start: 4px;
+      max-height: 120px;
     }
 
     .sendImage {

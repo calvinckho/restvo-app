@@ -8,6 +8,11 @@ app-editboardpost {
     position:relative !important;
   }
 
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 160px;
+  }
+
   .pixabay-grid {
     max-height: 200px;
     overflow: scroll;

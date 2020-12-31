@@ -184,7 +184,7 @@
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
         <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-        <ion-textarea class="moment-input" autocapitalize="on" [(ngModel)]="calendarItem.title" rows="1" [minRows]="1" [maxRows]="4" autosize [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
+        <ion-textarea class="moment-input" autocapitalize="on" [(ngModel)]="calendarItem.title" autoGrow="true" rows="1" [placeholder]="'New ' + moment.matrix_string[0][0] + ' Name'" (ionInput)="anyChangeMade = true"></ion-textarea>
       </ion-item>
       <ion-item-group *ngIf="calendarItem.users && calendarItem.users.length">
         <ion-item lines="none">
@@ -352,7 +352,7 @@
             <ion-card-content class="goal-content favorite ion-no-padding" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8]">
               <ion-badge [ngStyle]="{'background': (favoriteGoal[3] | background : { listOfDisplayGoals: listOfDisplayGoals, goal: favoriteGoal } : 'color') }" class="favorite-goal-type">{{(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]}}</ion-badge>
               <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
-                <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 3 && moment.matrix_number[i][3]) ? 'bold' : 'none'),'font-size': ((moment.matrix_number[i].length > 2) ? moment.matrix_number[i][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
+                <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 3 && moment.matrix_number[i][3]) ? 'bold' : 'none'),'font-size': ((moment.matrix_number[i].length > 2) ? moment.matrix_number[i][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][12]) + 'px' }" autoGrow="true" rows="1" [(ngModel)]="favoriteGoal[5]" (ionInput)="touchGoal(favoriteGoal, 'text')" [placeholder]="(moment.matrix_string[i].length && moment.matrix_string[i][0]) ? moment.matrix_string[i][0] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][6]"></ion-textarea>
               </ion-item>
               <div class="progress">
                 <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoalcompleted' : { scheduleIds:scheduleIds, goal: favoriteGoal, listOfDisplayGoals: listOfDisplayGoals }"></ion-progress-bar>  <!--[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'favoritegoaldue' : { scheduleIds:scheduleIds, goal: goal, listOfDisplayGoals: listOfDisplayGoals }"-->
@@ -369,7 +369,7 @@
                 <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
                 <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                   <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
-                  <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name" [disabled]="(moment.array_boolean.length > 8) && !moment.array_boolean[8]"></ion-textarea>
+                  <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autoGrow="true" rows="1" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" placeholder="Goal Name" [disabled]="(moment.array_boolean.length > 8) && !moment.array_boolean[8]"></ion-textarea>
                 </ion-item>
                 <!--<div class="progress">
                   <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;
@@ -410,7 +410,7 @@
               <!--<ion-badge color="darkgrey" class="goal-type">Goal</ion-badge>-->
               <ion-item lines="none" class="ion-no-padding ion-margin-end ion-padding-end goal-label">
                 <!--<ion-icon [ngStyle]="{'color': (goal[3] | background : goal[0] : 'color') }" name="flag" class="goal-icon"></ion-icon>-->
-                <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autosize rows="1" [minRows]="1" [maxRows]="8" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" [disabled]="(moment.array_boolean.length > 8) && !moment.array_boolean[8]" placeholder="Goal Name"></ion-textarea>
+                <ion-textarea class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}" autoGrow="true" rows="1" [(ngModel)]="goal[5]" (ionInput)="touchGoal(goal, 'text')" [disabled]="(moment.array_boolean.length > 8) && !moment.array_boolean[8]" placeholder="Goal Name"></ion-textarea>
               </ion-item>
               <!--<div class="progress">
                 <ion-progress-bar class="ion-margin-start" [value]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goalcompleted' : { scheduleIds:scheduleIds, goal: goal }"></ion-progress-bar>  &lt;!&ndash;[buffer]="(adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'goaldue' : { scheduleIds:scheduleIds, goal: goal }"&ndash;&gt;

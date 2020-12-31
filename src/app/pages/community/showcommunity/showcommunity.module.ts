@@ -7,9 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { ShowcommunityPage } from './showcommunity.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
-import {EditcommunityPageModule} from "../editcommunity/editcommunity.module";
-import {CommunityPopoverPageModule} from "../community-popover/community-popover.module";
-import {AutosizeModule} from "ngx-autosize";
 
 const routes: Routes = [
   {
@@ -22,7 +19,6 @@ const routes: Routes = [
   imports: [
     CommonModule,
     IonicModule,
-    AutosizeModule,
     FormsModule,
     ReactiveFormsModule,
     ApplicationPipesModule,

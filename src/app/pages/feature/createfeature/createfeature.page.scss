@@ -1,9 +1,15 @@
 app-createfeature {
+
   ion-item {
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
+  }
+
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 100px;
   }
 
   ion-slides {

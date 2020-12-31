@@ -1,4 +1,10 @@
 app-feature-curriculum {
+
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 160px;
+  }
+
   .content-count {
     margin: 0 10px;
     width: 10%;

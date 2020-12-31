@@ -1,5 +1,10 @@
 app-editcommunity {
 
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 60px;
+  }
+
   .default-background {
     display: table;
     min-height: 150px;

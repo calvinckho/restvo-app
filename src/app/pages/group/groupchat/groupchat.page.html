@@ -479,7 +479,7 @@
           <ion-icon name="chevron-forward-outline" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-textarea name="{{chatService.currentChatProps[propIndex].name}}" autosize rows="1" [minRows]="1" [maxRows]="5" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" autocapitalize (ionFocus)="moreMediaOptions = false">
+      <ion-textarea name="{{chatService.currentChatProps[propIndex].name}}" autoGrow="true" rows="1" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
         <ion-grid *ngIf="awsService.sessionAssets.hasOwnProperty(chatService.currentChatProps[propIndex].conversationId) && awsService.sessionAssets[chatService.currentChatProps[propIndex].conversationId]?.length">
           <ion-row>

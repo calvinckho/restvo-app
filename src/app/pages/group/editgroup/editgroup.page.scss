@@ -41,9 +41,10 @@ app-editgroup {
             1px 1px 0 #000;*/
   }
 
-  .detailstextarea textarea{
-    width: 100%t;
+  .detailstextarea {
+    width: 100%;
     height: 20vh;
+    max-height: 160px;
   }
 
   .file-picker {

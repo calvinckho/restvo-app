@@ -28,6 +28,11 @@ app-editfeature, app-editparticipants {
     position: relative !important;
   }
 
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 60px;
+  }
+
   .title {
     text-wrap: normal;
     font-size: 20px;

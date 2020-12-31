@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { EditboardpostPage } from './editboardpost.page';
-import {AutosizeModule} from "ngx-autosize";
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import { PlyrModule } from 'ngx-plyr';
 
@@ -22,7 +21,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    AutosizeModule,
     PlyrModule,
     ApplicationPipesModule,
     RouterModule.forChild(routes)

@@ -8,7 +8,6 @@ import { IonicModule } from '@ionic/angular';
 import { ShowboardpostPage } from './showboardpost.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import {EditboardpostPageModule} from "../editboardpost/editboardpost.module";
-import {AutosizeModule} from "ngx-autosize";
 import { PlyrModule } from 'ngx-plyr';
 
 const routes: Routes = [
@@ -23,7 +22,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    AutosizeModule,
     PlyrModule,
     ApplicationPipesModule,
     EditboardpostPageModule,

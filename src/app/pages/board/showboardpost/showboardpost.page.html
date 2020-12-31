@@ -209,7 +209,7 @@
           <ion-icon name="add-circle" size="large" color="grey"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-textarea rows="1" [minRows]="1" [maxRows]="4" autosize [(ngModel)]="composedComment" autocapitalize></ion-textarea>
+      <ion-textarea autoGrow="true" rows="1" [(ngModel)]="composedComment"></ion-textarea>
       <ion-buttons>
         <ion-button class="actionButton" (click)="sendComment()" fill="clear" [disabled]="!composedComment?.length">
           <img class="sendImage" src="assets/img/Send_Gray.png"/>

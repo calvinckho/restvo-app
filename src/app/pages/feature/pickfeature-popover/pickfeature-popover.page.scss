@@ -12,6 +12,11 @@ app-pickfeature-popover {
     position: relative !important;
   }
 
+  ion-textarea {
+    --background: transparent !important;
+    max-height: 160px;
+  }
+
   .column-label {
     text-align: center;
   }

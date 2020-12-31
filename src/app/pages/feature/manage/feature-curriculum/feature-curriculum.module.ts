@@ -8,7 +8,6 @@ import { FeatureCurriculumPageRoutingModule } from './feature-curriculum-routing
 
 import { FeatureCurriculumPage } from './feature-curriculum.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
-import {AutosizeModule} from "ngx-autosize";
 
 @NgModule({
   imports: [
@@ -16,7 +15,6 @@ import {AutosizeModule} from "ngx-autosize";
     FormsModule,
     IonicModule,
     ApplicationPipesModule,
-    AutosizeModule,
     FeatureCurriculumPageRoutingModule
   ],
   declarations: [FeatureCurriculumPage]
