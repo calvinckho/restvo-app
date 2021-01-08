@@ -147,11 +147,11 @@
   </ion-buttons>
   <ion-list>
     <ion-item (click)="clickManageMenu('insight', null)">
-      <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-icon slot="start" name="insight" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Insight</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('profile', null)">
-      <ion-icon slot="start" name="clipboard" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-icon slot="start" name="profile" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Profile</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('people', null)">
@@ -159,11 +159,11 @@
       <ion-label>People</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('programs', null)" *ngIf="moment && moment.categories && moment.categories.includes('5c915324e172e4e64590e346') && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5c915475e172e4e64590e348')))">
-      <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-icon slot="start" name="programs" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Programs</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('creator', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5e9f46e1c8bf1a622fec69d5') || moment.categories.includes('5dfdbb547b00ea76b75e5a70'))"> <!--if Journey or Relationship-->
-      <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-icon slot="start" name="curriculum" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Curriculum</ion-label>
     </ion-item>
     <!--Journey, only Show in Community or Program, and if they enabled this Children Category-->
@@ -182,7 +182,7 @@
       <ion-label>Groups</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('onboarding', null)" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e17acd47b00ea76b75e5a71'))">
-      <ion-icon slot="start" name="list" *ngIf="platform.width() < 768"></ion-icon>
+      <ion-icon slot="start" name="onboarding" *ngIf="platform.width() < 768"></ion-icon>
       <ion-label>Onboarding</ion-label>
     </ion-item>
     <ion-item-group *ngIf="moment && moment.categories.includes('5c915324e172e4e64590e346')"> <!--Community Only Feature-->
@@ -191,7 +191,7 @@
         <ion-label>Billing</ion-label>
       </ion-item>
       <ion-item (click)="clickManageMenu('subscription', null)">
-        <ion-icon slot="start" name="planet" *ngIf="platform.width() < 768"></ion-icon>
+        <ion-icon slot="start" name="subscription" *ngIf="platform.width() < 768"></ion-icon>
         <ion-label>Subscription</ion-label>
       </ion-item>
     </ion-item-group>
