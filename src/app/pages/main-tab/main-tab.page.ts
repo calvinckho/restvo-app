@@ -741,6 +741,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                     roomName: params.videoChatRoomId,
                     url: videoEndpoint.ssl + videoEndpoint.url,
                     channelLastN: params.channelLastN,
+                    displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
+                    avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
                     startWithAudioMuted: params.startWithAudioMuted,
                     startWithVideoMuted: params.startWithVideoMuted,
                     chatEnabled: false,
