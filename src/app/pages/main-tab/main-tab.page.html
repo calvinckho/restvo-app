@@ -12,14 +12,14 @@
       <ion-icon name="discover"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="news" *ngIf="!userData.UIAdminMode">
-      <ion-icon name="newspaper"></ion-icon>
+      <ion-icon name="news"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="myconversations/chat" [ngClass]="{'tab-selected': router.url.includes('myconversations')}">
       <ion-badge *ngIf="chatService && chatService.connectTabBadge" mode="md">{{chatService.connectTabBadge}}</ion-badge>
-      <ion-icon name="chatbox"></ion-icon>
+      <ion-icon name="chat"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="me">
-      <ion-icon ios="person-sharp" md="person-sharp"></ion-icon>
+      <ion-icon ios="me" md="me"></ion-icon>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

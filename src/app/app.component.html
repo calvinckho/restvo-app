@@ -29,20 +29,20 @@
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item id="chat" [routerLink]="['/app/myconversations']" mode="md">
-              <ion-icon slot="start" name="chatbox"></ion-icon>
+              <ion-icon slot="start" name="chat"></ion-icon>
               <ion-label>Chat</ion-label>
               <ion-badge *ngIf="chatService && chatService.connectTabBadge" slot="end" mode="md">{{chatService.connectTabBadge}}</ion-badge>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/news']" mode="md">
-              <ion-icon slot="start" name="newspaper"></ion-icon>
+              <ion-icon slot="start" name="news"></ion-icon>
               <ion-label>News</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item id="meDashboard" [routerLink]="['/app/me']" mode="md">
-              <ion-icon slot="start" ios="person-sharp" md="person-sharp"></ion-icon>
+              <ion-icon slot="start" ios="me" md="me"></ion-icon>
               <ion-label>Me</ion-label>
               <ion-badge [color]="userData.UIrestStatus === 'active' ? 'tertiary' : 'primary'" (click)="clickRestToggle($event)" *ngIf="chatService && userData.user">
                 {{userData.UIrestStatus}}
@@ -51,19 +51,19 @@
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item id="userProfileSettings" [routerLink]="['/app/user/profile']" mode="md">
-              <ion-icon slot="start" name="cog"></ion-icon>
+              <ion-icon slot="start" name="settings"></ion-icon>
               <ion-label>Settings</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item id="inviteLabel" [routerLink]="['/app/invite']" mode="md">
-              <ion-icon slot="start" name="share"></ion-icon>
+              <ion-icon slot="start" name="invite"></ion-icon>
               <ion-label>Invite</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
             <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]" mode="md">
-              <ion-icon slot="start" name="bulb"></ion-icon>
+              <ion-icon slot="start" name="admin"></ion-icon>
               <ion-label>Admin</ion-label>
             </ion-item>
           </ion-menu-toggle>
