@@ -90,8 +90,6 @@ export class Resource {
                 this.cache.loadFromDelayedObservable('SystemResources', request, 'ResourceService', 604800, 'none').subscribe(async (result: any) => {
                     this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
                     this.categories = result.filter((c) => c.field === 'Activity Category'); // return the Activity Category array by filtering the result array
-                    console.log('current Resource version in cache:', this.resource.matrix_number[2][0]);
-
                     // in the event a user has upgraded the app which requires the latest version of the resources, do a silent refresh of system resources
                     if (this.userData.versions['Activity Components'] > this.resource.matrix_number[2][0]) {
                         await this.cache.clearGroup('ResourceService');
