@@ -107,7 +107,7 @@ export class Auth {
     // routes Unauthenticated user to the correct URL
     // authorized pages are routed register to public pages
     private async routeUnauthenticatedUser(slide, errMessage) {
-        console.log("Routing unauthenticated user.");
+        console.log("Routing unauthenticated user.", this.router.url);
         // contains all URL parameters that have a public page
         // const publicPageURLParameters = ['activity', 'connect', 'reply'];
 

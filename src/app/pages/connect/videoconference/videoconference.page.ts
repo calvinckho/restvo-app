@@ -78,6 +78,8 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         roomName: this.videoChatRoomId,
         url: videoEndpoint.ssl + videoEndpoint.url,
         channelLastN: this.channelLastN,
+        displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
+        avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
         startWithAudioMuted: this.startWithAudioMuted,
         startWithVideoMuted: this.startWithVideoMuted,
         chatEnabled: false,
