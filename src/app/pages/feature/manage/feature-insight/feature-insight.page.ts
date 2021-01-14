@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation, NgZone} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation, NgZone, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {
   ActionSheetController,
   AlertController,
@@ -72,6 +72,12 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
+  //value for the circle graph
+  radius = 54;
+  circumference = 2 * Math.PI * this.radius;
+  dashoffset: number;
+
+
   constructor(
       public zone: NgZone,
       public location: Location,
@@ -103,6 +109,12 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         cache, platform, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
         networkService, chatService, userData, authService, mapService,
         momentService, resourceService, responseService, calendarService);
+    this.progress(8);
+  }
+
+  private progress(value: number){
+    const progress = value / 100;
+    this.dashoffset = this.circumference * (1 - progress);
   }
 
   async ngOnInit() {
@@ -113,6 +125,12 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       }
       this.loadInsight();
       this.loadMetrics('thisWeek');
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.value.currentValue !== changes.calue.previousValue){
+      this.progress(changes.value.currentValue);
     }
   }
 
