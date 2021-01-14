@@ -33,7 +33,24 @@
       <ion-col size="1">
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-col>
-      <ion-col size="5">pie graph</ion-col>
+      <ion-col size="5">
+        <!-- <svg viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path class="circle-background" d="M18 3.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831">
+          </path>
+          <path class="circle-circle" d="M18 3.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831">
+          </path>
+          <text class="percentage" x="18" y="21">25%</text>
+        </svg> -->
+        <svg width="120" height="120" viewBox="0 0 120 120" class="progress__svg">
+          <circle [attr.r]="radius" cx="60" cy="60" stroke-width="12" class="progress__meter" />
+          <circle [style.strokeDasharray]="circumference" [style.strokeDashoffset]="dashoffset" [attr.r]="radius" cx="60"
+            cy="60" stroke-width="12" class="progress__value" />
+        </svg>
+      </ion-col>
       <ion-col size="7">list of items</ion-col>
     </ion-row>
     <ion-row>

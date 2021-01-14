@@ -1,15 +1,5 @@
 app-feature-insight {
 
-  ion-content {
-    --background: var(--ion-color-lightgrey);
-  }
-
-  .section-card {
-    width: 100%;
-    margin: 0 5px;
-    padding: 10px 0;
-  }
-
   .column-label {
     text-align: center;
   }
@@ -77,10 +67,6 @@ app-feature-insight {
 //   0% { stroke-dasharray: 0 100;}
 // }
 
-.progress{
-  position: relative;
-}
-
 .progress__svg {
   transform: rotate(-90deg);
 }
@@ -97,12 +83,6 @@ app-feature-insight {
 .progress__value {
   stroke: #4caf50;
   transition: all;
-}
-
-.progress-value-text{
-  position: absolute;
-  top: 48px;
-  left: 45px;
 }
 
 }
