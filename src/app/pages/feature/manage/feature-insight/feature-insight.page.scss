@@ -41,4 +41,48 @@ app-feature-insight {
   .small-font {
     font-size: 12px;
   }
+
+//   .circle-background {
+//   fill: none;
+//   stroke: #c4c4c4;
+//   stroke-width: 5;
+//   stroke-dasharray: 100, 100;
+//   stroke-linecap: round;
+// }
+
+// .circle-circle {
+//   animation: circle-chart-fill 1s ease-in-out;
+//   fill: none;
+//   stroke: #b4ffce;
+//   stroke-width: 5;
+//   stroke-dasharray: 25, 100;
+//   stroke-linecap: round;
+// }
+
+// .percentage{
+//   font-size: .5em;
+//   text-anchor: middle;
+// }
+// @keyframes circle-chart-fill {
+//   0% { stroke-dasharray: 0 100;}
+// }
+
+.progress__svg {
+  transform: rotate(-90deg);
+}
+
+.progress__meter,
+.progress__value {
+  fill: none;
+}
+
+.progress__meter {
+  stroke: #ccc;
+}
+
+.progress__value {
+  stroke: #4caf50;
+  transition: all;
+}
+
 }
