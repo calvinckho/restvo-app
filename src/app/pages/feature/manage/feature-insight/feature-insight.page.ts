@@ -75,7 +75,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
   };
 
   //value for the circle graph
-  circleGraphValue: number = 8;
+  circleGraphValue: number = 90;
   radius = 54;
   circumference = 2 * Math.PI * this.radius;
   dashoffset: number;
