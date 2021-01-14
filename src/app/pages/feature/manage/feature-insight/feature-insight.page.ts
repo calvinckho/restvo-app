@@ -32,7 +32,7 @@ import {Systemlog} from "../../../../services/systemlog.service";
   encapsulation: ViewEncapsulation.None
 })
 
-export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
+export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnChanges {
 
   relationshipCompletion: any;
   participantAscending = true;
@@ -73,6 +73,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
   };
 
   //value for the circle graph
+  circleGraphValue: number = 8;
   radius = 54;
   circumference = 2 * Math.PI * this.radius;
   dashoffset: number;
@@ -109,7 +110,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
         cache, platform, alertCtrl, actionSheetCtrl, loadingCtrl, modalCtrl, pickerCtrl,
         networkService, chatService, userData, authService, mapService,
         momentService, resourceService, responseService, calendarService);
-    this.progress(8);
+    this.progress(this.circleGraphValue);
   }
 
   private progress(value: number){
@@ -126,10 +127,11 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit {
       this.loadInsight();
       this.loadMetrics('thisWeek');
     }
+    console.log('this progress:', this.circleGraphValue)
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.value.currentValue !== changes.calue.previousValue){
+    if (changes.value.currentValue !== changes.value.previousValue){
       this.progress(changes.value.currentValue);
     }
   }
