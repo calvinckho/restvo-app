@@ -18,46 +18,42 @@
         <ion-note>active members</ion-note>
       </ion-col>
       <ion-col>
-        <h2>55</h2>
+        <h2>2</h2>
         <ion-note>small groups</ion-note>
       </ion-col>
       <ion-col>
-        <h2>55</h2>
+        <h2>11</h2>
         <ion-note>1:1 relationships</ion-note>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="11">
+      <ion-col size="12">
         <ion-label>Overall Health</ion-label>
       </ion-col>
       <ion-col size="1">
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
       </ion-col>
       <ion-col size="5">
-        <!-- <svg viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-          <path class="circle-background" d="M18 3.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831">
-          </path>
-          <path class="circle-circle" d="M18 3.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831">
-          </path>
-          <text class="percentage" x="18" y="21">25%</text>
-        </svg> -->
-        <svg width="120" height="120" viewBox="0 0 120 120" class="progress__svg">
-          <circle [attr.r]="radius" cx="60" cy="60" stroke-width="12" class="progress__meter" />
-          <circle [style.strokeDasharray]="circumference" [style.strokeDashoffset]="dashoffset" [attr.r]="radius" cx="60"
-            cy="60" stroke-width="12" class="progress__value" />
-        </svg>
-        <div class="progress-value-text">
-          {{circleGraphValue}} %
+        <div class="progress">
+          <svg width="120" height="120" viewBox="0 0 120 120" class="progress__svg">
+            <circle [attr.r]="radius" cx="60" cy="60" stroke-width="12" class="progress__meter" />
+            <circle [style.strokeDasharray]="circumference" [style.strokeDashoffset]="dashoffset" [attr.r]="radius" cx="60"
+              cy="60" stroke-width="12" class="progress__value" />
+          </svg>
+          <div class="progress-value-text">
+            {{circleGraphValue}}%
+          </div>
         </div>
       </ion-col>
-      <ion-col size="7">list of items</ion-col>
+      <ion-col size="6">
+        <h6>Recent Activity</h6>
+        <progress value="80" max="100"></progress>
+      </ion-col>
     </ion-row>
     <ion-row>
-      <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+      <ion-col size="12">
+        <ion-label>Growth Progression</ion-label>
+   <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
         <ngx-charts-line-chart
                 [scheme]="colorScheme"
                 [schemeType]="schemeType"
@@ -85,6 +81,7 @@
               <ion-select-option>Last Year (n/a yet)</ion-select-option>
             </ion-select>
       </ion-toolbar>
+      </ion-col>
     </ion-row>
     <ion-toolbar>
       <ion-item>
