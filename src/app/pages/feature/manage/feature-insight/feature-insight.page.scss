@@ -1,5 +1,9 @@
 app-feature-insight {
 
+  ion-content {
+    --background: var(--ion-color-lightgrey);
+  }
+
   .column-label {
     text-align: center;
   }
