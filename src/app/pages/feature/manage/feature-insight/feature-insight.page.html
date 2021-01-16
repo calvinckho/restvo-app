@@ -11,7 +11,9 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        <ion-label>Organization Snapshot</ion-label>
+  <ion-card>
+    <ion-label>Organization Snapshot</ion-label>
+  </ion-card>
       </ion-col>
       <ion-col>
         <h2>55</h2>
@@ -54,6 +56,7 @@
       <ion-col size="12">
         <ion-label>Growth Progression</ion-label>
    <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+    <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
         <ngx-charts-line-chart
                 [scheme]="colorScheme"
                 [schemeType]="schemeType"
