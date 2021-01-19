@@ -1,18 +1,25 @@
 language: node_js
-node_js: "10.16.3"
-services: mongodb
-cache:
-  directories:
-    - "server/node_modules"
+node_js:
+  - "10.21.0"
 
-branches:
-  only:
-    - server-production
-    - server-dev01
+addons:
+  chrome: stable
 
 before_script:
-  - cd server
-  - npm install
+  - npm install -g @angular/cli@8.3.25
 
-script:
-  - node server.js
+jobs:
+  include:
+    - stage: test
+      name: "Join Journey Test"
+      script: ng e2e --protractor-config='e2e/src/desktop/journey.conf.js'
+    - name: "Add User to Group"
+      script: ng e2e --protractor-config='e2e/src/desktop/add-user-to-group.conf.js'
+    - name: "Register New Account Test"
+      script: ng e2e --protractor-config='e2e/src/desktop/register.conf.js'
+    - name: "Tab Navigation Test"
+      script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
+    - name: "Add and Remove Friend"
+      script: ng e2e --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
+    - name: "Create and Delete a Community"
+      script: ng e2e --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
