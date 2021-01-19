@@ -1,0 +1,18 @@
+language: node_js
+node_js: "10.16.3"
+services: mongodb
+cache:
+  directories:
+    - "server/node_modules"
+
+branches:
+  only:
+    - server-production
+    - server-dev01
+
+before_script:
+  - cd server
+  - npm install
+
+script:
+  - node server.js
