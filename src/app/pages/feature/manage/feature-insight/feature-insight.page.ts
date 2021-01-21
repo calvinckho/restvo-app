@@ -57,7 +57,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
   animations: boolean = true;
   xAxis: boolean = true;
   yAxis: boolean = true;
-  showYAxisLabel: boolean = true;
+  showYAxisLabel: boolean = false;
   showXAxisLabel: boolean = false;
   xAxisLabel: string = 'Day';
   xScaleMin: string;
