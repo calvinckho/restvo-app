@@ -4,6 +4,12 @@ app-feature-insight {
     --background: var(--ion-color-lightgrey);
   }
 
+  .section-card {
+    width: 100%;
+    margin: 0 5px;
+    padding: 10px 0;
+  }
+
   .column-label {
     text-align: center;
   }
