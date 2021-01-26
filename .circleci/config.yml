@@ -1,25 +1,46 @@
-language: node_js
-node_js:
-  - "10.21.0"
-
-addons:
-  chrome: stable
-
-before_script:
-  - npm install -g @angular/cli@8.3.25
+version: 2.1
 
 jobs:
-  include:
-    - stage: test
-      name: "Join Journey Test"
-      script: ng e2e --protractor-config='e2e/src/desktop/journey.conf.js'
-    - name: "Add User to Group"
-      script: ng e2e --protractor-config='e2e/src/desktop/add-user-to-group.conf.js'
-    - name: "Register New Account Test"
-      script: ng e2e --protractor-config='e2e/src/desktop/register.conf.js'
-    - name: "Tab Navigation Test"
-      script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
-    - name: "Add and Remove Friend"
-      script: ng e2e --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
-    - name: "Create and Delete a Community"
-      script: ng e2e --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
+  build:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/server
+    steps:
+      # Checkout the code from the branch into the working_directory
+      - checkout
+      # Log the current branch
+      - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Restore local dependencies from cache
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      # Install project dependencies
+      - run:
+          name: Install local dependencies
+          command: npm install
+      # Cache local dependencies if they don't exist
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: "Add and Remove Friend"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
+      - run:
+          name: "Create and Delete a Community"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
+      - run:
+          name: "Join Journey Test"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/journey.conf.js'
+      - run:
+          name: "Add User to Group"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/add-user-to-group.conf.js'
+      - run:
+          name: "Register New Account Test"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/register.conf.js'
+      - run:
+          name: "Tab Navigation Test"
+          command: npm run ci -- --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
