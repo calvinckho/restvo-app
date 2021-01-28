@@ -58,7 +58,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   subpanel = false;
   subscriptions: any = {};
-  mode = 'list';
   loading: any;
   resource: any = {};
   description = '';
