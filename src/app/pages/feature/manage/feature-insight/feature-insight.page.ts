@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewEncapsulation, NgZone, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation, NgZone, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {
   ActionSheetController,
-  AlertController,
+  AlertController, IonSelect,
   LoadingController,
   ModalController, PickerController,
   Platform
@@ -35,7 +35,7 @@ import {Systemlog} from "../../../../services/systemlog.service";
 })
 
 export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnChanges {
-
+  @ViewChild('OpenFilter', { static: false }) openFilter: IonSelect;
   relationshipCompletion: any;
   participantAscending = true;
   leaderAscending = true;
