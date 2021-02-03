@@ -13,20 +13,22 @@
     <ion-row class="ion-margin-bottom">
       <ion-card class="section-card">
         <ion-label>Organization Snapshot</ion-label>
-        <ion-row>
-          <ion-col size="4">
-            <h2>55</h2>
-            <ion-note>active members</ion-note>
-          </ion-col>
-          <ion-col size="4">
-            <h2>2</h2>
-            <ion-note>small groups</ion-note>
-          </ion-col>
-          <ion-col size="4">
-            <h2>11</h2>
-            <ion-note>1:1 relationships</ion-note>
-          </ion-col>
-        </ion-row>
+        <div class="ion-text-center">
+          <ion-row>
+            <ion-col size="4">
+              <h2>55</h2>
+              <ion-note>active members</ion-note>
+            </ion-col>
+            <ion-col size="4">
+              <h2>2</h2>
+              <ion-note>small groups</ion-note>
+            </ion-col>
+            <ion-col size="4">
+              <h2>11</h2>
+              <ion-note>1:1 relationships</ion-note>
+            </ion-col>
+          </ion-row>
+        </div>
       </ion-card>
     </ion-row>
     <ion-row class="ion-margin-bottom">
@@ -59,7 +61,7 @@
       <ion-card class="section-card">
         <ion-row>
           <ion-col size="12">
-            <ion-item>
+            <ion-item lines="none">
               <ion-label>Growth Progression</ion-label>
               <ion-icon (click)="openFilter.value = null; openFilter.open($event)" slot="end" name="ellipsis-horizontal-outline">filter</ion-icon>
               <ion-select #OpenFilter interface="action-sheet"
