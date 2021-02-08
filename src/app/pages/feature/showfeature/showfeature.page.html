@@ -19,11 +19,6 @@
     </ion-buttons>
     <ion-title id="show-event-title" *ngIf="moment && moment.matrix_string" (click)="toggleSpecialAccess($event)" class="ion-text-wrap cursor-pointer">{{moment.matrix_string[0][0]}}<ion-note *ngIf="hasSpecialPrivilege" class="ion-align-items-baseline"><ion-icon [name]="(showSpecialAccess ? 'chevron-up-outline' : 'chevron-down-outline')"></ion-icon></ion-note></ion-title>
     <ion-buttons slot="end">
-      <div *ngIf="userData.user && ['owner','admin','staff'].includes(userData.user.role)">
-        <ion-button *ngIf="mode === 'slider'" (click)="mode = 'list'; currentView = 'list'" color="grey">
-          <ion-icon name="list"></ion-icon>
-        </ion-button>
-      </div>
       <div *ngIf="relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])"> <!--if content calendar and show Content Edit Controls to Users-->
         <ion-button (click)="deleteCalendarItem($event)" class="ion-margin-end" color="grey">
           <ion-icon name="trash-outline"></ion-icon>
@@ -179,7 +174,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-list *ngIf="loadStatus && mode === 'list' && moment.resource" class="ion-no-padding" [ngClass]="{ 'desktop-ion-list': platform.width() >= 768 }">
+  <ion-list *ngIf="loadStatus && moment.resource" class="ion-no-padding" [ngClass]="{ 'desktop-ion-list': platform.width() >= 768 }">
     <!--Content Calendar Item-->
     <div *ngIf="calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])">
       <ion-item lines="none">
@@ -907,10 +902,10 @@
     </div>
   </ion-list>
   <!--Space to create cushion for the Fab buttons-->
-  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
+  <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && mode === 'list' && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

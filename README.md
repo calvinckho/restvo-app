@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/calvinckho/restvo-app.svg?branch=app-dev01)](https://github.com/calvinckho/restvo-app)
+[![CircleCI](https://circleci.com/gh/calvinckho/restvo-app.svg?style=shield&circle-token=c7b71f9186e584aba1555a351c8fb5cf5d90384b)](https://app.circleci.com/pipelines/github/calvinckho/restvo-app)
 # Restvo Official Web App
 
 Welcome to the Restvo Web App Development Community. Your contribute is so valuable to this project to bring mentorship and coaching to more people around the world. 
