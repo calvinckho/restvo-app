@@ -39,7 +39,7 @@ app-feature-insight {
 
   .progress {
     text-align: center;
-    width: 20%; // 32%
+    width: 20%;
   }
 
   .last-date {
@@ -72,7 +72,7 @@ app-feature-insight {
 }
 
 .progress__value {
-  stroke: #4caf50;
+  stroke: #87BB1F;
   transition: all;
 }
 
@@ -119,6 +119,10 @@ progress[value]::-webkit-progress-value {
     background: #F2A573;
     margin-right: 5px;
     display: inline-block;
+}
+
+h2 {
+  font-weight: bold;
 }
 
 }
