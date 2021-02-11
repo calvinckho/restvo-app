@@ -69,7 +69,8 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
   currentDayValue: string = '7'
 
   colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
+    // add more hex color values for more color variety
+    domain: ['#F2A573']
   };
 
   //value for the circle graph

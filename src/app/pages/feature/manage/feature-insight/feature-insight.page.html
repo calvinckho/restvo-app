@@ -63,7 +63,7 @@
           <ion-col size="12">
             <ion-item lines="none">
               <ion-label>Growth Progression</ion-label>
-              <ion-icon (click)="openFilter.value = null; openFilter.open($event)" slot="end" name="ellipsis-horizontal-outline">filter</ion-icon>
+              <ion-icon (click)="openFilter.open($event)" slot="end" name="ellipsis-horizontal-outline">filter</ion-icon>
               <ion-select #OpenFilter interface="action-sheet"
               (ionChange)="loadMetrics($event.target.value)" hidden>
               <!-- 30 days, 90 days, this year, last year -->
