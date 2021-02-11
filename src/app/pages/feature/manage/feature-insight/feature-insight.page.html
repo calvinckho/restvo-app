@@ -74,14 +74,20 @@
               <ion-select #OpenFilter interface="action-sheet"
               (ionChange)="loadMetrics($event.target.value)" hidden>
               <!-- 30 days, 90 days, this year, last year -->
-                <ion-select-option value=thisWeek>This Week</ion-select-option>
-                <ion-select-option value=thisMonth>This Month</ion-select-option>
-                <ion-select-option value=30>30 Days</ion-select-option>
-                <ion-select-option value=90>90 Days</ion-select-option>
-                <ion-select-option value=thisYear>This Year</ion-select-option>
-                <ion-select-option>Last Year (n/a yet)</ion-select-option>
-              </ion-select>
-            </ion-item>
+              <ion-select-option value=thisWeek>This Week</ion-select-option>
+              <ion-select-option value=thisMonth>This Month</ion-select-option>
+              <ion-select-option value=30>30 Days</ion-select-option>
+              <ion-select-option value=90>90 Days</ion-select-option>
+              <ion-select-option value=thisYear>This Year</ion-select-option>
+              <ion-select-option>Last Year (n/a yet)</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-row class="ion-justify-content-center">
+            <div class="legend-box ion-text-center">
+              <div class="active-relationship-color"></div>
+              <span>51 active</span>
+            </div>
+          </ion-row>
           </ion-col>
         </ion-row>
           <ion-row>

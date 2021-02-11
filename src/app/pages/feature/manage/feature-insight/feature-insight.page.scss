@@ -109,4 +109,16 @@ progress[value]::-webkit-progress-value {
     border-radius: 5px;
 }
 
+.legend-box {
+  width: 100%;
+}
+
+.active-relationship-color {
+    height: 10px;
+    width: 10px;
+    background: #F2A573;
+    margin-right: 5px;
+    display: inline-block;
+}
+
 }
