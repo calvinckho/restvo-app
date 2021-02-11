@@ -81,6 +81,9 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
   circumference = 2 * Math.PI * this.radius;
   dashoffset: number;
 
+  //value for activeParticipants
+  activeParticipants: number = 0;
+
 
   constructor(
       public zone: NgZone,
@@ -146,13 +149,16 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
       // ready to check authentication status
       this.setup(data);
       this.loadInsight();
-      this.loadMetrics(this.currentDayValue);
+      if (this.activeParticipants) { // to avoid double value on page init
+        this.loadMetrics(this.currentDayValue);
+      }
     }
   };
 
   async loadMetrics(dayValue) {
     //find a way to utilize xmin on chart
     this.currentDayValue = dayValue;
+    this.activeParticipants = 0;
     switch (dayValue){
       case 'thisWeek':
         // line area chart doc link https://swimlane.gitbook.io/ngx-charts/v/docs-test/examples/line-area-charts/line-chart
@@ -198,6 +204,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
       name: 'Activity',
       series: results
     }];
+    this.calculateActiveParticipants(this.durationValue, results)
   }
 
   async loadInsight() {
@@ -273,6 +280,14 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
           return (reverseOrder ? 1 : -1 ) * (d - c);
         });
       }
+  }
+
+  calculateActiveParticipants(day, results){
+    results.forEach((arrayItem) => {
+      const x = arrayItem.value
+      this.activeParticipants = this.activeParticipants + x
+    });
+    console.log('this is active', Math.round(this.activeParticipants/day))
   }
 
   dateTickFormatting(dateTime) {
