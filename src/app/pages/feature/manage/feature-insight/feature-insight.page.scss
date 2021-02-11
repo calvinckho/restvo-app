@@ -87,6 +87,26 @@ app-feature-insight {
   left: 0;
   margin: auto;
   text-align: center;
+  font-size: 36px;
+}
+
+progress[value] {
+  -webkit-appearance: none;
+   appearance: none;
+
+  width: 90%;
+  height: 8px;
+}
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 5px;
+  outline-color: #b3b3b3;
+}
+
+progress[value]::-webkit-progress-value {
+  background-image:
+	   -webkit-linear-gradient(45deg, #3FA7D6 40%, #87BB1F);
+    border-radius: 5px;
 }
 
 }
