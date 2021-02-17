@@ -50,7 +50,7 @@ class ShareViewController: SLComposeServiceViewController {
                 })
             }
         }
-        guard let text = textView.text else {return}
+        textView.text = "";
         
     }
     
