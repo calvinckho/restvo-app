@@ -72,14 +72,14 @@
               <ion-label>Growth Progression</ion-label>
               <ion-icon (click)="openFilter.open($event)" slot="end" name="ellipsis-horizontal-outline">filter</ion-icon>
               <ion-select #OpenFilter interface="action-sheet"
-              (ionChange)="loadMetrics($event.target.value)" hidden>
+              (ionChange)="loadMetrics($event)" hidden>
               <!-- 30 days, 90 days, this year, last year -->
               <ion-select-option value=thisWeek>This Week</ion-select-option>
               <ion-select-option value=thisMonth>This Month</ion-select-option>
               <ion-select-option value=30>30 Days</ion-select-option>
               <ion-select-option value=90>90 Days</ion-select-option>
               <ion-select-option value=thisYear>This Year</ion-select-option>
-              <ion-select-option>Last Year (n/a yet)</ion-select-option>
+              <!--<ion-select-option>Last Year (n/a yet)</ion-select-option>-->
             </ion-select>
           </ion-item>
           <ion-row class="ion-justify-content-center">

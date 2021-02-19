@@ -20,13 +20,12 @@ app-feature-insight {
     padding-bottom: 10px;
 
     .insight-person-avatar {
-      margin: auto;
+      margin: 3px auto 5px auto;
       height: 40px;
       width: 40px;
     }
 
     .insight-person-label {
-      margin: 5px auto 0 auto;
       color: grey;
       font-size: 12px;
     }
@@ -35,6 +34,11 @@ app-feature-insight {
   .program {
     width: 12%;
     text-align: center;
+  }
+
+  .progress {
+    text-align: center;
+    width: 20%;
   }
 
   .last-date {
