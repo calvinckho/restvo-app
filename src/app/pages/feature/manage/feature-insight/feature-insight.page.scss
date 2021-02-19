@@ -37,11 +37,6 @@ app-feature-insight {
     text-align: center;
   }
 
-  .progress {
-    text-align: center;
-    width: 20%;
-  }
-
   .last-date {
     //color: var(--ion-color-dark);
     text-align: center;
@@ -52,10 +47,11 @@ app-feature-insight {
     font-size: 12px;
   }
 
-.progress{
+.circle-progress{
   position: relative;
   width: 100%;
   height: 100%;
+  text-align: center;
 }
 
 .progress__svg {
@@ -90,20 +86,20 @@ app-feature-insight {
   font-size: 36px;
 }
 
-progress[value] {
+progress[value].growth-progress {
   -webkit-appearance: none;
    appearance: none;
 
   width: 90%;
   height: 8px;
 }
-progress[value]::-webkit-progress-bar {
+progress[value].growth-progress::-webkit-progress-bar {
   background-color: #eee;
   border-radius: 5px;
   outline-color: #b3b3b3;
 }
 
-progress[value]::-webkit-progress-value {
+progress[value].growth-progress::-webkit-progress-value {
   background-image:
 	   -webkit-linear-gradient(45deg, #3FA7D6 40%, #87BB1F);
     border-radius: 5px;
