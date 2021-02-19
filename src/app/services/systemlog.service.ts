@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import { AppVersion } from "@ionic-native/app-version/ngx";
-import {Platform} from "@ionic/angular";
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import {Platform} from '@ionic/angular';
 
 @Injectable({ providedIn: 'root' })
 export class Systemlog {

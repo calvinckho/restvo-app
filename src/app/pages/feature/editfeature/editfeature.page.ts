@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit, Input, ViewChild, ViewEncapsulation, OnDestroy} from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import * as Plyr from "plyr";
-import {SwUpdate} from "@angular/service-worker";
-import {ActivatedRoute, Router} from "@angular/router";
+import * as Plyr from 'plyr';
+import {SwUpdate} from '@angular/service-worker';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
     ActionSheetController,
     AlertController,
@@ -11,21 +11,21 @@ import {
     Platform,
     PopoverController,
     ToastController
-} from "@ionic/angular";
-import {Chat} from "../../../services/chat.service";
-import {Churches} from "../../../services/church.service";
-import {Groups} from "../../../services/group.service";
-import {UserData} from "../../../services/user.service";
-import {Aws} from "../../../services/aws.service";
-import {Moment} from "../../../services/moment.service";
-import {Resource} from "../../../services/resource.service";
-import {Response} from "../../../services/response.service";
-import {CalendarService} from "../../../services/calendar.service";
-import {Plugins} from "@capacitor/core";
-import {NetworkService} from "../../../services/network-service.service";
-import {Location} from "@angular/common";
-import {UploadmediaPage} from "../uploadmedia/uploadmedia.page";
-import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover.page";
+} from '@ionic/angular';
+import {Chat} from '../../../services/chat.service';
+import {Churches} from '../../../services/church.service';
+import {Groups} from '../../../services/group.service';
+import {UserData} from '../../../services/user.service';
+import {Aws} from '../../../services/aws.service';
+import {Moment} from '../../../services/moment.service';
+import {Resource} from '../../../services/resource.service';
+import {Response} from '../../../services/response.service';
+import {CalendarService} from '../../../services/calendar.service';
+import {Plugins} from '@capacitor/core';
+import {NetworkService} from '../../../services/network-service.service';
+import {Location} from '@angular/common';
+import {UploadmediaPage} from '../uploadmedia/uploadmedia.page';
+import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
 
 @Component({
   selector: 'app-editfeature',
@@ -126,7 +126,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           city: '',
           state: '',
           geo: {
-              type: "Point",
+              type: 'Point',
               coordinates: []
           }
       },
@@ -214,7 +214,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (this.userData.user && !this.initialSetupCompleted) {
           this.setup();
       }
-    };
+    }
 
     // for refreshing moment either because of real-time interactables, or for refreshing participations
     refreshMomentHandler = async (res) => {
@@ -232,13 +232,13 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             }
             // for Content Item to refresh its parent relationship responses (any update on the parent should refresh the current content item's copy of parentRelationshipResponseObj), because the parentRelationshipResponseObj will be sent out so it needs to be fresh)
         }
-    };
+    }
 
   async setup() {
       try {
           this.churchId = this.userData.user.churches[this.userData.currentCommunityIndex]._id;
           this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
-          this.churches = this.userData.user.churches.map((c) => {return {_id: c._id, name: c.name, selected: false};});
+          this.churches = this.userData.user.churches.map((c) => ({_id: c._id, name: c.name, selected: false}));
           this.churches.find((c) => c._id === '5ab62be8f83e2c1a8d41f894').selected = true;
           this.churches.unshift({_id: '', name: 'None', selected: false});
 
@@ -264,7 +264,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
               this.editTemplate = false;
           }
-          console.log("loaded moment", this.moment);
+          console.log('loaded moment', this.moment);
 
           // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
 
@@ -307,7 +307,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.addComponent(40010); // add text answer
                   this.editTemplate = true;
               } else if (this.categoryId === '5c915324e172e4e64590e346') { // Community
-                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Community';
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Community';
                   this.moment.categories = ['5c915324e172e4e64590e346'];
                   this.moment.child_categories = ['5c915475e172e4e64590e348', '5e17acd47b00ea76b75e5a71']; // program, onboarding
                   this.addComponent(10000); // add the "Community Name"
@@ -322,7 +322,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.addComponent(11000); // Chat
                   this.editTemplate = true;
               } else if (this.categoryId === '5c915475e172e4e64590e348') { // Program
-                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; //'Program';
+                  this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Program';
                   this.moment.categories = ['5c915475e172e4e64590e348'];
                   this.addComponent(10000); // add the "Program Name"
                   this.addComponent(20000); // Visibility
@@ -349,7 +349,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // 'Content';
                   this.moment.categories = ['5e1bbda67b00ea76b75e5a73'];
                   this.addComponent(10000); // add the "Content Name"
-                  //this.addComponent(20000); // Visibility
+                  // this.addComponent(20000); // Visibility
                   this.editTemplate = true;
               } else if (this.categoryId) {
                   this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
@@ -463,7 +463,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
           });
           if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
-              this.addressURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center='+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
+              this.addressURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center=' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0] + '&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0];
           }
           if (this.moment.calendar && this.moment.calendar._id) {
               this.startDate = new Date(this.moment.calendar.startDate);
@@ -493,15 +493,15 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           }
           if (!this.visibleComponents.length) {
               if (this.categoryId === '5e1bbda67b00ea76b75e5a73' || (this.moment.categories && this.moment.categories.includes('5e1bbda67b00ea76b75e5a73'))) { // content default components
-                  this.visibleComponents = [10000,10010,10050,10300,30000,40010,40020];
+                  this.visibleComponents = [10000, 10010, 10050, 10300, 30000, 40010, 40020];
               } else if (this.categoryId === '5e17acd47b00ea76b75e5a71' || (this.moment.categories && this.moment.categories.includes('5e17acd47b00ea76b75e5a71'))) { // onboarding default components
-                  this.visibleComponents = [10000,10010,10300,20010,40010,40020];
+                  this.visibleComponents = [10000, 10010, 10300, 20010, 40010, 40020];
               }
           }
           this.initialSetupCompleted = true;
           console.log('editfeature setup completed', this.moment, this.interactableDisplay);
       } catch (err) {
-          console.log('editfeature setup error', err)
+          console.log('editfeature setup error', err);
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid
           this.router.navigate(['/app/me']);
       }
@@ -547,7 +547,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       } else if (componentId === 50000) { // directory
           this.moment.matrix_number.push([1, 1, 1, 0]); // default settings (show participants, organizers, leaders, display type)
           this.moment.matrix_string.push(['']); // input field
-          if (this.moment._id) this.loadProgramOnboardActivities();
+          if (this.moment._id) { this.loadProgramOnboardActivities(); }
       } else if (componentId >= 10300 && componentId <= 10360 || componentId === 20000 || componentId === 10010) {
           this.moment.matrix_number.push([0, 0, null, null, null]); // default values for display settings
           this.moment.matrix_string.push([]); // input field
@@ -583,7 +583,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
       // reduce the available component count
       this.resource.matrix_number[1][this.resource.matrix_number[0].indexOf(componentId)]--;
-      //console.log("updated moment", this.moment);
+      // console.log("updated moment", this.moment);
   }
 
   removeComponent(index, componentId) {
@@ -640,12 +640,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   changeSelectedDate( inputDate ) {
-    if (inputDate === ' ') return;
+    if (inputDate === ' ') { return; }
       this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.startDate = inputDate;
       this.dateType = 'end';
-      if (inputDate.getTime() > this.endDate.getTime()){
+      if (inputDate.getTime() > this.endDate.getTime()) {
         this.endDate = inputDate;
       }
     } else if (this.dateType === 'end') {
@@ -682,7 +682,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           }*/
           this.resourceService.showPixabay = component_index;
       }
-      console.log("show pixa", component_index, option_index, this.moment.matrix_number[component_index], this.resourceService.showPixabay);
+      console.log('show pixa', component_index, option_index, this.moment.matrix_number[component_index], this.resourceService.showPixabay);
   }
 
   async removeMedia(i, j) {
@@ -747,9 +747,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     async reloadMomentUserLists() {
         const moment: any = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
-        if (moment.hasOwnProperty('user_list_1')) this.moment.user_list_1 = moment.user_list_1;
-        if (moment.hasOwnProperty('user_list_2')) this.moment.user_list_2 = moment.user_list_2;
-        if (moment.hasOwnProperty('user_list_3')) this.moment.user_list_3 = moment.user_list_3;
+        if (moment.hasOwnProperty('user_list_1')) { this.moment.user_list_1 = moment.user_list_1; }
+        if (moment.hasOwnProperty('user_list_2')) { this.moment.user_list_2 = moment.user_list_2; }
+        if (moment.hasOwnProperty('user_list_3')) { this.moment.user_list_3 = moment.user_list_3; }
     }
 
     async addParticipants(event, filter, listOfNames, inviteeLabel) {
@@ -827,7 +827,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     if (this.addressSearchString.length) {
       this.searchAddressResults = await this.resourceService.forwardGeocode(this.addressSearchString);
       this.searchAddressResults.push({
-        display_name: "Use Custom Location"
+        display_name: 'Use Custom Location'
       });
     }
   }
@@ -847,7 +847,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         }
       };
       this.moment.location.location = selection.display_name;
-      this.addressURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+selection.lat+","+selection.lon+"&zoom=20&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+selection.lat+","+selection.lon;
+      this.addressURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center=' + selection.lat + ',' + selection.lon + '&zoom=20&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|' + selection.lat + ',' + selection.lon;
     }
     this.addressSearchString = '';
     this.searchAddressResults = [];
@@ -916,7 +916,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     removeReference(event, index) {
         event.stopPropagation();
         if (this.referenceActivities[index] && this.referenceActivities[index]._id && this.referenceActivities[index].cloned === 'new') {
-            console.log("remove cloned Activity");
+            console.log('remove cloned Activity');
             this.removedMoments.push(this.referenceActivities[index]);
         }
         this.referenceActivities.splice(index, 1);
@@ -975,7 +975,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         const results: any = await this.momentService.loadProgramOnboardActivities(this.moment.program, type, true);
         this.peer_preferences = results.preferences;
         this.peer_preferences.unshift({ _id: '', matrix_string: [['None']]}); // add the 'None'' option as the first element
-        if (this.moment._id) this.peer_preferences.splice(this.peer_preferences.map((c) => c._id).indexOf(this.moment._id), 1); // remove the current moment from the list, so one cannot be dependent on itself
+        if (this.moment._id) { this.peer_preferences.splice(this.peer_preferences.map((c) => c._id).indexOf(this.moment._id), 1); } // remove the current moment from the list, so one cannot be dependent on itself
 
         // prep the peer onboarding activities responses
         // it is the parent/child relationship records (e.g. an onboarding process is only shown if a user answers the same in the parent onboarding questions)
@@ -993,7 +993,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         } else {
             this.peer_responses.forEach((response) => {
                 response.index = this.peer_preferences.map((c) => c._id).indexOf(response.moment);
-                console.log("index", response.index, this.peer_preferences);
+                console.log('index', response.index, this.peer_preferences);
                 response.selectedComponentIndex = this.peer_preferences[response.index].resource.matrix_number[2].indexOf(this.peer_preferences[response.index].response.matrix_number[0][0]);
                 response.selectedOptionIndexes = JSON.parse(JSON.stringify(this.peer_preferences[response.index].response.matrix_number[0]));
                 response.selectedOptionIndexes.splice(0, 5);
@@ -1002,7 +1002,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 }
             });
         }
-        console.log("index", this.peer_preferences, this.peer_responses);
+        console.log('index', this.peer_preferences, this.peer_responses);
     }
 
     async loadProgramOnboardActivities() { // load list of onboarding processes and configs
@@ -1028,7 +1028,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 });
             }
         });
-        //console.log("cool", this.match_configs, this.preferences);
+        // console.log("cool", this.match_configs, this.preferences);
     }
 
     async selectedParentMoment(response) {
@@ -1060,7 +1060,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         // config type 3 corresponds to the weighing factor
         event.detail.value = event.detail.value || '0';
         const question_id = this.preferences.find((c) => c._id === momentId).resource.matrix_number[2][selectedConfigIndex];
-        let config = this.match_configs.find((c) => c.matrix_number[0][0] === question_id);
+        const config = this.match_configs.find((c) => c.matrix_number[0][0] === question_id);
         if (config) { // when there is an existing config record, update it
             // for weighing factor, convert it back to base 10 number
             config.matrix_number[0][match_config_type] = match_config_type === 3 ? Math.exp(parseFloat(event.detail.value)) : parseFloat(event.detail.value);
@@ -1074,7 +1074,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
             });
         }
         this.preferences.find((c) => c._id === momentId).config[selectedConfigIndex][match_config_type] = parseFloat(event.detail.value);
-        console.log("after changing match config", this.match_configs, this.preferences);
+        console.log('after changing match config', this.match_configs, this.preferences);
     }
 
     addPeopleProfileBio(componentIndex) {
@@ -1082,7 +1082,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.moment.matrix_number[componentIndex].length = 11;
       }
       this.moment.matrix_number[componentIndex].length = this.moment.matrix_number[componentIndex].length + 3;
-      console.log("show", this.moment.matrix_number[componentIndex]);
+      console.log('show', this.moment.matrix_number[componentIndex]);
     }
 
     addTab(componentIndex) {
@@ -1143,7 +1143,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       });
       await this.loading.present();
       if (!this.moment.matrix_string[0].length || (this.moment.matrix_string[0].length && !this.moment.matrix_string[0][0])) {
-          this.presentToast("Please enter a name for this " + this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0]);
+          this.presentToast('Please enter a name for this ' + this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0]);
           return;
       }
       if (this.templateChanged || !this.moment.resource._id) { // if template has been edited but not saved or in edit mode
@@ -1162,7 +1162,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                 const selectedEndTimeObj = new Date(this.endTime);
                 this.endDate = new Date( this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate(), selectedEndTimeObj.getHours(), selectedEndTimeObj.getMinutes() );
             }
-            if (this.startDate.getTime() > this.endDate.getTime()){
+            if (this.startDate.getTime() > this.endDate.getTime()) {
                 await this.loading.dismiss();
                 const alertCtrl = await await this.alertCtrl.create({
                     header: this.moment.resource['en-US'].matrix_string[this.moment.resource.matrix_number[0].indexOf(10200)][5],
@@ -1268,8 +1268,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
               }
           };
-          //const result: any = await this.momentService.loadSchedule(this.scheduleId);
-          //newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
+          // const result: any = await this.momentService.loadSchedule(this.scheduleId);
+          // newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
           const data: any = { operation: 'create calendar item', calendaritem: newCalendarItem };
           if (this.goalId) {
               data.goalId = this.goalId;
@@ -1302,7 +1302,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         toast.present();
     }
 
-    async explainDiscover(i){
+    async explainDiscover(i) {
         const activityType = this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0];
         const alert = await this.alertCtrl.create({
             header: this.moment.resource['en-US'].matrix_string[i][1],
