@@ -1,5 +1,15 @@
 app-feature-insight {
 
+  ion-content {
+    --background: var(--ion-color-lightgrey);
+  }
+
+  .section-card {
+    width: 100%;
+    margin: 0 5px;
+    padding: 10px 0;
+  }
+
   .column-label {
     text-align: center;
   }
@@ -10,13 +20,12 @@ app-feature-insight {
     padding-bottom: 10px;
 
     .insight-person-avatar {
-      margin: auto;
+      margin: 3px auto 5px auto;
       height: 40px;
       width: 40px;
     }
 
     .insight-person-label {
-      margin: 5px auto 0 auto;
       color: grey;
       font-size: 12px;
     }
@@ -29,7 +38,7 @@ app-feature-insight {
 
   .progress {
     text-align: center;
-    width: 20%; // 32%
+    width: 20%;
   }
 
   .last-date {
@@ -41,4 +50,79 @@ app-feature-insight {
   .small-font {
     font-size: 12px;
   }
+
+.circle-progress{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.progress__svg {
+  transform: rotate(-90deg);
+}
+
+.progress__meter,
+.progress__value {
+  fill: none;
+}
+
+.progress__meter {
+  stroke: #ccc;
+}
+
+.progress__value {
+  stroke: #87BB1F;
+  transition: all;
+}
+
+.progress-value-text{
+  position: absolute;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  font-size: 36px;
+}
+
+progress[value].growth-progress {
+  -webkit-appearance: none;
+   appearance: none;
+
+  width: 90%;
+  height: 8px;
+}
+progress[value].growth-progress::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 5px;
+  outline-color: #b3b3b3;
+}
+
+progress[value].growth-progress::-webkit-progress-value {
+  background-image:
+	   -webkit-linear-gradient(45deg, #3FA7D6 40%, #87BB1F);
+    border-radius: 5px;
+}
+
+.legend-box {
+  width: 100%;
+}
+
+.active-relationship-color {
+    height: 10px;
+    width: 10px;
+    background: #F2A573;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+h2 {
+  font-weight: bold;
+}
+
 }
