@@ -385,9 +385,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                     this.userData.loginAt = new Date();
                     try {
                         if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                            const result: any = await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
-                            this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-                            this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                            await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
                         }
                     } catch (err) {
                         console.log('failed to check admin access');
