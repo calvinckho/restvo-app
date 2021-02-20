@@ -1,66 +1,158 @@
 <ion-header *ngIf="modalPage">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+      <ion-button (click)="closeModal()" color="grey">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Insight</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
-  <ion-toolbar *ngIf="['owner','admin','staff'].includes(userData.user.role)">
-    <ngx-charts-line-chart
-            [scheme]="colorScheme"
-            [legend]="legend"
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="xAxis"
-            [xAxisTickFormatting]="dateTickFormatting"
-            [yAxis]="yAxis"
-            [xAxisLabel]="xAxisLabel"
-            [yAxisLabel]="yAxisLabel"
-            [timeline]="timeline"
-            [results]="multi"
-    >
-    </ngx-charts-line-chart>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-item>
-      <ion-label [hidden]="true">Filter by Program</ion-label>
-      <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
-        <ion-select-option value='all'>Show All</ion-select-option>
-        <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id" [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-toolbar>
-  <ion-list>  <!--*ngIf="platform.width() > 768"-->
-    <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
-      <div class="column column-label" (click)="sortDisplay('participant')">{{participantsLabel}}</div>
-      <div class="column column-label" (click)="sortDisplay('leader')">{{leadersLabel}}</div>
-      <div class="column column-label" (click)="sortDisplay('program')">Program</div>
-      <div class="progress column-label ion-no-margin" slot="end" (click)="sortDisplay('progress')">Progress</div>
-      <div class="last-date column-label ion-no-margin" slot="end" (click)="sortDisplay('lastDate')">Last Check-in</div>
-    </ion-item>
-    <ion-item *ngFor="let relationship of relationshipCompletion" (click)="openProgram($event, relationship)" [hidden]="selectedProgramId && ![relationship.program._id, 'all'].includes(selectedProgramId)">
-      <div *ngFor="let participant of relationship.participants | slice : 0 : 1" (click)="seeUserInfo($event, relationship.participants[0])" class="column">
-        <ion-avatar class="insight-person-avatar">
-          <img class="response-user-img" *ngIf="participant.avatar" [src]="participant.avatar"/>
-          <img class="response-user-img" *ngIf="!participant.avatar" src="assets/img/avatar-default.jpg"/>
-        </ion-avatar>
-        <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{participant.first_name}} {{participant.last_name}}</ion-label>
-      </div>
-      <div *ngFor="let leader of relationship.leaders | slice : 0 : 1" (click)="seeUserInfo($event, relationship.leaders[0])" class="column">
-        <ion-avatar class="insight-person-avatar">
-          <img class="response-user-img" *ngIf="leader.avatar" [src]="leader.avatar"/>
-          <img class="response-user-img" *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg"/>
-        </ion-avatar>
-        <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{leader.first_name}} {{leader.last_name}}</ion-label>
-      </div>
-      <div class="column">
-        <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{relationship.program.name}}</ion-label>
-      </div>
-      <ion-progress-bar class="progress ion-no-margin" [value]="relationship.completed_count/relationship.content_calendar_count" [buffer]="relationship.past_due_count/relationship.content_calendar_count" slot="end"></ion-progress-bar>
-      <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{relationship.last_response_date | datetime: 'm:n,d:n,y:n'}}</div>
-    </ion-item>
-  </ion-list>
+  <ion-grid>
+    <div *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+      <ion-row class="ion-margin-bottom">
+        <ion-card class="section-card">
+          <ion-row>
+            <ion-item lines="none">
+              <ion-label>Organization Snapshot</ion-label>
+            </ion-item>
+          </ion-row>
+          <div class="ion-text-center">
+            <ion-row>
+              <ion-col size="4">
+                <h2>55</h2>
+                <ion-note>active members</ion-note>
+              </ion-col>
+              <ion-col size="4">
+                <h2>2</h2>
+                <ion-note>small groups</ion-note>
+              </ion-col>
+              <ion-col size="4">
+                <h2>11</h2>
+                <ion-note>1:1 relationships</ion-note>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-card>
+      </ion-row>
+      <ion-row class="ion-margin-bottom">
+        <ion-card class="section-card">
+          <ion-row>
+            <ion-col size="12">
+              <ion-item lines="none">
+                <ion-label>Overall Health</ion-label>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="5">
+              <div class="circle-progress">
+                <svg width="120" height="120" viewBox="0 0 120 120" class="progress__svg">
+                  <circle [attr.r]="radius" cx="60" cy="60" stroke-width="9" class="progress__meter" />
+                  <circle [style.strokeDasharray]="circumference" [style.strokeDashoffset]="dashoffset" [attr.r]="radius"
+                          cx="60" cy="60" stroke-width="6" class="progress__value" />
+                </svg>
+                <div class="progress-value-text">
+                  {{circleGraphValue}}
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="7">
+              <ion-label class="overall-health-labels">Recent Activity</ion-label>
+              <progress class="growth-progress" value="90" max="100"></progress>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-row>
+    </div>
+    <ion-row class="ion-margin-bottom">
+      <ion-card class="section-card">
+        <ion-row>
+          <ion-col size="12">
+            <ion-item lines="none">
+              <ion-label>Growth Progression</ion-label>
+              <ion-icon (click)="openFilter.open($event)" slot="end" name="ellipsis-horizontal-outline">filter</ion-icon>
+              <ion-select #OpenFilter interface="action-sheet"
+              (ionChange)="loadMetrics($event)" hidden>
+              <!-- 30 days, 90 days, this year, last year -->
+              <ion-select-option value=thisWeek>This Week</ion-select-option>
+              <ion-select-option value=thisMonth>This Month</ion-select-option>
+              <ion-select-option value=30>30 Days</ion-select-option>
+              <ion-select-option value=90>90 Days</ion-select-option>
+              <ion-select-option value=thisYear>This Year</ion-select-option>
+              <!--<ion-select-option>Last Year (n/a yet)</ion-select-option>-->
+            </ion-select>
+          </ion-item>
+          <ion-row class="ion-justify-content-center">
+            <div class="legend-box ion-text-center">
+              <div class="active-relationship-color"></div>
+              <span>{{activeParticipants}} activity</span>
+            </div>
+          </ion-row>
+          </ion-col>
+        </ion-row>
+          <ion-row>
+            <ion-toolbar>
+              <ngx-charts-line-chart [scheme]="colorScheme" [schemeType]="schemeType" [legend]="legend"
+                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis"
+                [xAxisTickFormatting]="dateTickFormatting" [yAxis]="yAxis" [xAxisLabel]="xAxisLabel" [xScaleMin]="xScaleMin"
+                [yAxisLabel]="yAxisLabel" [timeline]="timeline" [results]="multi">
+              </ngx-charts-line-chart>
+            </ion-toolbar>
+          </ion-row>
+      </ion-card>
+    </ion-row>
+    <ion-toolbar>
+      <ion-item>
+        <ion-label [hidden]="true">Filter by Program</ion-label>
+        <ion-select [(ngModel)]="selectedProgramId" slot="end" placeholder="Show All">
+          <ion-select-option value='all'>Show All</ion-select-option>
+          <ion-select-option *ngFor="let program of listOfPrograms" [value]="program._id"
+            [class.selected]="selectedProgramId === program._id">{{program.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-toolbar>
+    <ion-list>
+      <!--*ngIf="platform.width() > 768"-->
+      <ion-item [ngStyle]="{'font-size': platform.width() < 400 ? '11px' : '14px'}">
+        <div class="column column-label" (click)="sortDisplay('participant')">{{participantsLabel}}</div>
+        <div class="column column-label" (click)="sortDisplay('leader')">{{leadersLabel}}</div>
+        <div class="column column-label" (click)="sortDisplay('program')">Program</div>
+        <div class="progress column-label ion-no-margin" slot="end" (click)="sortDisplay('progress')">Progress</div>
+        <div class="last-date column-label ion-no-margin" slot="end" (click)="sortDisplay('lastDate')">Last Check-in
+        </div>
+      </ion-item>
+      <ion-item *ngFor="let relationship of relationshipCompletion" (click)="openProgram($event, relationship)"
+        [hidden]="selectedProgramId && ![relationship.program._id, 'all'].includes(selectedProgramId)">
+        <div *ngFor="let participant of relationship.participants | slice : 0 : 1"
+          (click)="seeUserInfo($event, relationship.participants[0])" class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" *ngIf="participant.avatar" [src]="participant.avatar" />
+            <img class="response-user-img" *ngIf="!participant.avatar" src="assets/img/avatar-default.jpg" />
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{participant.first_name}}
+            {{participant.last_name}}</ion-label>
+        </div>
+        <div *ngFor="let leader of relationship.leaders | slice : 0 : 1"
+          (click)="seeUserInfo($event, relationship.leaders[0])" class="column">
+          <ion-avatar class="insight-person-avatar">
+            <img class="response-user-img" *ngIf="leader.avatar" [src]="leader.avatar" />
+            <img class="response-user-img" *ngIf="!leader.avatar" src="assets/img/avatar-default.jpg" />
+          </ion-avatar>
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{leader.first_name}}
+            {{leader.last_name}}</ion-label>
+        </div>
+        <div class="column">
+          <ion-label class="insight-person-label ion-text-center ion-text-wrap">{{relationship.program.name}}
+          </ion-label>
+        </div>
+        <ion-progress-bar class="progress ion-no-margin"
+          [value]="relationship.completed_count/relationship.content_calendar_count"
+          [buffer]="relationship.past_due_count/relationship.content_calendar_count" slot="end"></ion-progress-bar>
+        <div class="last-date small-font ion-text-wrap ion-no-margin" slot="end">{{relationship.last_response_date |
+          datetime: 'm:n,d:n,y:n'}}</div>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
 </ion-content>

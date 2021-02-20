@@ -107,7 +107,7 @@ export class Auth {
     // routes Unauthenticated user to the correct URL
     // authorized pages are routed register to public pages
     private async routeUnauthenticatedUser(slide, errMessage) {
-        console.log("Routing unauthenticated user.", this.router.url);
+        console.log('Routing unauthenticated user.', this.router.url);
         // contains all URL parameters that have a public page
         // const publicPageURLParameters = ['activity', 'connect', 'reply'];
 
@@ -166,7 +166,7 @@ export class Auth {
     // routes authorized user to correct URL
     // public pages are routed to the authorized page
     private async routeAuthenticatedUser() {
-        console.log("Routing authenticated user...");
+        console.log('Routing authenticated user...');
         let activityURL = '';
         if (this.router.url.includes('activity') && !this.router.url.includes('manage')) { // route /activity to /app/activity, except in manage mode
             const activityIdStartIndex = this.router.url.search('activity') + 9; // the index of the first character of the activity id
@@ -231,7 +231,7 @@ export class Auth {
 
     async verifyEmail(data) {
         const result: any = await this.verifyEmailHTTP(data);
-        if (result && result.success){
+        if (result && result.success) {
             this.token = result.token;
             this.storage.set('token', result.token);
             const headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json', 'Authorization': result.token});
@@ -246,7 +246,7 @@ export class Auth {
 
     async verifyMobile(data) {
         const result: any = await this.verifyMobileHTTP(data);
-        if (result && result.success){
+        if (result && result.success) {
             this.token = result.token;
             this.storage.set('token', result.token);
             const headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json', 'Authorization': result.token});
@@ -259,7 +259,7 @@ export class Auth {
         return this.http.put(this.networkService.domain + '/api/auth/verifymobile', JSON.stringify(data), this.httpOptions).toPromise();
     }
 
-    registerEmail(data){
+    registerEmail(data) {
         return this.http.post<{success: boolean, msg: string}>(this.networkService.domain + '/api/auth/register', JSON.stringify(data), this.httpOptions).toPromise();
     }
 
@@ -288,7 +288,7 @@ export class Auth {
         return result;
     }
 
-    recoverPasswordHTTP(data){
+    recoverPasswordHTTP(data) {
         return this.http.post(this.networkService.domain + '/api/auth/recover', JSON.stringify(data), this.httpOptions).toPromise();
     }
 

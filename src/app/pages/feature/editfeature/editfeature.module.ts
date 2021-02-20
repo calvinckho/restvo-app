@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { EditfeaturePage } from './editfeature.page';
-import {ApplicationPipesModule} from "../../../pipes/application-pipes";
+import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import { PlyrModule } from 'ngx-plyr';
 import { QuillModule } from 'ngx-quill';
 

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {ManagefeaturePage} from "./managefeature.page";
+import {ManagefeaturePage} from './managefeature.page';
 
 const routes: Routes = [
     {

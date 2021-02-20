@@ -1,12 +1,12 @@
 import {Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Location} from '@angular/common';
-import {Storage} from "@ionic/storage";
+import {Storage} from '@ionic/storage';
 import { ElectronService } from 'ngx-electron';
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router, ActivatedRoute} from '@angular/router';
 import {CacheService} from 'ionic-cache';
-import * as Plyr from "plyr";
-import {SwUpdate} from "@angular/service-worker";
-import {get} from "scriptjs";
+import * as Plyr from 'plyr';
+import {SwUpdate} from '@angular/service-worker';
+import {get} from 'scriptjs';
 import {
     ActionSheetController,
     AlertController,
@@ -15,22 +15,22 @@ import {
     IonSlides, LoadingController,
     ModalController, PickerController, IonSelect,
     Platform
-} from "@ionic/angular";
-import {UserData} from "../../../services/user.service";
-import {NetworkService} from "../../../services/network-service.service";
-import {Resource} from "../../../services/resource.service";
-import {Moment} from "../../../services/moment.service";
-import {Chat} from "../../../services/chat.service";
-import {CalendarService} from "../../../services/calendar.service";
-import {Response} from "../../../services/response.service";
-import {MapService} from "../../../services/map.service";
-import {Auth} from "../../../services/auth.service";
-import {EditfeaturePage} from "../editfeature/editfeature.page";
-import {OnboardfeaturePage} from "../onboardfeature/onboardfeature.page";
-import {RegisterPage} from "../../user/register/register.page";
-import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
-import {Badge} from "@ionic-native/badge/ngx";
-import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
+} from '@ionic/angular';
+import {UserData} from '../../../services/user.service';
+import {NetworkService} from '../../../services/network-service.service';
+import {Resource} from '../../../services/resource.service';
+import {Moment} from '../../../services/moment.service';
+import {Chat} from '../../../services/chat.service';
+import {CalendarService} from '../../../services/calendar.service';
+import {Response} from '../../../services/response.service';
+import {MapService} from '../../../services/map.service';
+import {Auth} from '../../../services/auth.service';
+import {EditfeaturePage} from '../editfeature/editfeature.page';
+import {OnboardfeaturePage} from '../onboardfeature/onboardfeature.page';
+import {RegisterPage} from '../../user/register/register.page';
+import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
+import {Badge} from '@ionic-native/badge/ngx';
+import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 
 @Component({
   selector: 'app-showfeature',
@@ -58,7 +58,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   subpanel = false;
   subscriptions: any = {};
-  mode = 'list';
   loading: any;
   resource: any = {};
   description = '';
@@ -165,7 +164,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   loadAPIBusy = false;
   searchKeyword = '';
   ionSpinner = false;
-    //Slider Button
+    // Slider Button
     peopleSlidesOptions = {
         slidesPerView: 1.1,
         grabCursor: true,
@@ -229,7 +228,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.calendarId = this.calendarId || this.route.snapshot.paramMap.get('calendarId');
       const result: any = await this.resourceService.loadSystemResources();
       this.resource = result.find((c) => c.field === 'Activity Components v2'); // return the activity components resource object in the result array
-      //this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
+      // this.categories = result.filter((c) => c.field === 'Activity Category'); // return the plan categories array by filtering the result array
 
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
@@ -254,7 +253,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       } else { // execute a refresh on all other user refresh type
           this.setup(data, !!(this.authService.token && this.userData.user));
       }
-  };
+  }
 
   async setup(data, isAuthenticated) {
       this.loadStatus = 'loading';
@@ -374,7 +373,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       }
                       this.responseObj.matrix_string[index].push(...interactable.slice(10));
                   } else {
-                      let interactableObj = Array(10);
+                      const interactableObj = Array(10);
                       interactableObj[0] = interactable[0];
                       interactableObj.push(...interactable.slice(10));
                       this.responseObj.matrix_string.push(interactableObj);
@@ -398,8 +397,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
     if (this.moment) {
         if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
-            this.mapURL = "https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0]+"&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+this.moment.location.geo.coordinates[1]+","+this.moment.location.geo.coordinates[0];
-            this.addressURL = "http://maps.google.com/?q=" + this.moment.location.geo.coordinates[1] + "+%2C" + this.moment.location.geo.coordinates[0];
+            this.mapURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center=' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0] + '&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0];
+            this.addressURL = 'http://maps.google.com/?q=' + this.moment.location.geo.coordinates[1] + '+%2C' + this.moment.location.geo.coordinates[0];
         }
         // initialize the response objects with the correct moment ID
         this.responseObj.moment = this.moment._id;
@@ -430,7 +429,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
-            console.log("responses", this.responses)
+            console.log('responses', this.responses);
             // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
@@ -457,7 +456,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.setupPermission(); // TODO: investigate if this is required
                 }
                 this.refreshCalendarDisplay();
-                //console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
+                // console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
             }
             // if show participants is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10500)) {
@@ -767,7 +766,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.anyChangeMade = true;
       await this.loadMoment();
       this.setupPermission();
-    } catch (err){
+    } catch (err) {
       console.log(err);
       this.anyChangeMade = false;
     }
@@ -860,7 +859,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         startWithVideoMuted: false,
       });
     } else {
-      console.log("missing moment's conversation id");
+      console.log('missing moment\'s conversation id');
     }
   }
 
@@ -888,7 +887,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         this.anyChangeMade = true;
         const interactableId = this.moment.resource.matrix_number[2][componentIndex];
         let updatedExistingResponse = false;
-        for (let interactable of this.responseObj.matrix_number) { // each interactable is an array of user choices for each question
+        for (const interactable of this.responseObj.matrix_number) { // each interactable is an array of user choices for each question
           if (interactable[0] === interactableId) {
             for (let i = interactable.length - 1; i > 4; i--) {
               // for multiple choice or tile choice
@@ -952,7 +951,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (type === 'check-in') {
                 this.responseObj.matrix_string.push([selectedCalendarItem._id, null, null, null, null, newState]);
             } else if (type === 'goal attributes') {
-                let interactableObj = new Array(10);
+                const interactableObj = new Array(10);
                 interactableObj[0] = selectedCalendarItem._id;
                 if (selectedCalendarItem.goals) {
                     interactableObj.push(...selectedCalendarItem.goals);
@@ -974,7 +973,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
             }
         }
-        console.log("sending response", this.responseObj)
+        console.log('sending response', this.responseObj);
         const response = await this.momentService.submitResponse(this.moment, this.responseObj, false);
         const socketData: any = {
             calendarId: selectedCalendarItem._id,
@@ -1042,10 +1041,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async respondToTextArea(event, componentIndex) {
-      console.log("quill changed")
+      console.log('quill changed');
         this.anyChangeMade = true;
         // Showing the user that the content is saving
-        this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saving...";
+        this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = 'Saving...';
         clearTimeout(this.timeoutHandle);
         let updatedExistingResponse = false;
         // first, emit the delta via socket.io
@@ -1075,7 +1074,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         for (const interactable of this.responseObj.matrix_string) {
             if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content); // JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -1099,15 +1098,15 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.userData.refreshUserStatus({ type: 'update onboarding answers' });
                 }
                 // Showing the user that the content has been saved at the end of the timeout
-                this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Saved";
+                this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = 'Saved';
 
                 setTimeout(() => {
                   // setting the interactableDisplay on the current textarea to a blank state after saving data
-                  this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "";
+                  this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = '';
                 }, 3000);
             } else {
               // setting the interactableDisplay on the current textarea to a failure message
-              this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = "Failed";
+              this.interactableDisplay[this.moment.resource.matrix_number[2][componentIndex]].currentSaveState = 'Failed';
             }
         }, 1500);
     }
@@ -1170,12 +1169,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             }, 10000);
         });
       const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', this.searchKeyword, this.pageNum);
-      console.log("matched", results);
+      console.log('matched', results);
       this.loadAPIBusy = false;
       this.ionSpinner = false;
       if (!results.length) {
         this.reachedEnd = true;
-        if (event && event.target) event.target.disabled = true;
+        if (event && event.target) { event.target.disabled = true; }
       } else {
         for (const result of results) {
           this.matchedPeople.push(result);
@@ -1215,7 +1214,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.mapService.reachedEnd = true;
           event.target.disabled = true;
         } else {
-          for (let result of results) {
+          for (const result of results) {
             this.mapService.mapData.push(result);
           }
           // console.log("map data", this.mapData);
@@ -1224,10 +1223,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
         }
       });
-      if (event.target) event.target.complete();
+      if (event.target) { event.target.complete(); }
     } else {
       this.mapService.ionSpinner = false;
-      if (event.target) event.target.complete();
+      if (event.target) { event.target.complete(); }
     }
   }
 
@@ -1300,7 +1299,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async moreParticipantOptions() {
       let actionSheet: any;
-      let buttons = [];
+      const buttons = [];
       if (!this.hasParticipantAccess) {
         buttons.push({
           text: this.resource['en-US'].value[15], // Join X
@@ -1669,7 +1668,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async openProgram(event, moment) {
-    if (event) event.stopPropagation();
+    if (event) { event.stopPropagation(); }
     if (!this.authService.token) {
         this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
     } else if (!this.modalPage && this.platform.width() >= 992) {
@@ -1688,7 +1687,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     // open Content requires providing the relationshipId
     async openContent(event, calendarItem) {
-      if (event) event.stopPropagation();
+      if (event) { event.stopPropagation(); }
         const momentId = typeof calendarItem.moment === 'object' ? calendarItem.moment._id : calendarItem.moment;
         let params: any;
         let componentProps: any;
@@ -1797,7 +1796,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async touchGoal(goal, type) {
       // if Goal is disabled, do not proceed
-        if ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]) return;
+        if ((this.moment.array_boolean.length > 8) && !this.moment.array_boolean[8]) { return; }
         clearTimeout(this.timeoutHandle);
         this.timeoutHandle = setTimeout(() => {
             let updatedExistingGoal = false;
@@ -1911,7 +1910,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     getColumns(numColumns) {
-        let columns = [];
+        const columns = [];
         for (let i = 0; i < numColumns; i++) {
             columns.push({
                 name: `col-${i}`,
@@ -1923,10 +1922,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     getColumnOptions(columnIndex) {
-        let options = [];
+        const options = [];
         for (let i = 0; i < this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1])).length; i++) {
             options.push({
-                text: this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1]))[i][5],//.substring(0, 10) + (this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1]))[i][5].length > 10) ? '...' : '',
+                text: this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1]))[i][5], // .substring(0, 10) + (this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1]))[i][5].length > 10) ? '...' : '',
                 value: this.responseObj.matrix_string.filter((c) => ['master goal'].includes(c[1]))[i]
             });
         }
@@ -1955,10 +1954,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             responseObj.moment = momentId;
             responseObj.relationship = this.moment._id;
             responseObj.calendar = createdContentCalendarItem._id;
-            responseObj.matrix_string.push(['1581143965852193','','','']); // default text answer in Note
+            responseObj.matrix_string.push(['1581143965852193', '', '', '']); // default text answer in Note
             await this.momentService.submitResponse({ _id: momentId }, responseObj, false);
         }
-        //this.progressView = 'Current';
+        // this.progressView = 'Current';
     }
 
     // saving the Content Calendar Item
@@ -2019,7 +2018,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     changeCalendarItemSelectedDate(inputDate) {
-        if (inputDate === ' ') return;
+        if (inputDate === ' ') { return; }
         this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarItem.startDate = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate(), new Date(this.calendarItem.startDate).getHours(), new Date(this.calendarItem.startDate).getMinutes()).toISOString();
         this.anyChangeMade = true;
@@ -2154,7 +2153,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-  async noNetworkConnection(){
+  async noNetworkConnection() {
     const networkAlert = await this.alertCtrl.create({
       header: 'No Internet Connection',
       message: 'Please check your internet connection.',
@@ -2180,13 +2179,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           this.momentService.socket.emit('leave moment', this.moment._id) ;
       }
     }
-    if (this.subscriptions && this.subscriptions.refreshUserStatus) this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler);
-    if (this.subscriptions && this.subscriptions.refreshMoment) this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
+    if (this.subscriptions && this.subscriptions.refreshUserStatus) { this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler); }
+    if (this.subscriptions && this.subscriptions.refreshMoment) { this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler); }
   }
 
     // for refreshing moment either because of real-time interactables, or for refreshing participation
     refreshMomentHandler = async (res) => {
-        console.log("incoming refresh", res)
+        console.log('incoming refresh', res);
         this.zone.run(async () => {
             if (res && res.momentId && res.data) {
                 const momentId = res.momentId;
@@ -2294,7 +2293,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         this.checkAndLoadNotes();
                     } else if (data.delta && data.interactableId && this.interactableDisplay.hasOwnProperty(data.interactableId)) {
                         // update the interactable Display (private or collaborative view)
-                        console.log("delta", this.interactableDisplay)
+                        console.log('delta', this.interactableDisplay);
                         if (this.interactableDisplay.hasOwnProperty(data.interactableId) && this.interactableDisplay[data.interactableId].editor) {
                             this.interactableDisplay[data.interactableId].editor.updateContents(data.delta, 'silent');
                         }
@@ -2345,7 +2344,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                                 }
                                 this.responseObj.matrix_string[index].push(...data.goals);
                             } else {
-                                let interactableObj = Array(10);
+                                const interactableObj = Array(10);
                                 interactableObj[0] = data.calendarId;
                                 interactableObj.push(...data.goals);
                                 this.responseObj.matrix_string.push(interactableObj);

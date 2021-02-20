@@ -36,15 +36,15 @@ import {Systemlog} from '../../services/systemlog.service';
 import {Auth} from '../../services/auth.service';
 import {Resource} from '../../services/resource.service';
 import 'capacitor-jitsi-meet';
-import {PreferencesPage} from "../discover/preferences/preferences.page";
-import {OnboardfeaturePage} from "../feature/onboardfeature/onboardfeature.page";
-import {ShowfeaturePage} from "../feature/showfeature/showfeature.page";
-import {EditfeaturePage} from "../feature/editfeature/editfeature.page";
-import {CalendarService} from "../../services/calendar.service";
-import {EditparticipantsPage} from "../feature/editparticipants/editparticipants.page";
-import {ManagefeaturePage} from "../feature/manage/managefeature.page";
-import {ProgramsPage} from "../user/programs/programs.page";
-import {FeatureCreatorPage} from "../feature/manage/feature-creator/feature-creator.page";
+import {PreferencesPage} from '../discover/preferences/preferences.page';
+import {OnboardfeaturePage} from '../feature/onboardfeature/onboardfeature.page';
+import {ShowfeaturePage} from '../feature/showfeature/showfeature.page';
+import {EditfeaturePage} from '../feature/editfeature/editfeature.page';
+import {CalendarService} from '../../services/calendar.service';
+import {EditparticipantsPage} from '../feature/editparticipants/editparticipants.page';
+import {ManagefeaturePage} from '../feature/manage/managefeature.page';
+import {ProgramsPage} from '../user/programs/programs.page';
+import {FeatureCreatorPage} from '../feature/manage/feature-creator/feature-creator.page';
 
 @Component({
   selector: 'app-main-tab',
@@ -369,7 +369,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         console.log('cannot store push subscription object in database.');
                     });
                 } else {
-                    console.log("no valid push strategy available.");
+                    console.log('no valid push strategy available.');
                 }
             } catch (err) {
                 console.log('cannot subscribe to push notification on browser', err);
@@ -381,13 +381,11 @@ export class MainTabPage implements OnInit, OnDestroy {
         if (Capacitor.isPluginAvailable('App')) {
             App.addListener('appStateChange', async (appState: any) => {
                 if (appState.isActive) {
-                    console.log("app state change");
+                    console.log('app state change');
                     this.userData.loginAt = new Date();
                     try {
                         if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
-                            const result: any = await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
-                            this.userData.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-                            this.userData.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                            await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
                         }
                     } catch (err) {
                         console.log('failed to check admin access');
@@ -402,9 +400,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                     setTimeout(() => {
                         this.readyToDetectNetworkChange = true;
                     }, 2000);
-                    if (this.platform.is('cordova')) this.screenOrientation.unlock(); // unlock screen orientation upon resume
+                    if (this.platform.is('cordova')) { this.screenOrientation.unlock(); } // unlock screen orientation upon resume
                 } else {
-                    if (this.platform.is('cordova')) this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT); // lock screen orientation so it won't rotate in pocket
+                    if (this.platform.is('cordova')) { this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT); } // lock screen orientation so it won't rotate in pocket
                     if (this.userData.loginAt) {
                         const usageTimeInSec = Math.ceil((new Date().getTime() - this.userData.loginAt.getTime()) / 1000); // convert from ms to sec, and then round it up to sec.
                         await this.systemLog.logAppUsage(usageTimeInSec);
@@ -458,7 +456,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                             this.momentService.openMoment(params);
                         } else {
                             if (this.router.url.includes('video')) { // if already in a video tab, open the chat in a new tab
-                                window.open(window.location.protocol + '//' + window.location.host + '/app/myconversations/chat', "_blank");
+                                window.open(window.location.protocol + '//' + window.location.host + '/app/myconversations/chat', '_blank');
                             } else {
                                 this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
                             }
@@ -468,7 +466,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         } catch (error) {}
         this.subscriptions['toastNotification'] = this.chatService.toastNotification$.subscribe(async (res) => {
-            if (!res || this.platform.is('android')) return; // local notification is turned off on android
+            if (!res || this.platform.is('android')) { return; } // local notification is turned off on android
             if (this.platform.is('cordova') && this.userData.user.enablePushNotification) { // only iOS
                 this.badge.increase(1);
             }
@@ -570,7 +568,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         });
         this.subscriptions['openUserPrograms'] = this.userData.openUserPrograms$.subscribe(async (data) => {
-            if (!data) return;
+            if (!data) { return; }
             if (data.modalPage) {
                 const manageModal = await this.modalCtrl.create({ component: ProgramsPage, componentProps: { modalPage: true } });
                 await manageModal.present();
@@ -626,7 +624,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         });
         // chat socket message observable
-        this.subscriptions['chatSocketMessage'] = this.authService.chatSocketMessage$.subscribe(res => {//'chat socket emit', async (conversationId, data) => {
+        this.subscriptions['chatSocketMessage'] = this.authService.chatSocketMessage$.subscribe(res => {// 'chat socket emit', async (conversationId, data) => {
             if (res) {
                 if (res.topic === 'chat socket emit') {
                     this.chatService.socket.emit('update status', res.conversationId, res.data);
@@ -804,7 +802,7 @@ export class MainTabPage implements OnInit, OnDestroy {
             // @ts-ignore
             $(`#videoSpace`).empty();
         }
-    };
+    }
 
     ngOnDestroy () {
         if (this.subscriptions && this.hasSetupEventListeners) {
@@ -871,7 +869,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.toggleVideoChat(params);
                 this.pendingVideoChatRoomId = params.videoChatRoomId;
             });
-            this.subscriptions['chatSocketMessage'].unsubscribe(res => {//'chat socket emit', async (conversationId, data) => {
+            this.subscriptions['chatSocketMessage'].unsubscribe(res => { //'chat socket emit', async (conversationId, data) => {
                 if (res) {
                     if (res.topic === 'chat socket emit') {
                         this.chatService.socket.emit('update status', res.conversationId, res.data);

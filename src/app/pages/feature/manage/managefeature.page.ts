@@ -1,36 +1,36 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Location} from "@angular/common";
-import {ElectronService} from "ngx-electron";
-import {SwUpdate} from "@angular/service-worker";
-import {ActivatedRoute, Router} from "@angular/router";
-import {CacheService} from "ionic-cache";
+import {Location} from '@angular/common';
+import {ElectronService} from 'ngx-electron';
+import {SwUpdate} from '@angular/service-worker';
+import {ActivatedRoute, Router} from '@angular/router';
+import {CacheService} from 'ionic-cache';
 import {
   ActionSheetController,
   AlertController, IonSelect,
   LoadingController,
   ModalController,
   Platform, PopoverController, ToastController
-} from "@ionic/angular";
-import {UserData} from "../../../services/user.service";
-import {NetworkService} from "../../../services/network-service.service";
-import {Resource} from "../../../services/resource.service";
-import {Response} from "../../../services/response.service";
-import {Moment} from "../../../services/moment.service";
-import {Chat} from "../../../services/chat.service";
-import {CalendarService} from "../../../services/calendar.service";
-import {EditfeaturePage} from "../editfeature/editfeature.page";
-import {Churches} from "../../../services/church.service";
-import {Groups} from "../../../services/group.service";
-import {Aws} from "../../../services/aws.service";
-import {FeatureInsightPage} from "./feature-insight/feature-insight.page";
-import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
-import {FeatureChildActivitiesPage} from "./feature-childactivities/feature-childactivities.page";
-import {FeatureSchedulePage} from "./feature-schedule/feature-schedule.page";
-import {FeatureBillingPage} from "./feature-billing/feature-billing.page";
-import {FeatureSubscriptionPage} from "./feature-subscription/feature-subscription.page";
-import {PaymentService} from "../../../services/payment.service";
-import {Storage} from "@ionic/storage";
-import {FeatureCreatorPage} from "./feature-creator/feature-creator.page";
+} from '@ionic/angular';
+import {UserData} from '../../../services/user.service';
+import {NetworkService} from '../../../services/network-service.service';
+import {Resource} from '../../../services/resource.service';
+import {Response} from '../../../services/response.service';
+import {Moment} from '../../../services/moment.service';
+import {Chat} from '../../../services/chat.service';
+import {CalendarService} from '../../../services/calendar.service';
+import {EditfeaturePage} from '../editfeature/editfeature.page';
+import {Churches} from '../../../services/church.service';
+import {Groups} from '../../../services/group.service';
+import {Aws} from '../../../services/aws.service';
+import {FeatureInsightPage} from './feature-insight/feature-insight.page';
+import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
+import {FeatureChildActivitiesPage} from './feature-childactivities/feature-childactivities.page';
+import {FeatureSchedulePage} from './feature-schedule/feature-schedule.page';
+import {FeatureBillingPage} from './feature-billing/feature-billing.page';
+import {FeatureSubscriptionPage} from './feature-subscription/feature-subscription.page';
+import {PaymentService} from '../../../services/payment.service';
+import {Storage} from '@ionic/storage';
+import {FeatureCreatorPage} from './feature-creator/feature-creator.page';
 
 @Component({
   selector: 'app-managefeature',
@@ -82,7 +82,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   reloadEditPage = async () => { // refresh the Manage Feature Page if desktop is in Manage view, or if opened by modalPage
     if (this.userData.user && (this.router.url.includes('manage') || this.modalPage)) {
       const momentId = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
-      console.log("refresh manage menu")
+      console.log('refresh manage menu');
       if (!this.modalPage) {
         this.userData.currentManageActivityId = momentId;
         this.storage.set('currentManageActivityId', momentId);
@@ -96,7 +96,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.moment._id);
       }
     }
-  };
+  }
 
   async loadSchedules(momentId) {
     // check to see if it has any schedules
@@ -214,7 +214,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
         this.momentService.openMoment( { moment: this.moment, modalPage: true });
       } else {
         menuItem.params.moment = this.moment;
-        //menuItem.params.title = menuItem.label; TODO: need testing to confirm this is not required
+        // menuItem.params.title = menuItem.label; TODO: need testing to confirm this is not required
         menuItem.params.modalPage = true;
         const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
         await manageModal.present();

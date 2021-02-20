@@ -271,17 +271,15 @@ export class UserData {
         const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
         this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
         this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-        const activityId = await this.storage.get('currentManageActivityId');
-        if (activityId && this.activitiesWithAdminAccess.length) {
-            if (this.activitiesWithAdminAccess.find((c) => c._id === activityId)) {
+        if (this.activitiesWithAdminAccess.length) { // if the user has at least one admin activity
+            const activityId = await this.storage.get('currentManageActivityId'); // get cached admin activity ID
+            if (activityId && this.activitiesWithAdminAccess.find((c) => c._id === activityId)) { // if cached activity ID is found and it is a part of the list of admin activities
+                // TODO: currently, activitiesWithAdminAccess from the backend only returns Community and Program type, so in the current setup relationships are not cached. We may want to consider allowing for Relationship activity to be cached. But doing so requires checking for relationship admin permission which is currently not handled.
                 this.currentManageActivityId = activityId;
             } else {
                 this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
                 this.storage.set('currentManageActivityId', this.currentManageActivityId);
             }
-        } else if (this.activitiesWithAdminAccess.length) {
-            this.currentManageActivityId = this.activitiesWithAdminAccess[0]._id;
-            this.storage.set('currentManageActivityId', this.currentManageActivityId);
         }
         return result;
     }
