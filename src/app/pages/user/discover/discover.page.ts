@@ -29,6 +29,7 @@ export class DiscoverPage implements OnInit {
     selectedMoments = [];
     selectedCategoryId = '5e9f46e1c8bf1a622fec69d5';
     loading: any;
+    mobileSearchBarVisible = false;
 
     constructor(
                 public router: Router,
@@ -69,8 +70,14 @@ export class DiscoverPage implements OnInit {
             } else {
                 this.samples = [];
                 samples.forEach((parent) => {
+                    parent.sample_activities.forEach((activity) => {
+                        const cached_parent = JSON.parse(JSON.stringify(parent));
+                        delete cached_parent.sample_activities;
+                        activity.parent_programs = [cached_parent];
+                    });
                     this.samples.push(...parent.sample_activities);
                 });
+                console.log("return", this.samples);
             }
         } else {
             this.ionSpinner = false;

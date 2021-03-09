@@ -21,13 +21,17 @@ app-discover {
     --background: var(--ion-color-lightgrey);
   }
 
+  ion-card-title {
+    font-size: 20px;
+  }
+
   ion-card {
     width: 100%;
     max-width: 540px;
   }
 
   .photo-item {
-    --size: 100%;
-    max-height: 220px;
+    width: 100%;
+    --size: 220px;
   }
 }

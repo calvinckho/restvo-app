@@ -19,7 +19,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-toolbar>
-  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }" [hidden]="mobileSearchBarVisible && (platform.width() < 768)">
     <ion-menu-toggle slot="start" menu="main" id="dashboard-menu-toggle">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -27,7 +27,9 @@
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
     <ion-title>Discover</ion-title>
-    <!--<ion-title *ngIf="userData.defaultProgram" (click)="openSelectHomePage()">{{userData.defaultProgram.matrix_string[0][0]}}</ion-title>-->
+    <ion-button slot="end" *ngIf="platform.width() < 768" (click)="mobileSearchBarVisible = !mobileSearchBarVisible" fill="clear" color="grey">
+      <ion-icon name="search"></ion-icon>
+    </ion-button>
     <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
@@ -37,6 +39,10 @@
         {{userData.user.first_name}} {{userData.user.last_name}}
       </ion-label>
     </ion-item>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="mobileSearchBarVisible">
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" value=""></ion-searchbar>
+    <ion-button slot="end" fill="clear" color="grey" (click)="mobileSearchBarVisible = !mobileSearchBarVisible" >Back</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -48,12 +54,17 @@
   </ion-grid>
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)">
-        <ion-thumbnail class="photo-item">
-          <ion-img [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
-        </ion-thumbnail>
+      <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword) || sample.parent_programs[0].matrix_string[0][0].toLowerCase().includes(searchKeyword))">
+        <ion-card-content class="ion-no-padding">
+          <ion-thumbnail class="photo-item">
+            <ion-img [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
+          </ion-thumbnail>
+        </ion-card-content>
+        <ion-card-header>
+          <ion-card-title>{{sample.matrix_string[0][0]}}</ion-card-title>
+        </ion-card-header>
         <ion-card-content>
-          <p>{{sample.matrix_string[0][0]}}</p>
+          <p>{{sample.parent_programs[0].matrix_string[0][0]}}</p>
         </ion-card-content>
       </ion-card>
     </ion-row>
