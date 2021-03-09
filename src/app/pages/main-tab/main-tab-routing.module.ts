@@ -8,23 +8,37 @@ const routes: Routes = [
         component: MainTabPage,
         children: [
             {
-                path: 'discover',
+                path: 'home',
                 children: [
-                    {
-                        path: 'list',
-                        children: [
-                            {
-                                path: '',
-                                loadChildren: '../discover/discover/discover.module#DiscoverPageModule'
-                            }
-                        ]
-                    },
                     {
                         path: 'preferences',
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../discover/preferences/preferences.module#PreferencesPageModule'
+                                loadChildren: '../user/about/preferences/preferences.module#PreferencesPageModule'
+                            }
+                        ]
+                    },
+                    {
+                        path: '',
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: '../user/home/home.module#HomePageModule'
+                            }
+                        ]
+                    },
+                ]
+            },
+            {
+                path: 'discover',
+                children: [
+                    {
+                        path: 'preferences',
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: '../user/about/preferences/preferences.module#PreferencesPageModule'
                             }
                         ]
                     },
@@ -42,7 +56,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../discover/discover/discover.module#DiscoverPageModule'
+                                loadChildren: '../user/discover/discover.module#DiscoverPageModule'
                             }
                         ]
                     },
@@ -56,7 +70,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../discover/discover/discover.module#DiscoverPageModule'
+                                loadChildren: '../user/discover/discover.module#DiscoverPageModule'
                             }
                         ]
                     },

@@ -168,29 +168,29 @@ export class Auth {
     private async routeAuthenticatedUser() {
         console.log('Routing authenticated user...');
         let activityURL = '';
-        if (this.router.url.includes('activity') && !this.router.url.includes('manage')) { // route /activity to /app/activity, except in manage mode
+        if (this.router.url.includes('home/activity') || this.router.url.includes('dashboard') || this.router.url.includes('insight')) { // if loading landing page /home/activity or /dashboard
+            const defaultProgram: any = await this.storage.get('defaultProgram');
+            if (defaultProgram) {
+                activityURL = '/app/home/activity/' + defaultProgram._id;
+            }
+            const UIAdminMode: any = await this.storage.get('UIAdminMode');
+            if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
+                activityURL = '/app/home/insight/' + defaultProgram._id;
+            }
+            this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
+        } else if (this.router.url.includes('activity') && !this.router.url.includes('manage')) { // route /activity to /app/activity, except in manage mode
             const activityIdStartIndex = this.router.url.search('activity') + 9; // the index of the first character of the activity id
             const activityAfterIdEndIndex = this.router.url.includes(';') ? this.router.url.search(';') : this.router.url.length; // the index of the character after the last character of the activity id
             if (this.cachedRouteParams && this.cachedRouteParams.id) {
                 activityURL = '/app/activity/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
             } else {
-                activityURL = '/app/discover/home/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
+                activityURL = '/app/home/activity/' + this.router.url.substring(activityIdStartIndex, activityAfterIdEndIndex);
             }
             if (this.cachedRouteParams) {
                 this.router.navigate([activityURL, this.cachedRouteParams], { queryParamsHandling: 'preserve'});
             } else {
                 this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
             }
-        } else if (this.router.url.includes('discover/home') || this.router.url.includes('dashboard')) { // if loading landing page /discover/home or /dashboard
-            const defaultProgram: any = await this.storage.get('defaultProgram');
-            if (defaultProgram) {
-                activityURL = '/app/discover/home/' + defaultProgram._id;
-            }
-            const UIAdminMode: any = await this.storage.get('UIAdminMode');
-            if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
-                activityURL = '/app/dashboard/insight/' + defaultProgram._id;
-            }
-            this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
         }
     }
 

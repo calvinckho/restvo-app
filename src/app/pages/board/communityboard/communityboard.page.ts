@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation} from '@angul
 import {CacheService} from 'ionic-cache';
 import {Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import * as Plyr from "plyr";
+import * as Plyr from 'plyr';
 
 import {
     ActionSheetController,
@@ -15,25 +15,25 @@ import {
     IonSlides
 } from '@ionic/angular';
 
-import {UserData} from "../../../services/user.service";
-import {Board} from "../../../services/board.service";
-import {Moment} from "../../../services/moment.service"
-import {Groups} from "../../../services/group.service";
-import {Response} from "../../../services/response.service";
-import {Churches} from "../../../services/church.service";
-import {Chat} from "../../../services/chat.service";
-import {Auth} from "../../../services/auth.service";
-import {EditboardpostPage} from "../editboardpost/editboardpost.page";
-import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
-import {ShowboardpostPage} from "../showboardpost/showboardpost.page";
-import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
-import {GroupboardPage} from "../groupboard/groupboard.page";
-import {EditcommunityPage} from "../../community/editcommunity/editcommunity.page";
-import {EditgroupPage} from "../../group/editgroup/editgroup.page";
-import {Resource} from "../../../services/resource.service";
-import {GroupchatPage} from "../../group/groupchat/groupchat.page";
-import {ShowgroupPage} from "../../group/showgroup/showgroup.page";
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
+import {UserData} from '../../../services/user.service';
+import {Board} from '../../../services/board.service';
+import {Moment} from '../../../services/moment.service';
+import {Groups} from '../../../services/group.service';
+import {Response} from '../../../services/response.service';
+import {Churches} from '../../../services/church.service';
+import {Chat} from '../../../services/chat.service';
+import {Auth} from '../../../services/auth.service';
+import {EditboardpostPage} from '../editboardpost/editboardpost.page';
+import {ShowrecipientinfoPage} from '../../connect/showrecipientinfo/showrecipientinfo.page';
+import {ShowboardpostPage} from '../showboardpost/showboardpost.page';
+import {ShowcommunityPage} from '../../community/showcommunity/showcommunity.page';
+import {GroupboardPage} from '../groupboard/groupboard.page';
+import {EditcommunityPage} from '../../community/editcommunity/editcommunity.page';
+import {EditgroupPage} from '../../group/editgroup/editgroup.page';
+import {Resource} from '../../../services/resource.service';
+import {GroupchatPage} from '../../group/groupchat/groupchat.page';
+import {ShowgroupPage} from '../../group/showgroup/showgroup.page';
+import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
 
 @Component({
   selector: 'app-communityboard',
@@ -47,11 +47,11 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
     communitiesboards: any;
-    searchKeyword: string = '';
-    communityNum: number = 0;
-    reachedEnd: boolean = false;
-    ionSpinner: boolean = false;
-    isGroupLeader: boolean = false;
+    searchKeyword = '';
+    communityNum = 0;
+    reachedEnd = false;
+    ionSpinner = false;
+    isGroupLeader = false;
     newsfeedMoreOptions = false;
     mediaList: Array<{_id: string, player: Plyr}> = [];
 
@@ -83,7 +83,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
 
     async ionViewWillEnter() {
         // boardService is ready in regular page entry, but not ready in PWA fast load and needs to listen to refresh event from maintab.ts
-        if (this.userData.user){
+        if (this.userData.user) {
             await this.boardService.loadUserChurchBoards();
             this.reloadBoardPosts();
             this.content.scrollToTop(0);
@@ -99,32 +99,32 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         if (res && res.type === 'refresh board') {
             const boardId = res.boardId;
             const data = res.data;
-            for (let community of this.communitiesboards) {
-                for (let board of community.boards) {
+            for (const community of this.communitiesboards) {
+                for (const board of community.boards) {
                     if (board._id === boardId) { // the incoming board is displayed
                         board.updatedAt = new Date().toISOString();
                         if (data.action === 'create post') {
                             this.reloadBoardPosts();
-                        } else if(data.action === 'delete post') {
-                            let index = board.posts.map((c) => {return c._id;}).indexOf(data.postId);
+                        } else if (data.action === 'delete post') {
+                            const index = board.posts.map((c) => c._id).indexOf(data.postId);
                             if (board.posts[index].media && board.posts[index].media.length) {
                                 this.destroyPlayers(board.posts[index].media._id);
                             }
                             board.posts.splice(index, 1);
                             this.reorderCommunitiesBoards();
                         } else if (data.action === 'like' || data.action === 'cancel like') {
-                            for (let boardpost of board.posts) {
+                            for (const boardpost of board.posts) {
                                 if (boardpost.bucketId === data.bucketId && boardpost._id === data.postId) {
                                     if (data.action === 'like') {
                                         boardpost.likes.push(data.author);
                                     } else if (data.action === 'cancel like') {
-                                        let index = boardpost.likes.indexOf(data.author);
+                                        const index = boardpost.likes.indexOf(data.author);
                                         boardpost.likes.splice(index, 1);
                                     }
                                 }
                             }
                         } else if (data.action === 'update post') {
-                            for (let boardpost of board.posts) {
+                            for (const boardpost of board.posts) {
                                 if (boardpost._id === data.post._id) {
                                     boardpost.body = data.post.body;
                                     boardpost.attachments = data.post.attachments;
@@ -134,23 +134,23 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                                     boardpost.media = data.post.media;
                                     this.reorderCommunitiesBoards();
                                     if (data.post.moments && data.post.moments.length && data.post.moments[0] && data.post.moments[0].resource.hasOwnProperty('en-US') && data.post.moments[0].resource['en-US'].value[0] === 'Poll') {
-                                        this.reloadBoardPosts(); //reload is needed to create a new moment socket.io for the feature
+                                        this.reloadBoardPosts(); // reload is needed to create a new moment socket.io for the feature
                                     } else {
                                         boardpost.moments = data.post.moments;
                                     }
                                 }
-                                if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]){
+                                if (boardpost.comments && boardpost.comments.length && boardpost.comments[0]) {
                                     this.reloadBoardPosts();
                                 }
                             }
                         } else if (data.action === 'create comment') {
-                            console.log("create comment", data);
-                            for (let boardpost of board.posts) {
-                                if (boardpost._id === data.comment.parentId) { //first level comment
-                                    boardpost.comments.unshift(data.comment)
+                            console.log('create comment', data);
+                            for (const boardpost of board.posts) {
+                                if (boardpost._id === data.comment.parentId) { // first level comment
+                                    boardpost.comments.unshift(data.comment);
                                 }
                             }
-                            //this.reorderCommunitiesBoards();
+                            // this.reorderCommunitiesBoards();
                         } else { // data.action === 'refresh board'. Need to refresh all users' feeds
                             await this.boardService.loadUserChurchBoards();
                             this.reloadBoardPosts();
@@ -159,9 +159,9 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 }
             }
         }
-    };
+    }
 
-    async reloadBoardPosts(){
+    async reloadBoardPosts() {
         setTimeout(async () => {
             this.destroyPlayers(null);
             this.infiniteScroll.disabled = false;
@@ -180,19 +180,19 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         } else {
             currentCommunityId = '5ab62be8f83e2c1a8d41f894';
         }
-        let selectedCurrentCommunity = (currentCommunityId === this.userData.communitiesboards[this.communityNum]._id); // if matches current community which can only be Restvo
-        let selectedRestvo = (currentCommunityId === '5ab62be8f83e2c1a8d41f894');
+        const selectedCurrentCommunity = (currentCommunityId === this.userData.communitiesboards[this.communityNum]._id); // if matches current community which can only be Restvo
+        const selectedRestvo = (currentCommunityId === '5ab62be8f83e2c1a8d41f894');
         if (!this.reachedEnd && (selectedCurrentCommunity)) { // || selectedRestvo)) { // only showing Restvo
             let buckets: any;
             this.communitiesboards.push(this.userData.communitiesboards[this.communityNum]);
             this.communitiesboards[this.communitiesboards.length - 1].postCount = 0;
-            for (let board of this.communitiesboards[this.communitiesboards.length - 1].boards) {
+            for (const board of this.communitiesboards[this.communitiesboards.length - 1].boards) {
                 board.posts = [];
                 board.preview_posts = [];
                 board.postCount = 0;
                 buckets = await this.boardService.loadBoardBuckets(board._id, this.searchKeyword, 1); // load the first page of each feed
                 this.ionSpinner = false;
-                for (const bucket of buckets){
+                for (const bucket of buckets) {
                     bucket.posts.forEach((post, i) => {
                         this.communitiesboards[this.communitiesboards.length - 1].postCount++;
                         board.postCount++;
@@ -203,53 +203,53 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                         }
                     });
                 }
-                let momentIds = [];
-                for (let post of board.posts) {
+                const momentIds = [];
+                for (const post of board.posts) {
                     if (post.moments && post.moments.length && post.moments[0].resource && post.moments[0].resource.hasOwnProperty('en-US') && post.moments[0].resource['en-US'].value[0] === 'Poll') {
                         momentIds.push(post.moments[0]._id);
                         post.poll = {
                             display: [],
-                            responses: [],   //list of all of the responses that users give.
-                            winner: [],      //list of the highest vote count indexes
+                            responses: [],   // list of all of the responses that users give.
+                            winner: [],      // list of the highest vote count indexes
                             totalVoteCount: 0
                         };
-                        for (let option of post.moments[0].matrix_string[1]) {
+                        for (const option of post.moments[0].matrix_string[1]) {
                             post.poll.display.push({option: option, votedByUser: false, count: 0});
                         }
                     }
-                    //this.communitiesboards.push(post);
+                    // this.communitiesboards.push(post);
                 }
-                if (momentIds.length){
+                if (momentIds.length) {
                     momentIds.forEach((momentId) => {
                         if (this.momentService.socket) {
                             this.momentService.socket.emit('join moment', momentId) ;
                         }
                     });
-                    let responseRequest = this.responseService.findResponsesByMomentIds(JSON.parse(JSON.stringify(momentIds)));
-                    let responseResponse = this.cache.loadFromDelayedObservable('response-' + board._id, responseRequest, 'boards', 5, 'all');
+                    const responseRequest = this.responseService.findResponsesByMomentIds(JSON.parse(JSON.stringify(momentIds)));
+                    const responseResponse = this.cache.loadFromDelayedObservable('response-' + board._id, responseRequest, 'boards', 5, 'all');
                     responseResponse.subscribe(async (responses) => {
                         board.posts.forEach(async (boardpost: any) => {
                             if (boardpost.moments[0] && boardpost.moments[0].resource && boardpost.moments[0].resource.field && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
-                                for (let response of responses) {
+                                for (const response of responses) {
                                     if (response.moment == boardpost.moments[0]._id) {
                                         const index = boardpost.poll.responses.map((c) => c._id).indexOf(response._id);
-                                        if (index < 0) { //if the response hasn't been added to the response list
+                                        if (index < 0) { // if the response hasn't been added to the response list
                                             boardpost.poll.responses.push(response);
-                                        } else { //if it has been added, and if the incoming response is newer
+                                        } else { // if it has been added, and if the incoming response is newer
                                             if (new Date(boardpost.poll.responses[index].createdAt).getTime() < new Date(response.createdAt).getTime()) {
                                                 boardpost.poll.responses.splice(index, 1, response);
                                             }
                                         }
                                     }
                                 }
-                                //now the latest response have been included, reset the display array
+                                // now the latest response have been included, reset the display array
                                 await boardpost.poll.display.forEach((displayitem) => {
                                     displayitem.count = 0;
                                     displayitem.votedByUser = false;
                                 });
-                                //reconstruct the display array
+                                // reconstruct the display array
                                 boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
-                                for (let response of boardpost.poll.responses) {
+                                for (const response of boardpost.poll.responses) {
                                     if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
                                         if (response.matrix_number[0][1] > (boardpost.poll.display.length - 1)) {
                                             return; // if this response belongs to an option that has been deleted
@@ -281,7 +281,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
             if (this.communityNum < this.userData.communitiesboards.length - 1) {
                 await this.listcommunityboardposts({target: this.infiniteScroll});
             }
-            if (this.communityNum === this.userData.communitiesboards.length - 1){
+            if (this.communityNum === this.userData.communitiesboards.length - 1) {
                 this.reachedEnd = true;
                 event.target.disabled = true;
             }
@@ -293,9 +293,9 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         board.preview_posts = board.posts;
     }
 
-    async openBoard(event, board, community){
+    async openBoard(event, board, community) {
         event.stopPropagation();
-        if (board.group && board._id){
+        if (board.group && board._id) {
             /*let selectedBoard = JSON.parse(JSON.stringify(board));
             let selectedGroup = JSON.parse(JSON.stringify(board.group));
             delete selectedBoard.group;
@@ -349,12 +349,12 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                     role: 'cancel',
                     handler: () => {
                         console.log('Cancel topic creation');
-                        return
+                        return;
                     }
                 }, {
                     text: 'Ok',
                     handler: data => {
-                        if (access){
+                        if (access) {
                             this.promptBoardType(data.name, communityId);
                         } else {
                             this.createPersonalBoard(data.name, communityId);
@@ -389,13 +389,13 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                     role: 'cancel',
                     handler: () => {
                         console.log('Cancel topic creation');
-                        return
+                        return;
                     }
                 }, {
                     text: 'Ok',
                     handler: data => {
-                        console.log("result", data);
-                        if (data === 'default'){
+                        console.log('result', data);
+                        if (data === 'default') {
                             this.createCommunityBoard(name, communityId);
                         } else {
                             this.createPersonalBoard(name, communityId);
@@ -410,8 +410,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
 
     async createCommunityBoard(name, communityId) {
         this.ionSpinner = true;
-        let boardId = await this.churchService.editCommunityBoard({action: "create", board: {name: name, church: communityId}});
-        //refresh the boards slide array
+        const boardId = await this.churchService.editCommunityBoard({action: 'create', board: {name: name, church: communityId}});
+        // refresh the boards slide array
         this.boardService.socket.emit('join board', boardId);
         this.reloadBoardPosts();
     }
@@ -420,8 +420,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         this.ionSpinner = true;
         const [church] = await this.churchService.loadChurchProfile(communityId);
         const group = {name: name, details: '', emailDisabled: false, smsDisabled: false, churchId: communityId, board: '', meeting_day: '', meeting_frequency: '', beginAt: new Date().toISOString(), endAt: new Date().toISOString(), meeting_location: {location: '', street: church.meeting_location.street, city: church.meeting_location.city, state: church.meeting_location.state, country: church.meeting_location.country}, published: false, public_group: true, flagged: false, publishedAt: null, expiredAt: null};
-        const createdGroup: any = await this.groupService.createGroupProfile(group); //will also update userData's groups and userData's communityboards list
-        //refresh the boards slide array
+        const createdGroup: any = await this.groupService.createGroupProfile(group); // will also update userData's groups and userData's communityboards list
+        // refresh the boards slide array
         this.boardService.socket.emit('join board', createdGroup.board);
         this.reloadBoardPosts();
     }
@@ -430,8 +430,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         const editPostPage = await this.modalCtrl.create({component: EditboardpostPage, componentProps: { boardId: board._id }});
         await editPostPage.present();
         const {data: refreshNeeded} = await editPostPage.onDidDismiss();
-        if(refreshNeeded){
-            //this.reloadBoardPosts();
+        if (refreshNeeded) {
+            // this.reloadBoardPosts();
         }
     }
 
@@ -439,7 +439,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         event.stopPropagation();
         let isGroupLeader = false;
         let hasPlatformAdminAccess = false;
-        if (board.group && board.group.leaders){
+        if (board.group && board.group.leaders) {
             isGroupLeader = board.group.leaders.map((c) => c._id).indexOf(this.userData.user._id) > -1;
         }
         if (board.group && board.group.churchId) {
@@ -449,12 +449,12 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         const showBoardPage = await this.modalCtrl.create({component: ShowboardpostPage, componentProps: { boardId: board._id, post: post, isGroupLeader: isGroupLeader, hasPlatformAdminAccess: hasPlatformAdminAccess }});
         await showBoardPage.present();
         const {data: refreshNeeded} = await showBoardPage.onDidDismiss();
-        if(refreshNeeded){
-            //this.reloadBoardPosts();
+        if (refreshNeeded) {
+            // this.reloadBoardPosts();
         }
     }
 
-    async openRestvoFeature(event, moment) { //when tap on a Restvo feature
+    async openRestvoFeature(event, moment) { // when tap on a Restvo feature
         event.stopPropagation();
         const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: {moment: moment, modalPage: true}});
         await modal.present();
@@ -464,11 +464,11 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    async likePost(event, board, post){
+    async likePost(event, board, post) {
         event.stopPropagation();
-        let action = (post.likes.indexOf(this.userData.user._id) > -1) ? "cancel like" : "like";
+        const action = (post.likes.indexOf(this.userData.user._id) > -1) ? 'cancel like' : 'like';
         await this.boardService.likePost(board._id, post.bucketId, post._id, action);
-        //this.reloadBoardPosts();
+        // this.reloadBoardPosts();
     }
 
     async showCommunityProfile(community) {
@@ -501,7 +501,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         return await alert.present();
     }
 
-    //get the latest user data from the server
+    // get the latest user data from the server
     refresh(event) {
         this.ionSpinner = true;
         this.communitiesboards = [];
@@ -511,7 +511,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }, 2000);
     }
 
-    async noNetworkConnection(){
+    async noNetworkConnection() {
         const networkAlert = await this.alertCtrl.create({
             header: 'No Internet Connection',
             subHeader: 'Please check your internet connection.',
@@ -522,43 +522,39 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     }
 
     displayTimeElapsed(dateTime) {
-        let minElapsed = Math.round((new Date().getTime() - new Date(dateTime).getTime())/(1000 * 60));
-        if(minElapsed < 60){
+        const minElapsed = Math.round((new Date().getTime() - new Date(dateTime).getTime()) / (1000 * 60));
+        if (minElapsed < 60) {
             return minElapsed.toString() + 'm ago';
-        }
-        else if(minElapsed >= 60 && minElapsed < (60 * 24)){
-            return Math.round(minElapsed/60).toString() + 'h ago';
-        }
-        else if(minElapsed >= (60 * 24) && minElapsed < (60 * 24 * 6)){
-            return Math.round(minElapsed/(60*24)).toString() + 'd ago';
-        }
-        else if(minElapsed >= (60 * 24 * 6) && minElapsed < (60 * 24 * 30)){
-            return Math.round(minElapsed/(60*24*7)).toString() + 'wk ago';
-        }
-        else{
-            return Math.round(minElapsed/(60*24*30)).toString() + 'mo ago';
+        } else if (minElapsed >= 60 && minElapsed < (60 * 24)) {
+            return Math.round(minElapsed / 60).toString() + 'h ago';
+        } else if (minElapsed >= (60 * 24) && minElapsed < (60 * 24 * 6)) {
+            return Math.round(minElapsed / (60 * 24)).toString() + 'd ago';
+        } else if (minElapsed >= (60 * 24 * 6) && minElapsed < (60 * 24 * 30)) {
+            return Math.round(minElapsed / (60 * 24 * 7)).toString() + 'wk ago';
+        } else {
+            return Math.round(minElapsed / (60 * 24 * 30)).toString() + 'mo ago';
         }
     }
 
     refreshMomentHandler = async (res) => {
         if (res && res.momentId && res.data) {
             const data = res.data;
-            for (let community of this.communitiesboards) {
-                for (let board of community.boards) {
-                    for (let boardpost of board.posts) {
+            for (const community of this.communitiesboards) {
+                for (const board of community.boards) {
+                    for (const boardpost of board.posts) {
                         if (boardpost.moments && boardpost.moments.length && data.moment && (boardpost.moments[0]._id === data.moment._id) && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
                             const index = boardpost.poll.responses.map((c) => c._id).indexOf(data.response._id);
-                            if (index < 0) { //if the response hasn't been added to the response list
+                            if (index < 0) { // if the response hasn't been added to the response list
                                 boardpost.poll.responses.push(data.response);
-                            } else { //if it has been added, replace with the incoming one
+                            } else { // if it has been added, replace with the incoming one
                                 boardpost.poll.responses.splice(index, 1, data.response);
                             }
-                            //now the latest response have been included, reset the display array
+                            // now the latest response have been included, reset the display array
                             await boardpost.poll.display.forEach((displayitem) => {
                                 displayitem.count = 0;
                                 displayitem.votedByUser = false;
                             });
-                            //reconstruct the display array
+                            // reconstruct the display array
                             boardpost.poll.totalVoteCount = boardpost.poll.responses.length;
                             for (const response of boardpost.poll.responses) {
                                 if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
@@ -577,7 +573,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 }
             }
         }
-    };
+    }
 
     reorderCommunitiesBoards() {
         for (const community of this.communitiesboards) { // sort each community's feeds' order
@@ -595,17 +591,17 @@ export class CommunityboardPage implements OnInit, OnDestroy {
     }
 
     async createNewCommunity() {
-        let industries = [];
-        this.resourceService.load('en-US', "Industry").subscribe(async (fields: any) => {
-            for(let i = 0; i < fields.length; i++){
-                console.log("id", fields[i]._id);
-                industries.push({_id: fields[i]._id, name: fields[i]["en-US"].value[0], selected: false});
+        const industries = [];
+        this.resourceService.load('en-US', 'Industry').subscribe(async (fields: any) => {
+            for (let i = 0; i < fields.length; i++) {
+                console.log('id', fields[i]._id);
+                industries.push({_id: fields[i]._id, name: fields[i]['en-US'].value[0], selected: false});
             }
             const editCommunity = await this.modalCtrl.create({component: EditcommunityPage, componentProps: {industries: industries}} );
             await editCommunity.present();
             const {data: refreshNeeded} = await editCommunity.onDidDismiss();
             if (refreshNeeded) {
-                //this.loadMap();
+                // this.loadMap();
             }
         }, async (err) => {
             const networkAlert = await this.alertCtrl.create({
@@ -622,7 +618,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         const editGroupPage = await this.modalCtrl.create({component: EditgroupPage, componentProps: {personalGroup: false, publishGroup: false}});
         await editGroupPage.present();
         const {data: refreshNeeded} = await editGroupPage.onDidDismiss();
-        if (refreshNeeded){
+        if (refreshNeeded) {
             this.router.navigateByUrl('/app/myconversations/chat');
         }
     }
@@ -631,7 +627,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         this.newsfeedMoreOptions = !this.newsfeedMoreOptions;
         if (this.newsfeedMoreOptions) {
             try {
-                for (let community of this.communitiesboards) {
+                for (const community of this.communitiesboards) {
                     this.loadCommunityGroups(community);
                 }
             } catch (err) {
@@ -645,8 +641,8 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         this.ionSpinner = false;
         community.topics = []; // reset the array
         community.groups = [];
-        let listOfCurrentCommunityBoardIds = community.boards.map((c) => {return c._id});
-        let listOfUserGroupIds = this.userData.user.groups.map((c) => {return c._id;});
+        const listOfCurrentCommunityBoardIds = community.boards.map((c) => c._id);
+        const listOfUserGroupIds = this.userData.user.groups.map((c) => c._id);
         groups.forEach((group: any) => {
             group.joined = listOfUserGroupIds.indexOf(group._id) > -1;
             if (group.board) {
@@ -659,9 +655,9 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         });
     }
 
-    async showGroupProfile(group){
-        let groupIds = this.userData.user.groups.map((c) => {return c._id;});
-        if (groupIds.indexOf(group._id) > -1 || this.userData.hasPlatformAdminAccess){ //if user is admin or has already joined this group
+    async showGroupProfile(group) {
+        const groupIds = this.userData.user.groups.map((c) => c._id);
+        if (groupIds.indexOf(group._id) > -1 || this.userData.hasPlatformAdminAccess) { // if user is admin or has already joined this group
             if (group.conversation) {
                 this.chatService.currentChatProps.push({
                     conversationId: group.conversation,
@@ -692,7 +688,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 }
             }
         } else {
-            if (group.conversation){
+            if (group.conversation) {
                 const aboutPage = await this.modalCtrl.create({component: ShowgroupPage, componentProps: {
                         group: group
                     }});
@@ -707,9 +703,9 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    executeSearch(event){
+    executeSearch(event) {
         event.stopPropagation();
-        //this.ionSpinner = true;
+        // this.ionSpinner = true;
         this.setupLoadGroups();
     }
 
@@ -730,7 +726,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         }
     }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.subscriptions['refreshBoards'].unsubscribe(this.refreshPage);
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
     }

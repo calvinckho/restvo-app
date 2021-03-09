@@ -1,4 +1,4 @@
-<ion-header id="showfeature-header" *ngIf="modalPage || subpanel || !(router.url.includes('discover/home') || router.url.includes('manage/activity'))" [ngClass]="{'ion-no-border': platform.width() >= 768 }"> <!--hide header if embedded in Discover page or Manage community/program mode-->
+<ion-header id="showfeature-header" *ngIf="modalPage || subpanel || !(router.url.includes('home/activity') || router.url.includes('manage/activity'))" [ngClass]="{'ion-no-border': platform.width() >= 768 }"> <!--hide header if embedded in Discover page or Manage community/program mode-->
   <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">

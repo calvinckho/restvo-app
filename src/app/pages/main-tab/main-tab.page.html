@@ -3,10 +3,10 @@
     <ion-tab-button tab="discover" *ngIf="!userData.defaultProgram" [ngClass]="{'tab-selected': router.url.includes('discover')}">
       <ion-icon name="discover"></ion-icon>
     </ion-tab-button>
-    <ion-tab-button [tab]="'dashboard/insight/' + userData.defaultProgram._id" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))"  [ngClass]="{'tab-selected': router.url.includes('dashboard')}">
+    <ion-tab-button [tab]="'home/insight/' + userData.defaultProgram._id" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))"  [ngClass]="{'tab-selected': router.url.includes('home/insight')}">
        <ion-icon name="home"></ion-icon>
     </ion-tab-button>
-    <ion-tab-button [tab]="'discover/home/' + userData.defaultProgram._id" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || ((!userData.defaultProgram.user_list_2 || !userData.defaultProgram.user_list_2.includes(userData.user._id)) && (!userData.defaultProgram.user_list_3 || !userData.defaultProgram.user_list_3.includes(userData.user._id))))"  [ngClass]="{'tab-selected': router.url.includes('discover')}">
+    <ion-tab-button [tab]="'home/activity/' + userData.defaultProgram._id" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || ((!userData.defaultProgram.user_list_2 || !userData.defaultProgram.user_list_2.includes(userData.user._id)) && (!userData.defaultProgram.user_list_3 || !userData.defaultProgram.user_list_3.includes(userData.user._id))))"  [ngClass]="{'tab-selected': router.url.includes('home/activity')}">
        <ion-icon name="home"></ion-icon>
     </ion-tab-button>
     <ion-tab-button tab="news" *ngIf="!userData.UIAdminMode">

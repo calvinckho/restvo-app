@@ -17,16 +17,17 @@ app-discover {
     }
   }
 
-  .message-container {
-    width: 100%;
+  ion-content {
+    --background: var(--ion-color-lightgrey);
   }
 
-  .message-detail {
-    width: 85%;
-    color: grey;
-    margin: 8px 0 16px 0;
-    max-height: 36px;
-    line-height: 18px; /* Height / no. of lines to display */
-    overflow: hidden;
+  ion-card {
+    width: 100%;
+    max-width: 540px;
+  }
+
+  .photo-item {
+    --size: 100%;
+    max-height: 220px;
   }
 }

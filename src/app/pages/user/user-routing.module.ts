@@ -30,7 +30,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../discover/preferences/preferences.module#PreferencesPageModule'
+                        loadChildren: './about/preferences/preferences.module#PreferencesPageModule'
                     }
                 ]
             },
@@ -39,7 +39,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':programId',
-                        loadChildren: '../discover/preferences/preferences.module#PreferencesPageModule'
+                        loadChildren: './about/preferences/preferences.module#PreferencesPageModule'
                     }
                 ]
             },
@@ -94,7 +94,11 @@ const routes: Routes = [
                 pathMatch: 'full'
             }
         ]
-    }
+    },
+  {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  }
 ];
 
 @NgModule({

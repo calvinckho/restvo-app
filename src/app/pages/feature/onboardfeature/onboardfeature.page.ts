@@ -548,7 +548,7 @@ export class OnboardfeaturePage {
                         }
                     }, 10000);
                 } else if (programId === '5d5785b462489003817fee18') { // if finishing the basic onboarding
-                    const url = this.authService.cachedRouteUrl || '/app/discover/home/5d5785b462489003817fee18';
+                    const url = this.authService.cachedRouteUrl || '/app/home/activity/5d5785b462489003817fee18';
                     if (this.authService.cachedRouteParams) {
                         await this.router.navigate([url, this.authService.cachedRouteParams], { replaceUrl: true });
                     } else {
@@ -556,7 +556,7 @@ export class OnboardfeaturePage {
                     }
                     this.authService.cachedRouteUrl = null;
                 } else { // in most situation, show feature was the origin and therefore make sense to route back to the show feature page
-                    this.router.navigate(['/app/discover/home/' + programId], { replaceUrl: true } );
+                    this.router.navigate(['/app/home/activity/' + programId], { replaceUrl: true } );
                 }
             }
         } else { // if finishing up the onboarding in app, just dismiss the modal

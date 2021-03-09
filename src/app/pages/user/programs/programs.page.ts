@@ -73,9 +73,9 @@ export class ProgramsPage implements OnInit, OnDestroy {
         let activityURL;
         const program = this.userData.defaultProgram;
         if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
-            activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
+            activityURL = '/app/home/insight/' + this.userData.defaultProgram._id;
         } else {
-            activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
+            activityURL = '/app/home/activity/' + this.userData.defaultProgram._id;
         }
         this.router.navigate([activityURL]);
       }
@@ -86,9 +86,9 @@ export class ProgramsPage implements OnInit, OnDestroy {
       this.storage.set('defaultProgram', this.userData.defaultProgram);
       let activityURL;
         if (this.userData.UIAdminMode && (program.user_list_2.includes(this.userData.user._id) || program.user_list_3.includes(this.userData.user._id))) {
-            activityURL = '/app/dashboard/insight/' + this.userData.defaultProgram._id;
+            activityURL = '/app/home/insight/' + this.userData.defaultProgram._id;
         } else {
-            activityURL = '/app/discover/home/' + this.userData.defaultProgram._id;
+            activityURL = '/app/home/activity/' + this.userData.defaultProgram._id;
         }
         this.router.navigate([activityURL]);
         if (this.modalPage) {

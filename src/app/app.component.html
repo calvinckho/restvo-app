@@ -10,18 +10,18 @@
         </ion-toolbar>
         <ion-list>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && userData.UIAdminMode && (userData.defaultProgram.user_list_2.includes(userData.user._id) || userData.defaultProgram.user_list_3.includes(userData.user._id))">
-            <ion-item [routerLink]="['/app/dashboard/insight/' + userData.defaultProgram._id]" mode="md">
+            <ion-item [routerLink]="['/app/home/insight/' + userData.defaultProgram._id]" mode="md">
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false" *ngIf="userData.defaultProgram && (!userData.UIAdminMode || (!userData.defaultProgram.user_list_2.includes(userData.user._id) && !userData.defaultProgram.user_list_3.includes(userData.user._id)))">
-            <ion-item [routerLink]="['/app/discover/home/' + userData.defaultProgram._id]" mode="md">
+            <ion-item [routerLink]="['/app/home/activity/' + userData.defaultProgram._id]" mode="md">
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>Home</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false" *ngIf="!userData.defaultProgram">
+          <ion-menu-toggle auto-hide="false">
             <ion-item [routerLink]="['/app/discover']" mode="md">
               <ion-icon slot="start" name="discover"></ion-icon>
               <ion-label>Discover</ion-label>

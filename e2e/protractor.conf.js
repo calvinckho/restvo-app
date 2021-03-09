@@ -7,8 +7,8 @@ exports.config = {
   allScriptsTimeout: 110000,
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    //'./src/desktop/add-and-remove-restvo-friend.e2e-spec.ts'
-    './src/desktop/add-user-to-group.e2e-spec.ts' // run this specific script
+    './src/desktop/add-and-remove-restvo-friend.e2e-spec.ts'
+    //'./src/desktop/add-user-to-group.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
     /*chromeOptions: {

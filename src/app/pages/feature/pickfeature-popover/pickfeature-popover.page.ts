@@ -6,15 +6,15 @@ import {
     ModalController,
     Platform
 } from '@ionic/angular';
-import {Location} from "@angular/common";
+import {Location} from '@angular/common';
 import {CacheService} from 'ionic-cache';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 
 import { CalendarService } from '../../../services/calendar.service';
-import {Resource} from "../../../services/resource.service";
-import {Moment} from "../../../services/moment.service";
-import {Response} from "../../../services/response.service";
-import {UserData} from "../../../services/user.service";
+import {Resource} from '../../../services/resource.service';
+import {Moment} from '../../../services/moment.service';
+import {Response} from '../../../services/response.service';
+import {UserData} from '../../../services/user.service';
 
 @Component({
   selector: 'app-pickfeature-popover',
@@ -126,7 +126,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step = 1;
             this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
         }
-        console.log("category", this.categoryId, this.selectedCategoryId)
+        console.log('category', this.categoryId, this.selectedCategoryId);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -134,7 +134,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.loadSamples();
             this.renderRecentList();
         }
-    };
+    }
 
     async loadSamples() {
         this.reachedEnd = false;
@@ -449,8 +449,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                         firstReminderMinutes: 0, // reminder is defaulted to at the time of the task
                     }
                 };
-                //const result: any = await this.momentService.loadSchedule(this.scheduleId);
-                //newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
+                // const result: any = await this.momentService.loadSchedule(this.scheduleId);
+                // newCalendarItem.uniqueAnswersPerCalendar = (result && result.schedule && result.schedule.array_boolean && result.schedule.array_boolean.length > 1) ? result.schedule.array_boolean[1] : false;
                 const data: any = { operation: 'create calendar item', calendaritem: newCalendarItem };
                 if (this.goalId) {
                     data.goalId = this.goalId;
@@ -532,7 +532,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     changeSelectedDate(inputDate) {
-        if (inputDate === ' ') return;
+        if (inputDate === ' ') { return; }
         if ( this.dateType === 'start' ) {
             this.recurrenceStartDate = inputDate;
             this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());

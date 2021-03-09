@@ -9,7 +9,7 @@ import {UserRoutingModule} from "./user-routing.module";
 import {ProfilePageModule} from "./profile/profile.module";
 import {AboutPageModule} from "./about/about.module";
 import {SettingsPageModule} from "./settings/settings.module";
-import {PreferencesPageModule} from "../discover/preferences/preferences.module";
+import {PreferencesPageModule} from "./about/preferences/preferences.module";
 import {ProgramsPageModule} from "./programs/programs.module";
 import {NotificationsPageModule} from "./notifications/notifications.module";
 import {InvitetoconnectModule} from "../connect/invitetoconnect/invitetoconnect.module";

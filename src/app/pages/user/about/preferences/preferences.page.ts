@@ -3,16 +3,16 @@ import {
   IonInfiniteScroll,
   ModalController,
   Platform,
-} from "@ionic/angular";
-import {Location} from "@angular/common";
-import {Storage} from "@ionic/storage";
-import {Auth} from "../../../services/auth.service";
-import {Chat} from "../../../services/chat.service";
-import {UserData} from "../../../services/user.service";
-import {Moment} from "../../../services/moment.service";
-import {Resource} from "../../../services/resource.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
+} from '@ionic/angular';
+import {Location} from '@angular/common';
+import {Storage} from '@ionic/storage';
+import {Auth} from '../../../../services/auth.service';
+import {Chat} from '../../../../services/chat.service';
+import {UserData} from '../../../../services/user.service';
+import {Moment} from '../../../../services/moment.service';
+import {Resource} from '../../../../services/resource.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {PickfeaturePopoverPage} from '../../../feature/pickfeature-popover/pickfeature-popover.page';
 
 @Component({
   selector: 'app-preferences',
@@ -32,8 +32,8 @@ export class PreferencesPage implements OnInit, OnDestroy {
   subscriptions: any = {};
   moments = [];
   ionSpinner = false;
-  pageNum: number = 0;
-  reachedEnd: boolean = false;
+  pageNum = 0;
+  reachedEnd = false;
   conversation: any;
   members: any = [];
   searchKeyword = '';

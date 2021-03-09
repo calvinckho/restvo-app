@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
-import {PreferencesPage} from "../../discover/preferences/preferences.page";
+import {PreferencesPage} from "./preferences/preferences.page";
 import {Router} from "@angular/router";
 import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
 import {Aws} from "../../../services/aws.service";

@@ -1348,21 +1348,25 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     async editOnboarding(event, type) {
       event.stopPropagation();
-        const alertCtrl = await this.alertCtrl.create({
-            header: 'Unsaved Changes',
-            message: 'You are leaving the Edit Mode. Ensure you save your changes before you proceed.',
-            buttons: [{ text: 'Proceed',
-                handler: async () => {
-                    if (this.modalPage) {
-                        this.momentService.openPreferences({ programId: this.moment._id, type: type, organizer: true, modalPage: true });
-                    } else {
-                        this.router.navigate(['/app/discover/preferences', { programId: this.moment._id, type: type, organizer: true, showHeader: true }]);
-                    }
-                }}, {
-                text: 'Cancel'}],
-            cssClass: 'level-15'
-        });
-        await alertCtrl.present();
+      if (this.subpanel) {
+          this.router.navigate(['/app/home/preferences', { programId: this.moment._id, type: type, organizer: true, showHeader: true }]);
+      } else {
+          const alertCtrl = await this.alertCtrl.create({
+              header: 'Unsaved Changes',
+              message: 'You are leaving the Edit Mode. Ensure you save your changes before you proceed.',
+              buttons: [{ text: 'Proceed',
+                  handler: async () => {
+                      if (this.modalPage) {
+                          this.momentService.openPreferences({ programId: this.moment._id, type: type, organizer: true, modalPage: true });
+                      } else {
+                          this.router.navigate(['/app/home/preferences', { programId: this.moment._id, type: type, organizer: true, showHeader: true }]);
+                      }
+                  }}, {
+                  text: 'Cancel'}],
+              cssClass: 'level-15'
+          });
+          await alertCtrl.present();
+      }
     }
 
     initPlyr(event, mediaId) {

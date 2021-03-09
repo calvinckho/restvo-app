@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/app/discover/home/5d5785b462489003817fee18',
+        redirectTo: '/app/discover',
         pathMatch: 'full' },
     {
         path: 'recover',
@@ -64,7 +64,7 @@ const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo:  '/app/discover/home/5d5785b462489003817fee18',
+        redirectTo:  '/app/discover',
         pathMatch: 'prefix'
     },
 ];

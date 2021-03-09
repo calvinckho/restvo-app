@@ -36,7 +36,7 @@ import {Systemlog} from '../../services/systemlog.service';
 import {Auth} from '../../services/auth.service';
 import {Resource} from '../../services/resource.service';
 import 'capacitor-jitsi-meet';
-import {PreferencesPage} from '../discover/preferences/preferences.page';
+import {PreferencesPage} from '../user/about/preferences/preferences.page';
 import {OnboardfeaturePage} from '../feature/onboardfeature/onboardfeature.page';
 import {ShowfeaturePage} from '../feature/showfeature/showfeature.page';
 import {EditfeaturePage} from '../feature/editfeature/editfeature.page';
@@ -301,7 +301,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                                 params.modalPage = true;
                                 this.momentService.openMoment(params);
                             } else {
-                                this.router.navigate(['/app/discover/activity/' + result.notification.data.momentId, params]);
+                                this.router.navigate(['/app/home/activity/' + result.notification.data.momentId, params]);
                             }
                         }
                     });
@@ -458,7 +458,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                             if (this.router.url.includes('video')) { // if already in a video tab, open the chat in a new tab
                                 window.open(window.location.protocol + '//' + window.location.host + '/app/myconversations/chat', '_blank');
                             } else {
-                                this.router.navigate(['/app/discover/activity/' + result.notification.extra.data.momentId, params]);
+                                this.router.navigate(['/app/home/activity/' + result.notification.extra.data.momentId, params]);
                             }
                         }
                     }

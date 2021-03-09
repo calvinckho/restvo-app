@@ -66,7 +66,7 @@ const routes: Routes = [
             },
             {
                 path: 'onboarding/:id',
-                loadChildren: '../../discover/preferences/preferences.module#PreferencesPageModule',
+                loadChildren: '../../user/about/preferences/preferences.module#PreferencesPageModule',
             },
             {
                 path: 'subscription/:id',

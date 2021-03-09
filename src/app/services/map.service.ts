@@ -226,7 +226,7 @@ export class MapService {
       }
       this.userData.refreshUserStatus({ type: 'show recipient', data: data });
     } else if (data.moment) {
-      this.router.navigateByUrl('/app/discover/activity/' + data.moment._id);
+      this.router.navigateByUrl('/app/home/activity/' + data.moment._id);
     } else if (data.church) {
       this.router.navigateByUrl('/connect/' + data.church);
     }

@@ -26,9 +26,8 @@
       </ion-button>
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
-    <ion-title *ngIf="!userData.defaultProgram">Discover</ion-title>
-    <!--<ion-title *ngIf="userData.defaultProgram && platform.width() >= 768">Dashboard</ion-title>-->
-    <ion-title *ngIf="userData.defaultProgram" (click)="openSelectHomePage()">{{userData.defaultProgram.matrix_string[0][0]}}</ion-title>
+    <ion-title>Discover</ion-title>
+    <!--<ion-title *ngIf="userData.defaultProgram" (click)="openSelectHomePage()">{{userData.defaultProgram.matrix_string[0][0]}}</ion-title>-->
     <ion-item lines="none" routerLink="/app/me" *ngIf="userData.user && platform.width() >= 768" slot="end" mode="md" style="--background: transparent">
       <ion-avatar slot="start">
         <ion-img *ngIf="userData.user && userData.user.avatar" [src]="userData.user.avatar"></ion-img>
@@ -42,5 +41,21 @@
 </ion-header>
 
 <ion-content>
-  <ion-router-outlet [swipeGesture]="false"></ion-router-outlet>
+  <ion-grid style="height: 100%" *ngIf="ionSpinner">
+    <ion-row class="ion-align-items-center" style="height: 100%">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)">
+        <ion-thumbnail class="photo-item">
+          <ion-img [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>
+        </ion-thumbnail>
+        <ion-card-content>
+          <p>{{sample.matrix_string[0][0]}}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
 </ion-content>

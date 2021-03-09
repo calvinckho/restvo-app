@@ -17,10 +17,10 @@ import {EmailComposer} from '@ionic-native/email-composer/ngx';
 import {CallNumber} from '@ionic-native/call-number/ngx';
 import {Contacts} from '@ionic-native/contacts/ngx';
 import {AppVersion} from '@ionic-native/app-version/ngx';
-import {Geolocation} from "@ionic-native/geolocation/ngx";
-import {NativeGeocoder} from "@ionic-native/native-geocoder/ngx";
-import {SpeechRecognition} from "@ionic-native/speech-recognition/ngx";
-import {Calendar} from "@ionic-native/calendar/ngx";
+import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {NativeGeocoder} from '@ionic-native/native-geocoder/ngx';
+import {SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
+import {Calendar} from '@ionic-native/calendar/ngx';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import { NgxStripeModule } from 'ngx-stripe';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -29,21 +29,21 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import {ApplicationPipesModule} from "./pipes/application-pipes";
+import {ApplicationPipesModule} from './pipes/application-pipes';
 import {IonicGestureConfig} from '../utils/IonicGestureConfig';
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import {RegisterPageModule} from "./pages/user/register/register.module";
-import {ShowrecipientinfoModule} from "./pages/connect/showrecipientinfo/showrecipientinfo.module";
-import {ShowfeaturePageModule} from "./pages/feature/showfeature/showfeature.module";
-import {PickpeoplePopoverPageModule} from "./pages/feature/pickpeople-popover/pickpeople-popover.module";
-import {PickfeaturePopoverPageModule} from "./pages/feature/pickfeature-popover/pickfeature-popover.module";
-import {ProgramsPageModule} from "./pages/user/programs/programs.module";
-import {UploadmediaPageModule} from "./pages/feature/uploadmedia/uploadmedia.module";
+import {RegisterPageModule} from './pages/user/register/register.module';
+import {ShowrecipientinfoModule} from './pages/connect/showrecipientinfo/showrecipientinfo.module';
+import {ShowfeaturePageModule} from './pages/feature/showfeature/showfeature.module';
+import {PickpeoplePopoverPageModule} from './pages/feature/pickpeople-popover/pickpeople-popover.module';
+import {PickfeaturePopoverPageModule} from './pages/feature/pickfeature-popover/pickfeature-popover.module';
+import {ProgramsPageModule} from './pages/user/programs/programs.module';
+import {UploadmediaPageModule} from './pages/feature/uploadmedia/uploadmedia.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import {ErrorService} from "./services/error.service";
-import {OnboardfeaturePageModule} from "./pages/feature/onboardfeature/onboardfeature.module";
+import {ErrorService} from './services/error.service';
+import {OnboardfeaturePageModule} from './pages/feature/onboardfeature/onboardfeature.module';
 
 @NgModule({
   declarations: [
