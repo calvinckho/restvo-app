@@ -53,7 +53,7 @@
     </ion-row>
   </ion-grid>
   <ion-grid>
-    <ion-row class="ion-justify-content-center">
+    <ion-row class="ion-justify-content-start">
       <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword) || sample.parent_programs[0].matrix_string[0][0].toLowerCase().includes(searchKeyword))">
         <ion-card-content class="ion-no-padding">
           <ion-thumbnail class="photo-item">

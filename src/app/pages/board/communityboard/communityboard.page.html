@@ -111,7 +111,7 @@
         <div class="community-title">{{community.name}}</div>
       </ion-item>-->
       <div *ngFor="let board of community.boards">
-        <ion-row class="ion-justify-content-center">
+        <ion-row class="ion-justify-content-start">
           <ion-card *ngFor="let post of board.preview_posts" (click)="openPost($event, board, post)">
             <ion-item class="header-container" lines="none">
               <ion-avatar slot="start" (click)="seeUserInfo($event, post.author)">

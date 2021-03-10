@@ -532,6 +532,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 });
                 await congratulations.present();
             } else if (this.activityId && this.modalPage) {
+                this.userData.defaultProgram = selectedProgram;
+                this.storage.set('defaultProgram', this.userData.defaultProgram);
                 this.modalCtrl.dismiss(clonedMoments);
             }
             this.cleanup();
