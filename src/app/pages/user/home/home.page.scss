@@ -1,0 +1,32 @@
+app-home {
+
+  ion-title {
+    cursor: pointer;
+  }
+
+  ion-menu-toggle {
+    ion-badge {
+      position: relative;
+      top: 0.1rem;
+      right: 22px;
+
+      /*& ~ ion-icon {
+        outline-color: whitesmoke;
+      }*/
+      z-index: 5;
+    }
+  }
+
+  .message-container {
+    width: 100%;
+  }
+
+  .message-detail {
+    width: 85%;
+    color: grey;
+    margin: 8px 0 16px 0;
+    max-height: 36px;
+    line-height: 18px; /* Height / no. of lines to display */
+    overflow: hidden;
+  }
+}
