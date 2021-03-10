@@ -55,12 +55,12 @@ describe('register an account as a new user', () => {
     });
 
     it('should show unauthenticated main page', async () => {
-        await showfeature.waitUntilElementPresent('#showfeature-header');
-        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+        await discover.waitUntilElementPresent('#discover-header');
+        expect(await showfeature.headerIsPresent('#discover-header')).toBeTruthy();
     });
 
     it('should open register modal', async () => {
-        await showfeature.clickElement('#signin');
+        await discover.clickElement('#signin');
         await register.waitUntilVisible();
         expect(await register.elementIsPresent('#register')).toBeTruthy();
     });
