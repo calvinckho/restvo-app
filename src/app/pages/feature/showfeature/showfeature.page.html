@@ -6,14 +6,14 @@
       </ion-button>
       <ion-badge *ngIf="this.chatService && this.chatService.connectTabBadge" mode="md">{{this.chatService.connectTabBadge}}</ion-badge>
     </ion-menu-toggle>
-    <ion-buttons *ngIf="authService.token && (modalPage || platform.width() >= 768)" slot="start">
+    <ion-buttons *ngIf="(modalPage || platform.width() >= 768)" slot="start">
       <ion-button (click)="closeModal()" color="grey" *ngIf="!subpanel">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="subpanel && userData.subpanelWidth < 50">
+      <ion-button (click)="userData.subpanelWidth = 50" color="grey" *ngIf="authService.token && subpanel && userData.subpanelWidth < 50">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="subpanel && userData.subpanelWidth > 30">
+      <ion-button (click)="userData.subpanelWidth = 30" color="grey" *ngIf="authService.token && subpanel && userData.subpanelWidth > 30">
         <ion-icon name="chevron-forward-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -27,18 +27,18 @@
           Save
         </ion-button>
       </div>
-      <div *ngIf="authService.token && setupPermissionCompleted && loadStatus">
-        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="!subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length > 1) && !moment.array_boolean[1] && (moment.array_boolean.length >= 5) && moment.array_boolean[5]" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
+      <div *ngIf="setupPermissionCompleted && loadStatus">
+        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="authService.token && !subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length > 1) && !moment.array_boolean[1] && (moment.array_boolean.length >= 5) && moment.array_boolean[5]" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
           <ion-icon name="chatbubbles"></ion-icon>
         </ion-button>
-        <ion-button id="add-user-to-group" (click)="inviteToJoin()" [hidden]="subpanel || moment.array_boolean && (moment.array_boolean.length > 1) && moment.array_boolean[1] || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if subpanel or if content calendar and show Content Edit Controls to Users-->
+        <ion-button id="add-user-to-group" (click)="inviteToJoin()" [hidden]="!authService.token || subpanel || moment.array_boolean && (moment.array_boolean.length > 1) && moment.array_boolean[1] || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if unauthenticated, subpanel or if content calendar and show Content Edit Controls to Users-->
           <ion-icon name="person-add"></ion-icon>
         </ion-button>
         <ion-button (click)="router.navigate([{ outlets: { sub: null }}], { replaceUrl: true })" [hidden]="!subpanel" color="grey"> <!--close subpanel-->
           <ion-icon name="close"></ion-icon>
         </ion-button>
       </div>
-      <ion-button id="signin" *ngIf="!authService.token" (click)="openRegister(0, '')">
+      <ion-button id="signin" *ngIf="!authService.token && !subpanel" (click)="openRegister(0, '')">
         <ion-text>Sign In</ion-text>
       </ion-button>
     </ion-buttons>

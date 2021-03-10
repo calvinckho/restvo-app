@@ -91,9 +91,7 @@ export class DiscoverPage implements OnInit {
 
     async selectSample(moment) {
         if (event) { event.stopPropagation(); }
-        if (!this.authService.token) {
-            this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
-        } else if (this.platform.width() >= 992) {
+        if (this.platform.width() >= 992) {
             this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
         } else if (this.platform.width() >= 768) {
             this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });

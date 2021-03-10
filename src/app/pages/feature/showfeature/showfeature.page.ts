@@ -1245,65 +1245,69 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   async cloneActivity(event) {
       event.stopPropagation();
-      let clonedActivity: any;
-      const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
-      const allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
-      if (allowCustomStartDate) {
-          const componentProps: any = { activityId: this.moment._id, joinAs: 'user_list_1' };
-          if (!this.modalPage && this.platform.width() >= 992) {
-              componentProps.subpanel = true;
-              return this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]); // congrats pop-up in handled in the pickfeature subpanel
+      if (this.authService.token) {
+          let clonedActivity: any;
+          const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
+          const allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
+          if (allowCustomStartDate) {
+              const componentProps: any = { activityId: this.moment._id, joinAs: 'user_list_1' };
+              if (!this.modalPage && this.platform.width() >= 992) {
+                  componentProps.subpanel = true;
+                  return this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]); // congrats pop-up in handled in the pickfeature subpanel
+              } else {
+                  componentProps.modalPage = true;
+                  const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps});
+                  await modal.present();
+                  const {data: clonedActivities} = await modal.onDidDismiss();
+                  if (!clonedActivities) {
+                      return;
+                  }
+                  clonedActivity = clonedActivities[0];
+                  await this.modalCtrl.dismiss();
+              }
           } else {
-              componentProps.modalPage = true;
-              const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps});
-              await modal.present();
-              const {data: clonedActivities} = await modal.onDidDismiss();
-              if (!clonedActivities) {
-                  return;
-              }
+              this.loading = await this.loadingCtrl.create({
+                  message: 'Processing...',
+                  duration: 20000
+              });
+              await this.loading.present();
+              const selectedMoment = JSON.parse(JSON.stringify(this.moment));
+              selectedMoment.calendar = { // reset the calendar
+                  title: selectedMoment.matrix_string[0][0],
+                  location: '',
+                  notes: '',
+                  startDate: new Date().toISOString(),
+                  endDate: new Date().toISOString(),
+                  options: {
+                      firstReminderMinutes: 0,
+                      secondReminderMinutes: 0,
+                      reminders: []
+                  }
+              };
+              const clonedActivities: any = await this.momentService.clone([selectedMoment], null); // clone the Activity
               clonedActivity = clonedActivities[0];
-              await this.modalCtrl.dismiss();
-          }
-      } else {
-          this.loading = await this.loadingCtrl.create({
-              message: 'Processing...',
-              duration: 20000
-          });
-          await this.loading.present();
-          const selectedMoment = JSON.parse(JSON.stringify(this.moment));
-          selectedMoment.calendar = { // reset the calendar
-              title: selectedMoment.matrix_string[0][0],
-              location: '',
-              notes: '',
-              startDate: new Date().toISOString(),
-              endDate: new Date().toISOString(),
-              options: {
-                  firstReminderMinutes: 0,
-                  secondReminderMinutes: 0,
-                  reminders: []
+              await this.momentService.addUserToProgramUserList(clonedActivity, 'user_list_1', null, false, true); // add user as participant (user is already added as organizer in the clone operation)
+              this.userData.defaultProgram = clonedActivity;
+              this.storage.set('defaultProgram', this.userData.defaultProgram);
+              await this.loading.dismiss();
+              if (this.modalPage) {
+                  this.modalCtrl.dismiss();
               }
-          };
-          const clonedActivities: any = await this.momentService.clone([selectedMoment], null); // clone the Activity
-          clonedActivity = clonedActivities[0];
-          await this.momentService.addUserToProgramUserList(clonedActivity, 'user_list_1', null, false, true); // add user as participant (user is already added as organizer in the clone operation)
-          this.userData.defaultProgram = clonedActivity;
-          this.storage.set('defaultProgram', this.userData.defaultProgram);
-          await this.loading.dismiss();
-          if (this.modalPage) {
-              this.modalCtrl.dismiss();
           }
+          const congratulations = await this.alertCtrl.create({
+              header: 'Congratulations',
+              message: 'You have successfully joined ' + this.moment.matrix_string[0][0] + '.',
+              buttons: [{ text: 'Start Now',
+                  handler: async () => {
+                      congratulations.dismiss();
+                      this.router.navigate(['/app/home/activity/' + clonedActivity._id]);
+                  }}],
+              cssClass: 'level-15'
+          });
+          await congratulations.present();
+      } else {
+          this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
       }
-      const congratulations = await this.alertCtrl.create({
-          header: 'Congratulations',
-          message: 'You have successfully joined ' + this.moment.matrix_string[0][0] + '.',
-          buttons: [{ text: 'Start Now',
-              handler: async () => {
-                  congratulations.dismiss();
-                  this.router.navigate(['/app/home/activity/' + clonedActivity._id]);
-              }}],
-          cssClass: 'level-15'
-      });
-      await congratulations.present();
   }
 
   async acceptInvitation(event) {
@@ -1737,9 +1741,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   async openProgram(event, moment) {
     if (event) { event.stopPropagation(); }
-    if (!this.authService.token) {
-        this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
-    } else if (!this.modalPage && this.platform.width() >= 992) {
+    if (!this.modalPage && this.platform.width() >= 992) {
         this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
     } else if (!this.modalPage && this.platform.width() >= 768) {
         if (this.router.url.includes('/app/manage')) {
@@ -2126,7 +2128,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         // in a special case when a calendarItem was created but not named, delete it upon exit
         this.momentService.touchContentCalendarItems(this.relationshipId, {operation: 'delete calendar items',  calendaritems: [this.calendarItem]});
     }
-    if (this.authService.token && this.modalPage) {
+    if (this.modalPage) {
       this.modalCtrl.dismiss(this.anyChangeMade);
     } else if (this.participant_type || this.token) {
       this.router.navigateByUrl('/app/discover');
