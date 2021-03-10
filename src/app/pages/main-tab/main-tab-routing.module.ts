@@ -63,20 +63,6 @@ const routes: Routes = [
                 ]
             },
             {
-                path: 'dashboard',
-                children: [
-                    {
-                        path: '',
-                        children: [
-                            {
-                                path: '',
-                                loadChildren: '../user/discover/discover.module#DiscoverPageModule'
-                            }
-                        ]
-                    },
-                ]
-            },
-            {
                 path: 'news',
                 children: [
                     {

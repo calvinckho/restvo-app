@@ -140,7 +140,7 @@ export class Auth {
                 duration: 3000
             });
             await loading.present();
-            await this.router.navigate(['/activity/5d5785b462489003817fee18'], { replaceUrl: true });
+            await this.router.navigate(['/discover'], { replaceUrl: true });
             await loading.dismiss();
         }
     }
@@ -168,15 +168,32 @@ export class Auth {
     private async routeAuthenticatedUser() {
         console.log('Routing authenticated user...');
         let activityURL = '';
-        if (this.router.url.includes('home/activity') || this.router.url.includes('dashboard') || this.router.url.includes('insight')) { // if loading landing page /home/activity or /dashboard
-            const defaultProgram: any = await this.storage.get('defaultProgram');
-            if (defaultProgram) {
-                activityURL = '/app/home/activity/' + defaultProgram._id;
+        // load default program and UI Admin mode from cache
+        const defaultProgram: any = await this.storage.get('defaultProgram');
+        if (defaultProgram) {
+            activityURL = '/app/home/activity/' + defaultProgram._id;
+        }
+        const UIAdminMode: any = await this.storage.get('UIAdminMode');
+        if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
+            activityURL = '/app/home/insight/' + defaultProgram._id;
+        }
+        if (this.router.url.includes('discover')) { // if loading default landing page /
+            // load default program and UI Admin mode from cache
+            switch (await this.storage.get('lastVisitedTab')) {
+                case 'home':
+                    this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
+                    break;
+                case 'news':
+                    this.router.navigate(['/app/news'], { queryParamsHandling: 'preserve'});
+                    break;
+                case 'chat':
+                    this.router.navigate(['/app/myconversations/chat'], { queryParamsHandling: 'preserve'});
+                    break;
+                case 'me':
+                    this.router.navigate(['/app/me'], { queryParamsHandling: 'preserve'});
+                    break;
             }
-            const UIAdminMode: any = await this.storage.get('UIAdminMode');
-            if (UIAdminMode && this.user && defaultProgram && (defaultProgram.user_list_2.includes(this.user._id) || defaultProgram.user_list_3.includes(this.user._id))) {
-                activityURL = '/app/home/insight/' + defaultProgram._id;
-            }
+        } else if (this.router.url.includes('home/activity') || this.router.url.includes('home/insight')) { // if loading landing page /home/activity or /insight
             this.router.navigate([activityURL], { queryParamsHandling: 'preserve'});
         } else if (this.router.url.includes('activity') && !this.router.url.includes('manage')) { // route /activity to /app/activity, except in manage mode
             const activityIdStartIndex = this.router.url.search('activity') + 9; // the index of the first character of the activity id

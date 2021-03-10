@@ -177,7 +177,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   }
 
   async goToHome() {
-    this.router.navigateByUrl((this.userData.user ? '/app/' : '') + '/activity/5d5785b462489003817fee18');
+    this.router.navigateByUrl((this.userData.user ? '/app/' : '') + '/me');
   }
 
   continueToApp() {

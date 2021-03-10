@@ -767,7 +767,7 @@ export class UserData {
             setTimeout(async () => {
                 await this.resetUserData();
                 this.menuCtrl.enable(false);
-                this.router.navigate(['/activity/5d5785b462489003817fee18']);
+                this.router.navigate(['/discover']);
                 loading.dismiss();
             }, 500);
         } catch (err) {

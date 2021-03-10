@@ -13,6 +13,9 @@ const routes: Routes = [
         path: 'register',
         loadChildren: './pages/user/register/register.module#RegisterPageModule' },
     {
+        path: 'discover',
+        loadChildren: './pages/user/discover/discover.module#DiscoverPageModule' },
+    {
         path: 'app',
         loadChildren: './pages/main-tab/main-tab.module#MainTabPageModule' },
     {

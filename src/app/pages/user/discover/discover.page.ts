@@ -11,6 +11,7 @@ import {Auth} from '../../../services/auth.service';
 import {ProgramsPage} from '../programs/programs.page';
 import {Moment} from '../../../services/moment.service';
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
+import {RegisterPage} from "../register/register.page";
 
 @Component({
   selector: 'app-discover',
@@ -45,10 +46,14 @@ export class DiscoverPage implements OnInit {
         this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
-    refreshAfterCreateMomentHandler = async () => {
-        if (this.userData.user) {
-            this.loadSamples();
+    ionViewWillEnter() {
+        if (this.userData && this.userData.user) {
+            this.storage.set('lastVisitedTab', 'discover');
         }
+    }
+
+    refreshAfterCreateMomentHandler = async () => {
+        this.loadSamples();
     }
 
     async loadSamples() {
@@ -96,5 +101,14 @@ export class DiscoverPage implements OnInit {
             const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: { moment: { _id: moment._id }, modalPage: true}} );
             await modal.present();
         }
+    }
+
+    async openRegister(slide, loginStatus) {
+        const modalObject: any = {component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true } };
+        if (this.platform.width() >= 768) {
+            modalObject.cssClass = 'fullScreen';
+        }
+        const registerModal = await this.modalCtrl.create(modalObject);
+        await registerModal.present();
     }
 }

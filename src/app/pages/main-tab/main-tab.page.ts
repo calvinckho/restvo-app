@@ -8,8 +8,8 @@ import {
     NOTIFICATION_RECEIVED as ON_NOTIFICATION_RECEIVED,
     TOKEN_UPDATED,
 } from 'electron-push-receiver/src/constants';
-import { Capacitor, Plugins, AppState, PushNotificationToken } from '@capacitor/core';
-const { App, Network, LocalNotifications, Toast } = Plugins;
+import { Capacitor, Plugins, PushNotificationToken } from '@capacitor/core';
+const { App, Network, LocalNotifications } = Plugins;
 import { CacheService } from 'ionic-cache';
 
 import {Chat} from '../../services/chat.service';

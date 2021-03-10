@@ -5,6 +5,7 @@ import { UserData } from '../../../services/user.service';
 import {EditcommunityPage} from "../editcommunity/editcommunity.page";
 import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
 import {Resource} from "../../../services/resource.service";
+import {Storage} from "@ionic/storage";
 
 @Component({
   selector: 'app-community-popover',
@@ -23,6 +24,7 @@ export class CommunityPopoverPage implements OnInit {
 
     constructor(private platform: Platform,
                 private cache: CacheService,
+                private storage: Storage,
                 private actionSheetCtrl: ActionSheetController,
                 private alertCtrl: AlertController,
                 private modalCtrl: ModalController,
@@ -33,6 +35,12 @@ export class CommunityPopoverPage implements OnInit {
     ngOnInit() {
         if (this.community){
             this.setTag();
+        }
+    }
+
+    ionViewWillEnter() {
+        if (this.userData && this.userData.user) {
+            this.storage.set('lastVisitedTab', 'news');
         }
     }
 

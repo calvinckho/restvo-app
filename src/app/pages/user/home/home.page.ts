@@ -24,6 +24,12 @@ export class HomePage {
       public chatService: Chat,
       public userData: UserData) { }
 
+  ionViewWillEnter() {
+    if (this.userData && this.userData.user) {
+      this.storage.set('lastVisitedTab', 'discover');
+    }
+  }
+
   async openSelectHomePage() {
     if (this.platform.width() >= 768) {
       this.router.navigate(['/app/user/programs']);

@@ -149,9 +149,10 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
       // ready to check authentication status
       this.setup(data, !!(this.authService.token && this.userData.user));
       this.loadInsight();
-      if (this.activeParticipants) { // to avoid double value on page init
+      this.loadMetrics(this.currentDayValue);
+      /*if (this.activeParticipants) { // to avoid double value on page init
         this.loadMetrics(this.currentDayValue);
-      }
+      }*/
     }
   }
 

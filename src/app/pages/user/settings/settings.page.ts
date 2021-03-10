@@ -138,7 +138,7 @@ export class SettingsPage implements OnInit, OnDestroy {
                             loading.dismiss();
                             this.userData.resetUserData();
                             this.menuCtrl.enable(false);
-                            this.router.navigate(['/activity/5d5785b462489003817fee18']);
+                            this.router.navigate(['/discover']);
                         }, 500);
                     }, async (err) => {
                         loading.dismiss();

@@ -183,8 +183,14 @@ export class Moment {
         return this.http.get(this.networkService.domain + '/api/moment/childactivities/' + programId + '?category=' + categoryId, this.authService.httpAuthOptions).toPromise();
     }
 
-    loadSampleActivities(categoryId) {
-        return this.http.get(this.networkService.domain + '/api/moment/samples?version=1&category=' + (categoryId || ''), this.authService.httpAuthOptions).toPromise();
+    async loadSampleActivities(categoryId) {
+        let promise: any;
+        if (this.authService.token) {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/samples?version=1&category=' + (categoryId || ''), this.authService.httpAuthOptions).toPromise();
+        } else {
+            promise = await this.http.get(this.networkService.domain + '/api/moment/discover/public?version=1&category=' + (categoryId || ''), this.authService.httpOptions).toPromise();
+        }
+        return promise;
     }
 
     loadNotes(relationshipId, calendarId) {

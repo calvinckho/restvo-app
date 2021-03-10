@@ -393,7 +393,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           if (this.authService.token) {
               this.router.navigate(['/app/me']);
           } else {
-              this.router.navigate(['/activity/5d5785b462489003817fee18']);
+              this.router.navigate(['/discover']);
           }
       }
     if (this.moment) {
@@ -2099,7 +2099,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
   async openRegister(slide, loginStatus) {
-    //   const registerModal = await this.modalCtrl.create({component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true}});
       const modalObject: any = {component: RegisterPage, componentProps: { slide: slide, loginStatus: loginStatus, modalPage: true } };
       if (this.platform.width() >= 768) {
           modalObject.cssClass = 'fullScreen';

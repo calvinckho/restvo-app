@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <ion-grid>
-    <div *ngIf="['owner','admin','staff'].includes(userData.user.role)">
+    <div *ngIf="userData.user && ['owner','admin','staff'].includes(userData.user.role)">
       <ion-row class="ion-margin-bottom">
         <ion-card class="section-card">
           <ion-row>

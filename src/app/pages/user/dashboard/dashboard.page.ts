@@ -86,6 +86,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         if (this.userData && this.userData.user) {
             this.ionSpinner = false;
             this.setup();
+            this.storage.set('lastVisitedTab', 'me');
         }
         const currentDateWithoutTime = new Date( this.calendarService.calendar.currentDate.getFullYear(), this.calendarService.calendar.currentDate.getMonth(), this.calendarService.calendar.currentDate.getDate() );
         this.changeSelectedDate( currentDateWithoutTime );

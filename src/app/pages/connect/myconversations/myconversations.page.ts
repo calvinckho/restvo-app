@@ -55,6 +55,8 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         // after user data is loaded from storage, load conversations
         if (this.userData && this.userData.user && this.userData.user.churches) {
             this.renderConversations();
+            console.log("saving tab")
+            this.storage.set('lastVisitedTab', 'chat');
         }
     }
 

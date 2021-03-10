@@ -548,7 +548,7 @@ export class OnboardfeaturePage {
                         }
                     }, 10000);
                 } else if (programId === '5d5785b462489003817fee18') { // if finishing the basic onboarding
-                    const url = this.authService.cachedRouteUrl || '/app/home/activity/5d5785b462489003817fee18';
+                    const url = this.authService.cachedRouteUrl || '/app/discover';
                     if (this.authService.cachedRouteParams) {
                         await this.router.navigate([url, this.authService.cachedRouteParams], { replaceUrl: true });
                     } else {
