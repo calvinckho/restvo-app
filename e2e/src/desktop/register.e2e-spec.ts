@@ -116,7 +116,7 @@ describe('register an account as a new user', () => {
         await app.clickAlertButton('Yes, delete my account.');
         await app.waitUntilElementInvisible('ion-alert');
         await browser.waitForAngular();
-        await showfeature.waitUntilElementVisible('#signin');
-        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
+        await discover.waitUntilElementVisible('#signin');
+        expect(await discover.elementIsPresent('#signin')).toBeTruthy();
     });
 });
