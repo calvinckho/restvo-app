@@ -56,7 +56,7 @@ describe('register an account as a new user', () => {
 
     it('should show unauthenticated main page', async () => {
         await discover.waitUntilElementPresent('#discover-header');
-        expect(await showfeature.headerIsPresent('#discover-header')).toBeTruthy();
+        expect(await discover.headerIsPresent('#discover-header')).toBeTruthy();
     });
 
     it('should open register modal', async () => {
