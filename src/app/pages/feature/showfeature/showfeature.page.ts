@@ -31,6 +31,7 @@ import {RegisterPage} from '../../user/register/register.page';
 import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
+import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover.page";
 
 @Component({
   selector: 'app-showfeature',
@@ -278,7 +279,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       await this.loadPrograms();
 
       // if user has not joined and not a marketplace sample, or if token is provided
-      if ((isAuthenticated && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess && (this.moment.array_boolean.length > 1) && !this.moment.array_boolean[1]) || this.token) {
+      if ((isAuthenticated && !this.token && !this.hasParticipantAccess && !this.hasOrganizerAccess && !this.hasLeaderAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && !this.moment.array_boolean[1]) || this.token) {
           // do not hide special access toolbar
           this.showSpecialAccess = true;
       } else {
@@ -467,7 +468,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             // set up tabs
             if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
                 if (!this.tabSelection && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)].length > 5) { // assuming at least 1 tab has been created. if no default has been selected, use the first available tab
-                    this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][0] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                    if (!this.hasParticipantAccess && !this.hasLeaderAccess) { // if previewing as non-participant, use preview tab setting
+                        this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][1] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                    } else { // if the user is participanting, use default tab setting
+                        this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][0] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                    }
                 }
             }
 
@@ -1236,6 +1241,69 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     } else {
       this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
     }
+  }
+
+  async cloneActivity(event) {
+      event.stopPropagation();
+      let clonedActivity: any;
+      const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
+      const allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
+      if (allowCustomStartDate) {
+          const componentProps: any = { activityId: this.moment._id, joinAs: 'user_list_1' };
+          if (!this.modalPage && this.platform.width() >= 992) {
+              componentProps.subpanel = true;
+              return this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]); // congrats pop-up in handled in the pickfeature subpanel
+          } else {
+              componentProps.modalPage = true;
+              const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps});
+              await modal.present();
+              const {data: clonedActivities} = await modal.onDidDismiss();
+              if (!clonedActivities) {
+                  return;
+              }
+              clonedActivity = clonedActivities[0];
+              await this.modalCtrl.dismiss();
+          }
+      } else {
+          this.loading = await this.loadingCtrl.create({
+              message: 'Processing...',
+              duration: 20000
+          });
+          await this.loading.present();
+          const selectedMoment = JSON.parse(JSON.stringify(this.moment));
+          selectedMoment.calendar = { // reset the calendar
+              title: selectedMoment.matrix_string[0][0],
+              location: '',
+              notes: '',
+              startDate: new Date().toISOString(),
+              endDate: new Date().toISOString(),
+              options: {
+                  firstReminderMinutes: 0,
+                  secondReminderMinutes: 0,
+                  reminders: []
+              }
+          };
+          const clonedActivities: any = await this.momentService.clone([selectedMoment], null); // clone the Activity
+          clonedActivity = clonedActivities[0];
+          await this.momentService.addUserToProgramUserList(clonedActivity, 'user_list_1', null, false, true); // add user as participant (user is already added as organizer in the clone operation)
+          this.userData.defaultProgram = clonedActivity;
+          this.storage.set('defaultProgram', this.userData.defaultProgram);
+          await this.loading.dismiss();
+          if (this.modalPage) {
+              this.modalCtrl.dismiss();
+          }
+      }
+      const congratulations = await this.alertCtrl.create({
+          header: 'Congratulations',
+          message: 'You have successfully joined ' + this.moment.matrix_string[0][0] + '.',
+          buttons: [{ text: 'Start Now',
+              handler: async () => {
+                  congratulations.dismiss();
+                  this.router.navigate(['/app/home/activity/' + clonedActivity._id]);
+              }}],
+          cssClass: 'level-15'
+      });
+      await congratulations.present();
   }
 
   async acceptInvitation(event) {

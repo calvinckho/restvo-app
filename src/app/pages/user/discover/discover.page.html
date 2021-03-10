@@ -42,7 +42,7 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="mobileSearchBarVisible">
     <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" value=""></ion-searchbar>
-    <ion-button slot="end" fill="clear" color="grey" (click)="mobileSearchBarVisible = !mobileSearchBarVisible" >Back</ion-button>
+    <ion-button slot="end" fill="clear" color="grey" (click)="mobileSearchBarVisible = !mobileSearchBarVisible; searchKeyword = ''">Back</ion-button>
   </ion-toolbar>
 </ion-header>
 

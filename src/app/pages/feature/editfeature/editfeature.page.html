@@ -200,7 +200,13 @@
             <ion-item lines="none"> <!--Default Tab-->
               <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}} {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
               <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" [(ngModel)]="moment.matrix_number[i][0]" slot="end">
-                <ion-select-option *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as k" [value]="tabId">{{moment.matrix_string[i][k]}}</ion-select-option> <!--Tab-->
+                <ion-select-option *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as k" [value]="tabId">{{moment.matrix_string[i][k]}}</ion-select-option> <!--List of Tabs-->
+              </ion-select>
+            </ion-item>
+            <ion-item lines="none"> <!--Preview Tab-->
+              <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">Preview {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
+              <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" [(ngModel)]="moment.matrix_number[i][1]" slot="end">
+                <ion-select-option *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as k" [value]="tabId">{{moment.matrix_string[i][k]}}</ion-select-option> <!--List of Tabs-->
               </ion-select>
             </ion-item>
             <ion-card *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j">

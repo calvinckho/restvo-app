@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import { Storage } from '@ionic/storage';
 import {
     ModalController,
@@ -10,6 +10,7 @@ import {Router} from '@angular/router';
 import {Auth} from '../../../services/auth.service';
 import {ProgramsPage} from '../programs/programs.page';
 import {Moment} from '../../../services/moment.service';
+import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 
 @Component({
   selector: 'app-discover',
@@ -18,7 +19,6 @@ import {Moment} from '../../../services/moment.service';
   encapsulation: ViewEncapsulation.None
 })
 export class DiscoverPage implements OnInit {
-
     subscriptions: any = {};
 
     searchKeyword = '';
@@ -84,6 +84,17 @@ export class DiscoverPage implements OnInit {
         }
     }
 
-    async selectSample(sample) {
+    async selectSample(moment) {
+        if (event) { event.stopPropagation(); }
+        if (!this.authService.token) {
+            this.router.navigate(['/activity/' + moment._id], { replaceUrl: false });
+        } else if (this.platform.width() >= 992) {
+            this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
+        } else if (this.platform.width() >= 768) {
+            this.router.navigate(['/app/activity/' + moment._id], { replaceUrl: false });
+        } else {
+            const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: { moment: { _id: moment._id }, modalPage: true}} );
+            await modal.present();
+        }
     }
 }

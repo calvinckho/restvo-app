@@ -15,6 +15,7 @@ import {Resource} from '../../../services/resource.service';
 import {Moment} from '../../../services/moment.service';
 import {Response} from '../../../services/response.service';
 import {UserData} from '../../../services/user.service';
+import {Storage} from "@ionic/storage";
 
 @Component({
   selector: 'app-pickfeature-popover',
@@ -26,13 +27,15 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     @Input() title: any;
     @Input() modalPage: any;
     @Input() categoryId: any; //  Activity 'Categories' property in Moment. 'Journey', 'Relationship', 'Community' 'Program', 'Plan', 'Onboarding Process'
+    // cloning an activity
+    @Input() activityId: string;
     // onboarding process parameters
     @Input() programId: string; // the program
     @Input() type: any; // the process type 2 (participant), 3 (organizer), 4 (leader)
     // child Activity parameter
     @Input() parent_programId: string; // the parent program
     // relationship: joinAs
-    @Input() joinAs; // join createCalendaras user_list_1 (participant) or user_list_3 (leader)
+    @Input() joinAs: string; // join createCalendars user_list_1 (participant) or user_list_3 (leader)
     // create Content Calandar
     @Input() scheduleId: any; // schedule the Content Calendar belongs to
     @Input() goalId: string; // whether the newly created Content Calendar is under a Goal
@@ -51,7 +54,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     pageNum = 0;
     reachedEnd = false;
     selectedMoments = [];
-    step = 0;
+    step: any;
     selectedCategoryId: any;
     loading: any;
 
@@ -80,6 +83,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         public router: Router,
         public platform: Platform,
         private location: Location,
+        private storage: Storage,
         private alertCtrl: AlertController,
         private actionSheetCtrl: ActionSheetController,
         private cache: CacheService,
@@ -102,10 +106,11 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.setup();
     }
 
-    setup() {
+    async setup() {
         this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
+        this.activityId = this.activityId || this.route.snapshot.paramMap.get('activityId');
         this.programId = this.programId || this.route.snapshot.paramMap.get('programId');
         this.type = parseInt(this.type || this.route.snapshot.paramMap.get('type') || '0', 10);
         this.parent_programId = this.parent_programId || this.route.snapshot.paramMap.get('parent_programId');
@@ -119,7 +124,15 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.allowCustomStartDate = false; // reset the property
         this.recurrenceStartDate = new Date();
         this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
-        if (this.categoryId === 'all' || !this.categoryId) { // if 'all' category is indicated, begin with 0
+        if (this.activityId) { // if an activityId is provided, the activity is already selected to be cloned, and this component is used to select the custom startdate before cloning
+            this.allowCustomStartDate = true; // custom startdate config has already been checked
+            const activity: any = await this.momentService.load(this.activityId);
+            activity.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
+            activity.joinAs = this.joinAs;
+            activity.startDate = null;
+            this.selectedMoments = [activity];
+            this.step = 4;
+        } else if (this.categoryId === 'all' || !this.categoryId) { // if 'all' category is indicated, begin with 0
             this.step = 0;
             this.selectedCategoryId = this.selectedCategoryId || '5e9f46e1c8bf1a622fec69d5';
         } else if (this.categoryId) { // if category id is provided, start with 1
@@ -389,8 +402,9 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     async done() {
         let selectedProgram;
-        if (this.modalPage) {
-            this.modalCtrl.dismiss(this.selectedMoments); // if modalPage, exit back to parent page and hand off processing of selected moments
+        let clonedMoments: any;
+        if (this.modalPage && !this.activityId) { // all modal view, except when the activityId is already provided so cloning is expected to be done in the current component. for all other use cases, hand off by sending selected moments back to the lower stack
+            this.modalCtrl.dismiss(this.selectedMoments); // exit back to parent page and hand off processing of selected moments
         } else {
             this.loading = await this.loadingCtrl.create({
                 message: 'Processing...',
@@ -422,7 +436,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 if (this.allowCustomStartDate) {
                     this.selectedMoments[0].startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
                 }
-                const clonedMoments: any = await this.momentService.clone(this.selectedMoments, null);
+                clonedMoments = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
                     clonedMoments[0].resource = this.selectedMoments[0].resource; // clone the populated resource
                     selectedProgram = clonedMoments[0];
@@ -503,6 +517,23 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
                 await this.loading.dismiss();
             }
+            if (this.activityId && this.subpanel) { // if cloning Activity and the current view is opened in subpanel view, show congratulations pop-up before closing subpanel
+                const congratulations = await this.alertCtrl.create({
+                    header: 'Congratulations',
+                    message: 'You have successfully joined ' + this.selectedMoments[0].matrix_string[0][0] + '.',
+                    buttons: [{ text: 'Start Now',
+                        handler: async () => {
+                            this.userData.defaultProgram = selectedProgram;
+                            this.storage.set('defaultProgram', this.userData.defaultProgram);
+                            congratulations.dismiss();
+                            this.router.navigate(['/app/home/activity/' + selectedProgram._id]);
+                        }}],
+                    cssClass: 'level-15'
+                });
+                await congratulations.present();
+            } else if (this.activityId && this.modalPage) {
+                this.modalCtrl.dismiss(clonedMoments);
+            }
             this.cleanup();
         }
     }
@@ -548,7 +579,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     back() {
         // close page or step back
-        if (this.step === 0 || (!this.allowSwitchCategory && this.step === 1)) {
+        if (this.step === 0 || (!this.allowSwitchCategory && this.step === 1) || this.activityId) {
             this.close();
         } else {
             this.step--;
@@ -575,6 +606,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.reachedEnd = false;
         this.selectedMoments = [];
         this.step = 0;
+
     }
 
     ngOnDestroy(): void {

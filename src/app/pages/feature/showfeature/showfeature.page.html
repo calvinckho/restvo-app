@@ -289,7 +289,7 @@
           <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as i"><span *ngIf="i > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
         </ion-item>
       </ion-item-group>
-      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter"> <!--Tabs-->
+      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter" [hidden]="moment.matrix_number[i][1] && !this.hasParticipantAccess && !this.hasLeaderAccess && (this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--Tabs-->
         <ion-toolbar mode="md" class="tab-toolbar">
           <ion-segment (ionChange)="changeTabSelection($event)" [value]="tabSelection" mode="md">
             <ion-segment-button class="tab-button" *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j" [value]="tabId" mode="md">{{moment.matrix_string[i][j]}}</ion-segment-button>
@@ -905,7 +905,7 @@
   <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))" [hidden]="!this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -918,7 +918,8 @@
       <ion-fab-button (click)="createCalendarItem($event, '5e4b39cd76ffc96ae6aba323')" color="primary" *ngIf="customSchedule && moment.resource.matrix_number[0].includes(12000) && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(12000)])">Note</ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <!-- <ion-toolbar *ngIf="calendarItem">
-    <ion-button expand="block" shape="round" (click)="deleteCalendarItem($event)" color="primary">Delete</ion-button>
-  </ion-toolbar> -->
+   <!--Join Button for Marketplace Templates to be cloned for a user-->
+  <ion-toolbar *ngIf="!this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace and non-participanting-->
+    <ion-button expand="block" shape="round" (click)="cloneActivity($event)" color="primary">Join</ion-button>
+  </ion-toolbar>
 </ion-footer>
