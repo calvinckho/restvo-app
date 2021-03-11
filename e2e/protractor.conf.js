@@ -7,7 +7,7 @@ exports.config = {
   allScriptsTimeout: 110000,
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
-    './src/desktop/register.e2e-spec.ts'
+    './src/mobile/tab-navigate.e2e-spec.ts'
     //'./src/desktop/add-user-to-group.e2e-spec.ts' // run this specific script
   ],
   capabilities: {

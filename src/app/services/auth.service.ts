@@ -157,7 +157,11 @@ export class Auth {
                 this.routeAuthenticatedUser();
                 this.checkIncompleteOnboarding(true);
             } else {
-                await this.router.navigate([this.cachedRouteUrl, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
+                if (this.cachedRouteParams) {
+                    await this.router.navigate([this.cachedRouteUrl, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
+                } else {
+                    await this.router.navigate([this.cachedRouteUrl], { queryParamsHandling: 'preserve' });
+                }
                 this.checkIncompleteOnboarding(true);
             }
         }
@@ -191,6 +195,9 @@ export class Auth {
                     break;
                 case 'me':
                     this.router.navigate(['/app/me'], { queryParamsHandling: 'preserve'});
+                    break;
+                default:
+                    this.router.navigate(['/app/discover'], { queryParamsHandling: 'preserve'});
                     break;
             }
         } else if (this.router.url.includes('home/activity') || this.router.url.includes('home/insight')) { // if loading landing page /home/activity or /insight
@@ -319,5 +326,6 @@ export class Auth {
         this.incompleteOnboardProcess = null;
         this.storage.set('token', '');
         this.storage.set('user', '');
+        this.storage.set('lastVisitedTab', '');
     }
 }

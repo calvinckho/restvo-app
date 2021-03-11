@@ -49,7 +49,7 @@ describe('navigate around the maintab', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreatefeaturePage();
         await browser.get('/'); // navigate to '/'
-        await discover.waitUntilPresent(); // wait until showfeature is present
+        await discover.waitUntilPresent(); // wait until discover is present
         await discover.clickElement('#signin');
         await browser.waitForAngular(); // wait for angular to stabilize
         await register.fillEmail(); // fill email
