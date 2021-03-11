@@ -48,9 +48,9 @@ describe('navigate around the maintab', () => {
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreatefeaturePage();
-        await showfeature.navigateTo(); // navigate to '/'
-        await showfeature.waitUntilPresent(); // wait until showfeature is present
-        await showfeature.clickSigninButton('#signin');
+        await browser.get('/'); // navigate to '/'
+        await discover.waitUntilPresent(); // wait until showfeature is present
+        await discover.clickElement('#signin');
         await browser.waitForAngular(); // wait for angular to stabilize
         await register.fillEmail(); // fill email
         await register.fillPassword(); // fill password
@@ -95,6 +95,6 @@ describe('navigate around the maintab', () => {
     it('should click the logout button', async () => {
         await app.clickElement('#logoutButton') //click the logout button
         await browser.sleep(1000); // tell webdriver to wait so sign in page can be seen
-        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy(); //it should contain signin button in header
+        expect(await discover.elementIsPresent('#signin')).toBeTruthy(); //it should contain signin button in header
     });
 });
