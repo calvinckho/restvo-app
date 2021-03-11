@@ -3,15 +3,15 @@ import {Location} from '@angular/common';
 import { Storage } from '@ionic/storage';
 import { UserData } from '../../services/user.service';
 import { ModalController, Platform } from '@ionic/angular';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
 import { ProfilePage } from './profile/profile.page';
 import { Router} from '@angular/router';
-import {SettingsPage} from "./settings/settings.page";
-import {ProgramsPage} from "./programs/programs.page";
-import {NotificationsPage} from "./notifications/notifications.page";
-import {AboutPage} from "./about/about.page";
-import {Chat} from "../../services/chat.service";
-import {DashboardPage} from "./dashboard/dashboard.page";
+import {SettingsPage} from './settings/settings.page';
+import {ProgramsPage} from './programs/programs.page';
+import {NotificationsPage} from './notifications/notifications.page';
+import {AboutPage} from './about/about.page';
+import {Chat} from '../../services/chat.service';
+import {DashboardPage} from './dashboard/dashboard.page';
 
 @Component({
   selector: 'app-user',

@@ -71,10 +71,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                     }
                 });
             } else {
-                console.log("App Plugin not available");
+                console.log('App Plugin not available');
             }
         } catch (err) {
-            console.log("error when activating Capacitor's App Plugin");
+            console.log('error when activating Capacitor\'s App Plugin');
         }
     }
 
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                     params[urlComponents[i].split('=')[0]] = urlComponents[i].split('=')[1];
                 }
             }
-            console.log("launch app!", routeUrl, urlComponents[0], params);
+            console.log('launch app!', routeUrl, urlComponents[0], params);
             const modal = await this.modalCtrl.getTop();
             if (modal) {
                 modal.dismiss();

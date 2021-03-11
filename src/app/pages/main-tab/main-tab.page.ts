@@ -869,7 +869,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.toggleVideoChat(params);
                 this.pendingVideoChatRoomId = params.videoChatRoomId;
             });
-            this.subscriptions['chatSocketMessage'].unsubscribe(res => { //'chat socket emit', async (conversationId, data) => {
+            this.subscriptions['chatSocketMessage'].unsubscribe(res => { // 'chat socket emit', async (conversationId, data) => {
                 if (res) {
                     if (res.topic === 'chat socket emit') {
                         this.chatService.socket.emit('update status', res.conversationId, res.data);

@@ -32,11 +32,12 @@
                 <ion-label class="label-title">Location</ion-label>
                 <ion-label class="detail ion-text-wrap">{{moment.location.location}} </ion-label>
               </ion-item>
-              <a [href]="addressURL" target="_blank" *ngIf="mapURL.length">
+              <p>Location is not supported in this view</p>
+              <!--<a [href]="addressURL" target="_blank" *ngIf="mapURL.length">
                 <div class="map-container">
                   <img [src]="mapURL" />
                 </div>
-              </a>
+              </a>-->
             </ion-item-group>
             <ion-item-group *ngIf="item === 20000"> <!--Visibility-->
               <ion-item *ngIf="moment.array_community && moment.array_community.length" lines="none">
@@ -62,17 +63,18 @@
                 <ion-label class="detail ion-text-wrap">{{moment.calendar.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}} </ion-label>
               </ion-item>
             </ion-item-group>
-            <div class="component" *ngIf="item === 10370"> <!--Plan-->
+            <div class="component" *ngIf="item === 10370"> <!--References-->
               <ion-item lines="none">
                 <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="jet"></ion-icon></div>
                 <ion-label class="label-title">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-label>
               </ion-item>
-              <ion-item *ngFor="let planModule of planModules; let j = index;" (click)="openModule(planModule)">
+              <p>References is not supported in this view</p>
+              <!--<ion-item *ngFor="let planModule of planModules; let j = index;" (click)="openModule(planModule)">
                 <ion-badge slot="start" class="moment-type">{{planModule.resource['en-US'].value[0]}}</ion-badge>
                 <span class="module-number">{{j+1}}.</span>
                 <span class="moment-input">{{planModule.matrix_string[0][0]}}</span>
                 <ion-note style="max-width: 30%" class="ion-text-wrap ion-no-margin" slot="end">{{planModule.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-              </ion-item>
+              </ion-item>-->
             </div>
             <!-- Media -->
             <div *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010) && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0])"> <!--Hide/Show Media Setting-->

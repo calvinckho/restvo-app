@@ -1,16 +1,16 @@
 import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {ActionSheetController, AlertController, IonContent, IonSelect, ModalController, Platform} from "@ionic/angular";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Moment} from "../../../../services/moment.service"
-import {Response} from "../../../../services/response.service";
-import {Auth} from "../../../../services/auth.service";
-import {Chat} from "../../../../services/chat.service";
-import {UserData} from "../../../../services/user.service";
-import {Resource} from "../../../../services/resource.service";
-import {CalendarService} from "../../../../services/calendar.service";
-import {FeatureChildActivitiesPage} from "../feature-childactivities/feature-childactivities.page";
-import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
-import {Location} from "@angular/common";
+import {ActionSheetController, AlertController, IonContent, IonSelect, ModalController, Platform} from '@ionic/angular';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Moment} from '../../../../services/moment.service';
+import {Response} from '../../../../services/response.service';
+import {Auth} from '../../../../services/auth.service';
+import {Chat} from '../../../../services/chat.service';
+import {UserData} from '../../../../services/user.service';
+import {Resource} from '../../../../services/resource.service';
+import {CalendarService} from '../../../../services/calendar.service';
+import {FeatureChildActivitiesPage} from '../feature-childactivities/feature-childactivities.page';
+import {PickfeaturePopoverPage} from '../../pickfeature-popover/pickfeature-popover.page';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-feature-schedule',
@@ -118,7 +118,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     if (this.moment) {
       this.responseObj.moment = this.moment._id;
     }
-  };
+  }
 
   // get to-dos privacy setting
   async checkToDosPrivacySetting() {
@@ -198,7 +198,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         // super admin's calendar items list
         for (const calendarItem of this.timeline) {
           if (goalsPrivacyPermission && calendarItem._id === interactable[0] && interactable.length > 10) { // interactable[0] is a String
-            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((c) => c[0]).includes(c));
+            calendarItem.goals = interactable.slice(10).filter((c) => this.listOfDisplayGoals.map((d) => d[0]).includes(c));
           }
         }
         // prepare the responseObj
@@ -224,7 +224,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             }
             this.responseObj.matrix_string[index].push(...interactable.slice(10));
           } else {
-            let interactableObj = Array(10);
+            const interactableObj = Array(10);
             interactableObj[0] = interactable[0];
             interactableObj.push(...interactable.slice(10));
             this.responseObj.matrix_string.push(interactableObj);
@@ -290,7 +290,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   changeSelectedDate(inputDate) {
-    if (inputDate === ' ') return;
+    if (inputDate === ' ') { return; }
     this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
     if ( this.dateType === 'start' ) {
       this.recurrenceStartDate = inputDate;
@@ -317,7 +317,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             this.closeModal();
           } else {
             this.location.back();
-            //this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
+            // this.router.navigate(['/app/manage/activity/' + this.programId + '/profile/' + this.programId ], { replaceUrl: true });
           }
         }}, { text: 'Cancel' }]
     });
@@ -647,7 +647,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   async promptNewGoalName(event) {
     event.stopPropagation();
-    //await this.fabButtons.close();
+    // await this.fabButtons.close();
     const alert = await this.alertCtrl.create({
       header: 'Enter Section Name',
       inputs: [{
@@ -696,7 +696,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
     };
     this.momentService.socket.emit('refresh moment', this.programId, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
-    //this.content.scrollToBottom(50);
+    // this.content.scrollToBottom(50);
   }
 
   async removeGoal(goal) {

@@ -15,7 +15,7 @@ import {Resource} from '../../../services/resource.service';
 import {Moment} from '../../../services/moment.service';
 import {Response} from '../../../services/response.service';
 import {UserData} from '../../../services/user.service';
-import {Storage} from "@ionic/storage";
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'app-pickfeature-popover',

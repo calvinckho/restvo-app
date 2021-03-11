@@ -8,8 +8,8 @@ import { Badge } from '@ionic-native/badge/ngx';
 import { Storage } from '@ionic/storage';
 import { Auth } from '../../../services/auth.service';
 import { AlertController, LoadingController, Platform, MenuController, ModalController } from '@ionic/angular';
-import { UserData } from "../../../services/user.service";
-import { Aws } from "../../../services/aws.service";
+import { UserData } from '../../../services/user.service';
+import { Aws } from '../../../services/aws.service';
 
 @Component({
   selector: 'app-settings',
@@ -56,7 +56,7 @@ export class SettingsPage implements OnInit, OnDestroy {
             this.prepareUserSettings();
         }
         this.userData.splitPaneState = 'md';
-    };
+    }
 
     async prepareUserSettings() {
         await this.userData.load();
@@ -64,7 +64,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.UIimportContactList = this.userData.user.importContactList;
         this.UIAllowedDiscovered = !this.userData.user.hideInDirectory;
         this.UIShareContactInfo = this.userData.user.shareContactInfo;
-        setTimeout(() =>{
+        setTimeout(() => {
             this.awaitUserInput = true;
         }, 50);
         if (this.platform.is('cordova')) {
@@ -90,7 +90,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.UIShareContactInfo = await this.userData.toggleShareContactInfo(this.UIShareContactInfo);
     }
 
-    async resetPassword(){
+    async resetPassword() {
         if (this.modalPage) {
             this.modalCtrl.dismiss();
         }
@@ -122,7 +122,7 @@ export class SettingsPage implements OnInit, OnDestroy {
                         await this.modalCtrl.dismiss();
                     }
                     // erase avatar first when the user's auth is still in place
-                    if (this.userData.user.avatar && this.userData.user.avatar.length){
+                    if (this.userData.user.avatar && this.userData.user.avatar.length) {
                         await this.awsService.removeFile(this.userData.user.avatar);
                     }
                     this.userData.permanentlyEraseUser().subscribe(async () => {
@@ -163,10 +163,10 @@ export class SettingsPage implements OnInit, OnDestroy {
         }
     }
 
-    async explainDiscover(){
+    async explainDiscover() {
         const alert = await this.alertCtrl.create({
             header: 'Allow to be Discovered',
-            subHeader: "Allow others in your community to find you in the Discover Section by toggling it to 'on'. If toggled 'off', others in the community will not be able to find you.",
+            subHeader: 'Allow others in your community to find you in the Discover Section by toggling it to \'on\'. If toggled \'off\', others in the community will not be able to find you.',
             buttons: [{ text: 'Ok'}],
             cssClass: 'level-15'
         });

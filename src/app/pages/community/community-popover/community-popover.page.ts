@@ -2,10 +2,10 @@ import {Component, OnInit, Input, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
 import { ActionSheetController, AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
-import {EditcommunityPage} from "../editcommunity/editcommunity.page";
-import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
-import {Resource} from "../../../services/resource.service";
-import {Storage} from "@ionic/storage";
+import {EditcommunityPage} from '../editcommunity/editcommunity.page';
+import {InvitetoconnectPage} from '../../connect/invitetoconnect/invitetoconnect.page';
+import {Resource} from '../../../services/resource.service';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'app-community-popover',
@@ -18,9 +18,9 @@ export class CommunityPopoverPage implements OnInit {
     count: any;
     @Input() community: any;
     loading: any;
-    joinChurchTag: boolean = true;
-    editChurchTag: boolean = false;
-    leaveChurchTag: boolean = false;
+    joinChurchTag = true;
+    editChurchTag = false;
+    leaveChurchTag = false;
 
     constructor(private platform: Platform,
                 private cache: CacheService,
@@ -33,7 +33,7 @@ export class CommunityPopoverPage implements OnInit {
                 private userData: UserData) { }
 
     ngOnInit() {
-        if (this.community){
+        if (this.community) {
             this.setTag();
         }
     }
@@ -46,14 +46,14 @@ export class CommunityPopoverPage implements OnInit {
 
     setTag() {
         this.community.members.forEach((member: any) => {
-            if (member._id == this.userData.user._id) {
+            if (member._id === this.userData.user._id) {
                 this.joinChurchTag = false;
                 this.editChurchTag = false;
                 this.leaveChurchTag = true;
             }
         });
         this.community.admins.forEach((admin: any) => {
-            if (admin._id == this.userData.user._id) {
+            if (admin._id === this.userData.user._id) {
                 this.joinChurchTag = false;
                 this.editChurchTag = true;
                 this.leaveChurchTag = true;
@@ -104,8 +104,8 @@ export class CommunityPopoverPage implements OnInit {
     async joinCommunity() {
         this.popoverCtrl.dismiss();
         try {
-            let data = await this.userData.joinCommunity(this.community);
-            if (data === "cancel") return;
+            const data = await this.userData.joinCommunity(this.community);
+            if (data === 'cancel') { return; }
             const alert = await this.alertCtrl.create({
                 header: 'Success',
                 message: 'Added to My Community.',
@@ -117,20 +117,20 @@ export class CommunityPopoverPage implements OnInit {
             });
             await alert.present();
         } catch (err) {
-            console.log("failed to add to My Community");
+            console.log('failed to add to My Community');
         }
     }
 
     async leaveCommunity() {
         this.popoverCtrl.dismiss();
-        let alert = await this.alertCtrl.create({
+        const alert = await this.alertCtrl.create({
             header: 'Warning',
             message: 'Are you sure you want to leave this community? You will also be removed from all its groups.',
             buttons: [{ text: 'Yes',
                 handler: () => {
-                    let navTransition = alert.dismiss();
+                    const navTransition = alert.dismiss();
                     navTransition.then( async () => {
-                        //Remove from database
+                        // Remove from database
                         await this.userData.leaveCommunity(this.community._id);
                         this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
                         this.userData.refreshBoards({ type: 'refresh community board page' });
@@ -144,19 +144,19 @@ export class CommunityPopoverPage implements OnInit {
     }
 
     async editCommunity() {
-        let industries = [];
-        this.resourceService.load('en-US', "Industry").subscribe(async (fields: any) => {
+        const industries = [];
+        this.resourceService.load('en-US', 'Industry').subscribe(async (fields: any) => {
             for (let i = 0; i < fields.length; i++) {
-                industries.push({_id: fields[i]._id, name: fields[i]["en-US"].value[0], selected: false});
+                industries.push({_id: fields[i]._id, name: fields[i]['en-US'].value[0], selected: false});
             }
             this.popoverCtrl.dismiss();
-            let editCommunityModal = await this.modalCtrl.create({
+            const editCommunityModal = await this.modalCtrl.create({
                 component: EditcommunityPage,
                 componentProps: {community: this.community, industries: industries}
             });
             await editCommunityModal.present();
         }, async (err) => {
-            console.log("failed to load resources");
+            console.log('failed to load resources');
             const networkAlert = await this.alertCtrl.create({
                 header: 'No Internet Connection',
                 message: 'Please check your internet connection.',
@@ -171,8 +171,8 @@ export class CommunityPopoverPage implements OnInit {
         this.popoverCtrl.dismiss();
     }
 
-    async noNetworkConnection(){
-        let networkAlert = await this.alertCtrl.create({
+    async noNetworkConnection() {
+        const networkAlert = await this.alertCtrl.create({
             header: 'No Internet Connection',
             message: 'Please check your internet connection.',
             buttons: ['Dismiss'],

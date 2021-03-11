@@ -929,8 +929,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             this.interactableDisplay[interactableId][key].selectedByUser = false;
           }
         } else {
-          this.interactableDisplay[interactableId].forEach((interactableOption) => {
-            interactableOption.selectedByUser = false;
+          this.interactableDisplay[interactableId].forEach((c) => {
+            c.selectedByUser = false;
           });
         }
         this.setupInteractableDisplay(interactableId, componentIndex);

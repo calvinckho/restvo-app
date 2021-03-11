@@ -6,16 +6,16 @@ import { Chat } from './chat.service';
 import { Auth } from './auth.service';
 import { Response } from './response.service';
 import { Resource } from './resource.service';
-import { UserData } from './user.service'
+import { UserData } from './user.service';
 import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
 
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
-import {Storage} from "@ionic/storage";
-import {PaymentService} from "./payment.service";
-import {Router} from "@angular/router";
+import {Storage} from '@ionic/storage';
+import {PaymentService} from './payment.service';
+import {Router} from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class Moment {
@@ -64,7 +64,7 @@ export class Moment {
     private _openCreator: BehaviorSubject<any> = new BehaviorSubject(null);
 
     public readonly openMoment$: Observable<any> = this._openMoment.asObservable();
-    public readonly editMoment$: Observable<any> = this._editMoment.asObservable()
+    public readonly editMoment$: Observable<any> = this._editMoment.asObservable();
     public readonly refreshMoment$: Observable<any> = this._refreshMoment.asObservable();
     public readonly manageMoment$: Observable<any> = this._manageMoment.asObservable();
     public readonly openPreferences$: Observable<any> = this._openPreferences.asObservable();
@@ -209,7 +209,7 @@ export class Moment {
         return this.http.get(this.networkService.domain + '/api/moment/onboarding?momentId=' + (momentId || '') + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
     }
 
-    loadPublicActivityByCategory(categoryId, pageNum){
+    loadPublicActivityByCategory(categoryId, pageNum) {
         return this.http.get(this.networkService.domain + '/api/moment/activity/' + categoryId + '?pageNum=' + pageNum).toPromise();
     }
 
@@ -233,7 +233,7 @@ export class Moment {
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
         return promise;
-    };
+    }
 
     async clone(moments, optOutReason) {
         const promises = await this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions)
@@ -245,11 +245,11 @@ export class Moment {
     }
 
     async update(moment) {
-        let data = JSON.parse(JSON.stringify(moment));
-        if (data.resource && data.resource._id){
-            data.resource = data.resource._id; //depopulate resource before update
+        const data = JSON.parse(JSON.stringify(moment));
+        if (data.resource && data.resource._id) {
+            data.resource = data.resource._id; // depopulate resource before update
         }
-        delete data.conversations; //no need to send the converastions field
+        delete data.conversations; // no need to send the converastions field
         const promise = await this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         await this.calendarService.getUserCalendar();
@@ -278,7 +278,7 @@ export class Moment {
                     conversations: [conversation._id],
                     calendarId: moment.calendar._id
                 };
-                if (moment.resource && moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Goal' || moment.resource['en-US'].value[0] === 'Meetup'){
+                if (moment.resource && moment.resource.hasOwnProperty('en-US') && moment.resource['en-US'].value[0] === 'Goal' || moment.resource['en-US'].value[0] === 'Meetup') {
                     data.operation = 'add to lists and calendar';
                     data.user_lists = ['user_list_1', 'user_list_2'];
                 }
@@ -291,7 +291,7 @@ export class Moment {
                     if (conversation.group) {
                         await this.chatService.sendReply(conversation._id, {
                             moment: moment._id,
-                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage",
+                            page: conversation.type === 'connect' ? 'MessagePage' : 'GroupmessagePage',
                             groupId: conversation.type === 'connect' ? null : conversation.group._id,
                             groupName: conversation.type === 'connect' ? null : conversation.group.name
                         }, {
@@ -304,13 +304,13 @@ export class Moment {
                                 last_name: this.userData.user.last_name,
                                 avatar: this.userData.user.avatar
                             },
-                            status: "pending",
+                            status: 'pending',
                             confirmId: Math.random()
                         });
                     } else {
                         await this.chatService.sendReply(conversation._id, {
                             moment: moment._id,
-                            page: conversation.type === 'connect' ? "MessagePage" : "GroupmessagePage"
+                            page: conversation.type === 'connect' ? 'MessagePage' : 'GroupmessagePage'
                         }, {
                             conversationId: conversation._id,
                             moment: moment,
@@ -321,7 +321,7 @@ export class Moment {
                                 last_name: this.userData.user.last_name,
                                 avatar: this.userData.user.avatar
                             },
-                            status: "pending",
+                            status: 'pending',
                             confirmId: Math.random()
                         });
                     }
@@ -507,7 +507,7 @@ export class Moment {
         }
     }
 
-    // an user adding another user to an Activity's participant list. 
+    // an user adding another user to an Activity's participant list.
     // Only 1 list (e.g. 'user_list_1') is handled at this time even though listOfNames is an array of one element. i.e. ['user_list_1']
     async addParticipants(moment, resource, filter, listOfNames, title, action) {
         const success = await this.paymentService.checkSubscriptionAllowance(moment);
@@ -585,7 +585,7 @@ export class Moment {
             // check if there is any unconnected individual. If so, it needs to create conversations first so chat rooms are ready to receive notifications
             if (listOfAppUsers && listOfAppUsers.length) {
                 const promises = listOfAppUsers.map( async (appUser) => {
-                    if (appUser._id === this.userData.user._id) return; // terminate if the recipient selected is the user herself
+                    if (appUser._id === this.userData.user._id) { return; } // terminate if the recipient selected is the user herself
                     const isConnected: any = await this.chatService.getConversationByRecipientId(appUser._id, false, false); // API-controlled recipient info access permission
                     if (isConnected && isConnected.conversation) { // if the recipient has been connected
                         const conversation = isConnected.conversation;

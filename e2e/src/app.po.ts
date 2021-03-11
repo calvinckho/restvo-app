@@ -167,12 +167,12 @@ class PageObjectBase {
             els = await element.all(by.css(`app-main-tab ${this.tag} ${sel}`));
         }
         if (els.length) {
-            els.forEach(async (el) => {
+            for (const el of els) {
                 if (await el.isPresent()) {
                     await browser.wait(ExpectedConditions.elementToBeClickable(el), 18000);
                     el.click();
                 }
-            });
+            }
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
             await browser.wait(ExpectedConditions.elementToBeClickable(el), 10000);

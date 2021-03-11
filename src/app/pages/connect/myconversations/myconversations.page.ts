@@ -1,15 +1,15 @@
 import {Component, OnInit, OnDestroy, ViewChild, ViewEncapsulation, NgZone } from '@angular/core';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import {Storage} from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
 import {ActionSheetController, IonContent, NavController, ModalController, Platform} from '@ionic/angular';
 import {UserData} from '../../../services/user.service';
-import {Chat} from "../../../services/chat.service";
-import {ShowrecipientinfoPage} from "../showrecipientinfo/showrecipientinfo.page";
-import {CreatechatPage} from "../createchat/createchat.page";
+import {Chat} from '../../../services/chat.service';
+import {ShowrecipientinfoPage} from '../showrecipientinfo/showrecipientinfo.page';
+import {CreatechatPage} from '../createchat/createchat.page';
 import {GroupchatPage} from '../../group/groupchat/groupchat.page';
-import {EditgroupPage} from "../../group/editgroup/editgroup.page";
+import {EditgroupPage} from '../../group/editgroup/editgroup.page';
 
 @Component({
   selector: 'app-myconversations',
@@ -23,10 +23,10 @@ export class MyconversationsPage implements OnInit, OnDestroy {
 
     datas: any = [];
     loading: any;
-    ionSpinner: boolean = false;
-    noConversationLoaded: boolean = true;
+    ionSpinner = false;
+    noConversationLoaded = true;
     searchKeyword = '';
-    finishedLoading: boolean = false;
+    finishedLoading = false;
     recipient: any = {};
     moreOptions = false;
     subscriptions: any = [];
@@ -55,7 +55,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         // after user data is loaded from storage, load conversations
         if (this.userData && this.userData.user && this.userData.user.churches) {
             this.renderConversations();
-            console.log("saving tab")
+            console.log('saving tab');
             this.storage.set('lastVisitedTab', 'chat');
         }
     }
@@ -65,7 +65,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         if (data) {
             if (data.action === 'reload' && data.conversationId === 'all') { // e.g. a user joins or leaves a group
                 await this.loadMyConversations(true);
-            } else if (data.action === 'reload' && data.conversationId) { //conversation Id that needs to be zeroed
+            } else if (data.action === 'reload' && data.conversationId) { // conversation Id that needs to be zeroed
                 this.datas.forEach((obj: any) => {
                     if (data.conversationId === obj.conversation._id) {
                         obj.data.badge = 0;
@@ -77,7 +77,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                 await this.renderConversations();
             }
         }
-    };
+    }
 
     async loadMyConversations(ionSpinner) {
         if (ionSpinner) {
@@ -96,40 +96,32 @@ export class MyconversationsPage implements OnInit, OnDestroy {
             // Friends
             if (obj.conversation.type === 'connect') {
                 this.noConversationLoaded = false;
-                if(obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1){
-                    this.datas.push(obj); //push the conversation object into an array
+                if (obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
+                    this.datas.push(obj); // push the conversation object into an array
                 }
-            }
-            // Community Groups
-            else if (obj.conversation.group && obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === obj.conversation.group.churchId || this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+            } else if (obj.conversation.group && obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === obj.conversation.group.churchId || this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
                 this.noConversationLoaded = false;
                 if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
-                    this.datas.push(obj); //push the conversation object into an array
+                    this.datas.push(obj); // push the conversation object into an array
                 }
-            }
-            // Personal Groups
-            else if (obj.conversation.group && !obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+            } else if (obj.conversation.group && !obj.conversation.group.churchId && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
                 this.noConversationLoaded = false;
                 if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
-                    this.datas.push(obj); //push the conversation object into an array
+                    this.datas.push(obj); // push the conversation object into an array
                 }
-            }
-            // Outside Groups
-            else if (obj.conversation.group && listOfChurchIds.indexOf(obj.conversation.group.churchId) === -1 && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')){
+            } else if (obj.conversation.group && listOfChurchIds.indexOf(obj.conversation.group.churchId) === -1 && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
                 this.noConversationLoaded = false;
                 if (obj.conversation.group.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
-                    this.datas.push(obj); //push the conversation object into an array
+                    this.datas.push(obj); // push the conversation object into an array
                 }
-            }
-            // Moment (Program, Plan, etc)
-            else if (obj.conversation.moment && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
+            } else if (obj.conversation.moment && (this.userData.user.churches[this.userData.currentCommunityIndex]._id === '5ab62be8f83e2c1a8d41f894')) {
                 this.noConversationLoaded = false;
                 if (obj.data.name && obj.data.name.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1) {
-                    this.datas.push(obj); //push the conversation object into an array
+                    this.datas.push(obj); // push the conversation object into an array
                 }
             }
             if (obj.message && Object.keys(obj.message).length > 0) {
-                obj.message.preview = ((obj.message.author === this.userData.user._id) ? "You: " : '') + (obj.message.body || '') + ((obj.message.moment && obj.message.moment.resource) ? obj.message.moment.resource['en-US'].value[0] : '') + (obj.message.attachments && obj.message.attachments.length ? '📁' : '');
+                obj.message.preview = ((obj.message.author === this.userData.user._id) ? 'You: ' : '') + (obj.message.body || '') + ((obj.message.moment && obj.message.moment.resource) ? obj.message.moment.resource['en-US'].value[0] : '') + (obj.message.attachments && obj.message.attachments.length ? '📁' : '');
             }
         });
         this.sortConversations(this.datas);
@@ -145,7 +137,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
             obj.order = index;
         });
         datas.sort((a, b) => {
-            let badge_diff = b.data.badge - a.data.badge;
+            const badge_diff = b.data.badge - a.data.badge;
             if (badge_diff !== 0) {
                 return badge_diff; // only sort when there is an actual difference
             } else {
@@ -155,7 +147,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
     }
 
     async pushToMessagePage(event, object) {
-        if (event) event.stopPropagation();
+        if (event) { event.stopPropagation(); }
         let chatObj;
         if (object.conversation.type === 'connect') {
             chatObj = {
@@ -234,7 +226,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
 
     togglePushNotification(event, type, obj) {
         event.stopPropagation();
-        if (obj.data.pushNotification === 'all'){
+        if (obj.data.pushNotification === 'all') {
             obj.data.pushNotification = (type === 'group' || type === 'moment') ? 'leaders-only' : 'none';
         } else if (obj.data.pushNotification === 'leaders-only') {
             obj.data.pushNotification = 'none';
@@ -243,7 +235,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         }
         this.chatService.togglePushNotification(obj.conversation._id, obj.data.pushNotification)
             .then((result) => {}, (err) => {
-                console.log("not allowed", err);
+                console.log('not allowed', err);
             });
     }
 
@@ -263,11 +255,11 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         this.moreOptions = !this.moreOptions;
     }
 
-    async createNewChat(){
+    async createNewChat() {
         const createChatPage = await this.modalCtrl.create({component: CreatechatPage});
         await createChatPage.present();
         const {data: refreshNeeded} = await createChatPage.onDidDismiss();
-        if (refreshNeeded){
+        if (refreshNeeded) {
             this.loadMyConversations(true);
         }
     }
@@ -276,7 +268,7 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         const editGroupPage = await this.modalCtrl.create({component: EditgroupPage, componentProps: {personalGroup: false, publishGroup: false}});
         await editGroupPage.present();
         const {data: refreshNeeded} = await editGroupPage.onDidDismiss();
-        if (refreshNeeded){
+        if (refreshNeeded) {
             this.loadMyConversations(true);
         }
     }
@@ -319,13 +311,13 @@ export class MyconversationsPage implements OnInit, OnDestroy {
                     }
                     data.message = JSON.parse(JSON.stringify(message)); // exact copy to avoid updating the referenced object
                     data.message.author = data.message.author._id; // depopulate the author from socket.io
-                    data.message.preview = ((data.message.author === this.userData.user._id) ? "You: " : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
+                    data.message.preview = ((data.message.author === this.userData.user._id) ? 'You: ' : '') + (data.message.body || '') + ((data.message.moment && data.message.moment.resource) ? data.message.moment.resource['en-US'].matrix_string[0][0] : '') + (((data.message.body && data.message.body.length) || data.message.moment) ? '' : '📁');
                     data.conversation.updatedAt = new Date().toISOString(); // update the latest updated conversation for caching of the lastUpdatedDate
                 }
                 this.renderConversations();
             });
         }
-    };
+    }
 
     public ngOnDestroy(): void {
         this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);

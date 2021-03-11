@@ -4,7 +4,7 @@ import { ElectronService } from 'ngx-electron';
 import {AlertController, LoadingController, MenuController, Platform} from '@ionic/angular';
 import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
-import {StripeService} from "ngx-stripe";
+import {StripeService} from 'ngx-stripe';
 
 import { Badge } from '@ionic-native/badge/ngx';
 import { Contacts, Contact } from '@ionic-native/contacts/ngx';
@@ -14,8 +14,8 @@ import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
 
 import {User} from '../interfaces/user';
-import {Capacitor, Plugins} from "@capacitor/core";
-import {Router} from "@angular/router";
+import {Capacitor, Plugins} from '@capacitor/core';
+import {Router} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -108,12 +108,12 @@ export class UserData {
             }
         });
         this.socket.on('connect', () => {
-            console.log("user socket id: ", this.socket.id);
+            console.log('user socket id: ', this.socket.id);
             this.socket.emit('enter user', this.user._id);
         });
         this.socket.on('refresh user status', async (userId, data) => {
-            console.log("got refresh");
-            if (this.user._id === userId) { //only if user status update is for current user
+            console.log('got refresh');
+            if (this.user._id === userId) { // only if user status update is for current user
                 if (data.type === 'update admin') {
                     const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
                     this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
@@ -130,19 +130,19 @@ export class UserData {
                     await this.refreshMyConversations({action: 'disconnect chat view', conversationId: data.conversationId});
                     this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
                 } else if (data.type === 'update group participation') {
-                    //update user's group participation
+                    // update user's group participation
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    //this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshBoards({ type: 'refresh community board page' }); //when a user join a group with board
+                    // this.refreshUserStatus({ type: 'load user community boards' });
+                    this.refreshBoards({ type: 'refresh community board page' }); // when a user join a group with board
                 } else if (data.type === 'leave group') {
-                    //update user's group participation,
+                    // update user's group participation,
                     await this.load();
                     this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
                     this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
                     this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    //this.refreshUserStatus({ type: 'load user community boards' });
+                    // this.refreshUserStatus({ type: 'load user community boards' });
                     this.refreshBoards({ type: 'refresh community board page' }); // when a user leave a group with board
                     // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
                     const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
@@ -193,7 +193,7 @@ export class UserData {
                 this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', (this.user.unreadBadgeCount > -1) ? this.user.unreadBadgeCount : 0);
             }
         }
-        this.storage.set('user', this.user); //save in local storage for PWA's fast retrieval when booting up mobile app and reloading the myconversations page
+        this.storage.set('user', this.user); // save in local storage for PWA's fast retrieval when booting up mobile app and reloading the myconversations page
         // save user data in native storage for share extension's use
         if (this.platform.is('ios') && Capacitor.isPluginAvailable('ShareExtension')) {
             const { ShareExtension } = Plugins;
@@ -229,7 +229,7 @@ export class UserData {
         }
         this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
         // change stripe key depending on server use
-        let domain = await this.storage.get('serverDomain');
+        const domain = await this.storage.get('serverDomain');
         if (domain && domain.length) {
             this.networkService.domain = domain;
             if (domain === 'https://server.restvo.com') {
@@ -250,8 +250,8 @@ export class UserData {
     // filter the info based on churches selection
     async changeCommunity(event) {
         event.stopPropagation();
-        //this.menuCtrl.close();
-        //this.currentCommunityIndex = index; // this will always be smaller than churches.length
+        // this.menuCtrl.close();
+        // this.currentCommunityIndex = index; // this will always be smaller than churches.length
         this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString());
         const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
         this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
@@ -289,7 +289,7 @@ export class UserData {
     }
 
     async resetOSBadges() {
-        if(this.user && this.user.hasOwnProperty('unreadBadgeCount')) {
+        if (this.user && this.user.hasOwnProperty('unreadBadgeCount')) {
             this.user = await this.loadUser();
             if (this.platform.is('cordova') && this.user.enablePushNotification) {
                 this.badge.set(this.user.unreadBadgeCount);
@@ -357,7 +357,7 @@ export class UserData {
         return new Promise(async (resolve, reject) => {
             try {
                 await this.checkPushNotification();
-                let data = await this.joinCommunityHttp(church);
+                const data = await this.joinCommunityHttp(church);
                 resolve(data);
             } catch (err) {
                 reject(err);
@@ -366,36 +366,36 @@ export class UserData {
     }
 
     async joinCommunityHttp(church) {
-        let headers = new Headers();
+        const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', this.authService.token);
-        let data = await this.http.put(this.networkService.domain + '/api/mychurch', JSON.stringify(church), this.authService.httpAuthOptions)
+        const data = await this.http.put(this.networkService.domain + '/api/mychurch', JSON.stringify(church), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
         this.currentCommunityIndex = this.user.churches.length - 1;
-        this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString()); //store this for the next time the app starts up
+        this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString()); // store this for the next time the app starts up
         this.socket.emit('refresh user status', this.user._id, {type: 'update church participation'});
         return data;
     }
 
     async removePendingMessages(data) {
-        console.log("before send", JSON.stringify(data));
-        let headers = new Headers();
+        console.log('before send', JSON.stringify(data));
+        const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', this.authService.token);
 
-        let promise = await this.http.put(this.networkService.domain + '/api/auth/removepending', JSON.stringify(data), this.authService.httpAuthOptions)
+        const promise = await this.http.put(this.networkService.domain + '/api/auth/removepending', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         this.socket.emit('refresh user status', this.user._id, {type: 'update system messages'});
         return promise;
     }
 
     async leaveCommunity(id) {
-        let promise = await this.http.delete(this.networkService.domain + '/api/mychurch/' + id, this.authService.httpAuthOptions).toPromise();
+        const promise = await this.http.delete(this.networkService.domain + '/api/mychurch/' + id, this.authService.httpAuthOptions).toPromise();
         this.socket.emit('refresh user status', this.user._id, {type: 'update church participation'});
         await this.load();
         await this.loadStoredCommunity();
-        this.cache.clearGroup("churches");
+        this.cache.clearGroup('churches');
         return promise;
     }
 
@@ -403,7 +403,7 @@ export class UserData {
         return new Promise(async (resolve, reject) => {
             try {
                 await this.checkPushNotification();
-                let data = await this.joinGroupHTTP(group);
+                const data = await this.joinGroupHTTP(group);
                 resolve(data);
             } catch (err) {
                 reject(err);
@@ -412,7 +412,7 @@ export class UserData {
     }
 
     async joinGroupHTTP(group) {
-        let data = await this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
+        const data = await this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
         if (group.conversation) {
@@ -420,8 +420,8 @@ export class UserData {
             this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation._id, data: {action: 'update group member list'}});
 
         } else if (group.board) {
-            //this.refreshUserStatus({ type: 'load user community boards' });
-            this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
+            // this.refreshUserStatus({ type: 'load user community boards' });
+            this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: 'all'});
         }
         return data;
     }
@@ -431,12 +431,12 @@ export class UserData {
             const data = await this.http.put(this.networkService.domain + '/api/mygroup/accept', JSON.stringify(group), this.authService.httpAuthOptions)
                 .toPromise();
             if (group.conversation) {
-                this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); //conversationId is unpopulated ObjectId
+                this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); // conversationId is unpopulated ObjectId
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
 
             } else if (group.board) {
-                //this.refreshUserStatus({ type: 'load user community boards' });
-                this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: "all"});
+                // this.refreshUserStatus({ type: 'load user community boards' });
+                this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: 'all'});
             }
             return data;
         } catch (err) {
@@ -452,8 +452,8 @@ export class UserData {
                     resolve(false);
                 } else {
                     const alert = await this.alertCtrl.create({
-                        header: "Push Notification",
-                        message: "This allows Restvo to send you notifications on your device when other users message you. Do you want to enable push notification?",
+                        header: 'Push Notification',
+                        message: 'This allows Restvo to send you notifications on your device when other users message you. Do you want to enable push notification?',
                         buttons: [{
                             text: 'Yes',
                             handler: () => {
@@ -480,10 +480,10 @@ export class UserData {
         return new Promise(async (resolve) => {
             try {
                 if (importOn && !this.user.importContactList) { // when toggling it on
-                    console.log("turning import contact on");
-                    let alert = await this.alertCtrl.create({
-                        header: "Import Address Book",
-                        message: "Connect with friends and family on Restvo by importing your address book. The data will be securely transmitted to our server for the sole purpose of connecting you to your friends on Restvo. Allow Restvo to import your address book?",
+                    console.log('turning import contact on');
+                    const alert = await this.alertCtrl.create({
+                        header: 'Import Address Book',
+                        message: 'Connect with friends and family on Restvo by importing your address book. The data will be securely transmitted to our server for the sole purpose of connecting you to your friends on Restvo. Allow Restvo to import your address book?',
                         buttons: [{
                             text: 'Yes',
                             handler: async () => {
@@ -513,7 +513,7 @@ export class UserData {
                     });
                     await alert.present();
                 } else if (!importOn && this.user.importContactList) {
-                    console.log("turning import contact off");
+                    console.log('turning import contact off');
                     try {
                         await this.update({ importContactList: false} );
                         this.user.importContactList = false;
@@ -522,7 +522,7 @@ export class UserData {
                         resolve(true);
                     }
                 } else { // UI state change that is not user's toggle
-                    console.log("nothing happens");
+                    console.log('nothing happens');
                     resolve(importOn);
                 }
             } catch (err) {
@@ -542,7 +542,7 @@ export class UserData {
                 await permissionAlert.present();
                 resolve(false);
             }
-        })
+        });
     }
 
     async toggleAllowedDiscovered(state) {
@@ -551,11 +551,11 @@ export class UserData {
                 if (state && this.user.hideInDirectory) { // when toggling it show in directory
                     await this.update({hideInDirectory: false});
                     this.user.hideInDirectory = false;
-                    resolve(state); //allowed to be discovered
+                    resolve(state); // allowed to be discovered
                 } else if (!state && !this.user.hideInDirectory) { // when toggling it hidden in directory
                     await this.update({hideInDirectory: true});
                     this.user.hideInDirectory = true;
-                    resolve(state);//disallowed to be discovered
+                    resolve(state); // disallowed to be discovered
                 } else {
                     // UI state change that is not user's toggle
                     resolve(state);
@@ -579,11 +579,11 @@ export class UserData {
                 if (state && !this.user.shareContactInfo) { // when toggling it to share
                     await this.update({shareContactInfo: true});
                     this.user.shareContactInfo = true;
-                    resolve(state); //allowed to be discovered
+                    resolve(state); // allowed to be discovered
                 } else if (!state && this.user.shareContactInfo) { // when toggling it hidden in directory
                     await this.update({shareContactInfo: false});
                     this.user.shareContactInfo = false;
-                    resolve(state);//disallowed to be discovered
+                    resolve(state); // disallowed to be discovered
                 } else {
                     // UI state change that is not user's toggle
                     resolve(state);
@@ -602,7 +602,7 @@ export class UserData {
     }
 
     async leaveGroup(group) {
-        let promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
+        const promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
             .toPromise();
         await this.load();
         this.refreshUserStatus({ type: 'close group view', data: { _id: group._id }});
@@ -619,45 +619,44 @@ export class UserData {
         return new Promise((resolve, reject) => {
 
             setTimeout(async () => {
-                if (this.user && this.user._id) { //check if the user has already been loaded
+                if (this.user && this.user._id) { // check if the user has already been loaded
                     try {
                         const newlyAddedContacts = await this.getNewlyAddedContacts();
-                        console.log("contacts", newlyAddedContacts);
+                        console.log('contacts', newlyAddedContacts);
                         try {
                             const result = await this.uploadContactListHTTP(newlyAddedContacts); // expect res === 'success'
-                            console.log("upload result", result);
+                            console.log('upload result', result);
                             if (result === 'success') {
-                                let lastUploadedContactList = await this.storage.get("lastUploadedContactList");
-                                if(lastUploadedContactList && lastUploadedContactList.length) {
-                                    //console.log("lastUploadedContactList", lastUploadedContactList);
+                                let lastUploadedContactList = await this.storage.get('lastUploadedContactList');
+                                if (lastUploadedContactList && lastUploadedContactList.length) {
+                                    // console.log("lastUploadedContactList", lastUploadedContactList);
                                     lastUploadedContactList = lastUploadedContactList.concat(newlyAddedContacts);
                                     lastUploadedContactList.sort(function (a, b) {
-                                        return parseFloat(a["_objectInstance"].id) - parseFloat(b["_objectInstance"].id)
+                                        return parseFloat(a['_objectInstance'].id) - parseFloat(b['_objectInstance'].id);
                                     });
-                                    this.storage.set('lastUploadedContactList', lastUploadedContactList); //store the last loaded Contact List to the local storage
+                                    this.storage.set('lastUploadedContactList', lastUploadedContactList); // store the last loaded Contact List to the local storage
+                                } else {
+                                    this.storage.set('lastUploadedContactList', newlyAddedContacts); // store the newly imported contacts to the local storage
                                 }
-                                else{
-                                    this.storage.set('lastUploadedContactList', newlyAddedContacts); //store the newly imported contacts to the local storage
-                                }
-                                console.log("upload successful");
-                                resolve("upload successful");
+                                console.log('upload successful');
+                                resolve('upload successful');
                             } else {
-                                console.log("upload failed. server cannot process the request");
-                                resolve("The server cannot process your request.");
+                                console.log('upload failed. server cannot process the request');
+                                resolve('The server cannot process your request.');
                             }
                         } catch (err) {
-                            console.log("upload failed. problem connecting to the server");
-                            resolve("There is a problem connecting to the server. Please try again later.");
+                            console.log('upload failed. problem connecting to the server');
+                            resolve('There is a problem connecting to the server. Please try again later.');
                         }
                     } catch (err) {
-                        console.log("user refuses to provide permission.");
-                        reject("user refuses to provide permission.");
+                        console.log('user refuses to provide permission.');
+                        reject('user refuses to provide permission.');
                     }
                 } else {
-                    console.log("user is not logged in.");
-                    resolve("user is not logged in.");
+                    console.log('user is not logged in.');
+                    resolve('user is not logged in.');
                 }
-            }, delay * 1000); //check and upload contact list after x sec
+            }, delay * 1000); // check and upload contact list after x sec
         });
     }
 
@@ -667,34 +666,32 @@ export class UserData {
 
     getNewlyAddedContacts() {
         return new Promise((resolve, reject) => {
-            this.storage.get("lastUploadedContactList").then((lastUploadedContactList) => {
+            this.storage.get('lastUploadedContactList').then((lastUploadedContactList) => {
                 this.contacts.find(['*'], { desiredFields: ['name', 'phoneNumbers', 'emails', 'addresses'], multiple: true }).then((contacts) => {
-                    let currentContacts = contacts;
+                    const currentContacts = contacts;
                     if (lastUploadedContactList && lastUploadedContactList.length) {
                         contacts.sort(function (a, b) {
-                            return parseFloat(a["_objectInstance"].id) - parseFloat(b["_objectInstance"].id)
+                            return parseFloat(a['_objectInstance'].id) - parseFloat(b['_objectInstance'].id);
                         });
-                        console.log("last record: ", contacts[contacts.length-1]["_objectInstance"].id, lastUploadedContactList[lastUploadedContactList.length-1]["_objectInstance"].id);
-                        let newlyAddedContacts = [];
-                        let lastUploadedContactIds = lastUploadedContactList.map((c)=>{return c["_objectInstance"].id});
+                        console.log('last record: ', contacts[contacts.length - 1]['_objectInstance'].id, lastUploadedContactList[lastUploadedContactList.length - 1]['_objectInstance'].id);
+                        const newlyAddedContacts = [];
+                        const lastUploadedContactIds = lastUploadedContactList.map((c) => c['_objectInstance'].id);
                         for (let i = 0; i < contacts.length; i++) {
-                            let j = lastUploadedContactIds.indexOf(contacts[i]["_objectInstance"].id);
+                            const j = lastUploadedContactIds.indexOf(contacts[i]['_objectInstance'].id);
                             if (j > -1) {
-                                //if an existing record was changed
-                                if (JSON.stringify(contacts[i]["_objectInstance"]) !== JSON.stringify(lastUploadedContactList[j]["_objectInstance"])) {
+                                // if an existing record was changed
+                                if (JSON.stringify(contacts[i]['_objectInstance']) !== JSON.stringify(lastUploadedContactList[j]['_objectInstance'])) {
                                     newlyAddedContacts.push(contacts[i]);
                                 }
-                            }
-                            else {
-                                //if this is newly added contact
+                            } else {
+                                // if this is newly added contact
                                 newlyAddedContacts.push(contacts[i]);
                             }
                         }
                         resolve(newlyAddedContacts);
-                    }
-                    else {
+                    } else {
                         currentContacts.sort(function (a, b) {
-                            return parseFloat(a["_objectInstance"].id) - parseFloat(b["_objectInstance"].id)
+                            return parseFloat(a['_objectInstance'].id) - parseFloat(b['_objectInstance'].id);
                         });
                         resolve(currentContacts);
                     }

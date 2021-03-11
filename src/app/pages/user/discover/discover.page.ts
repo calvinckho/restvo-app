@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
+import {Component, ViewEncapsulation, OnInit} from '@angular/core';
 import { Storage } from '@ionic/storage';
 import {
     ModalController,
@@ -8,10 +8,9 @@ import { UserData } from '../../../services/user.service';
 import {Chat} from '../../../services/chat.service';
 import {Router} from '@angular/router';
 import {Auth} from '../../../services/auth.service';
-import {ProgramsPage} from '../programs/programs.page';
 import {Moment} from '../../../services/moment.service';
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
-import {RegisterPage} from "../register/register.page";
+import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
+import {RegisterPage} from '../register/register.page';
 
 @Component({
   selector: 'app-discover',

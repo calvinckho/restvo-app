@@ -5,7 +5,7 @@ import { Plugins } from '@capacitor/core';
 const { Network } = Plugins;
 import { SwUpdate } from '@angular/service-worker';
 import {ElectronService} from 'ngx-electron';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService {
@@ -13,7 +13,7 @@ export class NetworkService {
     //  prod endpoint
     domain = 'https://server.restvo.com';
     //  dev endpoint
-    //domain = 'https://server.dev.restvo.com';
+    // domain = 'https://server.dev.restvo.com';
     webapp_domain = 'https://app.restvo.com';
     assets = 'https://d2z4pehxidbzz4.cloudfront.net/';
     networkSuccess = false;

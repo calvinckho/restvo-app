@@ -82,7 +82,7 @@ describe('navigate around the maintab', () => {
     });
 
     it('should click the back button', async () => {
-        await app.clickElement('#clickback') // click the back button
+        await app.clickElement('#clickback'); // click the back button
         expect(app.headerIsPresent('#about-me-header')).toBeTruthy(); // the about me header is present
     });
 
@@ -93,8 +93,8 @@ describe('navigate around the maintab', () => {
     });
 
     it('should click the logout button', async () => {
-        await app.clickElement('#logoutButton') //click the logout button
+        await app.clickElement('#logoutButton'); // click the logout button
         await browser.sleep(1000); // tell webdriver to wait so sign in page can be seen
-        expect(await discover.elementIsPresent('#signin')).toBeTruthy(); //it should contain signin button in header
+        expect(await discover.elementIsPresent('#signin')).toBeTruthy(); // it should contain signin button in header
     });
 });

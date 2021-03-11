@@ -89,7 +89,7 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should fill out community info', async () => {
-    await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test')
+    await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test');
     await createfeature.waitUntilElementPresent('#communityName');
     await createfeature.clickNextButton();
     await createfeature.waitUntilElementPresent('#addProgramPrompt');
@@ -97,9 +97,9 @@ describe(' Create and Delete a Community', () => {
     await createfeature.waitUntilElementPresent('#communityDescription');
     await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
-    await createfeature.waitUntilElementPresent('#chooseProgramText')
+    await createfeature.waitUntilElementPresent('#chooseProgramText');
     await createfeature.clickTutorialNextButton();
-    await createfeature.waitUntilElementPresent('#tutorialDone')
+    await createfeature.waitUntilElementPresent('#tutorialDone');
     await createfeature.clickTutorialDoneButton();
     await createfeature.waitUntilInvisible();
     expect(await app.currentUrl()).toContain('manage');
@@ -108,7 +108,7 @@ describe(' Create and Delete a Community', () => {
   it('should have new community present on the My Community list', async () => {
     await app.clickElement('#meDashboard');
     await app.waitUntilUrlContains('me');
-    await app.waitUntilElementPresent('#E2E-Community-Test')
+    await app.waitUntilElementPresent('#E2E-Community-Test');
     expect(await app.elementIsPresent('#E2E-Community-Test')).toBeTruthy();
   });
 
@@ -129,7 +129,7 @@ describe(' Create and Delete a Community', () => {
     await app.clickElement('#userProfileSettings');
     await app.waitUntilUrlContains('profile');
     await app.clickElement('#logoutButton');
-    await app.waitUntilElementPresent('#signin')
+    await app.waitUntilElementPresent('#signin');
     expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
   });
 

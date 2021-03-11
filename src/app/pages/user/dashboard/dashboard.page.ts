@@ -10,10 +10,10 @@ import { CalendarService } from '../../../services/calendar.service';
 import { Chat } from '../../../services/chat.service';
 import { ListmycommunitiesPage } from '../../community/listmycommunities/listmycommunities.page';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NetworkService} from "../../../services/network-service.service";
-import {AboutPage} from "../about/about.page";
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
-import {Auth} from "../../../services/auth.service";
+import {NetworkService} from '../../../services/network-service.service';
+import {AboutPage} from '../about/about.page';
+import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
+import {Auth} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,8 +27,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     @Input() view: any;
     @Input() modalPage: any;
     pendingNotifications: any = [];
-    numberOfNotifications: number = 0;
-    noSystemMessage: boolean = true;
+    numberOfNotifications = 0;
+    noSystemMessage = true;
     deviceToken: any;
     loading: any = true;
     activities: any;
@@ -40,7 +40,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     role: any;
     bio: any;
 
-    searchKeyword: string = '';
+    searchKeyword = '';
     slide = 0;
     ionSpinner = true;
     moreOptions = false;
@@ -79,7 +79,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       if (this.userData && this.userData.user) {
           this.setup();
       }
-    };
+    }
 
     ionViewWillEnter() {
         // after loading userData from storage, userData should be ready
@@ -168,42 +168,42 @@ export class DashboardPage implements OnInit, OnDestroy {
         } else if (pendingNotification.group) {
             await this.userData.acceptJoinGroupRequest(pendingNotification.group);
         } else if (pendingNotification.person) {
-            let data: any = await this.chatService.getConversationByRecipientId(pendingNotification.person._id, false, null);
-            if (!data.length) {//if the recipient has not been connected
-                //console.log("new conversation...");
-                const welcomeMessage = this.userData.user.first_name + " " + this.userData.user.last_name + " is now connected with you.";
-                await this.chatService.newConversation(pendingNotification.person._id, {composedMessage: welcomeMessage, type: "connect"});
+            const data: any = await this.chatService.getConversationByRecipientId(pendingNotification.person._id, false, null);
+            if (!data.length) {// if the recipient has not been connected
+                // console.log("new conversation...");
+                const welcomeMessage = this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.';
+                await this.chatService.newConversation(pendingNotification.person._id, {composedMessage: welcomeMessage, type: 'connect'});
             }
         }
         return;
     }
 
-    async viewMessage(event, pendingNotification){
+    async viewMessage(event, pendingNotification) {
         event.stopPropagation();
         if (pendingNotification.community) {
             const alert = await this.alertCtrl.create({
-                header: "Invitation to join " + pendingNotification.community.name,
+                header: 'Invitation to join ' + pendingNotification.community.name,
                 message: pendingNotification.message,
                 buttons: [{ text: 'Accept',
                     handler: () => {
                         const navTransition = alert.dismiss();
                         navTransition.then( async () => {
                             const result = await this.userData.joinCommunity(pendingNotification.community);
-                            if (result === "cancel") {return;}
-                            this.cache.clearGroup("system");
+                            if (result === 'cancel') {return; }
+                            this.cache.clearGroup('system');
                             this.loadDashboard();
                         });
                     }}, { text: 'Ignore',
                     handler: () => {
-                        //console.log("Removing pending message...");
+                        // console.log("Removing pending message...");
                         this.removePendingMessage(pendingNotification);
                     }}, { text: 'Cancel' }],
                 cssClass: 'level-15'
             });
             return await alert.present();
-        } else if (pendingNotification.group){
+        } else if (pendingNotification.group) {
             const alert = await this.alertCtrl.create({
-                header: "Invitation to join " + pendingNotification.group.name,
+                header: 'Invitation to join ' + pendingNotification.group.name,
                 message: pendingNotification.message,
                 buttons: [{ text: 'Accept',
                     handler: () => {
@@ -211,11 +211,11 @@ export class DashboardPage implements OnInit, OnDestroy {
                         navTransition.then(async () => {
                             await this.userData.checkPushNotification();
                             const result = await this.userData.acceptJoinGroupRequest(pendingNotification.group);
-                            if (result === "cancel") {return;}
-                            this.cache.clearGroup("system");
+                            if (result === 'cancel') {return; }
+                            this.cache.clearGroup('system');
                             this.loadDashboard();
-                            if(result['churchId']) {
-                                //console.log("church id: ", result['churchId']);
+                            if (result['churchId']) {
+                                // console.log("church id: ", result['churchId']);
                                 const churchIdList = this.userData.user.churches.map((c) => {
                                     return c._id;
                                 });
@@ -229,46 +229,45 @@ export class DashboardPage implements OnInit, OnDestroy {
                         });
                     }}, { text: 'Ignore',
                     handler: () => {
-                        //console.log("Removing pending message...");
+                        // console.log("Removing pending message...");
                         this.removePendingMessage(pendingNotification);
 
                     }}, { text: 'Cancel' }],
                 cssClass: 'level-15'
             });
             return await alert.present();
-        } else if (pendingNotification.person){
+        } else if (pendingNotification.person) {
             const alert = await this.alertCtrl.create({
-                header: "Connect with " + pendingNotification.person.first_name + " " + pendingNotification.person.last_name,
+                header: 'Connect with ' + pendingNotification.person.first_name + ' ' + pendingNotification.person.last_name,
                 message: pendingNotification.message,
                 buttons: [{ text: 'Connect',
                     handler: () => {
                         const navTransition = alert.dismiss();
                         navTransition.then(async () => {
                             const data: any = await this.chatService.getConversationByRecipientId(pendingNotification.person._id, false, null);
-                            if (data.length) {//if the recipient has been connected
+                            if (data.length) {// if the recipient has been connected
                                 const alert2 = await this.alertCtrl.create({
-                                    header: "You are already connected with this user",
-                                    message: "You can direct message with this user in the Conversations page.",
+                                    header: 'You are already connected with this user',
+                                    message: 'You can direct message with this user in the Conversations page.',
                                     cssClass: 'level-15',
                                     buttons: [{ text: 'Dismiss',
                                         handler: () => {
-                                            //console.log("Removing pending message...");
+                                            // console.log("Removing pending message...");
                                             this.removePendingMessage(pendingNotification);
                                         }
                                     }]});
                                 await alert2.present();
-                            }
-                            else {
-                                //console.log("new conversation...");
+                            } else {
+                                // console.log("new conversation...");
                                 await this.userData.checkPushNotification();
-                                const welcomeMessage = this.userData.user.first_name + " " + this.userData.user.last_name + " is now connected with you.";
-                                await this.chatService.newConversation(pendingNotification.person._id, {composedMessage: welcomeMessage, type: "connect"});
+                                const welcomeMessage = this.userData.user.first_name + ' ' + this.userData.user.last_name + ' is now connected with you.';
+                                await this.chatService.newConversation(pendingNotification.person._id, {composedMessage: welcomeMessage, type: 'connect'});
                                 this.removePendingMessage(pendingNotification);
                             }
                         });
                     }}, { text: 'Ignore',
                     handler: () => {
-                        console.log("Removing pending message...");
+                        console.log('Removing pending message...');
                         this.removePendingMessage(pendingNotification);
                     }}, { text: 'Cancel' }],
                 cssClass: 'level-15'
@@ -276,7 +275,7 @@ export class DashboardPage implements OnInit, OnDestroy {
             return await alert.present();
         } else {
             const alert = await this.alertCtrl.create({
-                header: "System Message",
+                header: 'System Message',
                 message: pendingNotification.message,
                 buttons: [{ text: 'OK, delete message.',
                     handler: () => {
@@ -289,17 +288,17 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
 
     async removePendingMessage(pendingNotification) {
-        try{
+        try {
             await this.userData.removePendingMessages({messages: [pendingNotification]});
             // Remove locally
             const index = this.pendingNotifications.indexOf(pendingNotification);
             if (index > -1) {
                 this.pendingNotifications.splice(index, 1);
             }
-            if (!this.pendingNotifications.length){
+            if (!this.pendingNotifications.length) {
                 this.noSystemMessage = true;
             }
-            this.cache.clearGroup("system");
+            this.cache.clearGroup('system');
             this.numberOfNotifications--;
         } catch (err) {
             console.log(err);
@@ -307,7 +306,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
 
     async updateUserProfile() {
-        try{
+        try {
             await this.userData.update(this.userData.user);
             const alert = await this.alertCtrl.create({
                 header: 'Success',
@@ -316,7 +315,7 @@ export class DashboardPage implements OnInit, OnDestroy {
                 cssClass: 'level-15'
             });
             return await alert.present();
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             const alert = await this.alertCtrl.create({
                 header: 'Something Went Wrong',
@@ -339,17 +338,17 @@ export class DashboardPage implements OnInit, OnDestroy {
     }*/
 
     changeSelectedDate( inputDate ) {
-        if (inputDate === ' ') return;
+        if (inputDate === ' ') { return; }
         this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
         this.calendarService.calendar.daysInViewWeek = this.calendarService.getDaysInWeek( inputDate.getDate() , inputDate.getMonth() , inputDate.getFullYear() );
     }
 
-    async clickCalendarItem(calendarItem){
+    async clickCalendarItem(calendarItem) {
         // restore moment as parent and calendar as child object
         const calendar = JSON.parse(JSON.stringify(calendarItem));
         const moment = JSON.parse(JSON.stringify(calendarItem.moment));
         const componentProps: any = { moment: moment, modalPage: true };
-        let params: any = {};
+        const params: any = {};
         calendar.moment = moment._id;
         moment.calendar = calendar;
         if (calendar.relationship) {

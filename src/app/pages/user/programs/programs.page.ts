@@ -1,9 +1,9 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {UserData} from "../../../services/user.service";
-import {ModalController} from "@ionic/angular";
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
-import {Router} from "@angular/router";
-import {Storage} from "@ionic/storage";
+import {UserData} from '../../../services/user.service';
+import {ModalController} from '@ionic/angular';
+import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
+import {Router} from '@angular/router';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'app-programs',
@@ -35,7 +35,7 @@ export class ProgramsPage implements OnInit, OnDestroy {
         if (this.userData.user) {
             this.loadPrograms();
         }
-    };
+    }
 
   async loadPrograms() {
       this.ionSpinner = true;

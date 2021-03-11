@@ -1,18 +1,18 @@
 import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
-import * as Plyr from "plyr";
-import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from "@ionic/angular";
-import {Storage} from "@ionic/storage";
-import {CacheService} from "ionic-cache";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Geolocation} from "@ionic-native/geolocation/ngx";
-import {Resource} from "../../../services/resource.service";
-import {Response} from "../../../services/response.service";
-import {Moment} from "../../../services/moment.service";
-import {UserData} from "../../../services/user.service";
-import {Chat} from "../../../services/chat.service";
-import {Location} from "@angular/common";
-import {Auth} from "../../../services/auth.service";
-import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
+import * as Plyr from 'plyr';
+import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from '@ionic/angular';
+import {Storage} from '@ionic/storage';
+import {CacheService} from 'ionic-cache';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {Resource} from '../../../services/resource.service';
+import {Response} from '../../../services/response.service';
+import {Moment} from '../../../services/moment.service';
+import {UserData} from '../../../services/user.service';
+import {Chat} from '../../../services/chat.service';
+import {Location} from '@angular/common';
+import {Auth} from '../../../services/auth.service';
+import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 
 @Component({
   selector: 'app-onboardfeature',
@@ -104,7 +104,7 @@ export class OnboardfeaturePage {
             this.type = this.type || parseInt(this.route.snapshot.paramMap.get('type'), 10);
             this.token = this.token || this.route.snapshot.paramMap.get('token');
         }
-        console.log("programId", this.programId)
+        console.log('programId', this.programId);
         if (this.programId === '5d5785b462489003817fee18') {
             this.completedDefaultOnboarding = true;
             this.programId = null;
@@ -168,7 +168,7 @@ export class OnboardfeaturePage {
                 this.loadCompleted = true;
             }
         }
-        console.log("moment", this.moment);
+        console.log('moment', this.moment);
     }
 
     async prepareMoment(moment) {
@@ -304,7 +304,7 @@ export class OnboardfeaturePage {
         if (!updatedExistingVote) { // submit a new vote
             this.responseObj.matrix_number.push([interactableId, pollOptionIndex]);
         }
-        //this.responseObj.moment = this.moment._id;
+        // this.responseObj.moment = this.moment._id;
         this.responseObj.array_number = this.moment.resource.matrix_number[0];
         this.responseObj.createdAt = new Date();
         this.momentService.submitResponse(this.moment, this.responseObj, true);
@@ -336,7 +336,7 @@ export class OnboardfeaturePage {
         event.stopPropagation();
         const interactableId = this.moment.resource.matrix_number[2][componentIndex];
         let updatedExistingResponse = false;
-        for (let interactable of this.responseObj.matrix_number) {
+        for (const interactable of this.responseObj.matrix_number) {
             if (interactable[0] === interactableId) {
                 for (let i = interactable.length - 1; i > 4; i--) {
                     if (interactable[i] === interactableOption) { // de-select an existing selection
@@ -376,8 +376,8 @@ export class OnboardfeaturePage {
                 this.interactableDisplay[interactableId][key].selectedByUser = false;
             }
         } else {
-            this.interactableDisplay[interactableId].forEach((interactableOption) => {
-                interactableOption.selectedByUser = false;
+            this.interactableDisplay[interactableId].forEach((c) => {
+                c.selectedByUser = false;
             });
         }
         this.setupInteractableDisplay(this.moment, interactableId, componentIndex);
@@ -393,7 +393,7 @@ export class OnboardfeaturePage {
         for (const interactable of this.responseObj.matrix_string) {
             if (interactable[0] === interactableId.toString()) { // InteractableId is in Number
                 interactable[1] = event.text;
-                interactable[2] = JSON.stringify(event.content);//JSON.stringify(event.content);
+                interactable[2] = JSON.stringify(event.content); // JSON.stringify(event.content);
                 interactable[3] = JSON.stringify(event.delta);
                 updatedExistingResponse = true;
             }
@@ -423,7 +423,7 @@ export class OnboardfeaturePage {
         if (this.slides) {
             const currentSlideIndex = await this.slides.getActiveIndex();
             // if slide from the last slide
-            //console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
+            // console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
             if (currentSlideIndex >= this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1) {
                 await this.loadActivities();
             }
@@ -431,7 +431,7 @@ export class OnboardfeaturePage {
     }
 
     clickNextButton(direction) {
-        if (!this.moment) return;
+        if (!this.moment) { return; }
         this.slides.lockSwipes(false);
         if (direction === 'prev') {
             this.slides.slidePrev();
@@ -442,7 +442,7 @@ export class OnboardfeaturePage {
     }
 
     async seeUserInfo(event, user) {
-        if (event) event.stopPropagation();
+        if (event) { event.stopPropagation(); }
         user.name = user.first_name + ' ' + user.last_name;
         this.userData.refreshUserStatus({ type: 'show recipient', data: {recipient: user, modalPage: true}});
     }
@@ -463,7 +463,7 @@ export class OnboardfeaturePage {
                     startWithVideoMuted: false
                 });
             } else {
-                console.log("missing moment's conversation id");
+                console.log('missing moment\'s conversation id');
             }
         }
     }
@@ -476,7 +476,7 @@ export class OnboardfeaturePage {
 
     destroyPlayers(mediaId) {
         if (mediaId) {
-            const media = this.mediaList.find((c) => {return c._id === mediaId});
+            const media = this.mediaList.find((c) => c._id === mediaId);
             media.player.destroy();
         } else {
             for (const media of this.mediaList) {
@@ -509,12 +509,12 @@ export class OnboardfeaturePage {
                 }, 10000);
             });
             const results: any = await this.momentService.loadMatchedPeople(this.moment._id || '', '', this.pageNum);
-            console.log("matched", results);
+            console.log('matched', results);
             this.loadAPIBusy = false;
             this.ionSpinner = false;
             if (!results.length) {
                 this.reachedEnd = true;
-                if (event && event.target) event.target.disabled = true;
+                if (event && event.target) { event.target.disabled = true; }
             } else {
                 for (const result of results) {
                     this.matchedPeople.push(result);
@@ -580,7 +580,7 @@ export class OnboardfeaturePage {
     }
 
     async back() {
-        //const currentSlideIndex = await this.slides.getActiveIndex();
+        // const currentSlideIndex = await this.slides.getActiveIndex();
         if (this.modalPage) {
             this.modalCtrl.dismiss(false);
         } else {

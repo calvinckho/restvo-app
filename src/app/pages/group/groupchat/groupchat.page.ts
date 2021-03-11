@@ -1,14 +1,14 @@
 import {Component, OnInit, OnDestroy, NgZone, ViewEncapsulation, Input, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
-import * as Plyr from "plyr";
+import * as Plyr from 'plyr';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { Storage } from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
-import { SpeechRecognition } from "@ionic-native/speech-recognition/ngx";
-import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import {
     AlertController,
@@ -21,26 +21,26 @@ import {
     ToastController
 } from '@ionic/angular';
 
-import { Chat } from "../../../services/chat.service";
-import { UserData } from "../../../services/user.service";
+import { Chat } from '../../../services/chat.service';
+import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
-import { NetworkService } from "../../../services/network-service.service";
-import { Response } from '../../../services/response.service'
+import { NetworkService } from '../../../services/network-service.service';
+import { Response } from '../../../services/response.service';
 import { Moment } from '../../../services/moment.service';
 import { Groups } from '../../../services/group.service';
 import { Resource } from '../../../services/resource.service';
 
-import {FocusPhotoPage} from "../../connect/focus-photo/focus-photo.page";
+import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {ShowrecipientinfoPage} from '../../connect/showrecipientinfo/showrecipientinfo.page';
 import {PickfeaturePopoverPage} from '../../feature/pickfeature-popover/pickfeature-popover.page';
 import {Conversation} from '../../../interfaces/chat';
 import {GroupPopoverPage} from '../group-popover/group-popover.page';
-import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
-import {ProfilePage} from "../../user/profile/profile.page";
-import {GroupinfoPage} from "../groupinfo/groupinfo.page";
-import {CalendarService} from "../../../services/calendar.service";
-import {Auth} from "../../../services/auth.service";
-import {Location} from "@angular/common";
+import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
+import {ProfilePage} from '../../user/profile/profile.page';
+import {GroupinfoPage} from '../groupinfo/groupinfo.page';
+import {CalendarService} from '../../../services/calendar.service';
+import {Auth} from '../../../services/auth.service';
+import {Location} from '@angular/common';
 
 @Component({
     selector: 'app-groupchat',
@@ -52,7 +52,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
     @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
 
-    @Input() modalPage: any; //optionally sent if it is a modal page
+    @Input() modalPage: any; // optionally sent if it is a modal page
 
     subpanel = false;
     subscriptions: any = {};
@@ -60,16 +60,16 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // chat
     messages: any = [];
     socketData: any;
-    composedMessage: string = '';
+    composedMessage = '';
     chatPageNum = 0;
     chatReachedEnd = false;
     chatAPIBusy = false;
     replyQuote: any;
-    sendQuoteAndReplyTag: boolean = false;
+    sendQuoteAndReplyTag = false;
     moreOptions = false;
     moreMediaOptions = true;
-    noNetwork: boolean = false;
-    listening: boolean = false;
+    noNetwork = false;
+    listening = false;
     audioToast: any;
     slide = 0;
     chatFinishedLoading = false;
@@ -132,7 +132,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.closeModal(true);
             }
         }
-    };
+    }
 
     reloadGroupHandler = (res) => {
         if (res) {
@@ -141,7 +141,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.chatService.currentChatProps[this.propIndex].name = res.data.name;
             }
         }
-    };
+    }
 
     async cleanup(refreshMyConversations, exit) {
         try {
@@ -155,7 +155,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.resetBadge(currentChatId, refreshMyConversations, exit);
             // lower priority tasks
             if (this.messages.length) {
-                await this.storage.set('conversation-' + currentChatId, this.messages); //store the active page to the local storage
+                await this.storage.set('conversation-' + currentChatId, this.messages); // store the active page to the local storage
             } else {
                 await this.storage.remove('conversation-' + currentChatId);
             }
@@ -181,7 +181,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     async setup() {
         this.propIndex = this.chatService.currentChatProps.length - 1;
-        //this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = [];
+        // this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId] = [];
         // if current chat props exists, which is needed to retrieve the conversationId
         if (this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]) {
             const messages = await this.storage.get('conversation-' + this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId); // load from storage
@@ -274,21 +274,21 @@ export class GroupchatPage implements OnInit, OnDestroy {
                             message.poll = {
                                 componentId: componentId,
                                 display: [],
-                                responses: [],   //list of all of the responses that users give.
-                                winner: [],      //list of the highest vote count indexes
+                                responses: [],   // list of all of the responses that users give.
+                                winner: [],      // list of the highest vote count indexes
                                 totalVoteCount: 0
                             };
                             for (const option of message.moment.matrix_string[componentId]) {
                                 message.poll.display.push({option: option, votedByUser: false, count: 0});
                             }
                         }
-                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                            message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                            message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
                         }
                         message.status = 'confirmed';
                         this.messages.unshift(message);
                     });
-                    if (momentIds.length){
+                    if (momentIds.length) {
                         momentIds.forEach((momentId) => {
                             this.momentService.socket.emit('join moment', momentId) ;
                         });
@@ -300,21 +300,21 @@ export class GroupchatPage implements OnInit, OnDestroy {
                                     for (const response of responses) {
                                         if (response.moment === message.moment._id) {
                                             const index = message.poll.responses.map((c) => c._id).indexOf(response._id);
-                                            if (index < 0) { //if the response hasn't been added to the response list
+                                            if (index < 0) { // if the response hasn't been added to the response list
                                                 message.poll.responses.push(response);
-                                            } else { //if it has been added, and if the incoming response is newer
+                                            } else { // if it has been added, and if the incoming response is newer
                                                 if (new Date(message.poll.responses[index].createdAt).getTime() < new Date(response.createdAt).getTime()) {
                                                     message.poll.responses.splice(index, 1, response);
                                                 }
                                             }
                                         }
                                     }
-                                    //now the latest response have been included, reset the display array
+                                    // now the latest response have been included, reset the display array
                                     await message.poll.display.forEach((displayitem) => {
                                         displayitem.count = 0;
                                         displayitem.votedByUser = false;
                                     });
-                                    //reconstruct the display array
+                                    // reconstruct the display array
                                     message.poll.totalVoteCount = message.poll.responses.length;
                                     for (const response of message.poll.responses) {
                                         if (response.matrix_number[0].length > 1) { // 1.6.3 Poll feature has length of 2, i.e. [option_id, index]
@@ -384,7 +384,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.moreOptions = false;
             this.recalculateScrollContent();
             setTimeout(() => {
-                if (this.socketData.status !== 'confirmed') this.socketData.status = 'failed';
+                if (this.socketData.status !== 'confirmed') { this.socketData.status = 'failed'; }
             }, 10000);
             try {
                 await this.chatService.sendReply(this.chatService.currentChatProps[this.propIndex].conversationId, {
@@ -415,7 +415,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 await this.momentService.delete(moment, 'delete');
             });
             await Promise.all(promises);
-            this.storage.remove('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId); //clear the cache of composed message
+            this.storage.remove('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId); // clear the cache of composed message
             this.noNetwork = false;
             this.moreOptions = false;
         }
@@ -427,7 +427,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 quote: {
                     body: this.sendQuoteAndReplyTag ? this.replyQuote.body : '',
                     attachments: this.sendQuoteAndReplyTag ? this.replyQuote.attachments : [],
-                    author: this.sendQuoteAndReplyTag ? (this.replyQuote.author ? this.replyQuote.author.first_name + " " + this.replyQuote.author.last_name : this.replyQuote.author_pending_member.name) : ''
+                    author: this.sendQuoteAndReplyTag ? (this.replyQuote.author ? this.replyQuote.author.first_name + ' ' + this.replyQuote.author.last_name : this.replyQuote.author_pending_member.name) : ''
                 },
                 createdAt: new Date(),
                 author: {
@@ -445,7 +445,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.content.scrollToBottom(50);
                 this.closeReplyQuote();
                 this.composedMessage = '';
-                this.storage.remove('composedMessage' + this.chatService.currentChatProps[this.propIndex].conversationId); //clear the cache of composed message
+                this.storage.remove('composedMessage' + this.chatService.currentChatProps[this.propIndex].conversationId); // clear the cache of composed message
             }, 50);
             const serverData = {
                 replyQuote: this.replyQuote,
@@ -463,7 +463,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 } else {
                     this.noNetwork = true;
                     setTimeout(() => {
-                        this.resendMessage(serverData, this.socketData);
+                        this.resendMessage(this.socketData);
                     }, 4000);
                 }
             }
@@ -476,7 +476,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.mediaList.push({ _id: mediaId, player: player});
     }
 
-    sendQuoteAndReply(message) { //when the reply button is pressed
+    sendQuoteAndReply(message) { // when the reply button is pressed
         this.sendQuoteAndReplyTag = true;
         this.replyQuote = message;
     }
@@ -486,19 +486,26 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.replyQuote = {};
     }
 
-    async resendMessage(serverData, socketData) { // when resend button is pushed
-        socketData.status = "pending";
+    async resendMessage(socketData) { // when resend button is pushed
+        const serverData = {
+            replyQuote: socketData.quote,
+            composedMessage: socketData.body,
+            page: this.chatService.currentChatProps[this.propIndex].page, // obsolete in 3.3.32+
+            groupId: (this.chatService.currentChatProps[this.propIndex].group) ? this.chatService.currentChatProps[this.propIndex].group._id : null,
+            groupName: (this.chatService.currentChatProps[this.propIndex].group) ? this.chatService.currentChatProps[this.propIndex].group.name : null
+        };
+        socketData.status = 'pending';
         try {
             await this.chatService.sendReply(this.chatService.currentChatProps[this.propIndex].conversationId, serverData, socketData);
             this.noNetwork = false;
         } catch (err) {
             if (this.noNetwork) {
-                this.socketData.status = "failed";
-            } else{
+                this.socketData.status = 'failed';
+            } else {
                 this.noNetwork = true;
                 setTimeout(() => {
-                    if (socketData.status !== "confirmed") {
-                        socketData.status = "failed";
+                    if (socketData.status !== 'confirmed') {
+                        socketData.status = 'failed';
                     }
                 }, 2000);
             }
@@ -506,8 +513,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async messageMoreOptions() {
-        if (this.platform.is('cordova')){
-            //Keyboard.hide();
+        if (this.platform.is('cordova')) {
+            // Keyboard.hide();
         }
         this.moreOptions = !this.moreOptions;
         this.recalculateScrollContent();
@@ -522,10 +529,10 @@ export class GroupchatPage implements OnInit, OnDestroy {
     }
 
     async recordAudio() {
-        console.log("Record Audio is being run!");
+        console.log('Record Audio is being run!');
         if (!this.listening) {
-            const language = "en-US";
-            const matches = 1; //number of string returned
+            const language = 'en-US';
+            const matches = 1; // number of string returned
             const showPartial = true;
             const recognitionOptions = {
                 language,
@@ -542,25 +549,25 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         () => {
                             this.startListening(recognitionOptions);
                         }, () => {
-                            this.presentToast("Voice recognition is not activated.", 3000);
+                            this.presentToast('Voice recognition is not activated.', 3000);
                         });
                 }
             } else {
-                this.presentToast("Voice recognition is not available.", 3000);
+                this.presentToast('Voice recognition is not available.', 3000);
             }
         }
     }
 
     startListening(options) {
         this.listening = true;
-        this.presentToast("Begin Voice Recognition", null);
+        this.presentToast('Begin Voice Recognition', null);
         this.speechRecognition.startListening(options).subscribe(
             (matches: Array<string>) => {
-                //There is a difference between Android and iOS platforms. On Android speech recognition stops when the speaker finishes speaking (at end of sentence). On iOS the user has to stop manually the recognition process by calling stopListening() method.
-                this.zone.run(() => { //ngZone is required to re-render the view
+                // There is a difference between Android and iOS platforms. On Android speech recognition stops when the speaker finishes speaking (at end of sentence). On iOS the user has to stop manually the recognition process by calling stopListening() method.
+                this.zone.run(() => { // ngZone is required to re-render the view
                     this.composedMessage = matches[0];
                 });
-                if(this.platform.is('android')){ //for android only.
+                if (this.platform.is('android')) { // for android only.
                     this.listening = false;
                     this.audioToast.dismiss();
                 }
@@ -573,15 +580,15 @@ export class GroupchatPage implements OnInit, OnDestroy {
         );
     }
 
-    stopListening() { //for iOS only. Android stops listening when a sentence is completed.
+    stopListening() { // for iOS only. Android stops listening when a sentence is completed.
         this.speechRecognition.stopListening();
         this.listening = false;
         this.audioToast.dismiss();
     }
 
-    async openRestvoFeature(moment) { //when tap on a Restvo feature
-        if (moment.resource.field === "Location") {
-            window.open("http://maps.google.com/?q=" + moment.matrix_number[0] + "+%2C" + moment.matrix_number[1], '_blank');
+    async openRestvoFeature(moment) { // when tap on a Restvo feature
+        if (moment.resource.field === 'Location') {
+            window.open('http://maps.google.com/?q=' + moment.matrix_number[0] + '+%2C' + moment.matrix_number[1], '_blank');
         } else {
             let params: any;
             let componentProps: any;
@@ -611,7 +618,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    //end of UI functions
+    // end of UI functions
     async takePhotoAndUpload() {
         this.moreMediaOptions = false;
         const { Camera } = Plugins;
@@ -629,8 +636,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
         } else {
             result = await this.awsService.uploadImage('users', this.userData.user._id, image, this.chatService.currentChatProps[this.propIndex].conversationId);
         }
-        if (result === "Upload succeeded") {
-            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
+        if (result === 'Upload succeeded') {
+            await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); // store the unsent media
         }
     }
 
@@ -661,8 +668,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
                 }
             }
-            if (result === "Upload succeeded") {
-                await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
+            if (result === 'Upload succeeded') {
+                await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); // store the unsent media
             }
         } catch (err) {
             console.log(err);
@@ -674,15 +681,15 @@ export class GroupchatPage implements OnInit, OnDestroy {
         try {
             let result: any;
             if (event.target.files[0].size < 50000000) {
-                console.log("uploading file: ", event.target.files[0]);
+                console.log('uploading file: ', event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
                     result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
                 } else {
                     result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
                 }
-                console.log("result", result);
-                if (result === "Upload succeeded") {
-                    await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); //store the unsent media
+                console.log('result', result);
+                if (result === 'Upload succeeded') {
+                    await this.storage.set('media-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.awsService.sessionAssets[this.chatService.currentChatProps[this.propIndex].conversationId]); // store the unsent media
                 }
             } else {
                 const largeFileAlert = await this.alertCtrl.create({
@@ -713,7 +720,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             }
         }
         this.selectedMoments.push(selectedMoment);
-        await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
+        await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); // store the unsent moment
     }
 
     async openPickFeature() {
@@ -754,7 +761,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 }
                 this.selectedMoments.push(...moments);
                 this.moreMediaOptions = false;
-                await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); //store the unsent moment
+                await this.storage.set('moment-' + this.chatService.currentChatProps[this.propIndex].conversationId, this.selectedMoments); // store the unsent moment
             }
         } catch (err) {
             console.log(err);
@@ -762,7 +769,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    recalculateScrollContent(){
+    recalculateScrollContent() {
         /*setTimeout(()=>{
             //this.content.resize();
             setTimeout(async () => {
@@ -810,8 +817,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 cssClass: 'level-15'});
             await popover.present();
             const {data: closeMessage} = await popover.onDidDismiss();
-            if (closeMessage){
-                console.log("close group modal");
+            if (closeMessage) {
+                console.log('close group modal');
                 setTimeout(() => {
                     this.closeModal(true);
                 }, 500); // need to give one sec delay for modalCtrl to clear up the previous modal box
@@ -821,20 +828,20 @@ export class GroupchatPage implements OnInit, OnDestroy {
         }
     }
 
-    shareLocation() { //Shares current location with others in chat
-        //Find the device's location
+    shareLocation() { // Shares current location with others in chat
+        // Find the device's location
         this.geolocation.getCurrentPosition().then((position) => {
 
-            let yourPosition = {
+            const yourPosition = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            console.log("Geolocation Latitude is: " + yourPosition.lat + "Longitude is: " + yourPosition.lng);
-            //this.updateMap(yourPosition);
+            console.log('Geolocation Latitude is: ' + yourPosition.lat + 'Longitude is: ' + yourPosition.lng);
+            // this.updateMap(yourPosition);
 
-            let matNum = [yourPosition.lat.toString(),yourPosition.lng.toString()];
-            let matStr = ["https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center="+yourPosition.lat.toString()+","+yourPosition.lng.toString()+"&zoom=20&maptype=roadmap&markers=icon:%20large-red-cutout%20|"+yourPosition.lat.toString()+","+yourPosition.lng.toString()];
-            this.resourceService.load('en-US', "Location").subscribe(async (result)=>{
+            const matNum = [yourPosition.lat.toString(), yourPosition.lng.toString()];
+            const matStr = ['https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center=' + yourPosition.lat.toString() + ',' + yourPosition.lng.toString() + '&zoom=20&maptype=roadmap&markers=icon:%20large-red-cutout%20|' + yourPosition.lat.toString() + ',' + yourPosition.lng.toString()];
+            this.resourceService.load('en-US', 'Location').subscribe(async (result) => {
                 const serverData = {
                     comment: [''],
                     notifyAt: new Date().toISOString(),
@@ -844,7 +851,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     resource: {}
                 };
                 serverData.resource = result[0]._id;
-                const createdMoment: any = await this.momentService.create(serverData); //create feature
+                const createdMoment: any = await this.momentService.create(serverData); // create feature
                 createdMoment.resource = result[0]; // repopulate resource
                 await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
             });
@@ -867,7 +874,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
         await modal.present();
     }
 
-    focusText(){
+    focusText() {
         this.moreOptions = false;
     }
 
@@ -875,33 +882,33 @@ export class GroupchatPage implements OnInit, OnDestroy {
         event.stopPropagation();
         const result = await this.chatService.getConversationByRecipientId(this.chatService.currentChatProps[this.propIndex].recipient._id, false, null);
         let hasSharedContact = false;
-        if (result.length){
+        if (result.length) {
             hasSharedContact = result[0].shareContactBy.indexOf(this.userData.user._id.toString()) > -1;
         }
-        const recipientModal = await this.modalCtrl.create({component: ProfilePage, componentProps: { mode: hasSharedContact ? "cancel share" : "share", recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true }} );
+        const recipientModal = await this.modalCtrl.create({component: ProfilePage, componentProps: { mode: hasSharedContact ? 'cancel share' : 'share', recipient: this.chatService.currentChatProps[this.propIndex].recipient, modalPage: true }} );
         await recipientModal.present();
         const {data: action} = await recipientModal.onDidDismiss();
         if (action === 'share') {
             const state = await this.chatService.shareContactInfo(this.chatService.currentChatProps[this.propIndex].conversationId); // return 0 if off, 1 if on
-            if (state === 1) {await this.createContactMessage(1);}
-        } else if (action === 'cancel share'){
+            if (state === 1) {await this.createContactMessage(1); }
+        } else if (action === 'cancel share') {
             const state = await this.chatService.shareContactInfo(this.chatService.currentChatProps[this.propIndex].conversationId); // return 0 if off, 1 if on
-            if (state === 0) {await this.createContactMessage(0);}
+            if (state === 0) {await this.createContactMessage(0); }
         }
         this.moreOptions = false;
         this.recalculateScrollContent();
     }
 
-    async createContactMessage(state){
+    async createContactMessage(state) {
         try {
-            this.resourceService.load('en-US', "Contact").subscribe(async (result) => {
+            this.resourceService.load('en-US', 'Contact').subscribe(async (result) => {
                 const serverData = {comment: [''], notifyAt: new Date().toISOString(), matrix_string: [['']], matrix_number: [[]], conversation: this.chatService.currentChatProps[this.propIndex].conversationId, resource: {} };
                 serverData.resource = result[0]._id;
                 serverData.matrix_number = [[state]];
                 const createdMoment: any = await this.momentService.create(serverData); // create feature
                 createdMoment.resource = result[0]; // repopulate resource
                 const index = this.chatService.conversations.map((c) => c.conversation._id).indexOf(this.chatService.currentChatProps[this.propIndex].conversationId);
-                if (index > -1){
+                if (index > -1) {
                     createdMoment.conversations = [this.chatService.conversations[index].conversation];
                 }
                 await this.momentService.share(createdMoment, this.chatService.currentChatProps[this.propIndex].conversationId);
@@ -1060,15 +1067,13 @@ export class GroupchatPage implements OnInit, OnDestroy {
                     // if it is the start of a new day
                     if (new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
                         this.messages.push({timestamp: true, createdAt: message.createdAt});
-                    }
-                    // if longer than 1 hours
-                    else if (new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
+                    } else if (new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
                         this.messages.push({timestamp: true, createdAt: message.createdAt});
                     }
-                    if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                        message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                    if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                        message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
                     }
-                    message.status = "confirmed";
+                    message.status = 'confirmed';
                     // push message
                     this.messages.push(message);
                     if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
@@ -1085,18 +1090,18 @@ export class GroupchatPage implements OnInit, OnDestroy {
                             if (message.body) {
                                 existing_message.body = message.body; // take advantage of the autolinker done by the backend socketEvent.js
                             }
-                            existing_message.status = "confirmed";
+                            existing_message.status = 'confirmed';
                             fromAnotherDevice = false; // if it is coming from the same device, flag it
                         }
                     });
                     if (fromAnotherDevice) { // if it is from another device, push the message to the chat this.room
-                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                            message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                            message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
                         }
-                        message.status = "confirmed";
+                        message.status = 'confirmed';
                         // push message
                         this.messages.push(message);
-                        if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll'){
+                        if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
                             // getting a new moment message that requires joining the socket, so refresh the chat
                             this.reloadChatView();
                         }
@@ -1107,7 +1112,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 }
             }
         }
-    };
+    }
 
     refreshMomentHandler = async (res) => {
         if (res && res.momentId && res.data) {
@@ -1115,7 +1120,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             this.messages.forEach( (message: any) => {
                 if (message.moment && data.moment && (message.moment._id === data.moment._id) && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
                     const index = message.poll.responses.map((c) => c._id).indexOf(data.response._id);
-                    if (index < 0){ // if the response hasn't been added to the response list
+                    if (index < 0) { // if the response hasn't been added to the response list
                         message.poll.responses.push(data.response);
                     } else { // if it has been added, replace with the incoming one
                         message.poll.responses.splice(index, 1, data.response);
@@ -1139,12 +1144,12 @@ export class GroupchatPage implements OnInit, OnDestroy {
                         }
                     }
                 }
-                if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field == 'Location') {
-                    message.addressURL = "http://maps.google.com/?q=" + message.moment.matrix_number[0] + "+%2C" + message.moment.matrix_number[1];
+                if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                    message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
                 }
             });
         }
-    };
+    }
 
     // for current user refreshing the app, including when updating a selectedMoment which requires reloading the Moment using calendar data
     refreshUserStatusHandler = async (res) => {
@@ -1160,7 +1165,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 this.closeModal(true);
             }
         }
-    };
+    }
 
     // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction
     customTrackBy(index: number, item: any): any {
@@ -1169,7 +1174,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
 
     destroyPlayers(mediaId) {
         if (mediaId) {
-            let media = this.mediaList.find((c) => {return c._id === mediaId});
+            const media = this.mediaList.find((c) => c._id === mediaId);
             media.player.destroy();
         } else {
             for (const media of this.mediaList) {
