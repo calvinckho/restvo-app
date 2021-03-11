@@ -82,7 +82,6 @@ export class DiscoverPage implements OnInit {
                     });
                     this.samples.push(...parent.sample_activities);
                 });
-                console.log("return", this.samples);
             }
         } else {
             this.ionSpinner = false;

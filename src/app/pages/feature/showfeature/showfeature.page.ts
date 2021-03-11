@@ -430,7 +430,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
-            console.log('responses', this.responses);
             // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);

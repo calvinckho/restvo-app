@@ -23,9 +23,6 @@
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
         <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item === 40010) || (item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
           <ion-col [ngClass]="{'slide-col': ((item == 40000 || item == 40020) && (interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)) || (item === 40010)}">
-            <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
-              <div class="textarea center ion-text-wrap ion-justify-content-center" [innerHTML]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br"></div>
-            </ion-item>
             <ion-item color="grey" *ngIf="item === 10050" lines="none"> <!--section header-->
               <div class="section-header">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][1]}}</div>
             </ion-item>
@@ -77,8 +74,49 @@
                 <ion-note style="max-width: 30%" class="ion-text-wrap ion-no-margin" slot="end">{{planModule.calendar.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
               </ion-item>
             </div>
+            <!-- Media -->
+            <div *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010) && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0])"> <!--Hide/Show Media Setting-->
+              <!--Grid View or Slideshow but with only 1 item-->
+              <ion-grid *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] === 1 || moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length === 1" class="ion-no-padding">
+                <ion-row *ngIf="((item === 10010 && moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]) || item === 10300 || item === 10310 || item === 10360 || item === 40010)" class="ion-justify-content-start ion-no-padding">
+                  <div [ngStyle]="{'width': (100/(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length - ((item === 10010 || item === 40010) ? 11 : 0))) + '%'}" class="photo-split-view ion-no-padding" *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
+                    <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
+                      <ion-img [src]="url"></ion-img>
+                    </ion-thumbnail>
+                    <div class="icon-container">
+                      <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                    </div>
+                    <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
+                    <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
+                    <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
+                  </div>
+                </ion-row>
+              </ion-grid>
+              <!--Slideshow and has two or more items-->
+              <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] === 2 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length > 1">
+                <ion-slides #mediaSlides pager="true" [options]="mediaSlideOpts">
+                  <ion-slide *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
+                    <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
+                      <ion-img [src]="url"></ion-img>
+                    </ion-thumbnail>
+                    <div class="icon-container slideshow">
+                      <a [href]="url" *ngIf="(['doc', 'docx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="(['xls', 'xlsx']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="(['pdf']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                      <a [href]="url" *ngIf="!(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase()) && !url.toLowerCase().includes('youtu')" target="_blank"><ion-thumbnail class="thumbnail-item"><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p class="ion-text-center">{{url.substring(url.lastIndexOf('/') + 1)}}</p></a>
+                    </div>
+                    <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
+                    <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
+                    <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" [ngClass]="{'slideshow': platform.width() >=768 }" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
+                  </ion-slide>
+                </ion-slides>
+              </div>
+            </div>
             <!--Photo Viewer-->
-            <div *ngIf="(item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010)">
+            <!--<div *ngIf="(item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010)">
               <div [ngStyle]="{'width': 100/(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) - (((moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length - ((item === 10010 || item === 40010) ? 11 : 0)) === 1) ? 30 : 0) + '%'}" class="photo-split-view" *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)">
                 <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                   <ion-img [src]="url"></ion-img>
@@ -93,7 +131,7 @@
                 <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
                 <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (click)="$event.stopPropagation()"></div>
               </div>
-            </div>
+            </div>-->
             <!--Video Player-->
             <ion-item *ngIf="item === 10320 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].length" lines="none">
               <div class="moment-photo-frame" plyr [plyrSources]="[{ 'src': moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0], 'type': 'video/' + (moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].substring(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0].lastIndexOf('.') + 1).toLowerCase()) > -1"  (click)="$event.stopPropagation()"></div>
@@ -109,6 +147,14 @@
             </ion-item>
             <ion-item *ngIf="item === 10600" lines="none">
               <ion-button (click)="joinVideoConference($event, moment)" style="margin: 0 auto">{{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]}} {{moment.resource['en-US'].matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0]}}</ion-button> <!--Join Conference-->
+            </ion-item>
+            <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
+              <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] | nl2br" *ngIf="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length < 3) || !moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2]"></div>
+              <quill-view
+                      [content]="interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].content.ops"
+                      format="object"
+                      *ngIf="(moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1].length > 2) && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1][2] && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]] && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].content?.ops">
+              </quill-view>
             </ion-item>
             <div class="component" *ngIf="item === 10500"> <!--Manage Participants-->
               <!--Show Participants-->

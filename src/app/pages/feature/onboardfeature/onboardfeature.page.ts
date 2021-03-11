@@ -24,6 +24,7 @@ export class OnboardfeaturePage {
     @ViewChild(IonContent, {static: false}) content: IonContent;
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
     @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('mediaSlides', {static: false}) mediaSlides: IonSlides;
 
     @Input() modalPage: any;
     @Input() programId: any;
@@ -64,6 +65,16 @@ export class OnboardfeaturePage {
     completedDefaultOnboarding = false;
     ionSpinner = false;
 
+    // 10300 Media
+    mediaSlideOpts = {
+        initialSlide: 0,
+        speed: 400,
+        autoHeight: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: true
+        }
+    };
     constructor(
         private zone: NgZone,
         private location: Location,
@@ -200,7 +211,11 @@ export class OnboardfeaturePage {
         moment.resource.matrix_number[0].forEach((componentId, componentIndex) => {
             if (moment.resource.matrix_number[2]) {
                 const interactableId = moment.resource.matrix_number[2][componentIndex]; // if interactable, grab the createdAt timestamp
-                if (componentId === 30000) { // poll
+                if (componentId === 10010) { // textarea
+                    if (moment.matrix_string[componentIndex].length > 2 && moment.matrix_string[componentIndex][2]) {
+                        this.interactableDisplay[interactableId] = { content: JSON.parse(moment.matrix_string[componentIndex][2]) };
+                    }
+                } else if (componentId === 30000) { // poll
                     this.interactableDisplay[interactableId] = [];
                     for (const option of moment.matrix_string[componentIndex]) { // set up the poll options
                         this.interactableDisplay[interactableId].push({option: option, count: 0, votedByUser: false});
