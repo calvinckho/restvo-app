@@ -301,6 +301,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               // hard code the components to be added by calling addComponents with the component IDs (consult Restvo Feature Schematic.txt file)
               if (this.categoryId === '5e17acd47b00ea76b75e5a71') { // Onboarding Process
                   this.moment.resource['en-US'].value[0] = this.categories.find((c) => c._id === this.categoryId)['en-US'].value[0]; // Onboarding Process
+                  this.moment.categories = ['5e17acd47b00ea76b75e5a71'];
                   this.addComponent(10000); // add the "Activity Name"
                   this.addComponent(20000); // Visibility
                   this.addComponent(20010); // add the slider to enable the walkthrough
@@ -353,6 +354,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   this.editTemplate = true;
               } else if (this.categoryId) {
                   this.moment.resource['en-US'].value[0] = this.resource['en-US'].value[0]; // 'Activity';
+                  this.categories = [this.categoryId];
                   this.addComponent(10000); // add the "Activity Name"
                   this.editTemplate = true;
               }
