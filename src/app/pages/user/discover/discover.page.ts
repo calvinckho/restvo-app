@@ -58,7 +58,7 @@ export class DiscoverPage implements OnInit {
 
     async changeFilterOption(newFilterOption) {
         this.filterOption = newFilterOption;
-        this.loadSamples();
+        this.loadMoreSamples();
     }
 
     async loadSamples() {
@@ -69,6 +69,7 @@ export class DiscoverPage implements OnInit {
     }
 
     async loadMoreSamples() {
+      console.log("filterOption", this.filterOption)
         this.pageNum++;
         if (!this.reachedEnd) {
             const samples: any = await this.momentService.loadSampleActivities(this.selectedCategoryId);
@@ -80,26 +81,12 @@ export class DiscoverPage implements OnInit {
             } else {
                 this.samples = [];
                 samples.forEach((parent) => {
-                  console.log("parent", parent)
-                    if (this.filterOption == 'all') {
-                      parent.sample_activities.forEach((activity) => {
-                          const cached_parent = JSON.parse(JSON.stringify(parent));
-                          delete cached_parent.sample_activities;
-                          activity.parent_programs = [cached_parent];
-                      });
-                      this.samples.push(...parent.sample_activities);
-                    } else {
-                      // CHECK CATEGORY
-                      const category = parent.sample_activities[0].categories.includes('5e9fe35cc8bf1a622fec69d7') ? 'group' : 'individual';
-                      if (category == this.filterOption) {
-                        parent.sample_activities.forEach((activity) => {
-                            const cached_parent = JSON.parse(JSON.stringify(parent));
-                            delete cached_parent.sample_activities;
-                            activity.parent_programs = [cached_parent];
-                        });
-                        this.samples.push(...parent.sample_activities);
-                      }
-                    }
+                    parent.sample_activities.forEach((activity) => {
+                        const cached_parent = JSON.parse(JSON.stringify(parent));
+                        delete cached_parent.sample_activities;
+                        activity.parent_programs = [cached_parent];
+                    });
+                    this.samples.push(...parent.sample_activities);
                 });
             }
         } else {
