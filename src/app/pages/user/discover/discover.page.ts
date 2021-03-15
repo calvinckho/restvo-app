@@ -23,6 +23,7 @@ export class DiscoverPage implements OnInit {
 
     searchKeyword = '';
     samples = [];
+    filterOption = 'all';
     ionSpinner = false;
     pageNum = 0;
     reachedEnd = false;
@@ -55,6 +56,11 @@ export class DiscoverPage implements OnInit {
         this.loadSamples();
     }
 
+    async changeFilterOption(newFilterOption) {
+        this.filterOption = newFilterOption;
+        this.loadMoreSamples();
+    }
+
     async loadSamples() {
         this.reachedEnd = false;
         this.samples = [];
@@ -63,6 +69,7 @@ export class DiscoverPage implements OnInit {
     }
 
     async loadMoreSamples() {
+      console.log("filterOption", this.filterOption)
         this.pageNum++;
         if (!this.reachedEnd) {
             const samples: any = await this.momentService.loadSampleActivities(this.selectedCategoryId);
