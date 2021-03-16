@@ -919,7 +919,7 @@
     </ion-fab-list>
   </ion-fab>
    <!--Join Button for Marketplace Templates to be cloned for a user-->
-  <ion-toolbar *ngIf="!this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace and non-participanting-->
+  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace and non-participanting-->
     <ion-button expand="block" shape="round" (click)="cloneActivity($event)" color="primary">Join</ion-button>
   </ion-toolbar>
 </ion-footer>
