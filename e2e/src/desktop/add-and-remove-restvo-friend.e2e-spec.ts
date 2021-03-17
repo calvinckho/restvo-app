@@ -84,14 +84,10 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should select Asia Ho and show confirmation alert', async () => {
-    console.log("a")
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
-    console.log("b")
     await browser.sleep(3000); // change to ensure intended user shows up on list
     await app.clickElement('#restvoGroup ion-item');
-    console.log("c")
     await app.clickElement('#selectAppUsersButton');
-    console.log("d")
     await app.waitUntilElementVisible('ion-alert');
     expect(await app.elementIsPresent('ion-alert')).toBeTruthy(); // expect confirmation alert to be truthy
   });
@@ -121,6 +117,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
   it('should report selected user then delete and unfriend', async () => {
     await app.clickElement('#reportUserAbuse');
     await app.waitUntilElementVisible('ion-action-sheet');
+    await browser.waitForAngular();
     await app.clickActionSheetButton('Delete and Unfriend');
     await app.waitUntilElementInvisible('ion-action-sheet');
     await app.waitUntilElementVisible('ion-alert');
