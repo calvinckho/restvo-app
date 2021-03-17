@@ -58,13 +58,13 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should show unauthenticated main page', async () => {
-    await showfeature.waitUntilElementPresent('#showfeature-header');
-    expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+    await discover.waitUntilElementPresent('#discover-header');
+    expect(await discover.headerIsPresent('#discover-header')).toBeTruthy();
   });
 
   it('should login as Ted Ho', async () => {
-    await showfeature.waitUntilElementVisible('#signin');
-    await showfeature.clickElement('#signin');
+    await discover.waitUntilElementVisible('#signin');
+    await discover.clickElement('#signin');
     await register.waitUntilVisible();
     await register.fillEmail();
     await register.fillPassword();
@@ -130,7 +130,7 @@ describe(' Create and Delete a Community', () => {
     await app.waitUntilUrlContains('profile');
     await app.clickElement('#logoutButton');
     await app.waitUntilElementPresent('#signin');
-    expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
+    expect(await discover.elementIsPresent('#signin')).toBeTruthy();
   });
 
 

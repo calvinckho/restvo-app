@@ -55,13 +55,13 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should show unauthenticated main page', async () => {
-    await showfeature.waitUntilElementPresent('#showfeature-header');
-    expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+    await discover.waitUntilElementPresent('#discover-header');
+    expect(await discover.headerIsPresent('#discover-header')).toBeTruthy();
   });
 
   it('should login as Ted Ho', async () => {
-    await showfeature.waitUntilElementVisible('#signin');
-    await showfeature.clickElement('#signin');
+    await discover.waitUntilElementVisible('#signin');
+    await discover.clickElement('#signin');
     await register.waitUntilVisible();
     await register.fillEmail();
     await register.fillPassword();
@@ -85,33 +85,33 @@ describe(' Add and Remove a Restvo User as friend', () => {
 
   it('should select Asia Ho and show confirmation alert', async () => {
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
-    await browser.sleep(3000); //change to ensure intended user shows up on list
+    await browser.sleep(3000); // change to ensure intended user shows up on list
     await app.clickElement('#restvoGroup ion-item');
-    await app.clickElement('#selectAppUsersButton')
+    await app.clickElement('#selectAppUsersButton');
     await app.waitUntilElementVisible('ion-alert');
-    expect(await app.elementIsPresent('ion-alert')).toBeTruthy();//expect confirmation alert to be truthy
+    expect(await app.elementIsPresent('ion-alert')).toBeTruthy(); // expect confirmation alert to be truthy
   });
 
   it('should confirm selected user to chat with', async () => {
     await app.clickAlertButton('yes');
     await app.waitUntilElementInvisible('ion-alert');
-    expect(await app.elementIsPresent('ion-alert')).toBeFalsy();//expect confirmation alert to be truthy
+    expect(await app.elementIsPresent('ion-alert')).toBeFalsy(); // expect confirmation alert to be truthy
   });
 
-  it('should sender selected user a chat message', async () => {
-    await app.waitUntilElementPresent('ion-textarea[ng-reflect-name="Asia Ho"]')
+  it('should send selected user a chat message', async () => {
+    await app.waitUntilElementPresent('ion-textarea[ng-reflect-name="Asia Ho"]');
     await app.countChatElements();
     await app.enterNonRegistrationInputText('ion-textarea[ng-reflect-name="Asia Ho"]', 'This is an e2e test message', 'textarea');
-    await app.clickModalChatSendButton()
+    await app.clickModalChatSendButton();
     await browser.waitForAngular();
     await app.countChatElements();
-    expect (await app.countChatElements()).toBe(2)
+    expect (await app.countChatElements()).toBe(2);
   });
 
   it('should click the more button', async () => {
-    await app.clickElement('ion-modal #seeMoreInfo')
-    await app.waitUntilElementPresent('#reportUserAbuse')
-    expect(await app.elementIsPresent('#reportUserAbuse')).toBeTruthy()
+    await app.clickElement('ion-modal #seeMoreInfo');
+    await app.waitUntilElementPresent('#reportUserAbuse');
+    expect(await app.elementIsPresent('#reportUserAbuse')).toBeTruthy();
   });
 
   it('should report selected user then delete and unfriend', async () => {
@@ -124,7 +124,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await browser.waitForAngular();
     await app.clickAlertButton('Cancel');
     await app.waitUntilElementInvisible('ion-alert');
-    expect(await app.elementIsPresent('#ion-alert')).toBeFalsy()
+    expect(await app.elementIsPresent('#ion-alert')).toBeFalsy();
   });
 
   it('should ensure Asia Ho no longer shows up in the chat list', async () => {
@@ -137,8 +137,8 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.clickElement('#userProfileSettings');
     await app.waitUntilUrlContains('profile');
     await app.clickElement('#logoutButton');
-    await app.waitUntilElementPresent('#signin')
-    expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
+    await app.waitUntilElementPresent('#signin');
+    expect(await discover.elementIsPresent('#signin')).toBeTruthy();
   });
 
 });
