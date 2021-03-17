@@ -89,17 +89,17 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should fill out community info', async () => {
-    await createfeature.waitUntilElementPresent('#communityName');
+    await createfeature.waitUntilElementVisible('#communityName');
     await createfeature.enterTextareaText('#communityName', 'E2E-Community-Test');
     await createfeature.clickNextButton();
-    await createfeature.waitUntilElementPresent('#addProgramPrompt');
+    await createfeature.waitUntilElementVisible('#addProgramPrompt');
     await createfeature.clickNextButton();
-    await createfeature.waitUntilElementPresent('#communityDescription');
-    await createfeature.enterTextareaText('#communityDescription', 'This is a test E2E community');
+    await createfeature.waitUntilElementVisible('#communityDescription'); // because it is a slideshow, needs to wait until visible
+    await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
-    await createfeature.waitUntilElementPresent('#chooseProgramText');
+    await createfeature.waitUntilElementVisible('#chooseProgramText');
     await createfeature.clickTutorialNextButton();
-    await createfeature.waitUntilElementPresent('#tutorialDone');
+    await createfeature.waitUntilElementVisible('#tutorialDone');
     await createfeature.clickTutorialDoneButton();
     await createfeature.waitUntilInvisible();
     expect(await app.currentUrl()).toContain('manage');
