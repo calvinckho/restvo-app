@@ -8,7 +8,7 @@ exports.config = {
   specs: [
     //'./src/**/*.e2e-spec.ts' // run all the testing scripts
     //'./src/mobile/tab-navigate.e2e-spec.ts'
-    './src/desktop/create-delete-community.e2e-spec.ts' // run this specific script
+    './src/desktop/add-and-remove-restvo-friend.e2e-spec.ts' // run this specific script
   ],
   capabilities: {
     /*chromeOptions: {

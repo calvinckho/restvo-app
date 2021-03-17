@@ -26,9 +26,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-      #- run:
-      #    name: "Add and Remove Friend"
-      #    command: npm run ci -- --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
+      - run:
+          name: "Add and Remove Friend"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
       - run:
           name: "Create and Delete a Community"
           command: npm run ci -- --protractor-config='e2e/src/desktop/create-delete-community.conf.js'

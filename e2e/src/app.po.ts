@@ -328,7 +328,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     async fillEmail() {
-        await this.waitUntilElementVisible('#email');
+        await browser.sleep(500);
         await this.enterInputText('#email', 'calvin+3@restvo.com');
     }
 
