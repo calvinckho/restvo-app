@@ -80,6 +80,7 @@ export class DiscoverPage implements OnInit {
             } else {
                 this.samples = [];
                 samples.forEach((parent) => {
+                  console.log("parent", parent)
                     if (this.filterOption == 'all') {
                       parent.sample_activities.forEach((activity) => {
                           const cached_parent = JSON.parse(JSON.stringify(parent));
@@ -89,7 +90,7 @@ export class DiscoverPage implements OnInit {
                       this.samples.push(...parent.sample_activities);
                     } else {
                       // CHECK CATEGORY
-                      const category = parent.categories.includes('5e9fe35cc8bf1a622fec69d7') ? 'group' : 'individual';
+                      const category = parent.sample_activities[0].categories.includes('5e9fe35cc8bf1a622fec69d7') ? 'group' : 'individual';
                       if (category == this.filterOption) {
                         parent.sample_activities.forEach((activity) => {
                             const cached_parent = JSON.parse(JSON.stringify(parent));
