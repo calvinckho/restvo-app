@@ -127,12 +127,12 @@
         </div>
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
       </ion-item>
-      <!--Not yet Joined and not a marketplace sample - permission check-->
-      <ion-item id="click-to-join" *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess && (moment.array_boolean.length > 1) && !moment.array_boolean[1]" (click)="joinActivity()" lines="none" class="cursor-pointer">
+      <!--Not yet Joined and not a marketplace template - permission check-->
+      <!--<ion-item id="click-to-join" *ngIf="authService.token && !token && !hasParticipantAccess && !hasOrganizerAccess && !hasLeaderAccess && (moment.array_boolean.length > 1) && !moment.array_boolean[1]" (click)="joinActivity()" lines="none" class="cursor-pointer">
         <ion-icon name="person" slot="start" color="danger"></ion-icon>
         <ion-label class="ion-margin-top">Click to join {{moment.resource['en-US'].value[0]}}</ion-label>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-      </ion-item>
+      </ion-item>-->
     </div>
     <!--Privileges View-->
     <div *ngIf="expandedPrivilegesView && hasOrganizerAccess" lines="none">
@@ -289,7 +289,7 @@
           <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as i"><span *ngIf="i > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
         </ion-item>
       </ion-item-group>
-      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter" [hidden]="moment.matrix_number[i][1] && !this.hasParticipantAccess && !this.hasLeaderAccess && (this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--Tabs-->
+      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter" [hidden]="moment.matrix_number[i][1] && !this.hasParticipantAccess"> <!--Tabs-->
         <ion-toolbar mode="md" class="tab-toolbar">
           <ion-segment (ionChange)="changeTabSelection($event)" [value]="tabSelection" mode="md">
             <ion-segment-button class="tab-button" *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j" [value]="tabId" mode="md">{{moment.matrix_string[i][j]}}</ion-segment-button>
@@ -919,7 +919,10 @@
     </ion-fab-list>
   </ion-fab>
    <!--Join Button for Marketplace Templates to be cloned for a user-->
-  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace and non-participanting-->
+  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !this.hasParticipantAccess && (moment && moment.array_boolean && moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace as a template and non-participanting-->
     <ion-button expand="block" shape="round" (click)="cloneActivity($event)" color="primary">Join</ion-button>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !joinDisabled && authService.token && !token && !hasParticipantAccess && (moment && moment.array_boolean.length > 1) && !moment.array_boolean[1]"> <!--if not a template and and non-participanting-->
+    <ion-button expand="block" shape="round" (click)="joinActivity()" color="primary">Join</ion-button>
   </ion-toolbar>
 </ion-footer>

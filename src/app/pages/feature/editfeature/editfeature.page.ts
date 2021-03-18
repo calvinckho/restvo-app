@@ -1304,11 +1304,24 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         toast.present();
     }
 
-    async explainDiscover(i) {
+    async explainDiscover(item) {
+        const resourceIndex = this.resource.matrix_number[0].indexOf(item);
         const activityType = this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0];
         const alert = await this.alertCtrl.create({
-            header: this.moment.resource['en-US'].matrix_string[i][1],
-            subHeader: this.moment.resource['en-US'].matrix_string[i][3] + activityType.toLowerCase() + this.moment.resource['en-US'].matrix_string[i][4] + activityType.toLowerCase() + this.moment.resource['en-US'].matrix_string[i][5],
+            header: this.resource['en-US'].matrix_string[resourceIndex][1],
+            subHeader: this.resource['en-US'].matrix_string[resourceIndex][3] + activityType.toLowerCase() + this.resource['en-US'].matrix_string[resourceIndex][4],
+            buttons: [{ text: 'Ok'}],
+            cssClass: 'level-15'
+        });
+        await alert.present();
+    }
+
+    async explainTemplate(item) {
+        const resourceIndex = this.resource.matrix_number[0].indexOf(item);
+        const activityType = this.moment.resource['en-US'].value[0] || this.resource['en-US'].value[0];
+        const alert = await this.alertCtrl.create({
+            header: this.resource['en-US'].matrix_string[resourceIndex][7],
+            subHeader: 'A template can be used by any participant in a Community to clone a new ' + activityType.toLowerCase() + '. Once enabled, it is shown publicly to all who belong to a Community.',
             buttons: [{ text: 'Ok'}],
             cssClass: 'level-15'
         });

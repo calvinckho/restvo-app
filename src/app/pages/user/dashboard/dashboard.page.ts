@@ -381,14 +381,14 @@ export class DashboardPage implements OnInit, OnDestroy {
             activity.mentors = [];
             activity.mentees = [];
             activity.uniqueUsers = [];
-            // if community or program
-            if (activity.categories.includes('5e9f46e1c8bf1a622fec69d5')) {
-                this.journeys.push(activity);
-            } else if (activity.categories.includes('5e9fe35cc8bf1a622fec69d7')) {
+            // sort activities into categories
+            if (activity.categories.includes('5e9fe35cc8bf1a622fec69d7')) { // group is matched first, because groups can have both group and journey affinity
                 this.groups.push(activity);
-            } else if (activity.categories.includes('5c915324e172e4e64590e346') || activity.categories.includes('5c915475e172e4e64590e348')) {
+            } else if (activity.categories.includes('5e9f46e1c8bf1a622fec69d5')) { // then journeys
+                this.journeys.push(activity);
+            } else if (activity.categories.includes('5c915324e172e4e64590e346') || activity.categories.includes('5c915475e172e4e64590e348')) { // programs or communities
                 this.programs.push(activity);
-            } else {
+            } else { // mentoring
                 activity.program = 'Restvo';
                 const combinedUsers = activity.user_list_1.concat(activity.user_list_3);
                 combinedUsers.forEach((user) => {

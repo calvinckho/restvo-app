@@ -148,7 +148,7 @@
                 <ion-toggle [(ngModel)]="moment.array_boolean[9]"></ion-toggle>
               </ion-item>
               <ion-item lines="none"> <!--List in Discover-->
-                <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(i)"></ion-icon></ion-label>
+                <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}<ion-icon name="information-circle" (click)="explainDiscover(item)"></ion-icon></ion-label>
                 <ion-toggle [(ngModel)]="moment.array_boolean[0]"></ion-toggle>
               </ion-item>
               <!--Allowed Children Categories-->
@@ -159,8 +159,8 @@
                 </ion-select>
               </ion-item>
             </ion-item-group>
-            <ion-item lines="none"> <!--Share in Marketplace-->
-              <ion-label>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}</ion-label>
+            <ion-item lines="none"> <!--List as a Template-->
+              <ion-label class="ion-text-wrap">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][7]}}<ion-icon name="information-circle" (click)="explainTemplate(item)"></ion-icon></ion-label>
               <ion-toggle [(ngModel)]="moment.array_boolean[1]"></ion-toggle>
             </ion-item>
             <!--Platform-->
