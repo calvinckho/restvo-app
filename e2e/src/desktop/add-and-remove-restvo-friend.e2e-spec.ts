@@ -118,7 +118,6 @@ describe(' Add and Remove a Restvo User as friend', () => {
   it('should report selected user then delete and unfriend', async () => {
     await app.clickElement('#reportUserAbuse');
     await app.waitUntilElementVisible('ion-action-sheet');
-    await browser.sleep(500);
     await app.clickActionSheetButton('Delete and Unfriend');
     await app.waitUntilElementInvisible('ion-action-sheet');
     await app.waitUntilElementVisible('ion-alert');

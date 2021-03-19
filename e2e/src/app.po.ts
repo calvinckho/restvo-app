@@ -235,6 +235,7 @@ export class AppPage extends PageObjectBase {
     }
 
     async clickActionSheetButton(text) {
+        await browser.sleep(500);
         await this.waitUntilElementVisible('.action-sheet-button');
         await element.all(by.css('.action-sheet-button'))
             .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
