@@ -54,18 +54,22 @@ describe('add and remove user from group', () => {
         createfeature = new CreatefeaturePage();
         editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/activity/5f72454627cf747d0ccb16d0');
+    });
+
+    it('should show unauthenticated activity page', async () => {
+        await browser.get('/activity/5e0012f714001a7dbf712de2');
         await showfeature.waitUntilElementPresent('#showfeature-header');
+        expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+    });
+
+    it('should login and show authenticated activity page', async () => {
         await showfeature.waitUntilElementVisible('#signin');
         await showfeature.clickElement('#signin');
         await register.waitUntilVisible();
         await register.fillEmail();
         await register.fillPassword();
         await register.submitLoginForm();
-    });
-
-    it('should show authenticated activity page', async () => {
-        await register.waitUntilInvisible(); // for unknown reason, this method takes 5-7 seconds to complete
+        await register.waitUntilInvisible();
         expect(await maintab.waitUntilPresent()).toBeTruthy();
     });
 

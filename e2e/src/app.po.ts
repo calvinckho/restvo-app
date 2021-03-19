@@ -108,12 +108,12 @@ class PageObjectBase {
                     .filter(async (el, index) => await el.isPresent())
                     .first()
                     .element(by.css('input')) // because it is a web component, needs to select its nested input tag
-                    .sendKeys(text);
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
             } else { // else, if it is just the input tag
                 await element.all(by.css(`${this.tag} ${sel}`))
                     .filter(async (el, index) => await el.isPresent())
                     .first()
-                    .sendKeys(text);
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
             }
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
@@ -122,7 +122,7 @@ class PageObjectBase {
             if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
                 inp = el.element(by.css('input')); // needs to select the nested input tag
             } // else, if it is just the input tag
-            await inp.sendKeys(text);
+            await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
         }
     }
 

@@ -43,7 +43,7 @@ export class PickpeoplePopoverPage implements OnInit {
     participantsLabel = 'Participants';
     organizersLabel = 'Organizers';
     leadersLabel = 'Leaders';
-    ionSpinner: boolean = true;
+    ionSpinner = true;
     churchId: string = '';
     selfConversationObj: any;
 
@@ -128,6 +128,7 @@ export class PickpeoplePopoverPage implements OnInit {
     setupLoadAppUsers() {
         setTimeout(async () => {
             if (this.hasOrganizerAccess) {
+                this.ionSpinner = true;
                 this.infiniteScroll.disabled = false;
                 this.reachedEnd = false;
                 this.listOfAppUsers = [];
@@ -142,17 +143,16 @@ export class PickpeoplePopoverPage implements OnInit {
         if (!this.reachedEnd) {
             const churchAppUsers: any = await this.churchService.loadChurchAppUsers(this.churchId, this.searchKeyword, this.pageNum);
             this.ionSpinner = false;
-            //console.log("check", churchAppUsers);
-            if (!churchAppUsers.length) {
-                this.reachedEnd = true;
-                event.target.disabled = true;
-            } else {
+            if (churchAppUsers.length) {
                 churchAppUsers.forEach((appuser) => {
                     if (appuser._id !== this.userData.user._id){
                         appuser.name = appuser.first_name + ' ' + appuser.last_name;
                         this.listOfAppUsers.push({_id: appuser._id, name: appuser.name, avatar: appuser.avatar, select: false});
                     }
                 });
+            } else {
+                this.reachedEnd = true;
+                event.target.disabled = true;
             }
             event.target.complete();
         } else {
@@ -160,30 +160,6 @@ export class PickpeoplePopoverPage implements OnInit {
             event.target.complete();
         }
     }
-
-    /*loadContacts() {
-        if (this.platform.is('cordova') && this.userData.user.importContactList) {
-            this.contacts.find(['*'], { desiredFields: ['name','phoneNumbers','emails'], multiple: true }).then((contacts) => {
-                this.ionSpinner = false;
-                if (contacts) {
-                    contacts.forEach((contact) => {
-                        if ((this.type === 'SMS Message') && contact.phoneNumbers){
-                            this.all_contact_list.push({type: 'contact', _id: null, name: contact.name.formatted, phoneNumbers: contact.phoneNumbers, select: false, joined: false});
-                        } else if ((this.type === 'Email') && contact.emails){
-                            this.all_contact_list.push({type: 'contact', _id: null, name: contact.name.formatted, emails: contact.emails, select: false, joined: false});
-                        }
-                    });
-                    this.all_contact_list.sort(function(a,b) {return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0});
-                    this.contact_list = this.all_contact_list;
-                }
-            }, (err) => {
-                this.ionSpinner = false;
-            });
-        } else {
-            this.ionSpinner = false;
-            this.contact_list = [];
-        }
-    }*/
 
     async renderList() {
         this.conversations = [];
