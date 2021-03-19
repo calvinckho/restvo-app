@@ -203,12 +203,6 @@
                 <ion-select-option *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as k" [value]="tabId">{{moment.matrix_string[i][k]}}</ion-select-option> <!--List of Tabs-->
               </ion-select>
             </ion-item>
-            <ion-item lines="none"> <!--Preview Tab-->
-              <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">Preview {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}}</ion-label>
-              <ion-select [interfaceOptions]="{cssClass: 'level-15'}" interface="alert" [(ngModel)]="moment.matrix_number[i][1]" slot="end">
-                <ion-select-option *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as k" [value]="tabId">{{moment.matrix_string[i][k]}}</ion-select-option> <!--List of Tabs-->
-              </ion-select>
-            </ion-item>
             <ion-card *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j">
               <ion-card-header>
                 <ion-item lines="none">
@@ -223,13 +217,13 @@
                   <ion-item *ngIf="tabId === component_tab_attribute" class="person-content-item">
                     <ion-label>{{moment.resource['en-US'].matrix_string[k][0]}}</ion-label>
                     <ion-buttons slot="end" class="ion-no-margin">
-                      <ion-button fill="clear" (click)="removeTabComponent(k)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
+                      <ion-button fill="clear" (click)="removeTabComponent(3, k)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
                     </ion-buttons>
                   </ion-item>
                 </div>
                 <ion-item class="person-content-item">
                   <ion-label position="stacked">Add a Component</ion-label>
-                  <ion-select interface="action-sheet" [(ngModel)]="tempTabComponentSelection[j]" (ionChange)="addTabComponent(j, tabId, $event)" placeholder="None"> <!--Participant's Title-->
+                  <ion-select interface="action-sheet" [(ngModel)]="tempTabComponentSelection[j+5]" (ionChange)="addTabComponent(3, tabId, $event)" placeholder="None"> <!--Participant's Title-->
                     <ion-select-option *ngFor="let componentCreatedAt of moment.resource.matrix_number[2]; index as m" [value]="componentCreatedAt" [hidden]="moment.resource.matrix_number[0][m] === 20020">{{moment.resource['en-US'].matrix_string[m][0]}}</ion-select-option> <!--Tab-->
                   </ion-select>
                 </ion-item>
@@ -240,6 +234,33 @@
                 Add Tab
               </ion-button>
             </ion-item>
+            <ion-item lines="none"> <!--Enable Preview-->
+              <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">Enable Preview</ion-label>
+              <ion-toggle [(ngModel)]="moment.array_boolean[11]" (ionChange)="enablePreview($event)"></ion-toggle>
+            </ion-item>
+            <ion-card *ngIf="(moment.array_boolean.length > 11) && moment.array_boolean[11]">
+              <ion-card-header>
+                <ion-item lines="none">
+                  <ion-label slot="start">Preview</ion-label>
+                </ion-item>
+              </ion-card-header>
+              <ion-card-content>
+                <div *ngFor="let component_tab_attribute of moment.resource.matrix_number[4]; index as k">
+                  <ion-item *ngIf="20021 === component_tab_attribute" class="person-content-item"> <!--20021 is the default number for the preview tab-->
+                    <ion-label>{{moment.resource['en-US'].matrix_string[k][0]}}</ion-label>
+                    <ion-buttons slot="end" class="ion-no-margin">
+                      <ion-button fill="clear" (click)="removeTabComponent(4, k)" class="close-button"><ion-icon name="close" color="grey"></ion-icon></ion-button>
+                    </ion-buttons>
+                  </ion-item>
+                </div>
+                <ion-item class="person-content-item">
+                  <ion-label position="stacked">Add a Component</ion-label>
+                  <ion-select interface="action-sheet" [(ngModel)]="tempTabComponentSelection[4]" (ionChange)="addTabComponent(4,20021, $event)" placeholder="None">
+                    <ion-select-option *ngFor="let componentCreatedAt of moment.resource.matrix_number[2]; index as m" [value]="componentCreatedAt" [hidden]="moment.resource.matrix_number[0][m] === 20020">{{moment.resource['en-US'].matrix_string[m][0]}}</ion-select-option> <!--Tab-->
+                  </ion-select>
+                </ion-item>
+              </ion-card-content>
+            </ion-card>
           </ion-item-group>
           <!--Start/End Date-->
           <ion-item-group *ngIf="item === 10200">

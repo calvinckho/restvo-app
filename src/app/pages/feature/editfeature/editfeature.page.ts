@@ -571,9 +571,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.moment.resource['en-US'].matrix_string.push(JSON.parse(JSON.stringify(this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(componentId)])));
 
       // append placeholder and content in moment's resource object
-      this.moment.resource.matrix_number[1].push(this.resource.matrix_number[1][this.resource.matrix_number[0].indexOf(componentId)]); // add maxCount to row 1
-      this.moment.resource.matrix_number[2].push( Math.floor((Math.random() + new Date().getTime()) * 1000)); // append a randomly generated id to row 2
-      this.moment.resource.matrix_number[3].push(null); // append a randomly generated id to row 2
+      this.moment.resource.matrix_number[1].push(this.resource.matrix_number[1][this.resource.matrix_number[0].indexOf(componentId)]); // add maxCount to row index 1
+      this.moment.resource.matrix_number[2].push( Math.floor((Math.random() + new Date().getTime()) * 1000)); // append a randomly generated id to row index 2
+      this.moment.resource.matrix_number[3].push(null); // activate row index 3
+      this.moment.resource.matrix_number[4].push(null); // activate row index 4
 
       // matrix_number[0] should be appended last, since it is used to iterate each component for display so by now all component arrays need to be ready
       this.moment.resource.matrix_number[0].push(componentId); // add the component id to row 0
@@ -602,6 +603,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.moment.resource.matrix_number[1].splice(index, 1);
       this.moment.resource.matrix_number[2].splice(index, 1);
       this.moment.resource.matrix_number[3].splice(index, 1);
+      this.moment.resource.matrix_number[4].splice(index, 1);
       this.moment.resource['en-US'].matrix_string.splice(index, 1);
       this.templateChanged = true;
   }
@@ -613,6 +615,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.moment.resource.matrix_number[1] = this.reorderArray(this.moment.resource.matrix_number[1], event.detail.from, event.detail.to);
       this.moment.resource.matrix_number[2] = this.reorderArray(this.moment.resource.matrix_number[2], event.detail.from, event.detail.to);
       this.moment.resource.matrix_number[3] = this.reorderArray(this.moment.resource.matrix_number[3], event.detail.from, event.detail.to);
+      this.moment.resource.matrix_number[4] = this.reorderArray(this.moment.resource.matrix_number[4], event.detail.from, event.detail.to);
       // then reorder matrix's
       if (this.moment.matrix_number && this.moment.matrix_number.length) {
           this.moment.matrix_number = this.reorderArray(this.moment.matrix_number, event.detail.from, event.detail.to);
@@ -1087,6 +1090,15 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       console.log('show', this.moment.matrix_number[componentIndex]);
     }
 
+    enablePreview(event) {
+        // if the component tab attribute array has not been added to resource's matrix_number yet, add it
+        while (this.moment.resource && this.moment.resource.matrix_number && this.moment.resource.matrix_number.length < 5) {
+            this.moment.resource.matrix_number.push(Array(this.moment.resource.matrix_number[0].length));
+            this.templateChanged = true;
+        }
+        console.log("enable", this.moment, event)
+    }
+
     addTab(componentIndex) {
       // if the component tab attribute array has not been added to resource's matrix_number yet, add it
         if (this.moment.resource && this.moment.resource.matrix_number && this.moment.resource.matrix_number.length < 4) {
@@ -1101,10 +1113,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
         this.moment.matrix_string[componentIndex].splice(tabIndex, 1);
     }
 
-    addTabComponent(tabIndex, tabId, event) {
+    addTabComponent(resourceIndex, tabId, event) {
       const index = this.moment.resource.matrix_number[2].indexOf(event.detail.value);
       if (index >= 0) {
-          this.moment.resource.matrix_number[3][index] = tabId;
+          this.moment.resource.matrix_number[resourceIndex][index] = tabId;
           this.templateChanged = true;
       }
       setTimeout(() => {
@@ -1112,11 +1124,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }, 50);
     }
 
-    removeTabComponent(componentIndex) {
-        this.moment.resource.matrix_number[3][componentIndex] = null;
+    removeTabComponent(resourceIndex, componentIndex) {
+        this.moment.resource.matrix_number[resourceIndex][componentIndex] = null;
         this.templateChanged = true;
     }
-
 
     async explainWeight() {
         const alertCtrl = await await this.alertCtrl.create({

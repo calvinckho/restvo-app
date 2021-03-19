@@ -31,7 +31,7 @@ import {RegisterPage} from '../../user/register/register.page';
 import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
-import {PickfeaturePopoverPage} from "../pickfeature-popover/pickfeature-popover.page";
+import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
 
 @Component({
   selector: 'app-showfeature',
@@ -140,6 +140,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   // 20020 Tabs
     tabSelection: number;
+    showPreview = false;
 
   // 30000 poll
   responses = []; // an array of responses
@@ -467,13 +468,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             // set up tabs
             if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
                 if (!this.tabSelection && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)].length > 5) { // assuming at least 1 tab has been created. if no default has been selected, use the first available tab
-                    if (!this.hasParticipantAccess && !this.hasLeaderAccess) { // if previewing as non-participant, use preview tab setting
-                        this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][1] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
-                    } else { // if the user is participanting, use default tab setting
-                        this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][0] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                    this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][0] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                }
+                this.showPreview = this.moment.array_boolean.length > 11 && this.moment.array_boolean[11];
+                if (this.showPreview) { // if preview page is enabled
+                    if (this.router.url.includes('discover')) {
+                        this.showPreview = true;
+                    } else if (this.hasParticipantAccess || this.hasLeaderAccess || this.hasOrganizerAccess) {
+                        this.showPreview = false;
                     }
                 }
-            }
+             }
 
             // check if needed to load notes (12000)
             this.checkAndLoadNotes();

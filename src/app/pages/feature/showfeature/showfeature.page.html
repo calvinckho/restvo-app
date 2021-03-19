@@ -253,7 +253,7 @@
         </ion-select>
       </ion-item>
     </div>
-    <div *ngFor="let item of moment.resource.matrix_number[0]; trackBy: customTrackBy; index as i" [hidden]="moment.resource.matrix_number[0].includes(20020) && (i > moment.resource.matrix_number[0].indexOf(20020)) && (moment.resource.matrix_number[3][i] !== tabSelection)">
+    <div *ngFor="let item of moment.resource.matrix_number[0]; trackBy: customTrackBy; index as i" [hidden]="moment.resource.matrix_number[0].includes(20020) && (i > moment.resource.matrix_number[0].indexOf(20020)) && ((!showPreview && moment.resource.matrix_number[3][i] !== tabSelection) || (showPreview && moment.resource.matrix_number[4][i] !== 20021))">
       <ion-item *ngIf="item === 10010" lines="none"> <!--textarea-->
         <div class="textarea ion-text-wrap" [innerHtml]="moment.matrix_string[i][0] | nl2br" *ngIf="(moment.matrix_string[i].length < 3) || !moment.matrix_string[i][2]"></div>
         <quill-view
@@ -289,7 +289,7 @@
           <ion-label class="detail ion-text-wrap ion-text-right"><span *ngFor="let category of moment.categories; index as i"><span *ngIf="i > 0">, </span>{{category['en-US'].value[0]}}</span></ion-label>
         </ion-item>
       </ion-item-group>
-      <ion-item lines="none" *ngIf="item === 20020" class="tab-filter" [hidden]="moment.matrix_number[i][1] && !this.hasParticipantAccess"> <!--Tabs-->
+      <ion-item lines="none" *ngIf="loadStatus && setupPermissionCompleted && item === 20020" class="tab-filter" [hidden]="showPreview"> <!--Tabs-->
         <ion-toolbar mode="md" class="tab-toolbar">
           <ion-segment (ionChange)="changeTabSelection($event)" [value]="tabSelection" mode="md">
             <ion-segment-button class="tab-button" *ngFor="let tabId of moment.matrix_number[i] | slice: 5; index as j" [value]="tabId" mode="md">{{moment.matrix_string[i][j]}}</ion-segment-button>
@@ -905,13 +905,13 @@
   <div style="height: 50px" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))"></div>
 </ion-content>
 <ion-footer lines="none">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))" [hidden]="!this.hasParticipantAccess && (this.moment && this.moment.array_boolean && this.moment.array_boolean.length > 1) && this.moment.array_boolean[1]">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="authService.token && (hasOrganizerAccess || hasLeaderAccess || hasParticipantAccess) && loadStatus && setupPermissionCompleted && moment && moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(10210) && ((moment.array_boolean.length > 8) && moment.array_boolean[8] || customSchedule || (moment.resource.matrix_number?.length && moment.resource.matrix_number[0].includes(12000)))" [hidden]="showPreview">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
       <!--create To-Do-->
-      <ion-fab-button (click)="createCalendarItem($event, (moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 3) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][3] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][17])" color="primary" *ngIf="customSchedule && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">{{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-fab-button>
+      <ion-fab-button (click)="createCalendarItem($event, (moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 3) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][3] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][17])" color="primary" *ngIf="customSchedule && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">{{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-fab-button>
       <!--create Goal-->
       <ion-fab-button (click)="promptNewGoalName($event)" color="primary" *ngIf="(moment.array_boolean.length > 8) && moment.array_boolean[8] && (!moment.resource.matrix_number[0].includes(20020) || moment.resource.matrix_number[0].includes(20020) && this.tabSelection === moment.resource.matrix_number[3][moment.resource.matrix_number[0].indexOf(10210)])">Goal</ion-fab-button>
       <!--create Note-->
@@ -919,10 +919,10 @@
     </ion-fab-list>
   </ion-fab>
    <!--Join Button for Marketplace Templates to be cloned for a user-->
-  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !this.hasParticipantAccess && (moment && moment.array_boolean && moment.array_boolean.length > 1) && this.moment.array_boolean[1]"> <!--if shared in marketplace as a template and non-participanting-->
+  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && showPreview && (moment && moment.array_boolean && moment.array_boolean.length > 1) && moment.array_boolean[1]"> <!--if shared in marketplace as a template and non-participanting-->
     <ion-button expand="block" shape="round" (click)="cloneActivity($event)" color="primary">Join</ion-button>
   </ion-toolbar>
-  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !joinDisabled && authService.token && !token && !hasParticipantAccess && (moment && moment.array_boolean.length > 1) && !moment.array_boolean[1]"> <!--if not a template and and non-participanting-->
+  <ion-toolbar *ngIf="loadStatus && setupPermissionCompleted && !joinDisabled && authService.token && !token && showPreview && (moment && moment.array_boolean.length > 1) && !moment.array_boolean[1]"> <!--if not a template and and non-participanting-->
     <ion-button expand="block" shape="round" (click)="joinActivity()" color="primary">Join</ion-button>
   </ion-toolbar>
 </ion-footer>
