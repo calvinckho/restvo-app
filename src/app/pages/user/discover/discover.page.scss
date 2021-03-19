@@ -34,4 +34,33 @@ app-discover {
     width: 100%;
     --size: 220px;
   }
+
+  .fab-list-side-top {
+    --box-shadow: 0 5px 15px rgba(0,0,0,.15);
+  }
+
+  .fab-button-in-list {
+    width: 100px;
+    transform: translateX(-21px);
+    // margin: 0;
+    --border-radius: 20px;
+    // --box-shadow: none;
+  }
+
+  .filter-button {
+    width: 125px;
+    --border-radius: 30px;
+    font-size: 16px;
+    transform: translateX(-33px);
+  }
+
+  .first-button {
+    --border-radius-top-left: 10px;
+    --border-radius-top-right: 10px;
+  }
+
+  .last-button {
+    --border-radius-bottom-left: 10px;
+    --border-radius-bottom-right: 10px;
+  }
 }

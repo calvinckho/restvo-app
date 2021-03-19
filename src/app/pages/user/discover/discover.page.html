@@ -76,17 +76,17 @@
   </ion-grid>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button>
-      <ion-icon name="options-outline"></ion-icon>
+    <ion-fab-button class="filter-button">
+      Filter <ion-icon name="options-outline" style="margin-left: 10px;"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button (click)="changeFilterOption('all')">
+      <ion-fab-button (click)="changeFilterOption('all')" class="first-button">
         All
       </ion-fab-button>
       <ion-fab-button (click)="changeFilterOption('individual')">
         Individual
       </ion-fab-button>
-      <ion-fab-button (click)="changeFilterOption('group')">
+      <ion-fab-button (click)="changeFilterOption('group')" class="last-button">
         Group
       </ion-fab-button>
     </ion-fab-list>
