@@ -223,7 +223,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
 
   async multiSelectAction(event) {
     event.stopPropagation();
-    if (!this.selectedParticipants.length || !event.detail.value.length) return; // if no participant or remove type selected, exit
+    if (event && !this.selectedParticipants.length || !event.detail.value || !event.detail.value.length) return; // if no participant or remove type selected, exit
     const alert = await this.alertCtrl.create({
       header: 'Remove ' + (this.selectedParticipants.length === 1 ? event.detail.value[0].singularLabel : event.detail.value[0].pluralLabel),
       subHeader: 'You are about to remove ' + (this.selectedParticipants.length === 1 ? (this.selectedParticipants[0].first_name + ' ' + this.selectedParticipants[0].last_name + ' as a ' + event.detail.value[0].singularLabel) : (this.selectedParticipants.length + ' ' + event.detail.value[0].pluralLabel)) + '. Are you sure you want to proceed?',

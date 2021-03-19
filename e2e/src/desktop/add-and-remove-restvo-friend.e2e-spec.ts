@@ -138,7 +138,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
     await app.clickElement('#userProfileSettings');
     await app.waitUntilUrlContains('profile');
     await app.clickElement('#logoutButton');
-    await app.waitUntilElementPresent('#signin');
+    await discover.waitUntilElementVisible('#signin');
     expect(await discover.elementIsPresent('#signin')).toBeTruthy();
   });
 

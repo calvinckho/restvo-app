@@ -142,7 +142,7 @@ export class PickpeoplePopoverPage implements OnInit {
         if (!this.reachedEnd) {
             const churchAppUsers: any = await this.churchService.loadChurchAppUsers(this.churchId, this.searchKeyword, this.pageNum);
             this.ionSpinner = false;
-            console.log("check", churchAppUsers);
+            //console.log("check", churchAppUsers);
             if (!churchAppUsers.length) {
                 this.reachedEnd = true;
                 event.target.disabled = true;

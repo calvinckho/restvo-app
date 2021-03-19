@@ -367,6 +367,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               let peopleComponentId = -1;
               if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
                   peopleComponentId = this.moment.resource.matrix_number[0].indexOf(10500);
+                  while (this.moment.resource.matrix_number.length < 5) { // if the matrix_number has not added all 5 sets of array yet
+                      this.moment.resource.matrix_number.push(Array(this.moment.resource.matrix_number[0].length));
+                      this.templateChanged = true;
+                  }
               }
               if (peopleComponentId > -1) {
                   this.participantLabel = this.moment.matrix_string[peopleComponentId].length && this.moment.matrix_string[peopleComponentId].length > 3 && this.moment.matrix_string[peopleComponentId][2] ? this.moment.matrix_string[peopleComponentId][2] : (this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] > 4) ? this.resource['en-US'].matrix_string[this.resource.matrix_number[0].indexOf(10500)][4] : this.participantLabel;
@@ -838,7 +842,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
   selectAddress(selection) {
-    if (selection.display_name == 'Use Custom Location') {
+    if (selection.display_name === 'Use Custom Location') {
       this.moment.location = {
         location: JSON.parse(JSON.stringify(this.addressSearchString))
       };
@@ -1090,13 +1094,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       console.log('show', this.moment.matrix_number[componentIndex]);
     }
 
-    enablePreview(event) {
+    enablePreview() {
         // if the component tab attribute array has not been added to resource's matrix_number yet, add it
         while (this.moment.resource && this.moment.resource.matrix_number && this.moment.resource.matrix_number.length < 5) {
             this.moment.resource.matrix_number.push(Array(this.moment.resource.matrix_number[0].length));
             this.templateChanged = true;
         }
-        console.log("enable", this.moment, event)
     }
 
     addTab(componentIndex) {

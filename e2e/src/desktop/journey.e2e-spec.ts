@@ -16,22 +16,30 @@ import {
 } from '../app.po';
 import {browser} from 'protractor';
 
-describe('join journey and leave journey', () => {
-    let app: AppPage;
-    let showfeature: ShowfeaturePage;
-    let maintab: MaintabPage;
-    let register: RegisterPage;
-    let news: NewsPage;
-    let chat: ChatPage;
-    let discover: DiscoverPage;
-    let about: AboutPage;
-    let preferences: PreferencesPage;
-    let me: DashboardPage;
-    let pickfeature: PickfeaturePopoverPage;
-    let pickpeople: PickpeoplePopoverPage;
-    let createfeature: CreatefeaturePage;
-    let onboardfeature: OnboardingfeaturePage;
+let app: AppPage;
+let showfeature: ShowfeaturePage;
+let maintab: MaintabPage;
+let register: RegisterPage;
+let news: NewsPage;
+let chat: ChatPage;
+let discover: DiscoverPage;
+let about: AboutPage;
+let preferences: PreferencesPage;
+let me: DashboardPage;
+let pickfeature: PickfeaturePopoverPage;
+let pickpeople: PickpeoplePopoverPage;
+let createfeature: CreatefeaturePage;
+let onboardfeature: OnboardingfeaturePage;
 
+describe('join and leave journey without preview', () => {
+    sharedTest('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
+});
+
+describe('join and leave journey with preview', () => {
+    sharedTest('/app/activity/5f72454627cf747d0ccb16d0;type=2;token=MjHTvRmXCf');
+});
+
+function sharedTest(activityUrl) {
     beforeAll(async () => {
         // testing on desktop sized screen
         const width = 1200;
@@ -51,10 +59,10 @@ describe('join journey and leave journey', () => {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreatefeaturePage();
         onboardfeature = new OnboardingfeaturePage();
-        await browser.get('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
     });
 
     it('should show unauthenticated journey page', async () => {
+        await browser.get(activityUrl);
         await showfeature.waitUntilElementPresent('#showfeature-header');
         expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
     });
@@ -105,6 +113,7 @@ describe('join journey and leave journey', () => {
     it('should click the logout button', async () => {
         await app.clickElement('#logoutButton');
         await browser.waitForAngular();
-        expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
+        await discover.waitUntilElementVisible('#signin');
+        expect(await discover.elementIsPresent('#signin')).toBeTruthy();
     });
-});
+}

@@ -236,7 +236,7 @@
             </ion-item>
             <ion-item lines="none"> <!--Enable Preview-->
               <ion-label style="width: 90%" margin-left="20px" color="grey" slot="start">Enable Preview</ion-label>
-              <ion-toggle [(ngModel)]="moment.array_boolean[11]" (ionChange)="enablePreview($event)"></ion-toggle>
+              <ion-toggle [(ngModel)]="moment.array_boolean[11]" (ionChange)="enablePreview()"></ion-toggle>
             </ion-item>
             <ion-card *ngIf="(moment.array_boolean.length > 11) && moment.array_boolean[11]">
               <ion-card-header>

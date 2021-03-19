@@ -40,15 +40,6 @@ class PageObjectBase {
         }
     }
 
-    async waitUntilNotPresent() {
-        const els = await element.all(by.css(this.tag));
-        for (const el of els) {
-            if (await el.isDisplayed()) {
-                return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
-            }
-        }
-    }
-
     waitUntilUrlContains(path) {
         return browser.wait(ExpectedConditions.urlContains(path), 10000);
     }
@@ -392,7 +383,7 @@ export class ChatPage extends PageObjectBase {
 
 export class DiscoverPage extends PageObjectBase {
     constructor() {
-        super('app-discover', 'app/discover');
+        super('app-discover', 'discover');
     }
 
     clickMenuToggle(el) {
