@@ -101,7 +101,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
     activityResourceObj = { // default template object
       field: 'User Defined Activity',
-      matrix_number: [[], [], [], []],
+      matrix_number: [[], [], [], [], []],
       'en-US': {
           value: [''],
           matrix_string: []
