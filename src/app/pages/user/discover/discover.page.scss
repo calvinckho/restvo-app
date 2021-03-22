@@ -40,11 +40,11 @@ app-discover {
   }
 
   .fab-button-in-list {
-    width: 100px;
+    width: 110px;
     transform: translateX(-21px);
-    // margin: 0;
-    --border-radius: 20px;
-    // --box-shadow: none;
+    margin: 0;
+    --border-radius: 0;
+    --box-shadow: none;
   }
 
   .filter-button {
@@ -55,12 +55,10 @@ app-discover {
   }
 
   .first-button {
-    --border-radius-top-left: 10px;
-    --border-radius-top-right: 10px;
+    --border-radius: 0 0 20px 20px;
   }
 
   .last-button {
-    --border-radius-bottom-left: 10px;
-    --border-radius-bottom-right: 10px;
+    --border-radius: 20px 20px 0 0;
   }
 }
