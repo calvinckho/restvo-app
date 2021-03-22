@@ -58,13 +58,13 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should show unauthenticated main page', async () => {
-    await showfeature.waitUntilElementPresent('#showfeature-header');
-    expect(await showfeature.headerIsPresent('#showfeature-header')).toBeTruthy();
+    await discover.waitUntilElementPresent('#discover-header');
+    expect(await discover.headerIsPresent('#discover-header')).toBeTruthy();
   });
 
   it('should login as Ted Ho', async () => {
-    await showfeature.waitUntilElementVisible('#signin');
-    await showfeature.clickElement('#signin');
+    await discover.waitUntilElementVisible('#signin');
+    await discover.clickElement('#signin');
     await register.waitUntilVisible();
     await register.fillEmail();
     await register.fillPassword();
@@ -89,17 +89,17 @@ describe(' Create and Delete a Community', () => {
   });
 
   it('should fill out community info', async () => {
-    await createfeature.enterTextareaText('ion-textarea[ng-reflect-name="communityName"]', 'E2E-Community-Test');
-    await createfeature.waitUntilElementPresent('#communityName');
+    await createfeature.waitUntilElementVisible('#communityName');
+    await createfeature.enterTextareaText('#communityName', 'E2E-Community-Test');
     await createfeature.clickNextButton();
-    await createfeature.waitUntilElementPresent('#addProgramPrompt');
+    await createfeature.waitUntilElementVisible('#addProgramPrompt');
     await createfeature.clickNextButton();
-    await createfeature.waitUntilElementPresent('#communityDescription');
+    await createfeature.waitUntilElementVisible('#communityDescription'); // because it is a slideshow, needs to wait until visible
     await createfeature.enterNewCommunityDescription();
     await createfeature.clickSaveButton();
-    await createfeature.waitUntilElementPresent('#chooseProgramText');
+    await createfeature.waitUntilElementVisible('#chooseProgramText');
     await createfeature.clickTutorialNextButton();
-    await createfeature.waitUntilElementPresent('#tutorialDone');
+    await createfeature.waitUntilElementVisible('#tutorialDone');
     await createfeature.clickTutorialDoneButton();
     await createfeature.waitUntilInvisible();
     expect(await app.currentUrl()).toContain('manage');
@@ -129,8 +129,8 @@ describe(' Create and Delete a Community', () => {
     await app.clickElement('#userProfileSettings');
     await app.waitUntilUrlContains('profile');
     await app.clickElement('#logoutButton');
-    await app.waitUntilElementPresent('#signin');
-    expect(await showfeature.elementIsPresent('#signin')).toBeTruthy();
+    await discover.waitUntilElementVisible('#signin');
+    expect(await discover.elementIsPresent('#signin')).toBeTruthy();
   });
 
 

@@ -60,7 +60,11 @@
           {{activity.matrix_string[0][0]}} <span *ngIf="activity.deletedAt">(Deleted)</span>
         </ion-label>
       </div>
-      <div class="ion-text-wrap status-col column-label" style="font-size: 8px"><span *ngIf="activity.array_boolean[1]">Share in Marketplace</span></div>
+      <div class="ion-text-wrap status-col column-label" style="font-size: 8px">
+        <span *ngIf="activity.array_boolean[0]">Discoverable</span>
+        <span *ngIf="activity.array_boolean[0] && activity.array_boolean[1]">/</span>
+        <span *ngIf="activity.array_boolean[1]">Template</span>
+      </div>
       <ion-buttons class="actions-col ion-justify-content-evenly">
         <ion-button (click)="openChildActivity($event, activity, 'manage')" fill="clear"><ion-icon name="key-outline"></ion-icon></ion-button>
         <ion-button (click)="openChildActivity($event, activity, 'edit')" fill="clear"><ion-icon name="build-outline"></ion-icon></ion-button>

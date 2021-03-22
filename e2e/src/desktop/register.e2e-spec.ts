@@ -89,12 +89,8 @@ describe('register an account as a new user', () => {
         expect(await register.elementIsPresent('#login-button')).toBeTruthy();
     });
 
-    it('should authenticate the new user', async () => {
+    it('should authenticate the new user and finish the onboarding process', async () => {
         await browser.get('/activity/5d5785b462489003817fee18;verify=9LL1tFgDTH9skXdYmoofMmPmgwYLaAQ78elfIWu6xRebj2L7');
-        expect(await maintab.waitUntilPresent()).toBeTruthy();
-    });
-
-    it('should finish the onboarding process', async () => {
         await onboardfeature.waitUntilVisible();
         await onboardfeature.waitUntilElementVisible('.tile-card');
         await onboardfeature.finishOnboarding();

@@ -40,15 +40,6 @@ class PageObjectBase {
         }
     }
 
-    async waitUntilNotPresent() {
-        const els = await element.all(by.css(this.tag));
-        for (const el of els) {
-            if (await el.isDisplayed()) {
-                return await browser.wait(ExpectedConditions.presenceOf(el), 10000);
-            }
-        }
-    }
-
     waitUntilUrlContains(path) {
         return browser.wait(ExpectedConditions.urlContains(path), 10000);
     }
@@ -117,12 +108,12 @@ class PageObjectBase {
                     .filter(async (el, index) => await el.isPresent())
                     .first()
                     .element(by.css('input')) // because it is a web component, needs to select its nested input tag
-                    .sendKeys(text);
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
             } else { // else, if it is just the input tag
                 await element.all(by.css(`${this.tag} ${sel}`))
                     .filter(async (el, index) => await el.isPresent())
                     .first()
-                    .sendKeys(text);
+                    .sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
             }
         } else {
             const el = element(by.css(`${this.tag} ${sel}`));
@@ -131,7 +122,7 @@ class PageObjectBase {
             if (await element(by.css(`${this.tag} ${sel} .native-input`)).isPresent()) { // if ion-input
                 inp = el.element(by.css('input')); // needs to select the nested input tag
             } // else, if it is just the input tag
-            await inp.sendKeys(text);
+            await inp.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'), text);
         }
     }
 
@@ -235,6 +226,7 @@ export class AppPage extends PageObjectBase {
     }
 
     async clickActionSheetButton(text) {
+        await browser.sleep(500);
         await this.waitUntilElementVisible('.action-sheet-button');
         await element.all(by.css('.action-sheet-button'))
             .filter(async (el) => (await el.getText()).toLowerCase() === text.toLowerCase())
@@ -328,6 +320,7 @@ export class RegisterPage extends PageObjectBase {
     }
 
     async fillEmail() {
+        await browser.sleep(500);
         await this.enterInputText('#email', 'calvin+3@restvo.com');
     }
 
@@ -390,7 +383,7 @@ export class ChatPage extends PageObjectBase {
 
 export class DiscoverPage extends PageObjectBase {
     constructor() {
-        super('app-discover', 'app/discover');
+        super('app-discover', 'discover');
     }
 
     clickMenuToggle(el) {

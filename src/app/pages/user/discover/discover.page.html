@@ -19,7 +19,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-toolbar>
-  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }" [hidden]="mobileSearchBarVisible && (platform.width() < 768)">
+  <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }" *ngIf="!(mobileSearchBarVisible && (platform.width() < 768))">
     <ion-menu-toggle slot="start" menu="main" id="dashboard-menu-toggle">
       <ion-button fill="clear" color="grey">
         <ion-icon name="menu"></ion-icon>
@@ -76,18 +76,27 @@
   </ion-grid>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button class="filter-button">
-      Filter <ion-icon name="options-outline" style="margin-left: 10px;"></ion-icon>
+    <ion-fab-button class="filter-button" color="light">
+      <span *ngIf="filterOption === 'all'">
+        Filter
+      </span>
+      <span *ngIf="filterOption === 'group'">
+        Group Plans
+      </span>
+      <span *ngIf="filterOption === 'individual'">
+        Individual Plans
+      </span>
+      <ion-icon name="options-outline" style="margin-left: 10px;"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
       <ion-fab-button (click)="changeFilterOption('all')" class="first-button">
-        All
+        All Plans
       </ion-fab-button>
       <ion-fab-button (click)="changeFilterOption('individual')">
-        Individual
+        Individual Plans
       </ion-fab-button>
       <ion-fab-button (click)="changeFilterOption('group')" class="last-button">
-        Group
+        Group Plans
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
