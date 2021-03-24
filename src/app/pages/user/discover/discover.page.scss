@@ -40,12 +40,14 @@ app-discover {
   }
 
   .fab-button-in-list {
-    width: 110px;
-    transform: translateX(-21px);
+    width: 150px;
+    font-size: 16px;
+    transform: translateX(-44px);
     margin: 0;
     --border-radius: 0;
     --box-shadow: none;
     --background: white;
+    --color: black;
   }
 
   .filter-button {
@@ -56,10 +58,10 @@ app-discover {
   }
 
   .first-button {
-    --border-radius: 0 0 20px 20px;
+    --border-radius: 0 0 10px 10px;
   }
 
   .last-button {
-    --border-radius: 20px 20px 0 0;
+    --border-radius: 10px 10px 0 0;
   }
 }
