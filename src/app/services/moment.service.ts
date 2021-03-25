@@ -12,6 +12,7 @@ import { NetworkService } from './network-service.service';
 
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
+import {SuccessPopoverPage} from "../pages/feature/success-popover/success-popover.page";
 import { Observable, BehaviorSubject } from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {PaymentService} from './payment.service';
@@ -424,18 +425,20 @@ export class Moment {
                 if (notifyUser) { // open modal box to notify user of status of joining the program
                     if (result === 'success') {
                         if (user_list === 'user_list_1') { // participant
-                            const alert = await this.alertCtrl.create({
-                                header: 'Success',
-                                message: 'You have successfully joined ' + moment.matrix_string[0][0],
-                                buttons: [{ text: 'Ok',
-                                    handler: () => {
-                                        const navTransition = alert.dismiss();
-                                        navTransition.then( async () => {
-                                        });
-                                    }}],
-                                cssClass: 'level-15'
-                            });
-                            alert.present();
+                            // const alert = await this.alertCtrl.create({
+                            //     header: 'Success',
+                            //     message: 'You have successfully joined ' + moment.matrix_string[0][0],
+                            //     buttons: [{ text: 'Ok',
+                            //         handler: () => {
+                            //             const navTransition = alert.dismiss();
+                            //             navTransition.then( async () => {
+                            //             });
+                            //         }}],
+                            //     cssClass: 'level-15'
+                            // });
+                            // alert.present();
+                            const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
+                            await modal.present();
                         } else {
                             const alert = await this.alertCtrl.create({
                                 header: 'Success',

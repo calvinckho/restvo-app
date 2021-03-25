@@ -32,7 +32,6 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
-import {SuccessPopoverPage} from "../success-popover/success-popover.page";
 
 @Component({
   selector: 'app-showfeature',
@@ -1339,7 +1338,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   this.modalCtrl.dismiss();
               }
           }
-          /*const congratulations = await this.alertCtrl.create({
+          const congratulations = await this.alertCtrl.create({
               header: 'Congratulations',
               message: 'You have successfully joined ' + this.moment.matrix_string[0][0] + '.',
               buttons: [{ text: 'Start Now',
@@ -1349,10 +1348,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                   }}],
               cssClass: 'level-15'
           });
-          await congratulations.present();*/
-
-          const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
-          await modal.present();
+          await congratulations.present();
       } else {
           this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
       }
