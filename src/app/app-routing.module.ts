@@ -69,7 +69,7 @@ const routes: Routes = [
         path: '**',
         redirectTo:  '/app/discover',
         pathMatch: 'prefix'
-    },
+    }
 ];
 
 @NgModule({
