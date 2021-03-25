@@ -26,6 +26,7 @@ import {CreatefeaturePageModule} from '../feature/createfeature/createfeature.mo
 import {CustomreminderPopoverPageModule} from '../feature/customreminder-popover/customreminder-popover.module';
 import {EditparticipantsPageModule} from '../feature/editparticipants/editparticipants.module';
 import {ManagefeaturePageModule} from '../feature/manage/managefeature.module';
+import {SuccessPopoverPageModule} from "../feature/success-popover/success-popover.module";
 
 @NgModule({
   imports: [
@@ -61,6 +62,7 @@ import {ManagefeaturePageModule} from '../feature/manage/managefeature.module';
       UserPageModule,
 
       CustomreminderPopoverPageModule,
+      SuccessPopoverPageModule
   ],
   declarations: [
       MainTabPage,
