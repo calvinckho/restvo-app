@@ -44,6 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {ErrorService} from './services/error.service';
 import {OnboardfeaturePageModule} from './pages/feature/onboardfeature/onboardfeature.module';
+import {SuccessPopoverPageModule} from "./pages/feature/success-popover/success-popover.module";
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import {OnboardfeaturePageModule} from './pages/feature/onboardfeature/onboardfe
       ShowrecipientinfoModule,
       PickfeaturePopoverPageModule,
       PickpeoplePopoverPageModule,
+      SuccessPopoverPageModule,
       ProgramsPageModule,
       UploadmediaPageModule,
       OnboardfeaturePageModule,
