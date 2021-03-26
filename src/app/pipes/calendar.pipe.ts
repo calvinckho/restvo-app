@@ -7,20 +7,32 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class CalendarPipe implements PipeTransform {
 
   transform(calendarItems: any, type?: any, data?: any): any {
-    if (type === 'indexIfTodayLessonExists') {
+    if (type === 'calendarItemIfTodayLessonExists') {
+      let filteredCalendarItems;
+      if (data) {
+        filteredCalendarItems = calendarItems.filter((c) => data.scheduleIds.includes(c.schedule) && c.goals && c.goals.includes(data.goal[0]));
+      } else {
+        filteredCalendarItems = calendarItems;
+      }
       let todayLessonExists;
       let indexOfTodayLesson;
-      for (let i = calendarItems.length - 1; i >= 0; i--) {
-        if (new Date(calendarItems[i].startDate).getDate() === new Date().getDate()) {
+      for (let i = filteredCalendarItems.length - 1; i >= 0; i--) {
+        if (new Date(filteredCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
         }
-        if (!todayLessonExists && !calendarItems[i].completed) {
+        if (!todayLessonExists && !filteredCalendarItems[i].completed) {
           indexOfTodayLesson = i;
         }
       }
       if (indexOfTodayLesson !== null) {
-        return calendarItems[indexOfTodayLesson];
+        if (!data) {
+          return filteredCalendarItems[indexOfTodayLesson];
+        } else if (data && data.output === 'index') {
+          return indexOfTodayLesson;
+        } else if (data && data.output === 'filteredCalendarItems') {
+          return filteredCalendarItems;
+        }
       } else {
         return null;
       }
