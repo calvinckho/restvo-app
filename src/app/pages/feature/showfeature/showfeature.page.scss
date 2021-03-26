@@ -1023,4 +1023,24 @@ app-showfeature {
     padding-left: 12px;
     padding-right: 12px;
   }
+
+  .lesson-slides {
+    padding: 12px;
+  }
+
+  .lesson-slide {
+    max-width: 100px;
+  }
+
+  .lesson-card {
+    height: 100%;
+    width: 100%;
+    //object-fit: contain;
+    margin: 0 3%;
+  }
+
+  .lesson-item-checkbox {
+    width: 20px;
+    margin: auto;
+  }
 }

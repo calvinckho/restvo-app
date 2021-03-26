@@ -92,7 +92,8 @@
           </div>
           <ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(goal)">
             <span class="content-count"><ion-icon name="add"></ion-icon></span>
-            <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
+            <ion-label class="moment-input" *ngIf="moment && resource && moment.resource.matrix_number[0].includes(10210)">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
+            <ion-label class="moment-input" *ngIf="moment && resource && moment.resource.matrix_number[0].includes(10220)">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10220)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10220)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10220)][15]}}</ion-label>
           </ion-item>
         </ion-card-content>
       </ion-card>
@@ -123,10 +124,6 @@
             </ion-buttons>
           </ion-item>
         </div>
-        <!--<ion-item class="calendar-item ion-no-padding" (click)="addContenCalendar(null)">
-          <span class="content-count"><ion-icon name="add"></ion-icon></span>
-          <ion-label class="moment-input" *ngIf="moment && resource">Add New {{(moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)].length > 2) ? moment.matrix_string[moment.resource.matrix_number[0].indexOf(10210)][2] : resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10210)][15]}}</ion-label>
-        </ion-item>-->
       </ion-card-content>
     </ion-card>
     <ion-item hidden>

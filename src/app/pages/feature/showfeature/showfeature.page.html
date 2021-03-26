@@ -438,6 +438,60 @@
           </ion-card>
         </div>
       </div>
+      <div *ngIf="item === 10220"> <!--Learning-->
+        <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists')" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          Keep it up Graphics
+        </div>
+        <div *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists')" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          Relax Graphics
+        </div>
+        <ion-item lines="none">
+          <ion-label class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Goal</ion-label>
+        </ion-item>
+        <!--Daily Goal Card-->
+        <ion-card *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists')" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <ion-card-content class="goal-content ion-no-padding">
+            <ion-item class="calendar-item">
+              <div>
+                <div class="goal-todo-title ion-text-wrap">{{((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists').title}}</div>
+                <ion-note class="goal-todo-date">{{((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists').startDate | datetime: 'm:s,d:n'}}</ion-note>
+              </div>
+              <ion-icon class="lesson-item-checkbox" color="success" *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists').completed" name="checkmark-circle" slot="end"></ion-icon>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+        <!--Rest Card-->
+        <ion-card *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'indexIfTodayLessonExists')" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <ion-card-content class="goal-content ion-no-padding">
+            <ion-item class="calendar-item">
+              <div>
+                <div class="goal-todo-title ion-text-wrap">Enjoy Your Day Off</div>
+              </div>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+        <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
+          <div *ngIf="goal[1] === 'goal' && !(null | calendar : 'checkfavoritegoaltag' : { listOfDisplayGoals: listOfDisplayGoals, goal: goal })">
+            <ion-item lines="none" class="ion-no-margin">
+              <ion-label class="ion-margin-start" [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">{{goal[5]}}</ion-label>
+            </ion-item>
+            <ion-slides class="lesson-slides" [options]="{grabCursor: true, updateOnWindowResize: true}">
+              <ion-slide class="lesson-slide" *ngFor="let calendarItem of (adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems); trackBy: customTrackBy">
+                <ion-card class="lesson-card" (click)="openContent($event, calendarItem)">
+                  <ion-card-content class="ion-no-padding ion-padding-top">
+                    <div class="goal-todo-title">{{calendarItem.title}}</div>
+                    <div>{{calendarItem.startDate | datetime: 'm:s,d:n'}}</div>
+                    <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
+                      <ion-icon class="lesson-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                      <ion-icon class="lesson-item-checkbox" color="success" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
+                    </ion-button>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+          </div>
+        </div>
+      </div>
       <!-- Media -->
       <div *ngIf="((item === 10010 || item === 10300 || item === 10310 || item === 10360 || item === 40010) && moment.matrix_number[i]?.length && moment.matrix_number[i][0])"> <!--Hide/Show Media Setting-->
         <!--Grid View or Slideshow but with only 1 item-->

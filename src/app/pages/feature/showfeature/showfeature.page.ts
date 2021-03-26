@@ -413,7 +413,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
         if (this.moment.resource && this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
             // if there is any interactable (schedule, poll, m.c., text answers), load responses
-            if (this.moment.resource.matrix_number[0].find((c) => (c === 10210) || (c >= 30000 && c <= 49999))) {
+            if (this.moment.resource.matrix_number[0].find((c) => (c >= 10210 && c <= 10220) || (c >= 30000 && c <= 49999))) {
                 const results: any = await this.responseService.findResponsesByMomentId(this.moment._id, this.relationshipId, ((this.calendarItem && this.calendarItem.uniqueAnswersPerCalendar) ? this.calendarId : null));
                 if (results && results.responses) {
                     if (this.responseId) {
@@ -449,12 +449,39 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                     this.adminOrPublicAccessContentCalendars = results || [];
-                } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
+                } else { // regular participant's calendarService.calendarItems is used, so update user's calendar
                     await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
                 if (this.authService.token && this.userData.user) {
-                    await this.setupPermission(); // TODO: investigate if this is required
+                    await this.setupPermission(); // this is needed to properly setup permission
+                }
+                this.refreshCalendarDisplay();
+                // console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
+            }
+            // if Learning is turned on
+            if (this.moment.resource.matrix_number[0].find((c) => c === 10220)) {
+                const componentId = this.moment.resource.matrix_number[0].indexOf(10220);
+                this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
+                const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
+                if (schedules) {
+                    this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
+                    this.scheduleIds = schedules.map((c) => c._id);
+                }
+                // load content calendars from backend.
+                if (this.hasOrganizerAccess) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                    // if it is unauthenticated public view, or it has enabled 'allow authenticated user to access content'
+                } else if (!this.authService.token || ((this.moment.array_boolean.length > 10) && this.moment.array_boolean[10])) {
+                    const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
+                    this.adminOrPublicAccessContentCalendars = results || [];
+                } else { // regular participant's calendarService.calendarItems is used, so update user's calendar
+                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                    this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
+                }
+                if (this.authService.token && this.userData.user) {
+                    await this.setupPermission();  // this is needed to properly setup permission
                 }
                 this.refreshCalendarDisplay();
                 // console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
@@ -561,7 +588,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             }
                         });
                         this.setupInteractableDisplay(interactableId, componentIndex);
-                    } else if (componentId === 10210) { // goal attributes. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
+                    } else if (componentId === 10210 || componentId === 10220) { // Goal/Section attributes. Note: Collaborative Goals require updating this.responseObj with the latestResponse data
                         // for goals, grab the most recently updated response and use its goal records
                         if (this.responses.length) {
                             const latestResponse = this.responses[this.responses.length - 1];

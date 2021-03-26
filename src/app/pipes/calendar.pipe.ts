@@ -7,7 +7,24 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class CalendarPipe implements PipeTransform {
 
   transform(calendarItems: any, type?: any, data?: any): any {
-    if (type === 'overallcompleted') { // data = { scheduleIds: [] }
+    if (type === 'indexIfTodayLessonExists') {
+      let todayLessonExists;
+      let indexOfTodayLesson;
+      for (let i = calendarItems.length - 1; i >= 0; i--) {
+        if (new Date(calendarItems[i].startDate).getDate() === new Date().getDate()) {
+          todayLessonExists = true;
+          indexOfTodayLesson = i;
+        }
+        if (!todayLessonExists && !calendarItems[i].completed) {
+          indexOfTodayLesson = i;
+        }
+      }
+      if (indexOfTodayLesson !== null) {
+        return calendarItems[indexOfTodayLesson];
+      } else {
+        return null;
+      }
+    } else if (type === 'overallcompleted') { // data = { scheduleIds: [] }
       let total_count = 0;
       let completed_count = 0;
       for (let calendarItem of calendarItems) {
