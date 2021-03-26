@@ -7,31 +7,40 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class CalendarPipe implements PipeTransform {
 
   transform(calendarItems: any, type?: any, data?: any): any {
-    if (type === 'calendarItemIfTodayLessonExists') {
-      let filteredCalendarItems;
-      if (data) {
-        filteredCalendarItems = calendarItems.filter((c) => data.scheduleIds.includes(c.schedule) && c.goals && c.goals.includes(data.goal[0]));
+    if (type === 'extracttodayorincompletelesson') {
+      let cachedCalendarItems;
+      if (data && data.scheduleIds && data.goal) {
+        cachedCalendarItems = calendarItems.filter((c) => data.scheduleIds.includes(c.schedule) && c.goals && c.goals.includes(data.goal[0]));
+      } else if (data && data.scheduleIds) {
+        cachedCalendarItems = calendarItems.filter((c) => data.scheduleIds.includes(c.schedule));
       } else {
-        filteredCalendarItems = calendarItems;
+        cachedCalendarItems = calendarItems;
       }
       let todayLessonExists;
       let indexOfTodayLesson;
-      for (let i = filteredCalendarItems.length - 1; i >= 0; i--) {
-        if (new Date(filteredCalendarItems[i].startDate).getDate() === new Date().getDate()) {
+      for (let i = cachedCalendarItems.length - 1; i >= 0; i--) {
+        if (new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
         }
-        if (!todayLessonExists && !filteredCalendarItems[i].completed) {
+        if (!todayLessonExists && !cachedCalendarItems[i].completed) {
           indexOfTodayLesson = i;
         }
       }
+      if (data && data.output === 'filteredcalendaritems') {
+        return cachedCalendarItems;
+      } else if (data && data.output === 'todaycalendaritems') {
+        if (todayLessonExists) {
+          return cachedCalendarItems.filter((c) => new Date(c.startDate).getDate() === new Date().getDate());
+        } else {
+          return [cachedCalendarItems[indexOfTodayLesson]];
+        }
+      }
       if (indexOfTodayLesson !== null) {
-        if (!data) {
-          return filteredCalendarItems[indexOfTodayLesson];
+        if (data && data.output === 'calendaritem') {
+          return cachedCalendarItems[indexOfTodayLesson];
         } else if (data && data.output === 'index') {
           return indexOfTodayLesson;
-        } else if (data && data.output === 'filteredCalendarItems') {
-          return filteredCalendarItems;
         }
       } else {
         return null;
@@ -116,7 +125,7 @@ export class CalendarPipe implements PipeTransform {
         }
       }
       return due_count / total_count;
-    } else if (type === 'checkfavoritegoaltag') { // if the tag is a valid master goal, return true
+    } else if (type === 'checkgoalwithfavoritetag') { // if the tag is a valid master goal and , return true
       return data.listOfDisplayGoals.find((favoriteGoal) => (favoriteGoal[1] === 'master goal' && favoriteGoal[0] === data.goal[4]));
     } else if (type === 'goalsectionstats') { // data = { section: String, scheduleIds: [], goal: [] }
       let task_count = 0;
