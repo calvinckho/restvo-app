@@ -415,10 +415,10 @@
                 <ion-select-option [value]=1>Private</ion-select-option> <!--Private-->
               </ion-select>
             </ion-item>
-            <ion-item lines="none"> <!--Enable the Upcoming Section-->
-              <ion-label class="ion-margin-left">Enable the Upcoming Section</ion-label>
-              <ion-checkbox [(ngModel)]="moment.matrix_number[i][0]"></ion-checkbox>
-            </ion-item>
+            <!--<ion-item lines="none"> &lt;!&ndash;Lesson Label&ndash;&gt;
+              <ion-label class="ion-margin-left">Lesson Label</ion-label>
+              <ion-input class="ion-text-end" type="text" maxlength="8" [placeholder]="'Lesson'" [(ngModel)]="moment.matrix_string[i][2]" (ionChange)="moment.matrix_string[i][2] = moment.matrix_string[i][2] || 'Lesson'" debounce="50"></ion-input>
+            </ion-item>-->
           </ion-item-group>
           <!--Textarea + Media-->
           <ion-item *ngIf="item === 10010" lines="none"> <!--textarea media section, slider view only, or if media has already been added from before-->

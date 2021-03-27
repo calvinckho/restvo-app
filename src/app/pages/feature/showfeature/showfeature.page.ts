@@ -483,7 +483,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 if (this.authService.token && this.userData.user) {
                     await this.setupPermission();  // this is needed to properly setup permission
                 }
-                console.log("resp", this.responses);
                 this.refreshCalendarDisplay();
                 const filteredCalendarItems = this.adminOrPublicAccessContentCalendars.filter((c) => this.scheduleIds.includes(c.schedule));
 
@@ -2431,8 +2430,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         if (todosPrivacyPermission && data.hasOwnProperty('state')) {
                             const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(data.calendarId);
                             if (index >= 0) {
-                                this.responseObj.matrix_string[index].splice(0, 5);
-                                this.responseObj.matrix_string[index].unshift(...data.interactable.slice(0, 6));
+                                this.responseObj.matrix_string[index].splice(0, 6); // delete the first 6 elements
+                                this.responseObj.matrix_string[index].unshift(...JSON.parse(JSON.stringify(data.interactable.slice(0, 6)))); // push a deep copy of the first 6 elements of the array
                             } else {
                                 this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(data.interactable)));
                             }
@@ -2443,14 +2442,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                                 if (this.responseObj.matrix_string[index].length < 10) {
                                     this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
                                 } else if (this.responseObj.matrix_string[index].length > 10) {
-                                    this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+                                    this.responseObj.matrix_string[index].splice(10); // delete elements (index 11 and on)
                                 }
-                                this.responseObj.matrix_string[index].push(...data.goals);
+                                this.responseObj.matrix_string[index].push(...JSON.parse(JSON.stringify(data.goals))); // push a deep copy of the array
                             } else {
                                 const interactableObj = Array(10);
                                 interactableObj[0] = data.calendarId;
                                 interactableObj.push(...data.goals);
-                                this.responseObj.matrix_string.push(interactableObj);
+                                this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactableObj)));
                             }
                         }
                     } else if (data.goal) {

@@ -208,8 +208,8 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         if (todosPrivacyPermission && (interactable.length >= 6) && (interactable[1] === null)) { // if it has to-dos data
           const index = this.responseObj.matrix_string.map((c) => c[0]).indexOf(interactable[0]);
           if (index >= 0) {
-            this.responseObj.matrix_string[index].splice(0, 5);
-            this.responseObj.matrix_string[index].unshift(...interactable.slice(0, 6));
+            this.responseObj.matrix_string[index].splice(0, 6); // delete the first 6 elements
+            this.responseObj.matrix_string[index].unshift(...JSON.parse(JSON.stringify(interactable.slice(0, 6)))); // push a deep copy of the first 6 elements of the array
           } else {
             this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactable)));
           }
@@ -220,14 +220,14 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             if (this.responseObj.matrix_string[index].length < 10) {
               this.responseObj.matrix_string[index].fill(null, this.responseObj.matrix_string[index].length, 11);
             } else if (this.responseObj.matrix_string[index].length > 10) {
-              this.responseObj.matrix_string[index].splice(10, this.responseObj.matrix_string[index].length - 10);
+              this.responseObj.matrix_string[index].splice(10); // delete elements (index 11 and on)
             }
-            this.responseObj.matrix_string[index].push(...interactable.slice(10));
+            this.responseObj.matrix_string[index].push(...JSON.parse(JSON.stringify(interactable.slice(10)))); // push a deep copy of the array from index 10 until the end
           } else {
             const interactableObj = Array(10);
             interactableObj[0] = interactable[0];
             interactableObj.push(...interactable.slice(10));
-            this.responseObj.matrix_string.push(interactableObj);
+            this.responseObj.matrix_string.push(JSON.parse(JSON.stringify(interactableObj)));
           }
         }
       }

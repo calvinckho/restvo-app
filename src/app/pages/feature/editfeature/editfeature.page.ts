@@ -535,12 +535,25 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
       this.addComponentActivated = false;
       // append component id, max count, input field in moment object
-      if (componentId === 10600) { // for Video Conference, default to 1000
-          this.moment.matrix_number.push([1000]); // input field
-          this.moment.matrix_string.push(['']); // input field
+      if (componentId === 10220) { // for Lesson
+          this.moment.matrix_number.push([]); // input field
+          this.moment.matrix_string.push([]); // input field
+          this.moment.array_boolean[10] = true; // allow unauthenticated access
+      } else if (componentId >= 10300 && componentId <= 10360 || componentId === 20000 || componentId === 10010) {
+          this.moment.matrix_number.push([0, 0, null, null, null]); // default values for display settings
+          this.moment.matrix_string.push([]); // input field
+      } else if (componentId === 10500) { // People
+          this.moment.matrix_number.push(Array(13));
+          this.moment.matrix_string.push([]); // input field
       } else if (componentId === 10600) { // for Video Conference, default to 1000
           this.moment.matrix_number.push([1000]); // input field
           this.moment.matrix_string.push(['']); // input field
+      } else if (componentId === 20000) { // Visibility in Content
+          this.moment.matrix_number.push([]); // input field
+          this.moment.matrix_string.push([]); // input field
+      } else if (componentId === 20020) { // Tabs
+          this.moment.matrix_number.push(Array(5));
+          this.moment.matrix_string.push([]); // input field
       } else if (componentId === 40000) { // multiple choice
           this.moment.matrix_number.push([0, null]); // initial value (allow multiple selections, max number of selections)
           this.moment.matrix_string.push(['']); // input field
@@ -554,18 +567,6 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           this.moment.matrix_number.push([1, 1, 1, 0]); // default settings (show participants, organizers, leaders, display type)
           this.moment.matrix_string.push(['']); // input field
           if (this.moment._id) { this.loadProgramOnboardActivities(); }
-      } else if (componentId >= 10300 && componentId <= 10360 || componentId === 20000 || componentId === 10010) {
-          this.moment.matrix_number.push([0, 0, null, null, null]); // default values for display settings
-          this.moment.matrix_string.push([]); // input field
-      } else if (componentId === 10500) { // People
-          this.moment.matrix_number.push(Array(13));
-          this.moment.matrix_string.push([]); // input field
-      } else if (componentId === 20000) { // Visibility in Content
-          this.moment.matrix_number.push([]); // input field
-          this.moment.matrix_string.push([]); // input field
-      } else if (componentId === 20020) { // Tabs
-          this.moment.matrix_number.push(Array(5));
-          this.moment.matrix_string.push([]); // input field
       } else {
           this.moment.matrix_number.push([]); // input field
           this.moment.matrix_string.push([]); // input field
