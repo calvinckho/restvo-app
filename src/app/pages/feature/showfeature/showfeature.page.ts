@@ -124,6 +124,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     // 10300 Media
     mediaSlideOpts = {
         initialSlide: 0,
+        slidesPerView: 'auto',
         speed: 400,
         autoHeight: true,
         autoplay: {
