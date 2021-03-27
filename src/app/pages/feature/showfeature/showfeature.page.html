@@ -481,7 +481,7 @@
               <ion-slide class="lesson-slide" *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'filteredcalendaritems', scheduleIds: scheduleIds, goal: goal }); index as i; trackBy: customTrackBy">
                 <ion-card class="lesson-card" (click)="openContent($event, calendarItem)">
                   <ion-card-content class="ion-no-padding ion-padding-top">
-                    <div class="goal-todo-title">{{calendarItem.title}}</div>
+                    <div class="lesson-title">{{calendarItem.title}}</div>
                     <div>{{calendarItem.startDate | datetime: 'm:s,d:n'}}</div>
                     <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                       <ion-icon class="lesson-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
