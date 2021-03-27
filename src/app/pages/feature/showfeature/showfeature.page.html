@@ -450,7 +450,7 @@
         </ion-item>
         <!--Daily Goal Card-->
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })">
-          <ion-card *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'todaycalendaritems', scheduleIds: scheduleIds })"  [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <ion-card *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'todaycalendaritems', scheduleIds: scheduleIds })"  [ngStyle]="{'background': null | background : {} : 'color' }" (click)="openContent($event, calendarItem)" mode="md">
             <ion-card-content class="goal-content ion-no-padding">
               <ion-item class="calendar-item">
                 <div>
@@ -482,7 +482,7 @@
               <ion-slide class="lesson-slide" *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'filteredcalendaritems', scheduleIds: scheduleIds, goal: goal }); index as i; trackBy: customTrackBy">
                 <ion-card class="lesson-card" (click)="openContent($event, calendarItem)">
                   <ion-card-content class="ion-no-padding ion-padding-top">
-                    <div class="goal-todo-title">Day {{i+1}}</div>
+                    <div class="goal-todo-title">{{calendarItem.title}}</div>
                     <div>{{calendarItem.startDate | datetime: 'm:s,d:n'}}</div>
                     <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear">
                       <ion-icon class="lesson-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>

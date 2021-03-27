@@ -17,9 +17,9 @@ export class CalendarPipe implements PipeTransform {
         cachedCalendarItems = calendarItems;
       }
       let todayLessonExists;
-      let indexOfTodayLesson;
+      let indexOfTodayLesson = 0;
       for (let i = cachedCalendarItems.length - 1; i >= 0; i--) {
-        if (new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
+        if (new Date(cachedCalendarItems[i].startDate).getFullYear() === new Date().getFullYear() && new Date(cachedCalendarItems[i].startDate).getMonth() === new Date().getMonth() && new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
         }
@@ -31,7 +31,7 @@ export class CalendarPipe implements PipeTransform {
         return cachedCalendarItems;
       } else if (data && data.output === 'todaycalendaritems') {
         if (todayLessonExists) {
-          return cachedCalendarItems.filter((c) => new Date(c.startDate).getDate() === new Date().getDate());
+          return cachedCalendarItems.filter((c) => new Date(c.startDate).getFullYear() === new Date().getFullYear() && new Date(c.startDate).getMonth() === new Date().getMonth() && new Date(c.startDate).getDate() === new Date().getDate());
         } else {
           return [cachedCalendarItems[indexOfTodayLesson]];
         }

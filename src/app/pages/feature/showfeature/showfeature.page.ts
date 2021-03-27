@@ -484,9 +484,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.setupPermission();  // this is needed to properly setup permission
                 }
                 this.refreshCalendarDisplay();
-                const filteredCalendarItems = this.adminOrPublicAccessContentCalendars.filter((c) => this.scheduleIds.includes(c.schedule));
-
-                 console.log("adminOrPublicAccessContentCalendars", filteredCalendarItems)
+                //console.log("adminOrPublicAccessContentCalendars", this.scheduleIds, this.adminOrPublicAccessContentCalendars)
             }
             // if show participants is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10500)) {
