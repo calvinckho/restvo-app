@@ -1709,12 +1709,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         await actionSheet.present();
     }
 
-    initPlyr(event, mediaId) {
-        let player: Plyr;
-        player = event;
-        this.mediaList.push({ _id: mediaId, player: player});
-    }
-
     expandPrivilegesView() {
       this.expandedPrivilegesView = !this.expandedPrivilegesView;
       clearTimeout(this.timeoutHandle);
@@ -1725,16 +1719,77 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-  destroyPlayers(mediaId) {
-    if (mediaId) {
-      const media = this.mediaList.find((c) => c._id === mediaId);
-      media.player.destroy();
-    } else {
-      for (const media of this.mediaList) {
-        media.player.destroy();
+    initPlyr(event, mediaId) {
+        let player: Plyr;
+        player = event;
+        this.mediaList.push({ _id: mediaId, player: player});
+    }
+
+    setPlyrCurrentTime(type, mediaId) {
+        const interactableId = this.moment.resource.matrix_number[2][mediaId];
+        for (const interactable of this.responseObj.matrix_number) {
+            if (interactable[0] === interactableId) {
+                const media = this.mediaList.find((c) => c._id === mediaId);
+                if (type === 'youtube') { // for youtube, set the currentTime directly at 'ready' event
+                    media.player.currentTime = interactable[1]; // update an existing play time
+                } else if (media.player.playing !== true) { // for other media, need to wait for 'canplay' event, so media is loaded, then set the currentTime once while it is not playing
+                    media.player.once('canplay', event => {
+                        media.player.currentTime = interactable[1]; // update an existing play time
+                    });
+                }
+            }
+        }
+    }
+
+    savePlyrCurrentTime(mediaId) {
+        const media = this.mediaList.find((c) => c._id === mediaId);
+        const interactableId = this.moment.resource.matrix_number[2][mediaId];
+        let updatedResponseObj = false;
+        for (const interactable of this.responseObj.matrix_number) {
+            if (interactable[0] === interactableId) {
+                interactable[1] = media.player.currentTime; // update an existing play time
+                updatedResponseObj = true;
+            }
+        }
+        if (!updatedResponseObj) { // submit a new play time row
+            this.responseObj.matrix_number.push([interactableId, media.player.currentTime]);
+        }
+        this.momentService.submitResponse(this.moment, this.responseObj, false);
+    }
+
+    destroyPlayers(mediaId) {
+      if (mediaId) {
+        const media = this.mediaList.find((c) => c._id === mediaId);
+        if (media && media.player) media.player.destroy();
+      } else {
+          let updatedResponseObj;
+          for (const media of this.mediaList) {
+              if (media.player && media.player.playing) { // if a player is still playing, try to save the current play time
+                  const interactableId = this.moment.resource.matrix_number[2][media._id];
+                  let updatedResponseRow = false;
+                  for (const interactable of this.responseObj.matrix_number) {
+                      if (interactable[0] === interactableId) {
+                          interactable[1] = JSON.parse(JSON.stringify(media.player.currentTime)); // update an existing play time
+                          updatedResponseRow = true;
+                      }
+                  }
+                  if (!updatedResponseRow) { // submit a new play time row
+                      this.responseObj.matrix_number.push([interactableId, JSON.parse(JSON.stringify(media.player.currentTime))]);
+                      updatedResponseObj = true;
+                  }
+                  updatedResponseObj = true;
+              }
+          }
+          if (updatedResponseObj) {
+              this.momentService.submitResponse(this.moment, this.responseObj, false);
+          }
+          for (const media of this.mediaList) {
+              setTimeout(() => {
+                  media.player.destroy();
+              }, 500);
+          }
       }
     }
-  }
 
   // References Slider
   async loadPrograms() {
