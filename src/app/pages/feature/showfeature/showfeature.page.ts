@@ -290,6 +290,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       if (data && data.type === 'search map') {
           this.searchMap();
       }
+      // if a Content and it responseObj has stored scrollTop px value from last time the user scroll the content
+      if (this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && this.responseObj.array_number.length > 1 && this.responseObj.array_number[1] > 0) {
+          this.content.scrollToPoint(null, this.responseObj.array_number[1]);
+      }
   }
 
   async loadCalendarItem() {
@@ -2237,7 +2241,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.showSpecialAccess = !this.showSpecialAccess;
   }
 
-
     async processVerificationToken() {
         this.token = this.route.snapshot.paramMap.get('token');
         this.verification_token = this.route.snapshot.paramMap.get('verify');
@@ -2309,7 +2312,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
-  async noNetworkConnection() {
+    // for Content Only. Store the ScrollTop value so use can resume reading when returning to the Content
+    async storeScrollTopValue() {
+        if (this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73')) {
+            const el = await this.content.getScrollElement();
+            this.responseObj.array_number[1] = el.scrollTop;
+            this.momentService.submitResponse(this.moment, this.responseObj, false);
+        }
+    }
+
+    async noNetworkConnection() {
     const networkAlert = await this.alertCtrl.create({
       header: 'No Internet Connection',
       message: 'Please check your internet connection.',

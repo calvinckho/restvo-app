@@ -59,7 +59,7 @@
   </ion-buttons>
 </ion-header>
 
-<ion-content class="ion-padding-bottom" id="showfeature-content" [ngClass]="{'desktop-content': platform.width() >= 768}">
+<ion-content class="ion-padding-bottom" id="showfeature-content" [ngClass]="{'desktop-content': platform.width() >= 768}" [scrollEvents]="relationshipId" (ionScrollEnd)="storeScrollTopValue()">
   <ion-toolbar id="permissionBar" *ngIf="showSpecialAccess && loadStatus && setupPermissionCompleted">
     <!--Invitation Section-->
     <ion-item-sliding *ngIf="(participant_type === 2) && token">
