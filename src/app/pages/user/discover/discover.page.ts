@@ -73,15 +73,14 @@ export class DiscoverPage implements OnInit {
         if (!this.reachedEnd) {
             const samples: any = await this.momentService.loadSampleActivities(this.selectedCategoryId);
             this.ionSpinner = false;
-            // temp overide the paging function: i.e. only load page 1
+            // temp override the paging function: i.e. only load page 1
             this.reachedEnd = true;
             if (!samples.length) {
                 this.reachedEnd = true;
             } else {
                 this.samples = [];
                 samples.forEach((parent) => {
-                  console.log("parent", parent)
-                    if (this.filterOption == 'all') {
+                    if (this.filterOption === 'all') {
                       parent.sample_activities.forEach((activity) => {
                           const cached_parent = JSON.parse(JSON.stringify(parent));
                           delete cached_parent.sample_activities;
@@ -108,7 +107,6 @@ export class DiscoverPage implements OnInit {
     }
 
     async selectSample(moment) {
-        if (event) { event.stopPropagation(); }
         if (this.platform.width() >= 992) {
             this.router.navigate([{ outlets: { sub: ['details', moment._id, { subpanel: true } ] }}]);
         } else if (this.platform.width() >= 768) {
