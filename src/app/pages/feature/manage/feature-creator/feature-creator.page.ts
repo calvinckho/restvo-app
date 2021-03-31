@@ -39,6 +39,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   resource: any;
   hasOrganizerAccess = false;
   schedules: any;
+  notes_schedule: any;
   menu: any;
 
   constructor(
@@ -96,7 +97,9 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   async loadSchedules() {
     // check to see if it has any schedules
     if (this.id) {
-      this.schedules = await this.momentService.loadActivitySchedules(this.id);
+      const schedules: any = await this.momentService.loadActivitySchedules(this.id);
+      this.schedules = schedules.filter((c) => (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
+      this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
     }
   }

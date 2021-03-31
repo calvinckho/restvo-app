@@ -101,7 +101,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     // 10210 Schedule
     scheduleIds: any = [];
-    customSchedule: any;
+    todos_schedule: any;
     toDosPrivate = false;
     adminOrPublicAccessContentCalendars = [];
     newCalendarItem = { // create the calendar object
@@ -137,11 +137,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   participantsView = 'participants';
 
   // 12000 Notes
+    notes_schedule: any;
     notes: any = [];
 
   // 20020 Tabs
     tabSelection: number;
     showPreview = false;
+    showFab = false;
 
   // 30000 poll
   responses = []; // an array of responses
@@ -436,15 +438,20 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     }
                 }
             }
+            // if To-Dos, Learning, or Notes are present, load schedule
+            if (this.moment.resource.matrix_number[0].find((c) => c === 10210 || c === 10220 || c === 12000)) {
+                const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
+                if (schedules) {
+                    this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]) || schedules.find((c) => c.options && !c.options.recurrence); // notes_schedule is a schedule with array_boolean[5] = true, or options.recurrence set to 'none'
+                    this.todos_schedule = schedules.filter((c) => (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]).find((c) => c.options && !c.options.recurrence); // first filter out note schedule, then find schedule with no recurrence
+                    this.scheduleIds = schedules.filter((c) => (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]).map((c) => c._id); // exclude the notes_schedule
+                }
+            }
             // if To-Dos is turned on
             if (this.moment.resource.matrix_number[0].find((c) => c === 10210)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10210);
                 this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
-                const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
-                if (schedules) {
-                    this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
-                    this.scheduleIds = schedules.map((c) => c._id);
-                }
+
                 // load content calendars from backend.
                 // if it has Organizer Access. this is for the event when a Community/Program super admin needs to access the calendar contents
                 if (this.hasOrganizerAccess) {
@@ -468,11 +475,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (this.moment.resource.matrix_number[0].find((c) => c === 10220)) {
                 const componentId = this.moment.resource.matrix_number[0].indexOf(10220);
                 this.toDosPrivate = this.moment.matrix_number[componentId].length > 5 ? this.moment.matrix_number[componentId][5] : false;
-                const schedules: any = await this.momentService.loadActivitySchedules(this.moment._id);
-                if (schedules) {
-                    this.customSchedule = schedules.find((c) => c.options && !c.options.recurrence); // customSchedule is a schedule with options.recurrence set to 'none'
-                    this.scheduleIds = schedules.map((c) => c._id);
-                }
+
                 // load content calendars from backend.
                 if (this.hasOrganizerAccess) {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, true);
@@ -501,6 +504,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
                 if (!this.tabSelection && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)].length > 5) { // assuming at least 1 tab has been created. if no default has been selected, use the first available tab
                     this.tabSelection = JSON.parse(JSON.stringify(this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][0] || this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)][5]));
+                    this.tabEnabledCheckFabVisibility();
                 }
                 this.showPreview = this.moment.array_boolean.length > 11 && this.moment.array_boolean[11];
                 if (this.showPreview) { // if preview page is enabled
@@ -510,7 +514,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                         this.showPreview = false;
                     }
                 }
-             }
+             } else { // if tab is not present, just check if it needs to show Fab. Only if To-Dos or Notes components are present
+                if (this.notes_schedule && (this.moment.resource.matrix_number[0].includes(10210) || this.moment.resource.matrix_number[0].includes(12000))) {
+                    this.showFab = true;
+                }
+            }
 
             // check if needed to load notes (12000)
             this.checkAndLoadNotes();
@@ -2101,12 +2109,16 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         await this.fabButtons.close();
         event.stopPropagation();
         this.newCalendarItem.moment = momentId;
-        this.newCalendarItem.schedule = this.customSchedule._id;
+        if (momentId === '5e4b39cd76ffc96ae6aba323') { // for notes, use note schedule id
+            this.newCalendarItem.schedule = this.notes_schedule._id;
+        } else { // for to-do, use to-do schedule id
+            this.newCalendarItem.schedule = this.todos_schedule._id;
+        }
         this.newCalendarItem.startDateObj = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()); // cache datetime info for computation only. backend datetime format is in ISOString
         this.newCalendarItem.endDateObj = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()); // cache datetime info for computation only. backend datetime format is in ISOString
         this.newCalendarItem.startDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(); // cache datetime info for computation only. backend datetime format is in ISOString
         this.newCalendarItem.endDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()).toISOString(); // cache datetime info for computation only. backend datetime format is in ISOString
-        this.newCalendarItem.uniqueAnswersPerCalendar = (this.customSchedule.array_boolean.length > 1) && this.customSchedule.array_boolean[1];
+        this.newCalendarItem.uniqueAnswersPerCalendar = (this.notes_schedule.array_boolean.length > 1) && this.notes_schedule.array_boolean[1];
         const createdContentCalendarItem: any = await this.momentService.touchContentCalendarItems(this.moment._id, {operation: 'create calendar item', calendaritem: this.newCalendarItem });
         this.openContent(null, createdContentCalendarItem);
         // for Note, also submit an empty response
@@ -2210,6 +2222,17 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.tabSelection = parseInt(event.detail.value, 10);
       // check if Notes section needs to be refresh
       this.checkAndLoadNotes();
+      this.tabEnabledCheckFabVisibility();
+  }
+
+  tabEnabledCheckFabVisibility() {
+    // check whether To-Dos is shown in current Tab
+      if (this.notes_schedule && this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(10210)]) {
+          this.showFab = true;
+      }
+      if (this.notes_schedule && (this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(12000)])) {
+          this.showFab = true;
+      }
   }
 
   closeModal() {

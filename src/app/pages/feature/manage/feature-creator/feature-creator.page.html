@@ -43,6 +43,13 @@
               <ion-label [ngClass]="{ 'bold-font': router.url.includes('/new-schedule')}">+ Schedule</ion-label>
             </ion-item>
           </ion-item-group>
+          <div *ngIf="notes_schedule && userData.user && ['owner','admin','staff'].includes(userData.user.role)">
+            <ion-item-divider></ion-item-divider>
+            <ion-item (click)="clickManageMenu('schedule', notes_schedule)">
+              <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
+              <ion-label [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(notes_schedule._id)}">Notes</ion-label>
+            </ion-item>
+          </div>
         </ion-list>
       </ion-col>
       <ion-col size-xs="0" size-sm="0" size-md="9" size-lg="9" *ngIf="this.platform.width() >= 768">
