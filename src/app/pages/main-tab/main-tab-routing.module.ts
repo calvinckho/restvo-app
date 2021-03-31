@@ -56,7 +56,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../user/discover/discover.module#DiscoverPageModule'
+                                loadChildren: () => import('../user/discover/discover.module').then( m => m.DiscoverPageModule)
                             }
                         ]
                     },

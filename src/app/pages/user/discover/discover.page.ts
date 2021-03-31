@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, OnInit} from '@angular/core';
+import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import { Storage } from '@ionic/storage';
 import {
     ModalController,
@@ -6,7 +6,7 @@ import {
 } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import {Chat} from '../../../services/chat.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Auth} from '../../../services/auth.service';
 import {Moment} from '../../../services/moment.service';
 import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
@@ -19,11 +19,12 @@ import {RegisterPage} from '../register/register.page';
   encapsulation: ViewEncapsulation.None
 })
 export class DiscoverPage implements OnInit {
+    @Input() filterOption: any; // optional: when initialing a modal page
+
     subscriptions: any = {};
 
     searchKeyword = '';
     samples = [];
-    filterOption = 'all';
     ionSpinner = false;
     pageNum = 0;
     reachedEnd = false;
@@ -33,16 +34,18 @@ export class DiscoverPage implements OnInit {
     mobileSearchBarVisible = false;
 
     constructor(
-                public router: Router,
-                private storage: Storage,
-                public platform: Platform,
-                private modalCtrl: ModalController,
-                public authService: Auth,
-                public chatService: Chat,
-                private momentService: Moment,
-                public userData: UserData) { }
+        public route: ActivatedRoute,
+        public router: Router,
+        private storage: Storage,
+        public platform: Platform,
+        private modalCtrl: ModalController,
+        public authService: Auth,
+        public chatService: Chat,
+        private momentService: Moment,
+        public userData: UserData) { }
 
     async ngOnInit() {
+        this.filterOption = this.filterOption || this.route.snapshot.paramMap.get('filterOption') || 'all';
         this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
@@ -90,7 +93,7 @@ export class DiscoverPage implements OnInit {
                     } else {
                       // CHECK CATEGORY
                       const category = parent.sample_activities[0].categories.includes('5e9fe35cc8bf1a622fec69d7') ? 'group' : 'individual';
-                      if (category == this.filterOption) {
+                      if (category === this.filterOption) {
                         parent.sample_activities.forEach((activity) => {
                             const cached_parent = JSON.parse(JSON.stringify(parent));
                             delete cached_parent.sample_activities;

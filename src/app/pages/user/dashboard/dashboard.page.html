@@ -136,8 +136,8 @@
             <!--Journey Empty State-->
             <div class="empty-state" *ngIf="!(journeys && journeys.length) && !loading">
               <img src="assets/img/journey.svg" alt="" />
-              <a [routerLink]="['../choose', { categoryId: '5e9f46e1c8bf1a622fec69d5', joinAs: 'user_list_1' }]" class="underline">
-                You don't have any journeys yet. Discover some today.</a>
+              <a [routerLink]="['/app/discover', { filterOption: 'individual' }]" class="underline">
+                You don't have any journeys yet. Find out what is available on Restvo</a>
             </div>
 
             <!--Journey Mobile View-->
@@ -171,7 +171,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentors-->
-        <ion-col [size]="(platform.width() >= 768) && (myMentors?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col *ngIf="myMentees && myMentees.length" [size]="(platform.width() >= 768) && (myMentors?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentors</ion-label>
@@ -201,11 +201,11 @@
             </ion-grid>
 
             <!--Mentors Empty State-->
-            <div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
+            <!--<div class="empty-state" *ngIf="!(myMentors && myMentors.length) && !loading">
               <img src="assets/img/mentors.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_1' }]" class="underline">
                 You don't have any mentors yet. Browse templates and invite your mentors to join.</a>
-            </div>
+            </div>-->
 
             <!--Mentors Mobile View-->
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 'auto', slidesOffsetAfter: this.platform.width() - 129, grabCursor: true, updateOnWindowResize: true}" *ngIf="myMentors && myMentors.length && platform.width() < 768">
@@ -270,7 +270,7 @@
           </ion-card>
         </ion-col>
         <!--List My Mentees-->
-        <ion-col [size]="(platform.width() >= 768) && (myMentees?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+        <ion-col *ngIf="myMentees && myMentees.length" [size]="(platform.width() >= 768) && (myMentees?.length <= 2) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
           <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">My Mentees</ion-label>
@@ -300,11 +300,11 @@
             </ion-grid>
 
             <!--Mentees Empty State-->
-            <div class="empty-state" *ngIf="!(myMentees && myMentees.length) && !loading">
+            <!--<div class="empty-state" *ngIf="!(myMentees && myMentees.length) && !loading">
               <img src="assets/img/mentees.svg" alt="" />
               <a [routerLink]="['../choose', { categoryId: '5e9fe372c8bf1a622fec69d8', joinAs: 'user_list_3' }]" class="underline">
               You don't have any mentees yet. Browse templates and invite your mentees to join.</a>
-            </div>
+            </div>-->
 
             <!--Mentees Mobile View-->
             <ion-slides class="relationship-slides" [options]="{slidesPerView: 'auto', slidesOffsetAfter: this.platform.width() - 129, grabCursor: true, updateOnWindowResize: true}" *ngIf="myMentees && myMentees.length && platform.width() < 768">
@@ -400,8 +400,8 @@
             <!--Group Empty State-->
             <div class="empty-state" *ngIf="!(groups && groups.length) && !loading">
               <img src="assets/img/groups.svg" alt="" />
-              <a [routerLink]="['../choose', { categoryId: '5e9fe35cc8bf1a622fec69d7'}]" class="underline">
-                You don't have any groups yet. Browse templates and invite your friends to join.</a>
+              <a [routerLink]="['/app/discover', { filterOption: 'group' }]" class="underline">
+                You have not joined any group yet. Check out our current groups</a>
             </div>
 
             <!--Group Mobile View-->
