@@ -295,7 +295,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
       // if a Content and it responseObj has stored scrollTop px value from last time the user scroll the content
       if (this.moment.categories.map((c) => c._id).includes('5e1bbda67b00ea76b75e5a73') && this.responseObj.array_number.length > 1 && this.responseObj.array_number[1] > 0) {
-          this.content.scrollToPoint(null, this.responseObj.array_number[1]);
+          setTimeout(() => {
+              this.content.scrollToPoint(null, this.responseObj.array_number[1]);
+          }, 1000); // needs to wait for page content to be rendered
       }
   }
 
