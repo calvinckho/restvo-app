@@ -350,7 +350,12 @@
   </ion-slides>
   <div *ngIf="loadCompleted && reachedEnd" style="height: 100%"><!--[ngStyle]="{'height': (platform.width() < 768) ? '65vh' : '75vh'}">-->
     <ion-row class="ion-justify-content-center ion-align-items-center slide-row" style="height: 100%">
-      <ion-item lines="none">You have completed the onboarding process.</ion-item>
+      <div style="text-align: center;">
+        <img src="/assets/img/success-popover.svg" />
+        <h3>WELL DONE</h3>
+        <p>You've successfully joined this plan.</p>
+        <ion-button>Got it</ion-button>
+      </div>
     </ion-row>
   </div>
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
