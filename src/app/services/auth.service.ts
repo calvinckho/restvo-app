@@ -77,7 +77,7 @@ export class Auth {
                             this.routeNewlyLoggedInUser();
                         } else { // if log in with token from storage, more quickly route authenticated user
                             this.routeAuthenticatedUser();
-                            this.checkIncompleteOnboarding(false);
+                            this.checkIncompleteOnboarding(false, null);
                         }
                         this.storage.set('token', this.token);
                         return res;
@@ -89,7 +89,7 @@ export class Auth {
                 } else {
                     this.networkService.showNoNetworkAlert();
                     this.routeAuthenticatedUser();
-                    this.checkIncompleteOnboarding(false);
+                    this.checkIncompleteOnboarding(false, null);
                     console.log('Found existing login token. Offline mode allowed.');
                     return {content: 'Offline mode'};
                 }
@@ -151,18 +151,18 @@ export class Auth {
         // when no cached url
         if (!this.cachedRouteUrl || typeof this.cachedRouteUrl === 'undefined') {
             await this.router.navigateByUrl('/app/discover');
-            this.checkIncompleteOnboarding(true);
+            this.checkIncompleteOnboarding(true, null);
         } else {  // redirect the user back to the cached url
             if (this.cachedRouteUrl.includes('activity')) {
                 this.routeAuthenticatedUser();
-                this.checkIncompleteOnboarding(true);
+                this.checkIncompleteOnboarding(true, null);
             } else {
                 if (this.cachedRouteParams) {
                     await this.router.navigate([this.cachedRouteUrl, this.cachedRouteParams], { queryParamsHandling: 'preserve' });
                 } else {
                     await this.router.navigate([this.cachedRouteUrl], { queryParamsHandling: 'preserve' });
                 }
-                this.checkIncompleteOnboarding(true);
+                this.checkIncompleteOnboarding(true, null);
             }
         }
     }
@@ -218,9 +218,11 @@ export class Auth {
         }
     }
 
-    async checkIncompleteOnboarding(openOnboarding) {
-        let onboardProcesses: any, programId;
-        if (this.cachedRouteUrl && this.cachedRouteUrl.includes('activity') && this.cachedRouteParams && this.cachedRouteParams.id) {
+    async checkIncompleteOnboarding(openOnboarding, designatedProgramId) {
+        let onboardProcesses: any;
+        let designatedIncompleteOnboardProcess;
+        let programId = designatedProgramId;
+        if (!programId && this.cachedRouteUrl && this.cachedRouteUrl.includes('activity') && this.cachedRouteParams && this.cachedRouteParams.id) {
             programId = this.cachedRouteParams.id;
         }
         // first, check programId's onboarding for incomplete processes with its accompanying token (required for joining as leader or organizer). If there is at least 1 incomplete process, it will trigger open the onboarding modal and the onboarding component will also check for other incomplete onboarding processes for participants
@@ -229,6 +231,7 @@ export class Auth {
         if (programId) { // check designated program's onboarding
             onboardProcesses = await this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1&programId=' + programId + '&type=' + type, this.httpAuthOptions).toPromise();
             this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
+            designatedIncompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
         }
         // in the case if the designated onboarding is completed, check if other processes need to be completed
         if (!programId || !this.incompleteOnboardProcess) {
@@ -242,7 +245,7 @@ export class Auth {
                 this.openOnboarding({programId: programId, type: type, token: token, modalPage: true });
             }, 1000);
         }
-        return this.incompleteOnboardProcess;
+        return designatedIncompleteOnboardProcess;
     }
 
     checkAuthenticationHTTP() {

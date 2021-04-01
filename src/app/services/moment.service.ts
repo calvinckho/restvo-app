@@ -356,7 +356,8 @@ export class Moment {
             this.chatService.getAllUserConversations();
             this.userData.refreshAppPages();
         }
-        const incompleteOnboardingExists = this.authService.checkIncompleteOnboarding(false);
+        const incompleteOnboardingExists = await this.authService.checkIncompleteOnboarding(false, data.momentId);
+        console.log("incomplete", incompleteOnboardingExists)
         return { success: promise, incompleteOnboardingExists: incompleteOnboardingExists};
     }
 
@@ -424,6 +425,7 @@ export class Moment {
                     momentId: moment._id,
                     calendarId: moment.calendar._id
                 }, token, refreshAppPages);
+                console.log("add resp", response)
                 if (notifyUser) { // open modal box to notify user of status of joining the program
                     if (response && response.success === 'success') {
                         if (user_list === 'user_list_1') { // participant
