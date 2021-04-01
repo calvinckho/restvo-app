@@ -335,7 +335,6 @@ export class Moment {
     }
 
     async updateMomentUserLists(data, token, refreshAppPages) {
-        let imcompleteOnboardingExists;
         const promise: any = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
@@ -356,9 +355,9 @@ export class Moment {
             this.calendarService.getUserCalendar();
             this.chatService.getAllUserConversations();
             this.userData.refreshAppPages();
-            imcompleteOnboardingExists = this.authService.checkIncompleteOnboarding(false);
         }
-        return { success: promise, imcompleteOnboardingExists: imcompleteOnboardingExists};
+        const incompleteOnboardingExists = this.authService.checkIncompleteOnboarding(false);
+        return { success: promise, incompleteOnboardingExists: incompleteOnboardingExists};
     }
 
     async submitVote(event, moment, index) {
@@ -426,7 +425,7 @@ export class Moment {
                     calendarId: moment.calendar._id
                 }, token, refreshAppPages);
                 if (notifyUser) { // open modal box to notify user of status of joining the program
-                    if (response && response.result === 'success') {
+                    if (response && response.success === 'success') {
                         if (user_list === 'user_list_1') { // participant
                             const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
                             await modal.present();
@@ -462,7 +461,7 @@ export class Moment {
                 // This logic changes the userData.defaultProgram to equal the activity just joined
                 // IF they successfully joined an Activity
                 // AND it is the second activity the user has joined (the first is the default Restvo Community)
-                if (response && response.result === 'success') {
+                if (response && response.success === 'success') {
                     const activities: any = await this.userData.loadPrograms(true);
                     // newActivities is now an array
                     if (activities.length === 2) { // only do it if joining the first non-Restvo Activity
