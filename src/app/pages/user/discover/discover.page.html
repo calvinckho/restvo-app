@@ -59,7 +59,7 @@
   </ion-grid>
   <ion-grid>
     <ion-row class="ion-justify-content-start">
-      <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword) || sample.parent_programs[0].matrix_string[0][0].toLowerCase().includes(searchKeyword))">
+      <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || sample.parent_programs[0].matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()))">
         <ion-card-content class="ion-no-padding">
           <ion-thumbnail class="photo-item">
             <ion-img [src]="(sample.assets && sample.assets.length && sample.assets[0]) | background: sample._id"></ion-img>

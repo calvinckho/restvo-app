@@ -2257,13 +2257,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   tabEnabledCheckFabVisibility() {
-    // check whether To-Dos is shown in current Tab
-      if (this.notes_schedule && this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(10210)]) {
-          this.showFab = true;
-      }
-      if (this.notes_schedule && (this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(12000)])) {
-          this.showFab = true;
-      }
+    // check whether To-Dos or Notes is shown in current Tab
+      this.showFab = this.notes_schedule && (this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(10210)] || this.tabSelection === this.moment.resource.matrix_number[3][this.moment.resource.matrix_number[0].indexOf(12000)]);
   }
 
   closeModal() {

@@ -28,7 +28,7 @@
         </ion-button>
       </div>
       <div *ngIf="setupPermissionCompleted && loadStatus">
-        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="authService.token && !subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length > 1) && !moment.array_boolean[1] && (moment.array_boolean.length >= 5) && moment.array_boolean[5]" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
+        <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" *ngIf="authService.token && !subpanel && !relationshipId && !calendarItem && moment && moment.array_boolean && (moment.array_boolean.length > 1) && !moment.array_boolean[1] && (moment.array_boolean.length >= 5) && moment.array_boolean[5] && hasSpecialPrivilege" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
           <ion-icon name="chatbubbles"></ion-icon>
         </ion-button>
         <ion-button id="add-user-to-group" (click)="inviteToJoin()" [hidden]="!authService.token || subpanel || moment.array_boolean && (moment.array_boolean.length > 1) && moment.array_boolean[1] || relationshipId && calendarItem && moment && moment.array_boolean && (moment.array_boolean.length <= 9 || !moment.array_boolean[9])" color="grey"> <!--hide if unauthenticated, subpanel or if content calendar and show Content Edit Controls to Users-->
