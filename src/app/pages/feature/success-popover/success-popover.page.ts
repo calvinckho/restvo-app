@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import {ModalController} from "@ionic/angular";
 
 @Component({
   selector: 'app-success-popover',
   templateUrl: './success-popover.page.html',
   styleUrls: ['./success-popover.page.scss'],
 })
-export class SuccessPopoverPage implements OnInit {
+export class SuccessPopoverPage {
 
-  constructor() { }
+  constructor(
+      private modalCtrl: ModalController
+  ) { }
 
-  ngOnInit() {
+  close() {
+    this.modalCtrl.dismiss();
   }
-
 }

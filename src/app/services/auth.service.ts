@@ -242,6 +242,7 @@ export class Auth {
                 this.openOnboarding({programId: programId, type: type, token: token, modalPage: true });
             }, 1000);
         }
+        return this.incompleteOnboardProcess;
     }
 
     checkAuthenticationHTTP() {

@@ -551,7 +551,7 @@ export class OnboardfeaturePage {
                     user_list = 'user_list_1';
                     type = 2;
             }
-            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, this.completedDefaultOnboarding, refreshAppPages);
+            await this.momentService.addUserToProgramUserList({ _id: programId }, user_list, token, token, refreshAppPages);
             if (this.completedDefaultOnboarding) {
                 if (this.modalPage) { // onboarding is a popover by default
                     this.router.navigate([this.authService.cachedRouteUrl], { replaceUrl: true }); // in response to finishing up a program onboarding (programId is provided), it should have cachedRouteUrl
