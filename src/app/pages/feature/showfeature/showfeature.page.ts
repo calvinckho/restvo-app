@@ -32,6 +32,7 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
+import {SuccessPopoverPage} from "../success-popover/success-popover.page";
 
 @Component({
   selector: 'app-showfeature',
@@ -699,7 +700,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   async addToCalendar(listOfConversations, listOfUsers) {
     try {
-      const result: any = await this.momentService.updateMomentUserLists({
+      const { success: result }: any = await this.momentService.updateMomentUserLists({
         operation: 'add to calendar',
         conversations: listOfConversations,
         users: listOfUsers,
@@ -1239,14 +1240,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  async joinActivity() {
-    if (this.authService.token) {
-      this.openOnboarding(2);
-    } else {
-      this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
-    }
-  }
-
   async cloneActivity(event) {
       event.stopPropagation();
       if (this.authService.token) {
@@ -1314,10 +1307,46 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
   }
 
+    async joinActivity() {
+        if (this.authService.token) {
+            const { incompleteOnboardingExists: incompleteOnboardingExists }: any = await this.momentService.addUserToProgramUserList(this.moment, 'user_list_1', null, false, true);
+            if (incompleteOnboardingExists) {
+                this.openOnboarding(2);
+            } else {
+                const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
+                await modal.present();
+            }
+        } else {
+            this.openRegister(0, 'To join ' + this.moment.matrix_string[0][0] + ', please sign in or create an account.');
+        }
+    }
+
   async acceptInvitation(event) {
     event.stopPropagation();
     if (this.authService.token && this.participant_type && this.token) {
-        this.openOnboarding(this.participant_type);
+        let user_list = '';
+        switch (this.participant_type) {
+            case 2: // participants
+                user_list = 'user_list_1';
+                break;
+            case 3: // organizers
+                user_list = 'user_list_2';
+                break;
+            case 4: // leaders
+                user_list = 'user_list_3';
+                break;
+            default:
+                user_list = 'user_list_1';
+        }
+        const { incompleteOnboardingExists: incompleteOnboardingExists }: any = await this.momentService.addUserToProgramUserList(this.moment, user_list, this.token, false, false);
+        // check if there is any incomplete onboarding questionnaire
+        this.router.navigate([this.authService.cachedRouteUrl], { replaceUrl: true }); // remove the params so this will hide the special privilege banner
+        if (incompleteOnboardingExists) {
+            this.openOnboarding(this.participant_type);
+        } else {
+            const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
+            await modal.present();
+        }
     } else {
         this.openRegister(0, 'You need to sign in or create an account first before you can accept the invitation.');
     }

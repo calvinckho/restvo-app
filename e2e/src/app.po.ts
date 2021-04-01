@@ -578,3 +578,9 @@ export class CreatefeaturePage extends PageObjectBase {
         this.clickElement('#tutorialDone');
     }
 }
+
+export class SuccessPopoverPage extends PageObjectBase {
+    constructor() {
+        super('app-success-popover', '/');
+    }
+}

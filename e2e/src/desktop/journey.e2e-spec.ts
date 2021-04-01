@@ -12,7 +12,8 @@ import {
     OnboardingfeaturePage,
     CreatefeaturePage,
     AboutPage,
-    PreferencesPage
+    PreferencesPage,
+    SuccessPopoverPage
 } from '../app.po';
 import {browser} from 'protractor';
 
@@ -30,6 +31,7 @@ let pickfeature: PickfeaturePopoverPage;
 let pickpeople: PickpeoplePopoverPage;
 let createfeature: CreatefeaturePage;
 let onboardfeature: OnboardingfeaturePage;
+let success: SuccessPopoverPage;
 
 describe('join and leave journey without preview', () => {
     sharedTest('/app/activity/5ed1aafcb257a55e9c25beea;type=2;token=ZcksTu5LiY');
@@ -59,6 +61,7 @@ function sharedTest(activityUrl) {
         pickpeople = new PickpeoplePopoverPage();
         createfeature = new CreatefeaturePage();
         onboardfeature = new OnboardingfeaturePage();
+        success = new SuccessPopoverPage();
     });
 
     it('should show unauthenticated journey page', async () => {
@@ -79,16 +82,18 @@ function sharedTest(activityUrl) {
 
     it('should accept invitation and dismiss onboarding', async () => {
         await showfeature.clickElement('#accept-invitation');
-        await onboardfeature.clickElement('#get-started');
+        await success.waitUntilVisible();
+        await success.clickElement('#close-button');
+        await success.waitUntilInvisible();
         await showfeature.waitUntilElementInvisible('#accept-invitation');
         expect(await showfeature.headerIsPresent('#accept-invitation')).toBeFalsy();
     });
 
-    it('should confirm success prompt', async () => {
-        await app.clickAlertButton('OK');
-        await app.waitUntilElementInvisible('ion-alert');
-        expect(await app.elementIsPresent('ion-alert')).toBeFalsy();
-    });
+/*    it('should confirm success prompt', async () => {
+        await success.clickElement('close-button');
+        await success.waitUntilInvisible();
+        expect(await success.elementIsPresent('close-button')).toBeFalsy();
+    });*/
 
     it('should click to see more options', async () => {
         await showfeature.clickElement('#show-event-title');

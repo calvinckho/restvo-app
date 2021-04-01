@@ -773,14 +773,14 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     async removeFromUserLists(listOfNames, listOfUserIds) {
         try {
             this.momentService.ionSpinner = true;
-            const response: any = await this.momentService.updateMomentUserLists({
+            const { success: success }: any = await this.momentService.updateMomentUserLists({
                 operation: 'remove from lists',
                 user_lists: listOfNames,
                 users: listOfUserIds,
                 momentId: this.moment._id
             }, null, true);
             this.momentService.ionSpinner = false;
-            if (response === 'success') {
+            if (success === 'success') {
                 this.anyChangeMade = true;
                 this.reloadMomentUserLists();
                 this.userData.refreshDefaultActivity(this.moment._id);

@@ -12,7 +12,7 @@ import { NetworkService } from './network-service.service';
 
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
-import {SuccessPopoverPage} from "../pages/feature/success-popover/success-popover.page";
+import {SuccessPopoverPage} from '../pages/feature/success-popover/success-popover.page';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {PaymentService} from './payment.service';
@@ -270,7 +270,7 @@ export class Moment {
     async share(moment, conversationId) {
         const conversation = this.chatService.conversations.find((c) => c.conversation._id === conversationId).conversation;
         if (moment && conversation) { // conversation is the share destination
-            let result = '';
+            let result: any;
             if (moment.calendar && moment.calendar._id) {
                 const data = { // add all user in chat to the moment's calendar
                     operation: 'add to calendar',
@@ -283,7 +283,8 @@ export class Moment {
                     data.operation = 'add to lists and calendar';
                     data.user_lists = ['user_list_1', 'user_list_2'];
                 }
-                result = await this.updateMomentUserLists(data, null, true);
+                const response = await this.updateMomentUserLists(data, null, true);
+                result = response && response.success;
             } else {
                 result = 'success'; // for feature that doesn't require adding users to the calendar
             }
@@ -334,7 +335,8 @@ export class Moment {
     }
 
     async updateMomentUserLists(data, token, refreshAppPages) {
-        const promise = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
+        let imcompleteOnboardingExists;
+        const promise: any = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
         this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
         if (data.operation === 'remove from lists') {
@@ -354,9 +356,9 @@ export class Moment {
             this.calendarService.getUserCalendar();
             this.chatService.getAllUserConversations();
             this.userData.refreshAppPages();
-            this.authService.checkIncompleteOnboarding(false);
+            imcompleteOnboardingExists = this.authService.checkIncompleteOnboarding(false);
         }
-        return promise;
+        return { success: promise, imcompleteOnboardingExists: imcompleteOnboardingExists};
     }
 
     async submitVote(event, moment, index) {
@@ -409,13 +411,14 @@ export class Moment {
 
     // user actively joins an Activity (from Onboarding Slideshow)
     async addUserToProgramUserList(moment, user_list, token, notifyUser, refreshAppPages) {
+        let response: any;
         if (moment && moment._id && !moment.resource) {
             const result: any = await this.load(moment._id);
             moment = JSON.parse(JSON.stringify(result));
         }
         if (this.userData.user) {
             try {
-                const result: any = await this.updateMomentUserLists({
+                response = await this.updateMomentUserLists({
                     operation: 'add to lists and calendar',
                     user_lists: [user_list],
                     users: [this.userData.user._id],
@@ -423,20 +426,8 @@ export class Moment {
                     calendarId: moment.calendar._id
                 }, token, refreshAppPages);
                 if (notifyUser) { // open modal box to notify user of status of joining the program
-                    if (result === 'success') {
+                    if (response && response.result === 'success') {
                         if (user_list === 'user_list_1') { // participant
-                            // const alert = await this.alertCtrl.create({
-                            //     header: 'Success',
-                            //     message: 'You have successfully joined ' + moment.matrix_string[0][0],
-                            //     buttons: [{ text: 'Ok',
-                            //         handler: () => {
-                            //             const navTransition = alert.dismiss();
-                            //             navTransition.then( async () => {
-                            //             });
-                            //         }}],
-                            //     cssClass: 'level-15'
-                            // });
-                            // alert.present();
                             const modal = await this.modalCtrl.create({component: SuccessPopoverPage, componentProps: {}});
                             await modal.present();
                         } else {
@@ -471,7 +462,7 @@ export class Moment {
                 // This logic changes the userData.defaultProgram to equal the activity just joined
                 // IF they successfully joined an Activity
                 // AND it is the second activity the user has joined (the first is the default Restvo Community)
-                if (result === 'success') {
+                if (response && response.result === 'success') {
                     const activities: any = await this.userData.loadPrograms(true);
                     // newActivities is now an array
                     if (activities.length === 2) { // only do it if joining the first non-Restvo Activity
@@ -483,7 +474,7 @@ export class Moment {
                         }
                     }
                 }
-                return result;
+                return response;
             } catch (err) {
                 console.log(err);
                 return false;
@@ -584,7 +575,7 @@ export class Moment {
             }, null, true);
         }
         this.ionSpinner = false;
-        if (response === 'success') { // only if the users are successfully added do we prepare to send out notifications
+        if (response && response.success === 'success') { // only if the users are successfully added do we prepare to send out notifications
             // check if there is any unconnected individual. If so, it needs to create conversations first so chat rooms are ready to receive notifications
             if (listOfAppUsers && listOfAppUsers.length) {
                 const promises = listOfAppUsers.map( async (appUser) => {
@@ -608,7 +599,7 @@ export class Moment {
             }
             this.chatService.notifyOfInvitation(conversations, moment, listOfNames[0]);
         }
-        return response;
+        return (response ? response.success : false );
     }
 
     async delete(moment, intent) {
