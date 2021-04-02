@@ -254,7 +254,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
   loadAndProcessMomentHandler = async (data) => {
       // if data type is update onboarding answer, or if there are players loaded and one of them is playing or is being paused
-      if ((data && data.type === 'update onboarding answers') || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing || (c.player.hasOwnProperty('currentTime') && (c.player.currentTime > 0)))))) {
+      if ((data && data.type === 'update onboarding answers') || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing)))) {
           // do nothing
       } else { // execute a refresh on all other user refresh type
           this.setup(data, !!(this.authService.token && this.userData.user));
@@ -511,8 +511,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 this.showPreview = this.moment.array_boolean.length > 11 && this.moment.array_boolean[11];
                 if (this.showPreview) { // if preview page is enabled
-                    if (this.router.url.includes('discover')) {
+                    if (this.router.url.includes('discover') && !this.hasParticipantAccess) {
                         this.showPreview = true;
+                    } else if (this.router.url.includes('discover') && this.hasParticipantAccess) {
+                        this.showPreview = false;
                     } else if (this.hasParticipantAccess || this.hasLeaderAccess || this.hasOrganizerAccess) {
                         this.showPreview = false;
                     }

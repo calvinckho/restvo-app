@@ -207,6 +207,10 @@ const routes: Routes = [
                 loadChildren: () => import('../connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
             },
             {
+                path: 'success',
+                loadChildren: () => import('../feature/success-popover/success-popover.module').then( m => m.SuccessPopoverPageModule)
+            },
+            {
                 path: 'designsystem',
                 loadChildren: () => import('../manage/designsystem/designsystem.module').then( m => m.DesignsystemPageModule)
             },

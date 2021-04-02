@@ -337,7 +337,7 @@ export class Moment {
     async updateMomentUserLists(data, token, refreshAppPages) {
         const promise: any = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
+        if (this.socket) this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
         if (data.operation === 'remove from lists') {
             data.users.forEach((user) => {
                 // force reload on user's other devices, including closeGroupView event which forces the user's group chat view to close
@@ -397,7 +397,7 @@ export class Moment {
                     status: 'pending',
                     confirmId: Math.random()
                 };
-                if (enableSocketIO) {
+                if (this.socket && enableSocketIO) {
                     this.socket.emit('refresh moment', moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
                 }
                 return responseToBeReturned;
@@ -673,7 +673,7 @@ export class Moment {
             }
         };
         if (momentId) {
-            this.socket.emit('refresh moment', momentId, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
+            if (this.socket) this.socket.emit('refresh moment', momentId, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
             await this.calendarService.getUserCalendar();
             this.userData.refreshAppPages();
         }

@@ -1,8 +1,14 @@
 <ion-content>
-  <div class="success-container">
-    <img src="/assets/img/success-popover.svg" />
-    <h3>WELL DONE</h3>
-    <p>You've successfully joined this plan.</p>
-    <ion-button (click)="close()" id="close-button">Got it</ion-button>
-  </div>
+  <ion-grid style="height: 100%" >
+    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%">
+      <div class="success-container">
+        <img src="/assets/img/success-popover.svg" />
+        <h3>WELL DONE</h3>
+        <p>You've successfully joined this plan.</p>
+      </div>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+<ion-footer>
+  <ion-button (click)="close()" id="close-button" expand="block" shape="round">Got it</ion-button>
+</ion-footer>
