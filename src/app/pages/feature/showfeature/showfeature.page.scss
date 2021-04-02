@@ -42,6 +42,10 @@ app-showfeature {
     cursor: default;
   }
 
+  ion-spinner-grid {
+    z-index: 15;
+  }
+
   #permissionBar {
     position: absolute;
     top: 0;

@@ -793,22 +793,24 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async removeFromUserList(user_list) {
     try {
       if (this.networkService.hasNetwork) {
-        // first reset the conversation badge count to 0, decrease the system badge count down by number of unread messages in group
+          // first reset the conversation badge count to 0, decrease the system badge count down by number of unread messages in group
         if (this.moment.conversation) {
+            this.loadStatus = null;
+            setTimeout(() => this.loadStatus = 'completed', 10000);
             const count = await this.chatService.resetBadgeCount(this.moment.conversation);
             if (count) {
                 this.userData.refreshMyConversations({action: 'reload', data: this.moment.conversation});
             }
-          // Remove user from user_list
-          await this.momentService.updateMomentUserLists({
-            operation: 'remove from lists',
-            user_lists: [user_list],
-            users: [this.userData.user._id],
-            momentId: this.moment._id
-          }, this.token, true); // a valid token is not required, but provided in case of future change of specs
-          if (!this.modalPage) {
-            this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
-          }
+            // Remove user from user_list
+            await this.momentService.updateMomentUserLists({
+                operation: 'remove from lists',
+                user_lists: [user_list],
+                users: [this.userData.user._id],
+                momentId: this.moment._id
+            }, this.token, true); // a valid token is not required, but provided in case of future change of specs
+            if (!this.modalPage) {
+              this.userData.refreshUserStatus({ type: 'close group view', data: { _id: this.moment.conversation }});
+            }
             this.userData.refreshDefaultActivity(this.moment._id);
             this.chatService.socket.emit('leave conversation', this.moment.conversation); // inform the socket.io server this user is leaving this room
             this.userData.refreshMyConversations({action: 'disconnect chat view', conversationId: this.moment.conversation});
@@ -1353,6 +1355,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
 
     async joinActivity() {
         if (this.authService.token) {
+            this.loadStatus = null;
+            setTimeout(() => this.loadStatus = 'completed', 10000);
             const { incompleteOnboardingExists: incompleteOnboardingExists }: any = await this.momentService.addUserToProgramUserList(this.moment, 'user_list_1', null, false, true);
             if (incompleteOnboardingExists) {
                 this.openOnboarding(2);
@@ -1382,6 +1386,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             default:
                 user_list = 'user_list_1';
         }
+        this.loadStatus = null;
+        setTimeout(() => this.loadStatus = 'completed', 10000);
         const { incompleteOnboardingExists: incompleteOnboardingExists }: any = await this.momentService.addUserToProgramUserList(this.moment, user_list, this.token, false, false);
         // check if there is any incomplete onboarding questionnaire
         this.router.navigate([this.authService.cachedRouteUrl], { replaceUrl: true }); // remove the params so this will hide the special privilege banner
