@@ -84,11 +84,10 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should select Asia Ho and show confirmation alert', async () => {
-    await app.waitUntilElementVisible('#chatSearchBar');
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
-    await browser.sleep(3000); // wait to ensure intended user shows up on list
+    await browser.sleep(4000); // wait to ensure intended user shows up on list
     await app.clickElement('#restvoGroup ion-item');
-    await browser.sleep(1000); // this is needed to prevent the race condition on circle.ci
+    await browser.sleep(1500); // this is needed to prevent the race condition on circle.ci
     await app.clickElement('#selectAppUsersButton');
     await app.waitUntilElementVisible('ion-alert');
     expect(await app.elementIsPresent('ion-alert')).toBeTruthy(); // expect confirmation alert to be truthy
