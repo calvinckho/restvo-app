@@ -84,6 +84,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
   });
 
   it('should select Asia Ho and show confirmation alert', async () => {
+    await app.waitUntilElementVisible('#chatSearchBar');
     await app.enterNonRegistrationInputText('#chatSearchBar', 'Asia Ho', '.searchbar-input');
     await browser.sleep(3000); // wait to ensure intended user shows up on list
     await app.clickElement('#restvoGroup ion-item');
