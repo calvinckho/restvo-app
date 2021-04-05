@@ -445,6 +445,15 @@
         <div *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           Relax Graphics
         </div>-->
+
+        <div class="graphic-banner">
+          <h1>WELCOME</h1>
+          <p>Learn and grow with the community.</p>
+          <ion-button>Let's start</ion-button>
+
+          <img src="/assets/img/lesson-graphic.png" /> 
+        </div>
+
         <ion-item lines="none">
           <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Goal</ion-label>
         </ion-item>

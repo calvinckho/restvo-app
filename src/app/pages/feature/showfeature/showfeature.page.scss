@@ -56,6 +56,34 @@ app-showfeature {
     z-index: 15;
   }
 
+  .graphic-banner {
+    position: relative;
+    background-color: #FF8282;
+    padding: 30px;
+
+    & * {
+      color: white;
+    }
+
+    & h1 {
+      margin-top: 0;
+      font-weight: bold;
+    }
+
+    & img {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      width: 175px;
+    }
+
+    & ion-button {
+      border-radius: 20px;
+      background-color: #E2666A;
+    }
+  }
+
   .desktop-ion-list {
     border-radius: 5px;
     margin: 12px;
