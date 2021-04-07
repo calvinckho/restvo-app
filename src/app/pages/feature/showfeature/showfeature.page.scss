@@ -68,6 +68,11 @@ app-showfeature {
     & h1 {
       margin-top: 0;
       font-weight: bold;
+      font-size: 35px;
+    }
+
+    & p {
+      font-size: 20px;
     }
 
     & img {
@@ -79,8 +84,8 @@ app-showfeature {
     }
 
     & ion-button {
-      border-radius: 20px;
-      background-color: #E2666A;
+      --border-radius: 20px;
+      --background-color: #E2666A;
     }
   }
 
