@@ -1,12 +1,5 @@
 app-recover {
 
-  ion-content {
-    min-height: 100vh;
-    //--background: url('https://d2z4pehxidbzz4.cloudfront.net/app/restvo_tent_background.jpg'); //assets/img/mobile-onboarding-main.jpg')
-    /*--background-size: cover;*/
-  }
-
-
   ion-list {
     background: transparent !important;
     margin: 0;
@@ -79,10 +72,10 @@ app-recover {
   }
 
   .title {
-    //color: var(--ion-color-secondary);
     font-size: 24px;
     font-style: bold;
     text-align: center;
+    margin-bottom: 10%;
   }
 
   .comment {
@@ -95,11 +88,8 @@ app-recover {
     //color: var(--ion-color-secondary);
   }
 
-
   .custom-back-button {
     margin: 10% 0 20% 0;
   }
 
 }
-
-

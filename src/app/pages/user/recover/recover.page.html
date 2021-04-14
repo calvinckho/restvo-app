@@ -4,7 +4,7 @@
       <ion-col>
         <form [formGroup]="passForm">
           <ion-list lines="none">
-            <div class="title" style="margin: 10% 0 20% 0;">Reset Your Password</div>
+            <div class="title">Reset Your Password</div>
             <ion-item lines="full">
               <ion-input #password [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
               <ion-icon slot="end" [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
@@ -31,16 +31,14 @@
                 Password do not match
               </p>
             </ion-item>
-            <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
           </ion-list>
-          <ion-row style="margin-top: 20%;">
-            <ion-col>
-              <ion-button [disabled]="!passForm.valid || !password" expand="full" shape="round" color="primary" (click)="recover()">Recover</ion-button>
-            </ion-col>
-          </ion-row>
         </form>
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button [disabled]="!passForm.valid || !password" expand="full" shape="round" color="primary" (click)="recover()">Recover</ion-button>
+  </ion-toolbar>
+</ion-footer>
