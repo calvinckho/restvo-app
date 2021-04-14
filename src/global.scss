@@ -87,6 +87,14 @@ p {
   font-size: 14px;
 }
 
+// this force the auto fill input background to be transparent so it shows clearly in dark mode (without this in dark mode the auto fill background and text are light color)
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .desktop-header-toolbar {
   --background: var(--ion-color-lightgrey);
   background-color: var(--ion-color-lightgrey);
