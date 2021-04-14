@@ -339,7 +339,8 @@ app-register {
     font-size: 14px;
   }
 
-  .register-email {
+  .register-email, .password {
+    width: 80%;
     color: #fff;
     text-decoration: underline;
     background: none;
