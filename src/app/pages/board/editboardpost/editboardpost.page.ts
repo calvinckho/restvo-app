@@ -397,7 +397,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
         }
         // process the photos upload and clean up
         this.awsService.cleanUp(this.boardId, this.post.attachments);
-        this.post.attachments = this.awsService.sessionAssets;
+        this.post.attachments = this.awsService.sessionAssets[this.boardId];
 
         console.log("The post looks like this: " + JSON.stringify(this.post));
         if (this.post._id){

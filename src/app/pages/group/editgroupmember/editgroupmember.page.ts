@@ -44,7 +44,7 @@ export class EditgroupmemberPage implements OnInit, OnDestroy {
                 let leaderIds = res.data.leaders.map((c) => c._id);
                 if (leaderIds.indexOf(this.userData.user._id) < 0 && this.group.churchId){ // if not a group leader, check church admin status
                     const result: any = await this.userData.checkAdminAccess(this.group.churchId);
-                    if (!(result && result.hasRestvoAdminAccess)) { // if not church admin, the user is not supposed to be in this view, therefore exit
+                    if (!(result && result.hasPlatformAdminAccess)) { // if not church admin, the user is not supposed to be in this view, therefore exit
                         this.modalCtrl.dismiss();
                     }
                 }

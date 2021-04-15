@@ -309,7 +309,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
             this.createNewPost(board);
         } else {
             const result: any = await this.userData.checkAdminAccess(community._id);
-            if (result && result.hasRestvoAdminAccess) {
+            if (result && result.hasPlatformAdminAccess) {
                 this.createNewPost(board);
             } else {
                 const alert = await this.alertCtrl.create({
