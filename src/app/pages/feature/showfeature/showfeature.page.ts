@@ -133,6 +133,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             disableOnInteraction: true
         }
     };
+    showHeader = true;
 
   // 10500 Manage Participants
   participantsView = 'participants';
