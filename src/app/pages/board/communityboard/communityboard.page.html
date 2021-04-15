@@ -60,7 +60,7 @@
             <ion-item lines="none" (click)="createNewBoard(community)">
               <div class="moreoptions-centered">
                 <ion-avatar class="moreoptions-avatar">
-                  <img src="assets/img/Campfire_Gray.png"/>
+                  <ion-img src="assets/img/Campfire_Gray.png"></ion-img>
                 </ion-avatar>
                 <ion-icon class="moreoptions-joined" color="grey" name="add"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">Topic</ion-label>
@@ -71,7 +71,7 @@
             <ion-item lines="none" (click)="openBoard($event, board, community)">
               <div class="moreoptions-centered">
                 <ion-avatar class="moreoptions-avatar">
-                  <img [src]="board.background | background: board._id"/>
+                  <ion-img [src]="board.background | background: board._id"></ion-img>
                 </ion-avatar>
                 <ion-icon class="moreoptions-joined" color="tertiary" name="create"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">{{board.name}}</ion-label>
@@ -82,7 +82,7 @@
             <ion-item lines="none" (click)="showGroupProfile(topic)">
               <div class="moreoptions-centered">
                 <ion-avatar class="moreoptions-avatar">
-                  <img [src]="topic.background | background: topic._id"/>
+                  <ion-img [src]="topic.background | background: topic._id"></ion-img>
                 </ion-avatar>
                 <ion-icon class="moreoptions-joined" color="tertiary" *ngIf="topic.joined" name="checkmark"></ion-icon>
                 <ion-label class="moreoptions-label ion-text-center">{{topic.name}}</ion-label>

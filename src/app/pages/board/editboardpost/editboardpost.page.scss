@@ -1,16 +1,12 @@
 app-editboardpost {
 
-  ion-item ion-datetime{
-    position:relative !important;
-  }
-
-  ion-item ion-select{
-    position:relative !important;
-  }
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 
   ion-textarea {
     --background: transparent !important;
-    max-height: 160px;
+    max-height: 60px;
   }
 
   .pixabay-grid {
@@ -37,15 +33,18 @@ app-editboardpost {
     float:left;
   }
 
-  .side-icon{
+  .side-icon {
     height: 100%;
     width: 100%;
-    float: left;
+    margin-left: 4%;
   }
 
   .post-label{
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
+    margin-top: auto;
+    margin-right: 20px;
+    margin-bottom: auto;
   }
 
   .month-title {
@@ -62,7 +61,7 @@ app-editboardpost {
     }
   }
 
-  input {
+  .file-picker {
     border: none;
   }
 
@@ -112,11 +111,6 @@ app-editboardpost {
     background-color: var(--ion-color-lightgrey);
     border-radius: 50%;
   }
-
-  //.selected-date-type {
-  //  background-color: map_get( $colors , light-grey );
-  //}
-
 
   //moments
   .moment {
@@ -250,16 +244,7 @@ app-editboardpost {
     margin-top: 2px;
     margin-bottom: 14px;
     width: 100%;
-    //float: left;
   }
-
-  /*    .bottomRow {
-        padding: 0 10px;
-        margin-bottom: 14px;
-        height: 80px;
-        width: 100%;
-        float: left;
-      }*/
 
   .optionscol {
     height: 100%;

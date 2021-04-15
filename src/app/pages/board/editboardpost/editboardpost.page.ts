@@ -1,4 +1,13 @@
-import {Component, ElementRef, OnInit, Input, Renderer2, ViewChild, OnDestroy, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    OnInit,
+    Input,
+    Renderer2,
+    ViewChild,
+    OnDestroy,
+    ViewEncapsulation,
+} from '@angular/core';
 import {
     ActionSheetController,
     AlertController,
@@ -56,7 +65,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
         private actionSheetCtrl: ActionSheetController,
         private alertCtrl: AlertController,
         public resourceService: Resource,
-        private momentService: Moment,
+        public momentService: Moment,
         private boardService: Board,
         public userData: UserData,
         public awsService: Aws,
@@ -78,7 +87,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
           };
       } else {
           this.post = JSON.parse(JSON.stringify(this.post)); //clone the object
-          this.awsService.sessionAssets = this.post.attachments;
+          this.awsService.sessionAssets[this.boardId] = this.post.attachments; // store all asset urls associated with this moment in the awsAssets
       }
       const loadResource = this.resourceService.load('en-US', "Board");
       const resource = this.cache.loadFromDelayedObservable('loadResource: Board', loadResource, 'resource', 3600, 'none');
@@ -113,7 +122,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
                                 navTransition.then(async () => {
                                     this.post.body = data.post.body;
                                     this.post.attachments = data.post.attachments;
-                                    this.awsService.sessionAssets = this.post.attachments;
+                                    this.awsService.sessionAssets[this.boardId] = this.post.attachments;
                                     if (this.post.media && this.post.media.length && data.post.media && !data.post.media.length) {
                                         if (this.player) this.player.destroy();
                                     }
@@ -294,8 +303,12 @@ export class EditboardpostPage implements OnInit, OnDestroy {
         }
     }
 
-    async removePhoto(){
-        this.awsService.sessionAssets.pop();
+    async removePhoto(i){
+        const index = this.awsService.sessionAssets[this.boardId].indexOf(this.post.attachments[i]);
+        if (index > -1) {
+            this.awsService.sessionAssets[this.boardId].splice(index, 1);
+        }
+        this.post.attachments.splice(i, 1);
     }
 
     async removeVideo() {

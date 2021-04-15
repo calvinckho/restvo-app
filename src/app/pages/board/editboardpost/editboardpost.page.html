@@ -22,20 +22,20 @@
     </ion-grid>
     <ion-list>
         <ion-item lines="none">
-            <ion-label class="post-label"><ion-icon name="chatbox" color="grey"></ion-icon></ion-label>
-            <ion-textarea autoGrow="true" rows="1" [placeholder]="resource['en-US'].matrix_string[0][4]" [(ngModel)]="post.body"></ion-textarea>
+            <div class="post-label" slot="start"><ion-icon class="side-icon" color="grey" name="chatbox"></ion-icon></div>
+            <ion-textarea [(ngModel)]="post.body" [placeholder]="resource['en-US'].matrix_string[0][4]" autoGrow="true" rows="1"></ion-textarea>
         </ion-item>
-        <ion-item *ngIf="post.attachments?.length" lines="none">
-            <div class="event-photo-container" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" >
-                <img #photo class="event-photo" [src]="post.attachments[0]"/>
+        <ion-item *ngFor="let attachment of post.attachments; index as i" lines="none">
+            <div class="event-photo-container" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" >
+                <img class="event-photo" [src]="attachment"/>
             </div>
-            <a [href]="post.attachments[0]" *ngIf="(['doc', 'docx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <a [href]="post.attachments[0]" *ngIf="(['xls', 'xlsx']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <a [href]="post.attachments[0]" *ngIf="(['pdf']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <a [href]="post.attachments[0]" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{post.attachments[0].substring(post.attachments[0].lastIndexOf('/') + 1)}}</p></a>
-            <div *ngIf="(['mp3']).includes(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'audio/' + post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
-            <div class="event-photo-container" plyr [plyrSources]="[{ 'src': post.attachments[0], 'type': 'video/' + (post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(post.attachments[0].substring(post.attachments[0].lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
-            <ion-button class="remove-photo" fill="clear" size="large" (click)="removePhoto()">
+            <a [href]="attachment" *ngIf="(['doc', 'docx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="attachment" *ngIf="(['xls', 'xlsx']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="attachment" *ngIf="(['pdf']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+            <a [href]="attachment" *ngIf="(['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><p>{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</p></a>
+            <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
+            <div class="event-photo-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="player = $event" *ngIf="(['mp4', 'webm', 'ogg', 'mov']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) > -1" (click)="$event.stopPropagation()"></div>
+            <ion-button class="remove-photo" fill="clear" size="large" (click)="removePhoto(i)">
                 <ion-icon name="trash" color="primary"></ion-icon>
             </ion-button>
         </ion-item>

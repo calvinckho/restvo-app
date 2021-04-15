@@ -8,18 +8,6 @@ app-editfeature, app-editparticipants {
     z-index: 10;
   }
 
-  ion-item {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-    /*ion-buttons {
-      position: relative;
-      right: -41px;
-      z-index: 5;
-    }*/
-  }
-
   ion-item ion-datetime {
     position: relative !important;
   }
@@ -84,10 +72,6 @@ app-editfeature, app-editparticipants {
     overflow: scroll;
   }
 
-  /*a {
-    margin: 15px 10%;
-  }*/
-
   .addComponentActivated {
     opacity: 0.5;
   }
@@ -95,8 +79,6 @@ app-editfeature, app-editparticipants {
   #custom-select {
     padding: 0;
     width: 100% !important;
-    //width: 90% !important;
-    //float: left;
   }
 
   .delete-container {
