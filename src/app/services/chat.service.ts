@@ -73,8 +73,8 @@ export class Chat {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
                 this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
             } else {
-                console.log("initiating chat socket io", this.socket ? this.socket.id : null)
                 this.socket = io(this.networkService.domain + '/');
+                console.log("initiating chat socket io", this.socket ? this.socket.id : null)
             }
         });
         this.socket.on('connect', async () => { //callback after successful socket.io connection

@@ -1058,4 +1058,355 @@ app-showfeature {
     width: 20px;
     margin: auto;
   }
+
+  // Chat
+
+  .chat-list {
+    padding-top: 5%;
+    //min-height: 100%;
+  }
+
+  //time stamp
+  .message-timestamp {
+    width: 100%;
+    margin: 0 auto;
+    font-style: italic;
+    color: var(--ion-color-dark);
+  }
+
+  ion-avatar {
+    width: 45px !important;
+    height: 45px !important;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .online {
+    border: 2px solid var(--ion-color-tertiary);
+  }
+
+  .fade {
+    -webkit-animation: fade 3s infinite;
+    animation: fade 3s infinite;
+    -moz-animation: fade 3s infinite;
+    -o-animation: fade 3s infinite;
+  }
+
+  @-webkit-keyframes fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100% {opacity:0.2}
+  }
+
+  @-moz-keyframes fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100% {opacity:0}
+  }
+
+  @keyframes fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100%{opacity: 0.2}
+  }
+  @-o-keyframes fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100%{opacity: 0.2}
+  }
+
+  ion-thumbnail {
+    --border-radius: 10px;
+    margin: 0 auto;
+    --size: 100px;
+  }
+
+  .small-thumbnail {
+    --size: 50px;
+  }
+
+  .wide-thumbnail {
+    --size: 200px;
+  }
+
+  .sender-avatar {
+    margin-right: 4%;
+  }
+
+  .message-wrapper {
+    /*overflow: auto;
+    position: relative;*/
+    &:last-child {
+      margin-bottom: 10px;
+    }
+  }
+
+  .sender-container {
+    display: inline-block;
+    float: left;
+  }
+
+  .sender-message-container {
+    display: inline-block;
+  }
+
+  .author {
+    display: block;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+  }
+
+  .image-bubble {
+    overflow: hidden;
+    perspective: 1px;
+  }
+
+  .chat-bubble {
+    border-radius: 5px;
+    padding: 12px;
+    position: relative;
+    margin-bottom: 8px;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  .chat-bubble:before {
+    content: "\00a0";
+    display: block;
+    height: 16px;
+    width: 9px;
+    position: absolute;
+    bottom: -7.5px;
+  }
+
+  .chat-bubble.left {
+    margin-right: 20px; //needs to be a fixed px value, not %, or the .message will not know the exact width and wraps the text incorrectly
+    padding-right: 25px;
+    background-color: var(--ion-color-light);
+    p {
+      color: var(--ion-color-dark);
+    }
+    a:link {
+      color: var(--ion-color-darkgrey);
+    }
+    a:visited {
+      color: var(--ion-color-darkgrey);
+    }
+  }
+
+  .chat-bubble.left:before {
+    background-color: var(--ion-color-light);
+    left: 10px;
+    -webkit-transform: rotate(70deg) skew(5deg);
+  }
+
+  .chat-bubble.right {
+    margin-left: 2%;
+    background-color: var(--ion-color-primary);
+    p {
+      color: var(--ion-color-light);
+    }
+    a:link {
+      color: var(--ion-color-lightgrey);
+    }
+    a:visited {
+      color: var(--ion-color-lightgrey);
+    }
+  }
+
+  .chat-bubble.right:before {
+    background-color: var(--ion-color-primary);
+    right: 10px;
+    -webkit-transform: rotate(118deg) skew(-5deg);
+  }
+
+  .message {
+    margin: 0;
+    font-size: 14px;
+    word-break: break-word;
+  }
+
+  .message.reply {
+    font-weight: bold;
+  }
+
+  .video-frame {
+    width: calc((100vw - 60px)*0.75);
+    max-width: 300px;
+  }
+
+  .youtube {
+    margin-top: 12px;
+  }
+
+  .quote-bubble {
+    margin-bottom: 6px;
+  }
+
+  .quote-bubble.left {
+    border-radius: 5px;
+    padding: 5px 6px 5px 6px;
+    background-color: var(--ion-color-primary);
+    p {
+      color: var(--ion-color-light);
+    }
+    a:link {
+      color: var(--ion-color-lightgrey);
+    }
+    a:visited {
+      color: var(--ion-color-lightgrey);
+    }
+  }
+
+  .quote-bubble.right {
+    border-radius: 5px;
+    padding: 5px 6px 5px 6px;
+    background-color: var(--ion-color-light);
+    p {
+      color: var(--ion-color-dark);
+    }
+    a:link {
+      color: var(--ion-color-darkgrey);
+    }
+    a:visited {
+      color: var(--ion-color-darkgrey);
+    }
+  }
+
+  .moment {
+    border-radius: 5px;
+    padding: 10px 12px;
+    position: relative;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    background-color: var(--ion-color-lightgrey);
+    h2, p {
+      color:var(--ion-color-light);
+    }
+  }
+
+  .moment.left {
+    background-color: var(--ion-color-lightgrey);
+    margin-right: 20px;
+    p {
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .moment.right {
+    margin-right: 3px;
+    //max-width: 70%; //70% of the entire ion-item width, with item-end turned on to stick the moment bubble to the right
+  }
+
+  .moment-image {
+    margin: 0 auto;
+    //max-height: 40%;
+    width: 100%;
+    border-radius: 5%;
+
+  }
+  .superimposedIcon {
+    position: absolute;
+    bottom: 50%;
+    right: 40%;
+    height: 20%;
+  }
+
+  .moment-name {
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .moment-date {
+    width: 100%;
+    font-weight: bold;
+
+  }
+  .moment-notes {
+    width: 100%;
+    font-weight: bold;
+  }
+
+  .goalFooter {
+    font-style: italic;
+    font-weight: lighter;
+    text-align: center;
+  }
+
+
+  //Poll message
+  .pollIconDiv {
+    height: 20%;
+    width: 100%;
+
+    .pollIcon {
+      height: 1.8em;
+      width: 10%;
+      margin-left: 45%;
+      margin-right: 45%;
+    }
+  }
+
+  .pollQuestion {
+    color: var(--ion-color-dark);
+    font-size: medium;
+    font-style: italic;
+  }
+
+  .pollContainer {
+    width: 100%;
+    display: inline-block;
+    clear: both;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    padding: 2px;
+  }
+
+  .optionsContainer {
+    float: left;
+    width: 58%;
+    .option {
+      padding-top: 5px;
+      float: left;
+      font-size: medium;
+      color: #4a90e2;
+      font-weight: bold;
+    }
+  }
+
+  .votesContainer {
+    float: left;
+    width: 20%;
+    .votecount{
+      padding-top: 14px;
+      color: var(--ion-color-dark);
+      font-size: x-small;
+    }
+  }
+
+  .userContainer {
+    float: right;
+    width: 22%;
+    padding: 0 auto;
+    .uservote{
+      margin: 15px 5% 0 5%;
+      font-size: x-small;
+      width: 90%;
+      height: 30px;
+      color: var(--ion-color-dark);
+    }
+    .uservoted {
+      padding-top: 20px;
+      width: 30%;
+      margin: 0 40%;
+    }
+  }
 }

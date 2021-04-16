@@ -639,6 +639,132 @@
           </ion-slide>
         </ion-slides>
       </div>
+      <div class="component" *ngIf="item === 11000 && moment.matrix_number[i][0] && moment.conversation"> <!--Show Chat-->
+        <ion-buttons class="ion-justify-content-center" *ngIf="!this.chatReachedEnd">
+          <ion-button (click)="loadMoreMessages()" color="tertiary" size="small">
+            Load previous comments
+          </ion-button>
+        </ion-buttons>
+        <ion-list class="chat-list" lines="none">
+          <ion-item *ngIf="messages?.length === 0 && chatFinishedLoading">
+            <p class="message-timestamp ion-text-center" >There is no comment yet.</p>
+          </ion-item>
+          <div *ngFor="let message of messages; trackBy: customTrackBy">
+            <!--Individual Chat Bubble-->
+            <ion-item *ngIf="message.timestamp">
+              <p class="message-timestamp ion-text-center">{{message.createdAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            </ion-item>
+            <ion-item class="message-wrapper" *ngIf="!message.timestamp">
+              <!--the recipient's message-->
+              <ion-avatar class="sender-avatar" [ngClass]="{'online': (chatService.onlineUsers.indexOf(message.author._id) > -1)}" slot="start" (click)="seeUserInfo($event, message.author)">
+                <img *ngIf="message.author && message.author.avatar" [src]="message.author.avatar" />
+                <img *ngIf="(message.author && !message.author.avatar) || message.author_pending_member" src="assets/img/avatar-default.jpg" />
+                <!--<div *ngIf="message.author && !message.author.avatar" class="empty-avatar-letters">{{ message.author.first_name[0] }}{{ message.author.last_name[0] }}</div>-->
+              </ion-avatar>
+              <div class="sender-message-container">
+                <div class="author" *ngIf="message.author">
+                  {{ message.author.first_name }}{{" "}}{{ message.author.last_name }}
+                </div>
+                <!--User Defined Activity-->
+                <ion-grid class="multiple-photos" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'User Defined Activity' && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] !== 'Poll'">
+                  <ion-row class="ion-justify-content-start ion-no-padding">
+                    <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto">
+                      <ion-card class="program-card" (click)="openProgram($event, message.moment)">
+                        <ion-card-header class="ion-no-padding">
+                          <div class="chat-program-photo-container">
+                            <ion-img class="program-photo" [src]="(message.moment.assets && message.moment.assets.length && message.moment.assets[0]) | background: message.moment._id"></ion-img>
+                          </div>
+                        </ion-card-header>
+                        <div class="program-type"><ion-badge color="button1">{{message.moment.resource['en-US'].value[0]}}</ion-badge></div>
+                        <div class="program-name light">{{message.moment.matrix_string[0][0]}}</div>
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+                <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource.field === 'Poll'">
+                  <ion-label color="dark">This poll is no longer available</ion-label>
+                </div>
+                <!-- Location -->
+                <div class="moment right ion-text-wrap" slot="end" *ngIf="message.moment && message.moment.resource && message.moment.resource && message.moment.resource.field === 'Location'">
+                  <a [href]="message.addressURL" target="_blank">
+                    <ion-thumbnail>
+                      <ion-img [src]="message.moment.matrix_string[0]"></ion-img>
+                    </ion-thumbnail>
+                    <ion-label color="dark" class="moment-name" >Location</ion-label>
+                  </a>
+                </div>
+                <!--Contact-->
+                <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource.field === 'Contact'">
+                  <div *ngIf="message.moment.matrix_number[0][0] === 0" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
+                    <ion-icon name="book" large></ion-icon>
+                    <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][6]"></div>
+                  </div>
+                  <div *ngIf="message.moment.matrix_number[0][0] === 1" (click)="seeUserInfo($event, message.author)" class="ion-text-wrap">
+                    <ion-icon name="book" large></ion-icon>
+                    <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][4]"></div>
+                  </div>
+                  <div *ngIf="message.moment.matrix_number[0][0] === 2" (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" class="ion-text-wrap">
+                    <ion-icon name="book" large></ion-icon>
+                    <div color="dark" class="message" [innerHTML]="message.author.first_name + ' ' + message.author.last_name + ' ' + message.moment.resource['en-US'].matrix_string[0][8]"></div>
+                  </div>
+                </div>
+                <!-- Others: Including All Future Features Displaying Basic Info -->
+                <div class="moment left ion-text-wrap" *ngIf="message.moment && message.moment.resource && message.moment.resource && ['User Defined Activity','Track','Event','Meetup','Poll','Goal','Location','Contact'].indexOf(message.moment.resource.field) < 0">
+                  <ion-thumbnail>
+                    <ion-img class="moment-image" *ngIf="message.moment.assets.length > 0" [src]="message.moment.assets[0]"></ion-img>
+                    <ion-img class="moment-image" *ngIf="message.moment.assets.length == 0" src="assets/img/onboarding-3.jpg"></ion-img>
+                  </ion-thumbnail>
+                  <ion-label color="dark" class="moment-name" >{{message.moment.resource['en-US'].value[0]}}: {{message.moment.matrix_string[0][0]}}</ion-label>
+                </div>
+                <!--Multiple attachments-->
+                <ion-grid *ngIf="message.attachments && message.attachments.length">
+                  <ion-row class="ion-justify-content-start ion-no-padding">
+                    <ion-col class="ion-align-self-center ion-no-padding ion-padding-end ion-padding-top" size="auto" *ngFor="let attachment of message.attachments" >
+                      <ion-thumbnail [ngClass]="{'wide-thumbnail': message.attachments.length === 1}" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
+                        <ion-img [src]="attachment" (click)="focusPhoto($event, attachment)"></ion-img>
+                      </ion-thumbnail>
+                      <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                      <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                      <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                      <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                      <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
+                      <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+                <div class="chat-bubble left" *ngIf="!message.moment && message.body?.length > 0">
+                  <div class="quote-bubble left ion-text-wrap" *ngIf="message.quote && message.quote.body">
+                    <p class="message" *ngIf="message.quote.body" [innerHTML]="message.quote.body | nl2br"></p>
+                  </div>
+                  <!-- Attachments inside a quote -->
+                  <ion-grid *ngIf="message.quote && message.quote.attachments && message.quote.attachments.length">
+                    <ion-row class="ion-no-padding">
+                      <ion-col class="ion-align-self-center ion-no-padding" size="auto" *ngFor="let attachment of message.quote.attachments" [ngClass]="{'ion-padding-start' : message.quote.attachments.length > 1, 'ion-padding-top' : message.quote.attachments.length > 2 }">
+                        <ion-thumbnail *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())">
+                          <ion-img [src]="attachment" (click)="focusPhoto($event, attachment)"></ion-img>
+                        </ion-thumbnail>
+                        <a [href]="attachment" *ngIf="attachment && (['doc', 'docx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/docx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                        <a [href]="attachment" *ngIf="attachment && (['xls', 'xlsx']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/xlsx.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                        <a [href]="attachment" *ngIf="attachment && (['pdf']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" target="_blank"><ion-thumbnail><ion-img src="assets/img/pdf.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                        <a [href]="attachment" *ngIf="attachment && (['jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf', 'mp4', 'webm', 'ogg', 'mov', 'mp3']).indexOf(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) < 0" target="_blank"><ion-thumbnail><ion-img src="assets/img/file.svg"></ion-img></ion-thumbnail><ion-label color="dark">{{attachment.substring(attachment.lastIndexOf('/') + 1)}}</ion-label></a>
+                        <div *ngIf="(['mp3']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': attachment, 'type': 'audio/' + attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
+                        <div class="video-frame" plyr [plyrSources]="[{ 'src': attachment, 'type': 'video/' + (attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="attachment && (['mp4', 'webm', 'ogg', 'mov']).includes(attachment.substring(attachment.lastIndexOf('.') + 1).toLowerCase())" (click)="$event.stopPropagation()"></div>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                  <!-- Message Text Body -->
+                  <p class="message" *ngIf="message.body" [innerHTML]="message.body | nl2br"></p>
+                  <!-- Detect if a video is embedded in the text -->
+                  <div class="video-frame youtube" plyr [plyrSources]="[{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube'}]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, message._id)" *ngIf="message.body && message.body.indexOf('www.youtube.com/watch?v=') > -1" (click)="resourceService.clickVideo($event, [{ 'src': message.body.substring(message.body.indexOf('a href') + 8, message.body.indexOf(' target') - 1), 'provider': 'youtube' }])"></div>
+                </div>
+              </div>
+            </ion-item>
+          </div>
+        </ion-list>
+        <ion-item lines="none">
+          <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" style="margin: 0 auto">Add Comment</ion-button> <!--Add Comment Button-->
+        </ion-item>
+      </div>
       <div class="component" *ngIf="item === 30000"> <!--Poll-->
         <ion-item lines="none">
           <div class="moment-label"><img class="side-image" src="assets/img/Poll_Gray.png" /></div>

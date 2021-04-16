@@ -587,6 +587,10 @@
               <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{participantsLabel}}</ion-label>
               <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[5]"></ion-toggle>
             </ion-item>
+            <ion-item lines="none"> <!--Show Group Chat for Participants-->
+              <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">Show Group Chat for {{participantsLabel}}</ion-label>
+              <ion-toggle class="ion-margin-left" [(ngModel)]="moment.matrix_number[i][0]"></ion-toggle>
+            </ion-item>
             <ion-item lines="none"> <!--Enable Leaders' Chat-->
               <ion-label style="width: 70%" class="ion-margin-left ion-text-wrap" color="grey">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{leadersLabel}}</ion-label>
               <ion-toggle class="ion-margin-left" [(ngModel)]="moment.array_boolean[7]"></ion-toggle>

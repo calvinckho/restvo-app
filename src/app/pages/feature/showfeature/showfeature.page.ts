@@ -32,7 +32,7 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
-import {SuccessPopoverPage} from "../success-popover/success-popover.page";
+import {SuccessPopoverPage} from '../success-popover/success-popover.page';
 
 @Component({
   selector: 'app-showfeature',
@@ -138,6 +138,13 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   // 10500 Manage Participants
   participantsView = 'participants';
 
+    // 11000 Chat
+    chatPageNum = 0;
+    chatReachedEnd = false;
+    chatAPIBusy = false;
+    messages: any = [];
+    chatFinishedLoading = false;
+
   // 12000 Notes
     notes_schedule: any;
     notes: any = [];
@@ -240,6 +247,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.loadAndProcessMomentHandler);
+      this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
       await this.processVerificationToken();
   }
 
@@ -503,7 +511,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 const viewMap = ['participants', 'organizers', 'leaders'];
                 this.participantsView = viewMap[this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(10500)].indexOf(1) || 0];
             }
-
+            // if show chat is turned on
+            if (this.moment.resource.matrix_number[0].find((c) => c === 11000) && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(11000)].length && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(11000)][0]) {
+                this.reloadChatView();
+            }
             // set up tabs
             if (this.moment.resource.matrix_number[0].find((c) => c === 20020)) {
                 if (!this.tabSelection && this.moment.matrix_number[this.moment.resource.matrix_number[0].indexOf(20020)].length > 5) { // assuming at least 1 tab has been created. if no default has been selected, use the first available tab
@@ -1373,7 +1384,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async acceptInvitation(event) {
     event.stopPropagation();
     if (this.authService.token && this.participant_type && this.token) {
-        let user_list = '';
+        let user_list;
         switch (this.participant_type) {
             case 2: // participants
                 user_list = 'user_list_1';
@@ -1785,7 +1796,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 if (type === 'youtube') { // for youtube, set the currentTime directly at 'ready' event
                     media.player.currentTime = interactable[1]; // update an existing play time
                 } else if (media.player.playing !== true) { // for other media, need to wait for 'canplay' event, so media is loaded, then set the currentTime once while it is not playing
-                    media.player.once('canplay', event => {
+                    media.player.once('canplay', () => {
                         media.player.currentTime = interactable[1]; // update an existing play time
                     });
                 }
@@ -1812,7 +1823,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     destroyPlayers(mediaId) {
       if (mediaId) {
         const media = this.mediaList.find((c) => c._id === mediaId);
-        if (media && media.player) media.player.destroy();
+        if (media && media.player) { media.player.destroy(); }
       } else {
           let updatedResponseObj;
           for (const media of this.mediaList) {
@@ -2379,6 +2390,107 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
         }
     }
 
+
+    async reloadChatView() {
+        if (!this.chatAPIBusy) {
+            this.chatReachedEnd = false;
+            this.chatPageNum = 0;
+            setTimeout( () => {
+                this.loadMoreMessages();
+            }, 50);
+        }
+    }
+
+    async loadMoreMessages() {
+        // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
+        // if current chat props exists, which is needed to retrieve the conversationId
+        if (!this.chatReachedEnd && !this.chatAPIBusy && this.moment.conversation) {
+            try {
+                this.chatPageNum++;
+                this.chatAPIBusy = true;
+                const result: any = await this.chatService.getConversationById(this.moment.conversation, this.chatPageNum);
+                this.chatAPIBusy = false;
+                if (this.chatPageNum === 1) {
+                    this.messages = []; // if this is the first page load, empty the view first
+                }
+                const momentIds = [];
+                if (!result.conversation.length) {
+                    this.chatReachedEnd = true;
+                    this.chatFinishedLoading = true;
+                } else {
+                    result.conversation.forEach( (message: any) => {
+                        if (this.messages.length) {
+                            if (new Date(this.messages[0].createdAt).toDateString() !== new Date(message.createdAt).toDateString()) {
+                                // if it is the start of a new day
+                                this.messages.unshift({timestamp: true, createdAt: this.messages[0].createdAt});
+                            } else if ((new Date(this.messages[0].createdAt).getTime() - new Date(message.createdAt).getTime()) > 3 * 60 * 60 * 1000) {
+                                // if longer than 3 hours
+                                this.messages.unshift({timestamp: true, createdAt: this.messages[0].createdAt});
+                            }
+                        }
+                        // process moment
+                        if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll' && message.moment.resource.matrix_number && message.moment.resource.matrix_number.length && message.moment.resource.matrix_number[0].length) {
+                            momentIds.push(message.moment._id);
+                            const componentId = message.moment.resource.matrix_number[0].indexOf(30000);
+                            message.poll = {
+                                componentId: componentId,
+                                display: [],
+                                responses: [],   // list of all of the responses that users give.
+                                winner: [],      // list of the highest vote count indexes
+                                totalVoteCount: 0
+                            };
+                            for (const option of message.moment.matrix_string[componentId]) {
+                                message.poll.display.push({option: option, votedByUser: false, count: 0});
+                            }
+                        }
+                        if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                            message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
+                        }
+                        message.status = 'confirmed';
+                        this.messages.unshift(message);
+                    });
+                    setTimeout(() => {
+                        /*if (this.chatPageNum === 1 && this.content) {
+                            this.content.scrollToBottom(10);
+                        }*/
+                        this.chatFinishedLoading = true;
+                    }, 500);
+                }
+            } catch (err) {
+                this.networkService.showNoNetworkAlert();
+                this.chatFinishedLoading = true;
+            }
+        } else {
+            this.chatFinishedLoading = true;
+        }
+    }
+
+    incomingMessageHandler = async (message) => {
+        if (message && this.moment.conversation && message.conversationId === this.moment.conversation) {
+            this.zone.run(() => {
+                // if it is the start of a new day
+                if (this.messages.length && new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
+                    this.messages.push({timestamp: true, createdAt: message.createdAt});
+                } else if (this.messages.length && new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
+                    this.messages.push({timestamp: true, createdAt: message.createdAt});
+                }
+                if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
+                    message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
+                }
+                message.status = 'confirmed';
+                // push message
+                this.messages.push(message);
+                if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll') {
+                    // getting a new moment message that requires joining the socket, so refresh the chat
+                    this.reloadChatView();
+                }
+            });
+            setTimeout(() => {
+                this.content.scrollToBottom(50);
+            }, 300);
+        }
+    }
+
     async noNetworkConnection() {
     const networkAlert = await this.alertCtrl.create({
       header: 'No Internet Connection',
@@ -2407,6 +2519,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
     if (this.subscriptions && this.subscriptions.refreshUserStatus) { this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler); }
     if (this.subscriptions && this.subscriptions.refreshMoment) { this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler); }
+    if (this.subscriptions && this.subscriptions.chatMessage) {  this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler); }
   }
 
     // for refreshing moment either because of real-time interactables, or for refreshing participation

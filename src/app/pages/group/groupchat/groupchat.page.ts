@@ -1065,9 +1065,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
                 // if it is from another user
                 if ((message.author && message.author._id !== this.userData.user._id) || message.author_pending_member) {
                     // if it is the start of a new day
-                    if (new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
+                    if (this.messages.length && new Date(this.messages[this.messages.length - 1].createdAt).toDateString !== new Date(message.createdAt).toDateString) {
                         this.messages.push({timestamp: true, createdAt: message.createdAt});
-                    } else if (new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
+                    } else if (this.messages.length && new Date(message.createdAt).getTime() - new Date(this.messages[this.messages.length - 1].createdAt).getTime() > 60 * 60 * 1000) {
                         this.messages.push({timestamp: true, createdAt: message.createdAt});
                     }
                     if (message.moment && message.moment.resource && message.moment.resource.field && message.moment.resource.field === 'Location') {
