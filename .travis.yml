@@ -11,7 +11,11 @@ before_script:
 jobs:
   include:
     - stage: test
-      name: "Join Journey Test"
+      name: "Add and Remove Friend"
+      script: ng e2e --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
+    - name: "Create and Delete a Community"
+      script: ng e2e --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
+    - name: "Join Journey Test"
       script: ng e2e --protractor-config='e2e/src/desktop/journey.conf.js'
     - name: "Add User to Group"
       script: ng e2e --protractor-config='e2e/src/desktop/add-user-to-group.conf.js'
@@ -19,7 +23,4 @@ jobs:
       script: ng e2e --protractor-config='e2e/src/desktop/register.conf.js'
     - name: "Tab Navigation Test"
       script: ng e2e --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
-    - name: "Add and Remove Friend"
-      script: ng e2e --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
-    - name: "Create and Delete a Community"
-      script: ng e2e --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
+
