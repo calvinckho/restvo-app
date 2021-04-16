@@ -92,6 +92,7 @@ describe(' Add and Remove a Restvo User as friend', () => {
 
   it('should select Asia Ho and show confirmation alert', async () => {
     await app.clickElement('#restvoGroup ion-item');
+    await browser.sleep(1000);
     await app.clickElement('#selectAppUsersButton');
     await app.waitUntilElementVisible('ion-alert');
     expect(await app.elementIsPresent('ion-alert')).toBeTruthy(); // expect confirmation alert to be truthy
