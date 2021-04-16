@@ -27,8 +27,8 @@ jobs:
           paths:
             - node_modules
       - run:
-          name: "Add and Remove Friend"
-          command: npm run ci -- --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
+          name: "Tab Navigation Test"
+          command: npm run ci -- --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
       - run:
           name: "Create and Delete a Community"
           command: npm run ci -- --protractor-config='e2e/src/desktop/create-delete-community.conf.js'
@@ -42,5 +42,5 @@ jobs:
           name: "Register New Account Test"
           command: npm run ci -- --protractor-config='e2e/src/desktop/register.conf.js'
       - run:
-          name: "Tab Navigation Test"
-          command: npm run ci -- --protractor-config='e2e/src/mobile/tab-navigate.conf.js'
+          name: "Add and Remove Friend"
+          command: npm run ci -- --protractor-config='e2e/src/desktop/add-and-remove-restvo-friend.conf.js'
