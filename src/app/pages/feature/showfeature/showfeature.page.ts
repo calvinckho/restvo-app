@@ -143,6 +143,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     chatReachedEnd = false;
     chatAPIBusy = false;
     messages: any = [];
+    preloadedMessages = [];
     chatFinishedLoading = false;
 
   // 12000 Notes
@@ -2402,6 +2403,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
 
     async loadMoreMessages() {
+        this.messages.unshift(...JSON.parse(JSON.stringify(this.preloadedMessages)));
+        this.preloadedMessages = [];
         // chatAPIBusy is used to safeguard against iOS calling the (ionInfiniteScroll) function from the DOM that races with the reloadChatView function
         // if current chat props exists, which is needed to retrieve the conversationId
         if (!this.chatReachedEnd && !this.chatAPIBusy && this.moment.conversation) {
@@ -2419,15 +2422,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     this.chatFinishedLoading = true;
                 } else {
                     result.conversation.forEach( (message: any) => {
-                        if (this.messages.length) {
-                            if (new Date(this.messages[0].createdAt).toDateString() !== new Date(message.createdAt).toDateString()) {
-                                // if it is the start of a new day
-                                this.messages.unshift({timestamp: true, createdAt: this.messages[0].createdAt});
-                            } else if ((new Date(this.messages[0].createdAt).getTime() - new Date(message.createdAt).getTime()) > 3 * 60 * 60 * 1000) {
-                                // if longer than 3 hours
-                                this.messages.unshift({timestamp: true, createdAt: this.messages[0].createdAt});
-                            }
-                        }
                         // process moment
                         if (message.moment && message.moment.resource && message.moment.resource.hasOwnProperty('en-US') && message.moment.resource['en-US'].value[0] === 'Poll' && message.moment.resource.matrix_number && message.moment.resource.matrix_number.length && message.moment.resource.matrix_number[0].length) {
                             momentIds.push(message.moment._id);
@@ -2447,8 +2441,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             message.addressURL = 'http://maps.google.com/?q=' + message.moment.matrix_number[0] + '+%2C' + message.moment.matrix_number[1];
                         }
                         message.status = 'confirmed';
-                        this.messages.unshift(message);
                     });
+                    if (result.conversation.length > 15) {
+                        this.preloadedMessages = result.conversation.slice(14).reverse();
+                        this.messages.unshift(...result.conversation.slice(0, 14).reverse());
+                    } else {
+                        this.preloadedMessages = [];
+                        this.messages.unshift(...result.conversation.reverse());
+                    }
                     setTimeout(() => {
                         /*if (this.chatPageNum === 1 && this.content) {
                             this.content.scrollToBottom(10);

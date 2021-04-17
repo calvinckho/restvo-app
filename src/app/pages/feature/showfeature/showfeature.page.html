@@ -640,7 +640,7 @@
         </ion-slides>
       </div>
       <div class="component" *ngIf="item === 11000 && moment.matrix_number[i][0] && moment.conversation"> <!--Show Chat-->
-        <ion-buttons class="ion-justify-content-center" *ngIf="!this.chatReachedEnd">
+        <ion-buttons class="ion-justify-content-center" *ngIf="preloadedMessages.length">
           <ion-button (click)="loadMoreMessages()" color="tertiary" size="small">
             Load previous comments
           </ion-button>
@@ -649,10 +649,10 @@
           <ion-item *ngIf="messages?.length === 0 && chatFinishedLoading">
             <p class="message-timestamp ion-text-center" >There is no comment yet.</p>
           </ion-item>
-          <div *ngFor="let message of messages; trackBy: customTrackBy">
+          <div *ngFor="let message of messages; index as i; trackBy: customTrackBy">
             <!--Individual Chat Bubble-->
-            <ion-item *ngIf="message.timestamp">
-              <p class="message-timestamp ion-text-center">{{message.createdAt | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</p>
+            <ion-item *ngIf="null | calendar : 'chattimestamp' : { messages: messages, index: i }">
+              <p class="message-timestamp ion-text-center">{{ (null | calendar : 'chattimestamp' : { messages: messages, index: i }) }}</p>
             </ion-item>
             <ion-item class="message-wrapper" *ngIf="!message.timestamp">
               <!--the recipient's message-->

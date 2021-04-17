@@ -7,7 +7,39 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class CalendarPipe implements PipeTransform {
 
   transform(calendarItems: any, type?: any, data?: any): any {
-    if (type === 'extracttodayorincompletelesson') {
+    if (type === 'chattimestamp') {
+      if (data.messages && data.messages.length) {
+        if (data.index === 0) {
+          return new Date(data.messages[data.index].createdAt).toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            weekday: 'short',
+            month: 'numeric',
+            day: 'numeric'
+          });
+        } else if (data.index > 0) {
+          if (new Date(data.messages[data.index - 1].createdAt).toDateString() !== new Date(data.messages[data.index].createdAt).toDateString()) {
+            // if it is the start of a new day
+            return new Date(data.messages[data.index].createdAt).toLocaleString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              weekday: 'short',
+              month: 'numeric',
+              day: 'numeric'
+            });
+          } else if (new Date(data.messages[data.index].createdAt).getTime() - (new Date(data.messages[data.index - 1].createdAt).getTime()) > 3 * 60 * 60 * 1000) {
+            // if longer than 3 hours
+            return new Date(data.messages[data.index].createdAt).toLocaleString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              weekday: 'short',
+              month: 'numeric',
+              day: 'numeric'
+            });
+          }
+        }
+      }
+    } else if (type === 'extracttodayorincompletelesson') {
       let cachedCalendarItems;
       if (data && data.scheduleIds && data.goal) {
         cachedCalendarItems = calendarItems.filter((c) => data.scheduleIds.includes(c.schedule) && c.goals && c.goals.includes(data.goal[0]));
