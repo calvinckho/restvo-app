@@ -308,18 +308,6 @@ export class ShowrecipientinfoPage implements OnInit {
         }
     }
 
-    /*
-    async inviteToGroup(){
-        const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Group", selectedAppUser: this.recipient}});
-        invitePage.present();
-    }
-
-    async inviteToCommunity(){
-        const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: "Invite to Community", selectedAppUser: this.recipient}});
-        invitePage.present();
-    }
-    */
-
     async createRelationship() {
         const pickProgramModal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps: {title: 'Choose Plan', maxMomentCount: 1, allowCreate: false, modalPage: true}});
         await pickProgramModal.present();

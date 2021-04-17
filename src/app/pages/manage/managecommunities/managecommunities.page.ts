@@ -14,7 +14,6 @@ import { Churches } from '../../../services/church.service';
 import { Chat } from '../../../services/chat.service';
 import { Auth } from '../../../services/auth.service';
 import { Resource } from '../../../services/resource.service';
-import {InvitetoconnectPage} from '../../connect/invitetoconnect/invitetoconnect.page';
 import {AnalyticsPage} from '../analytics/analytics.page';
 import {ActivitiesPage} from '../activities/activities.page';
 import {MembersPage} from '../members/members.page';
@@ -161,43 +160,6 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
         if (refreshNeeded) {
             this.setupManagePage();
         }
-    }
-
-    async invite() {
-        const buttons = [
-            {
-                text: 'Restvo Users',
-                handler: () => {
-                    this.invitePage('Restvo Users');
-                }
-            },
-            {
-                text: 'Email',
-                handler: () => {
-                    this.invitePage('Email');
-                }
-            },
-            {
-                text: 'Cancel',
-                role: 'cancel',
-                handler: () => {
-                }
-            }];
-        if (this.platform.is('cordova')) {
-            buttons.splice(1, 0, {
-                text: 'SMS Message',
-                handler: () => {
-                    this.invitePage('SMS Message');
-                }
-            });
-        }
-        const actionSheet = await this.actionSheetCtrl.create({header: 'Invite a Friend', buttons: buttons});
-        await actionSheet.present();
-    }
-
-    async invitePage(type) {
-        const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: type}});
-        await invitePage.present();
     }
 
     async noNetworkConnection() {

@@ -3,7 +3,6 @@ import { CacheService } from 'ionic-cache';
 import { ActionSheetController, AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { UserData } from '../../../../services/user.service';
 import {EditcommunityPage} from '../editcommunity/editcommunity.page';
-import {InvitetoconnectPage} from '../../../connect/invitetoconnect/invitetoconnect.page';
 import {Resource} from '../../../../services/resource.service';
 import {Storage} from '@ionic/storage';
 
@@ -61,45 +60,6 @@ export class CommunityPopoverPage implements OnInit {
             }
         });
     }
-
-    async invite() {
-        this.popoverCtrl.dismiss();
-        const buttons = [
-            {
-                text: 'Restvo Users',
-                handler: () => {
-                    this.invitePage('Restvo Users');
-                }
-            },
-            {
-                text: 'Email',
-                handler: () => {
-                    this.invitePage('Email');
-                }
-            },
-            {
-                text: 'Cancel',
-                role: 'cancel',
-                handler: () => {
-                }
-            }];
-        if (this.platform.is('cordova')) {
-            buttons.splice(1, 0, {
-                text: 'SMS Message',
-                handler: () => {
-                    this.invitePage('SMS Message');
-                }
-            });
-        }
-        const actionSheet = await this.actionSheetCtrl.create({header: 'Invite a Friend', buttons: buttons, cssClass: 'level-10'});
-        await actionSheet.present();
-    }
-
-    async invitePage(type) {
-        const invitePage = await this.modalCtrl.create({component: InvitetoconnectPage, componentProps: {type: type}});
-        await invitePage.present();
-    }
-
 
     async joinCommunity() {
         this.popoverCtrl.dismiss();
