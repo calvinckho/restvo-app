@@ -16,7 +16,7 @@ import {Chat} from '../../services/chat.service';
 import {UserData} from '../../services/user.service';
 import {NetworkService} from '../../services/network-service.service';
 
-import {GroupchatPage} from '../group/groupchat/groupchat.page';
+import {GroupchatPage} from '../connect/groupchat/groupchat.page';
 import {
     ActionSheetController,
     AlertController,

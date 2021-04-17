@@ -20,7 +20,6 @@ import {Chat} from '../../../services/chat.service';
 import {CalendarService} from '../../../services/calendar.service';
 import {EditfeaturePage} from '../editfeature/editfeature.page';
 import {Churches} from '../../../services/church.service';
-import {Groups} from '../../../services/group.service';
 import {Aws} from '../../../services/aws.service';
 import {FeatureInsightPage} from './feature-insight/feature-insight.page';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
@@ -62,7 +61,6 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
       public loadingCtrl: LoadingController,
       public chatService: Chat,
       public churchService: Churches,
-      public groupService: Groups,
       public networkService: NetworkService,
       public userData: UserData,
       public awsService: Aws,
@@ -75,7 +73,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
-        chatService, churchService, groupService, networkService, userData, awsService,
+        chatService, churchService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }
 

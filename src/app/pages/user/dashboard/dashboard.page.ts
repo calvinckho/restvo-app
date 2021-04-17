@@ -8,7 +8,6 @@ import { UserData } from '../../../services/user.service';
 import { Moment } from '../../../services/moment.service';
 import { CalendarService } from '../../../services/calendar.service';
 import { Chat } from '../../../services/chat.service';
-import { ListmycommunitiesPage } from '../../community/listmycommunities/listmycommunities.page';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../../services/network-service.service';
 import {AboutPage} from '../about/about.page';
@@ -327,10 +326,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         }
     }
 
-    async clickCommunities() {
-        const listMyCommunityModal = await this.modalCtrl.create({component: ListmycommunitiesPage});
-        return await listMyCommunityModal.present();
-    }
 /*
     async slideChange(event){
         event.stopPropagation();

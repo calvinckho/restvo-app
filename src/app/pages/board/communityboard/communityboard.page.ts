@@ -18,7 +18,6 @@ import {
 import {UserData} from '../../../services/user.service';
 import {Board} from '../../../services/board.service';
 import {Moment} from '../../../services/moment.service';
-import {Groups} from '../../../services/group.service';
 import {Response} from '../../../services/response.service';
 import {Churches} from '../../../services/church.service';
 import {Chat} from '../../../services/chat.service';
@@ -26,13 +25,9 @@ import {Auth} from '../../../services/auth.service';
 import {EditboardpostPage} from '../editboardpost/editboardpost.page';
 import {ShowrecipientinfoPage} from '../../connect/showrecipientinfo/showrecipientinfo.page';
 import {ShowboardpostPage} from '../showboardpost/showboardpost.page';
-import {ShowcommunityPage} from '../../community/showcommunity/showcommunity.page';
-import {GroupboardPage} from '../groupboard/groupboard.page';
-import {EditcommunityPage} from '../../community/editcommunity/editcommunity.page';
-import {EditgroupPage} from '../../group/editgroup/editgroup.page';
+import {ShowcommunityPage} from '../../manage/communities/showcommunity/showcommunity.page';
+import {EditcommunityPage} from '../../manage/communities/editcommunity/editcommunity.page';
 import {Resource} from '../../../services/resource.service';
-import {GroupchatPage} from '../../group/groupchat/groupchat.page';
-import {ShowgroupPage} from '../../group/showgroup/showgroup.page';
 import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
 
 @Component({
@@ -71,7 +66,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 public chatService: Chat,
                 public userData: UserData,
                 private churchService: Churches,
-                private groupService: Groups,
                 private modalCtrl: ModalController,
                 private alertCtrl: AlertController) { }
 
@@ -231,7 +225,7 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                         board.posts.forEach(async (boardpost: any) => {
                             if (boardpost.moments[0] && boardpost.moments[0].resource && boardpost.moments[0].resource.field && boardpost.moments[0].resource.hasOwnProperty('en-US') && boardpost.moments[0].resource['en-US'].value[0] === 'Poll') {
                                 for (const response of responses) {
-                                    if (response.moment == boardpost.moments[0]._id) {
+                                    if (response.moment === boardpost.moments[0]._id) {
                                         const index = boardpost.poll.responses.map((c) => c._id).indexOf(response._id);
                                         if (index < 0) { // if the response hasn't been added to the response list
                                             boardpost.poll.responses.push(response);
@@ -356,8 +350,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                     handler: data => {
                         if (access) {
                             this.promptBoardType(data.name, communityId);
-                        } else {
-                            this.createPersonalBoard(data.name, communityId);
                         }
                     }
                 }
@@ -397,8 +389,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                         console.log('result', data);
                         if (data === 'default') {
                             this.createCommunityBoard(name, communityId);
-                        } else {
-                            this.createPersonalBoard(name, communityId);
                         }
                     }
                 }
@@ -413,16 +403,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         const boardId = await this.churchService.editCommunityBoard({action: 'create', board: {name: name, church: communityId}});
         // refresh the boards slide array
         this.boardService.socket.emit('join board', boardId);
-        this.reloadBoardPosts();
-    }
-
-    async createPersonalBoard(name, communityId) {
-        this.ionSpinner = true;
-        const [church] = await this.churchService.loadChurchProfile(communityId);
-        const group = {name: name, details: '', emailDisabled: false, smsDisabled: false, churchId: communityId, board: '', meeting_day: '', meeting_frequency: '', beginAt: new Date().toISOString(), endAt: new Date().toISOString(), meeting_location: {location: '', street: church.meeting_location.street, city: church.meeting_location.city, state: church.meeting_location.state, country: church.meeting_location.country}, published: false, public_group: true, flagged: false, publishedAt: null, expiredAt: null};
-        const createdGroup: any = await this.groupService.createGroupProfile(group); // will also update userData's groups and userData's communityboards list
-        // refresh the boards slide array
-        this.boardService.socket.emit('join board', createdGroup.board);
         this.reloadBoardPosts();
     }
 
@@ -614,15 +594,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
         });
     }
 
-    async createNewGroup() {
-        const editGroupPage = await this.modalCtrl.create({component: EditgroupPage, componentProps: {personalGroup: false, publishGroup: false}});
-        await editGroupPage.present();
-        const {data: refreshNeeded} = await editGroupPage.onDidDismiss();
-        if (refreshNeeded) {
-            this.router.navigateByUrl('/app/myconversations/chat');
-        }
-    }
-
     async setupLoadGroups() {
         this.newsfeedMoreOptions = !this.newsfeedMoreOptions;
         if (this.newsfeedMoreOptions) {
@@ -653,54 +624,6 @@ export class CommunityboardPage implements OnInit, OnDestroy {
                 community.groups.push(group);
             }
         });
-    }
-
-    async showGroupProfile(group) {
-        const groupIds = this.userData.user.groups.map((c) => c._id);
-        if (groupIds.indexOf(group._id) > -1 || this.userData.hasPlatformAdminAccess) { // if user is admin or has already joined this group
-            if (group.conversation) {
-                this.chatService.currentChatProps.push({
-                    conversationId: group.conversation,
-                    name: group.name,
-                    group: group,
-                    badge: true,
-                    page: 'chat',
-                    modalPage: true
-                });
-                const groupPage = await this.modalCtrl.create({
-                    component: GroupchatPage,
-                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-                });
-                await groupPage.present();
-                const {data: refreshNeeded} = await groupPage.onDidDismiss();
-                if (refreshNeeded) {
-                    this.setupLoadGroups();
-                }
-            } else {
-                const groupPage = await this.modalCtrl.create({component: GroupboardPage, componentProps: {
-                        group: group,
-                        page: 'board'
-                    }});
-                await groupPage.present();
-                const {data: refreshNeeded} = await groupPage.onDidDismiss();
-                if (refreshNeeded) {
-                    this.setupLoadGroups();
-                }
-            }
-        } else {
-            if (group.conversation) {
-                const aboutPage = await this.modalCtrl.create({component: ShowgroupPage, componentProps: {
-                        group: group
-                    }});
-                await aboutPage.present();
-            } else if (group.board) {
-                const groupPage = await this.modalCtrl.create({component: GroupboardPage, componentProps: {
-                        group: group,
-                        page: 'board'
-                    }});
-                await groupPage.present();
-            }
-        }
     }
 
     executeSearch(event) {

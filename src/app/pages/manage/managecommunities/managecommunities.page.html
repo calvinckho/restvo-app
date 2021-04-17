@@ -43,16 +43,6 @@
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'members')}">Members</ion-label>
             <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.members?.length" name="alert-circle"></ion-icon>
           </ion-item>
-          <ion-item (click)="clickManageMenu('topics')">
-            <ion-icon slot="start" name="chatbubbles" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'topics')}">Topics</ion-label>
-            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.topics?.length" name="alert-circle"></ion-icon>
-          </ion-item>
-          <ion-item (click)="clickManageMenu('groups')">
-            <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>
-            <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'groups')}">Groups</ion-label>
-            <ion-icon *ngIf="churchService.abuseReports && churchService.abuseReports.groups?.length" name="alert-circle"></ion-icon>
-          </ion-item>
           <ion-item (click)="clickManageMenu('administrators')">
             <ion-icon slot="start" name="key" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': (selectedMenuOption === 'administrators')}">Administrators</ion-label>

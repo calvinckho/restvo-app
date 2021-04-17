@@ -17,7 +17,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CacheModule} from 'ionic-cache';
-import {ShowcommunityPageModule} from './pages/community/showcommunity/showcommunity.module';
+import {ShowcommunityPageModule} from './pages/manage/communities/showcommunity/showcommunity.module';
 import {NgxElectronModule} from 'ngx-electron';
 import {NetworkService} from './services/network-service.service';
 //import {NetworkServiceMock} from './services/mocks/network-service.service.mock';

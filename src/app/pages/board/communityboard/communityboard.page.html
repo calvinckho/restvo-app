@@ -78,17 +78,6 @@
               </div>
             </ion-item>
           </ion-col>
-          <ion-col *ngFor="let topic of community.topics" class="ion-align-self-center" size-xs="4" size-sm="3" size-md="3" size-lg="2" size-xl="2">
-            <ion-item lines="none" (click)="showGroupProfile(topic)">
-              <div class="moreoptions-centered">
-                <ion-avatar class="moreoptions-avatar">
-                  <ion-img [src]="topic.background | background: topic._id"></ion-img>
-                </ion-avatar>
-                <ion-icon class="moreoptions-joined" color="tertiary" *ngIf="topic.joined" name="checkmark"></ion-icon>
-                <ion-label class="moreoptions-label ion-text-center">{{topic.name}}</ion-label>
-              </div>
-            </ion-item>
-          </ion-col>
         </ion-row>
       </ion-grid>
     </div>

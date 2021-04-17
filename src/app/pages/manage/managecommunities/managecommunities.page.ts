@@ -9,22 +9,20 @@ import {
     Platform,
     IonContent
 } from '@ionic/angular';
-import { UserData } from "../../../services/user.service";
-import { Churches } from "../../../services/church.service";
-import { Chat } from "../../../services/chat.service";
-import { Auth } from "../../../services/auth.service";
-import { Resource } from "../../../services/resource.service";
-import {InvitetoconnectPage} from "../../connect/invitetoconnect/invitetoconnect.page";
-import {AnalyticsPage} from "../analytics/analytics.page";
-import {ActivitiesPage} from "../activities/activities.page";
-import {MembersPage} from "../members/members.page";
-import {TopicsPage} from "../topics/topics.page";
-import {GroupsPage} from "../groups/groups.page";
-import {AdministratorsPage} from "../administrators/administrators.page";
-import {CommunitiesPage} from "../communities/communities.page";
-import {PaymentService} from "../../../services/payment.service";
-import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
-import {DevelopmentPage} from "../development/development.page";
+import { UserData } from '../../../services/user.service';
+import { Churches } from '../../../services/church.service';
+import { Chat } from '../../../services/chat.service';
+import { Auth } from '../../../services/auth.service';
+import { Resource } from '../../../services/resource.service';
+import {InvitetoconnectPage} from '../../connect/invitetoconnect/invitetoconnect.page';
+import {AnalyticsPage} from '../analytics/analytics.page';
+import {ActivitiesPage} from '../activities/activities.page';
+import {MembersPage} from '../members/members.page';
+import {AdministratorsPage} from '../administrators/administrators.page';
+import {CommunitiesPage} from '../communities/communities.page';
+import {PaymentService} from '../../../services/payment.service';
+import {ShowcommunityPage} from '../communities/showcommunity/showcommunity.page';
+import {DevelopmentPage} from '../development/development.page';
 
 @Component({
   selector: 'app-managecommunities',
@@ -37,7 +35,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
 
     subscriptions: any = {};
     title = '';
-    restvoStaff: boolean = false;
+    restvoStaff = false;
     stripeCustomer: any;
     selectedMenuOption = '';
     menu = [
@@ -55,16 +53,6 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
             url: 'members',
             label: 'Members',
             component: MembersPage,
-        },
-        {
-            url: 'topics',
-            label: 'Topics',
-            component: TopicsPage,
-        },
-        {
-            url: 'groups',
-            label: 'Groups',
-            component: GroupsPage,
         },
         {
             url: 'administrators',
@@ -85,11 +73,11 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
 
     constructor(private router: Router,
                 private storage: Storage,
-                private platform: Platform,
+                public platform: Platform,
                 private authService: Auth,
-                private chatService: Chat,
+                public chatService: Chat,
                 public userData: UserData,
-                private churchService: Churches,
+                public churchService: Churches,
                 private paymentService: PaymentService,
                 private resourceService: Resource,
                 private modalCtrl: ModalController,
@@ -114,7 +102,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
         if (data && data.type === 'refresh manage page') {
             this.loadCommunity();
         }
-    };
+    }
 
     async setupManagePage() {
         await this.loadCommunity();
@@ -131,15 +119,15 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
         if (currentSubPage) {
             this.title = this.userData.user.churches[this.userData.currentCommunityIndex].name + (currentSubPage.label.length ? ': ' : '') + currentSubPage.label;
         }
-        this.restvoStaff = (['owner','admin','staff']).includes(this.userData.user.role);
-        console.log("page", this.router.url, this.selectedMenuOption);
+        this.restvoStaff = (['owner', 'admin', 'staff']).includes(this.userData.user.role);
+        console.log('page', this.router.url, this.selectedMenuOption);
     }
 
     async loadCommunity() {
         this.stripeCustomer = await this.paymentService.loadCustomer(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
         [this.churchService.currentManagedCommunity] = await this.churchService.loadChurchProfile(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
         this.churchService.currentManagedCommunity.admins.forEach((admin) => {
-            admin.role = "Admin";
+            admin.role = 'Admin';
             admin.wee_user = true;
         });
         await this.churchService.checkAbuseReport(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
@@ -212,7 +200,7 @@ export class ManagecommunitiesPage implements OnInit, OnDestroy {
         await invitePage.present();
     }
 
-    async noNetworkConnection(){
+    async noNetworkConnection() {
         const networkAlert = await this.alertCtrl.create({
             header: 'No Internet Connection',
             subHeader: 'Please check your internet connection.',

@@ -1,6 +1,6 @@
 import {Component, Input, ViewChild, ViewEncapsulation} from '@angular/core';
-import {EditcommunityPage} from "../../community/editcommunity/editcommunity.page";
-import {ShowcommunityPage} from "../../community/showcommunity/showcommunity.page";
+import {EditcommunityPage} from "./editcommunity/editcommunity.page";
+import {ShowcommunityPage} from "./showcommunity/showcommunity.page";
 import {
     ActionSheetController,
     AlertController, IonInfiniteScroll,

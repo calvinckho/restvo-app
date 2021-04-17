@@ -7,7 +7,7 @@ import {
   ModalController,
   Platform, PopoverController,
   ToastController
-} from "@ionic/angular";
+} from '@ionic/angular';
 import {
   StripeCardComponent,
   StripeInstance,
@@ -17,24 +17,23 @@ import {
   StripeCardElementOptions,
   StripeElementsOptions
 } from '@stripe/stripe-js';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserData} from "../../../../services/user.service";
-import {Churches} from "../../../../services/church.service";
-import {Resource} from "../../../../services/resource.service";
-import {EditfeaturePage} from "../../editfeature/editfeature.page";
-import {Location} from "@angular/common";
-import {ElectronService} from "ngx-electron";
-import {SwUpdate} from "@angular/service-worker";
-import {Chat} from "../../../../services/chat.service";
-import {Groups} from "../../../../services/group.service";
-import {NetworkService} from "../../../../services/network-service.service";
-import {Aws} from "../../../../services/aws.service";
-import {Moment} from "../../../../services/moment.service";
-import {Response} from "../../../../services/response.service";
-import {CalendarService} from "../../../../services/calendar.service";
-import {PaymentService} from "../../../../services/payment.service";
-import {CacheService} from "ionic-cache";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserData} from '../../../../services/user.service';
+import {Churches} from '../../../../services/church.service';
+import {Resource} from '../../../../services/resource.service';
+import {EditfeaturePage} from '../../editfeature/editfeature.page';
+import {Location} from '@angular/common';
+import {ElectronService} from 'ngx-electron';
+import {SwUpdate} from '@angular/service-worker';
+import {Chat} from '../../../../services/chat.service';
+import {NetworkService} from '../../../../services/network-service.service';
+import {Aws} from '../../../../services/aws.service';
+import {Moment} from '../../../../services/moment.service';
+import {Response} from '../../../../services/response.service';
+import {CalendarService} from '../../../../services/calendar.service';
+import {PaymentService} from '../../../../services/payment.service';
+import {CacheService} from 'ionic-cache';
 
 @Component({
   selector: 'app-feature-subscription',
@@ -92,7 +91,6 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       public loadingCtrl: LoadingController,
       public chatService: Chat,
       public churchService: Churches,
-      public groupService: Groups,
       public networkService: NetworkService,
       public userData: UserData,
       public awsService: Aws,
@@ -107,7 +105,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
-        chatService, churchService, groupService, networkService, userData, awsService,
+        chatService, churchService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }
 
@@ -152,7 +150,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
     if (this.userData.user) {
       this.setup(); // this needs to be added because reloadEditPage overwrites the parent handler of the same name
     }
-  };
+  }
 
   prevSlide() {
     this.slides.lockSwipes(false);

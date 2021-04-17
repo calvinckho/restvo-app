@@ -25,7 +25,7 @@ const routes: Routes = [
     {
         // service in auth.service.ts that handles routing to connect
         path: 'connect/:id',
-        loadChildren: './pages/community/showcommunity/showcommunity.module#ShowcommunityPageModule' },
+        loadChildren: './pages/manage/communities/showcommunity/showcommunity.module#ShowcommunityPageModule' },
     {
         path: 'video/:id',
         loadChildren: () => import('./pages/connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)
@@ -36,7 +36,7 @@ const routes: Routes = [
     },
     {
         path: 'chat',
-        loadChildren: () => import('./pages/group/groupchat/groupchat.module').then( m => m.GroupchatPageModule),
+        loadChildren: () => import('./pages/connect/groupchat/groupchat.module').then(m => m.GroupchatPageModule),
         outlet: 'sub'
     },
     {

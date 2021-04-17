@@ -8,8 +8,7 @@ import {UserData} from '../../../services/user.service';
 import {Chat} from '../../../services/chat.service';
 import {ShowrecipientinfoPage} from '../showrecipientinfo/showrecipientinfo.page';
 import {CreatechatPage} from '../createchat/createchat.page';
-import {GroupchatPage} from '../../group/groupchat/groupchat.page';
-import {EditgroupPage} from '../../group/editgroup/editgroup.page';
+import {GroupchatPage} from '../groupchat/groupchat.page';
 
 @Component({
   selector: 'app-myconversations',
@@ -259,15 +258,6 @@ export class MyconversationsPage implements OnInit, OnDestroy {
         const createChatPage = await this.modalCtrl.create({component: CreatechatPage});
         await createChatPage.present();
         const {data: refreshNeeded} = await createChatPage.onDidDismiss();
-        if (refreshNeeded) {
-            this.loadMyConversations(true);
-        }
-    }
-
-    async createNewGroup() {
-        const editGroupPage = await this.modalCtrl.create({component: EditgroupPage, componentProps: {personalGroup: false, publishGroup: false}});
-        await editGroupPage.present();
-        const {data: refreshNeeded} = await editGroupPage.onDidDismiss();
         if (refreshNeeded) {
             this.loadMyConversations(true);
         }

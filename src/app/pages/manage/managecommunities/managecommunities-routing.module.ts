@@ -32,24 +32,6 @@ const routes: Routes = [
                         loadChildren: '../members/members.module#MembersPageModule'
                     }
                 ] },
-            {
-                path: 'topics',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: '../topics/topics.module#TopicsPageModule'
-                    }
-                ]
-            },
-            {
-                path: 'groups',
-                children: [
-                    {
-                        path: '',
-                        loadChildren: '../groups/groups.module#GroupsPageModule'
-                    }
-                ]
-            },
             { path: 'administrators',
                 children: [
                     {

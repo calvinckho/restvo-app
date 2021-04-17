@@ -7,12 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { ManagecommunitiesPage } from './managecommunities.page';
 import {AnalyticsPageModule} from "../analytics/analytics.module";
 import {MembersPageModule} from "../members/members.module";
-import {TopicsPageModule} from "../topics/topics.module";
 
 import {AdministratorsPageModule} from "../administrators/administrators.module";
 import {ManagecommunitiesRoutingModule} from "./managecommunities-routing.module";
 import {CommunitiesPageModule} from "../communities/communities.module";
-import {GroupsPageModule} from "../groups/groups.module";
 import {ActivitiesPageModule} from "../activities/activities.module";
 import {DevelopmentPageModule} from "../development/development.module";
 
@@ -24,8 +22,6 @@ import {DevelopmentPageModule} from "../development/development.module";
     ManagecommunitiesRoutingModule,
     AnalyticsPageModule,
     MembersPageModule,
-    TopicsPageModule,
-    GroupsPageModule,
     AdministratorsPageModule,
     CommunitiesPageModule,
     ActivitiesPageModule,

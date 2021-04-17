@@ -5,7 +5,6 @@ import { Contacts, ContactFieldType } from '@ionic-native/contacts/ngx';
 import { AlertController, LoadingController, ModalController, NavParams, Platform } from '@ionic/angular';
 import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
-import { Groups } from '../../../services/group.service';
 import { Auth } from '../../../services/auth.service';
 
 @Component({
@@ -62,7 +61,6 @@ export class InvitetoconnectPage implements OnInit {
                 private authService: Auth,
                 public userData: UserData,
                 private churchService: Churches,
-                private groupService: Groups,
     ) {}
 
     ngOnInit() {
@@ -159,8 +157,6 @@ export class InvitetoconnectPage implements OnInit {
         this.inviteFriends();
         if (this.selectedChurches.length) {
             this.inviteToChurches();
-        } else if (this.selectedGroups.length){
-            this.inviteToGroups();
         }
         this.openComposer();
     }
@@ -356,68 +352,10 @@ export class InvitetoconnectPage implements OnInit {
                 }
             });
         });
-        if(this.selectedGroups){
-            this.inviteToGroups();
-        }
         this.openComposer();
         setTimeout(() => {
             this.modalCtrl.dismiss();
         }, 3000);
-    }
-
-    async inviteToGroups() {
-        if (this.selectedGroups.length){
-            const loading = await this.loadingCtrl.create({
-                message: 'Processing...'
-            });
-            loading.present();
-            if (this.selectedAppUsers.length){
-                let data = { groups: this.selectedGroups, appUsers: this.selectedAppUsers };
-                try {
-                    await this.groupService.inviteNewAppUsers(data);
-                    this.selectedAppUsers.forEach((appuser) => {
-                        this.userData.socket.emit('refresh user status', appuser._id, {type: 'update group participation', conversationId: null});
-                    });
-                    loading.dismiss();
-                    this.refreshNeeded = true;
-                    let alert = await this.alertCtrl.create({
-                        header: 'Invited ' + this.selectedAppUsers.length + ' Restvo user(s).',
-                        message: 'You have successfully invited ' + this.selectedAppUsers.length + ' Restvo user(s) to join ' + this.selectedGroups.length + ' group(s).',
-                        buttons: [{ text: 'Done' }],
-                        cssClass: 'level-15'
-                    });
-                    alert.present();
-                } catch (err) {
-                    loading.dismiss();
-                    this.refreshNeeded = true;
-                    this.noNetworkConnection();
-                }
-            }
-            if (this.selectedContacts.length){
-                try {
-                    await this.groupService.invitePendingMembers({ groups: this.selectedGroups, selectedContacts: this.selectedContacts });
-                    loading.dismiss();
-                    this.refreshNeeded = true;
-                    let alert = await this.alertCtrl.create({
-                        header: 'Invited ' + this.selectedContacts.length + ' person(s).',
-                        message: 'You have successfully invited ' + this.selectedContacts.length + ' person(s) to join ' + this.selectedGroups.length + ' group(s).',
-                        buttons: [{ text: 'Done' }],
-                        cssClass: 'level-15'
-                    });
-                    alert.present();
-                } catch (err){
-                    loading.dismiss();
-                    this.refreshNeeded = true;
-                    let errorAlert = await this.alertCtrl.create({
-                        header: 'Something went wrong...',
-                        message: 'The server is busy. Please try again later.',
-                        buttons: ['Dismiss'],
-                        cssClass: 'level-15'
-                    });
-                    errorAlert.present();
-                }
-            }
-        }
     }
 
     //misc functions

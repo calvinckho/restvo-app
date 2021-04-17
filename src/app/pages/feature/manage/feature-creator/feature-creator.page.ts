@@ -15,7 +15,6 @@ import {ElectronService} from "ngx-electron";
 import {SwUpdate} from "@angular/service-worker";
 import {Chat} from "../../../../services/chat.service";
 import {Churches} from "../../../../services/church.service";
-import {Groups} from "../../../../services/group.service";
 import {NetworkService} from "../../../../services/network-service.service";
 import {UserData} from "../../../../services/user.service";
 import {Aws} from "../../../../services/aws.service";
@@ -59,7 +58,6 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
       public loadingCtrl: LoadingController,
       public chatService: Chat,
       public churchService: Churches,
-      public groupService: Groups,
       public networkService: NetworkService,
       public userData: UserData,
       public awsService: Aws,
@@ -70,7 +68,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
-        chatService, churchService, groupService, networkService, userData, awsService,
+        chatService, churchService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }
 

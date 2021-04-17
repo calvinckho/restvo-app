@@ -6,7 +6,7 @@ import { UserData } from '../../../services/user.service';
 import { Churches } from '../../../services/church.service';
 import { Auth } from '../../../services/auth.service';
 import { Chat } from "../../../services/chat.service"
-import {GroupchatPage} from "../../group/groupchat/groupchat.page";
+import {GroupchatPage} from "../groupchat/groupchat.page";
 import {Moment} from "../../../services/moment.service";
 
 @Component({

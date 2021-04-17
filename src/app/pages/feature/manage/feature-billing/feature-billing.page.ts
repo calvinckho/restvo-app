@@ -29,7 +29,6 @@ import {Location} from "@angular/common";
 import {ElectronService} from "ngx-electron";
 import {SwUpdate} from "@angular/service-worker";
 import {Chat} from "../../../../services/chat.service";
-import {Groups} from "../../../../services/group.service";
 import {Response} from "../../../../services/response.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {PaymentService} from "../../../../services/payment.service";
@@ -92,7 +91,6 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
       public loadingCtrl: LoadingController,
       public chatService: Chat,
       public churchService: Churches,
-      public groupService: Groups,
       public networkService: NetworkService,
       public userData: UserData,
       public awsService: Aws,
@@ -107,7 +105,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   ) {
     super(route, router, location, electronService, swUpdate, change,
         platform, alertCtrl, toastCtrl, actionSheetCtrl, popoverCtrl, modalCtrl, loadingCtrl,
-        chatService, churchService, groupService, networkService, userData, awsService,
+        chatService, churchService, networkService, userData, awsService,
         momentService, resourceService, responseService, calendarService);
   }
 

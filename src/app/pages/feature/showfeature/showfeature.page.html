@@ -579,7 +579,7 @@
                 <div class="participant-centered">
                   <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                    <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                    <div *ngIf="!user.avatar && user.first_name && user.last_name" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
                 </div>
               </ion-col>
@@ -598,7 +598,7 @@
                 <div class="participant-centered">
                   <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                    <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                    <div *ngIf="!user.avatar && user.first_name && user.last_name" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
                 </div>
               </ion-col>
@@ -617,7 +617,7 @@
                 <div class="participant-centered">
                   <ion-avatar class="participant-avatar" slot="start" (click)="seeUserInfo($event, user)">
                     <ion-img *ngIf="user.avatar" [src]="user.avatar"></ion-img>
-                    <div *ngIf="!user.avatar" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                    <div *ngIf="!user.avatar && user.first_name && user.last_name" class="empty-avatar-letters">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
                   </ion-avatar>
                 </div>
               </ion-col>
