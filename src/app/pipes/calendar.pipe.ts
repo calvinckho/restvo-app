@@ -49,13 +49,13 @@ export class CalendarPipe implements PipeTransform {
         cachedCalendarItems = calendarItems;
       }
       let todayLessonExists;
-      let indexOfTodayLesson = 0;
+      let indexOfTodayLesson = null;
       for (let i = cachedCalendarItems.length - 1; i >= 0; i--) {
         if (new Date(cachedCalendarItems[i].startDate).getFullYear() === new Date().getFullYear() && new Date(cachedCalendarItems[i].startDate).getMonth() === new Date().getMonth() && new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
         }
-        if (!todayLessonExists && !cachedCalendarItems[i].completed) {
+        if (!todayLessonExists && (new Date(cachedCalendarItems[i].startDate).getTime() < new Date().getTime()) && !cachedCalendarItems[i].completed) {
           indexOfTodayLesson = i;
         }
       }
@@ -68,14 +68,30 @@ export class CalendarPipe implements PipeTransform {
           return [cachedCalendarItems[indexOfTodayLesson]];
         }
       }
-      if (indexOfTodayLesson !== null) {
-        if (data && data.output === 'calendaritem') {
+      if (data && data.output === 'calendaritem') {
+        if (indexOfTodayLesson !== null) {
           return cachedCalendarItems[indexOfTodayLesson];
-        } else if (data && data.output === 'index') {
-          return indexOfTodayLesson;
+        } else {
+          return null;
         }
-      } else {
-        return null;
+      } else if (data && data.output === 'index') {
+        if (indexOfTodayLesson !== null) {
+          return indexOfTodayLesson;
+        } else {
+          return null;
+        }
+      } else if (data && data.output === 'actionbanner') {
+        if (todayLessonExists && cachedCalendarItems[indexOfTodayLesson].completed) {
+          return 'relax';
+        } else if (todayLessonExists && !cachedCalendarItems[indexOfTodayLesson].completed) {
+          return 'keep it up';
+        } else if (!todayLessonExists && indexOfTodayLesson) {
+          return 'keep it up';
+        } else if (indexOfTodayLesson === 0) {
+          return 'welcome';
+        } else {
+          return 'relax';
+        }
       }
     } else if (type === 'overallcompleted') { // data = { scheduleIds: [] }
       let total_count = 0;

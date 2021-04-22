@@ -439,17 +439,35 @@
         </div>
       </div>
       <div *ngIf="item === 10220" class="learning-section"> <!--Learning-->
-        <!--<div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
-          Keep it up Graphics
+        <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'welcome'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <div class="graphic-banner" *ngFor="let calendarItem of [((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })]">
+            <h1>Welcome</h1>
+            <p>Learn and grow towards your goal.</p>
+            <ion-button (click)="openContent($event, calendarItem)">Let's start</ion-button>
+            <img src="/assets/img/welcome.svg" />
+          </div>
         </div>
-        <div *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
-          Relax Graphics
-        </div>-->
-        <ion-item lines="none">
-          <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Goal</ion-label>
-        </ion-item>
+        <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'keep it up'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <div class="graphic-banner orange" *ngFor="let calendarItem of [((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })]">
+            <h1>Keep It Up</h1>
+            <p>You have lessons scheduled for today.</p>
+            <ion-button (click)="openContent($event, calendarItem)">Continue</ion-button>
+            <img src="/assets/img/keep.svg" />
+          </div>
+        </div>
+        <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'relax'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+          <div class="graphic-banner blue">
+            <h1>Relax</h1>
+            <p>There is no lesson scheduled today. Enjoy your day off.</p>
+            <img src="/assets/img/relax.svg" />
+          </div>
+        </div>
+
         <!--Daily Goal Card-->
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })">
+          <ion-item lines="none">
+            <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Goal</ion-label>
+          </ion-item>
           <ion-card *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'todaycalendaritems', scheduleIds: scheduleIds })"  [ngStyle]="{'background': null | background : {} : 'color' }" (click)="openContent($event, calendarItem)" mode="md">
             <ion-card-content class="goal-content ion-no-padding">
               <ion-item class="calendar-item">
@@ -463,7 +481,7 @@
           </ion-card>
         </div>
         <!--Rest Card-->
-        <ion-card *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
+        <!--<ion-card *ngIf="!((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <ion-card-content class="goal-content ion-no-padding">
             <ion-item class="calendar-item">
               <div>
@@ -471,7 +489,7 @@
               </div>
             </ion-item>
           </ion-card-content>
-        </ion-card>
+        </ion-card>-->
         <div *ngFor="let goal of listOfDisplayGoals; trackBy: customTrackBy">
           <div *ngIf="goal[1] === 'goal'"> <!--Only Show non-favorite goals-->
             <ion-item lines="none" class="ion-no-margin">
