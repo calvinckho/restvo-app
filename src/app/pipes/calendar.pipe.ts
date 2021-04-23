@@ -90,7 +90,7 @@ export class CalendarPipe implements PipeTransform {
         } else if (indexOfTodayLesson === 0) {
           return 'welcome';
         } else {
-          if (cachedCalendarItems[cachedCalendarItems.length - 1].completed) {
+          if (cachedCalendarItems.length && cachedCalendarItems[cachedCalendarItems.length - 1].completed) {
             return 'completed';
           } else {
             return 'relax';
