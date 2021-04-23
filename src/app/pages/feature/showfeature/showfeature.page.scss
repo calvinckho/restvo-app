@@ -65,14 +65,18 @@ app-showfeature {
       color: white;
     }
 
-    & h1 {
-      margin-top: 0;
-      font-weight: bold;
-      font-size: 35px;
-    }
+    .info {
+      margin-right: 175px;
 
-    & p {
-      font-size: 20px;
+      & h1 {
+        margin-top: 0;
+        font-weight: bold;
+        font-size: 35px;
+      }
+  
+      & p {
+        font-size: 20px;
+      }
     }
 
     & img {
