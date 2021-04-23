@@ -82,7 +82,7 @@ export class CalendarPipe implements PipeTransform {
         }
       } else if (data && data.output === 'actionbanner') {
         if (todayLessonExists && cachedCalendarItems[indexOfTodayLesson].completed) {
-          return 'relax';
+          return 'done today';
         } else if (todayLessonExists && !cachedCalendarItems[indexOfTodayLesson].completed) {
           return 'keep it up';
         } else if (!todayLessonExists && indexOfTodayLesson) {
@@ -90,7 +90,11 @@ export class CalendarPipe implements PipeTransform {
         } else if (indexOfTodayLesson === 0) {
           return 'welcome';
         } else {
-          return 'relax';
+          if (cachedCalendarItems[cachedCalendarItems.length - 1].completed) {
+            return 'completed';
+          } else {
+            return 'relax';
+          }
         }
       }
     } else if (type === 'overallcompleted') { // data = { scheduleIds: [] }
