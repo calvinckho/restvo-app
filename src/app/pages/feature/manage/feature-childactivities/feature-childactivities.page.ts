@@ -1,12 +1,12 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {AlertController, ModalController, Platform} from "@ionic/angular";
-import {PickfeaturePopoverPage} from "../../pickfeature-popover/pickfeature-popover.page";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Auth} from "../../../../services/auth.service";
-import {Chat} from "../../../../services/chat.service";
-import {UserData} from "../../../../services/user.service";
-import {Moment} from "../../../../services/moment.service";
-import {Resource} from "../../../../services/resource.service";
+import {AlertController, ModalController, Platform} from '@ionic/angular';
+import {PickfeaturePopoverPage} from '../../pickfeature-popover/pickfeature-popover.page';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Auth} from '../../../../services/auth.service';
+import {Chat} from '../../../../services/chat.service';
+import {UserData} from '../../../../services/user.service';
+import {Moment} from '../../../../services/moment.service';
+import {Resource} from '../../../../services/resource.service';
 
 @Component({
   selector: 'app-feature-childactivities',
@@ -62,7 +62,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
 
   reloadChildActivitiesHandler = async () => {
     this.setupChildActivitiesPage();
-  };
+  }
 
   async setupChildActivitiesPage() {
     if (this.userData && this.userData.user) {
@@ -197,7 +197,7 @@ export class FeatureChildActivitiesPage implements OnInit, OnDestroy {
   }
 
   async multiSelectAction(action) {
-    if (!this.selectedActivities.length) return; // if no child activity or remove type selected, exit
+    if (!this.selectedActivities.length) { return; } // if no child activity or remove type selected, exit
     const alert = await this.alertCtrl.create({
       header: (['owner', 'admin', 'staff'].includes(this.userData.user.role) && action === 'Archive' ? this.resourceService.resource['en-US'].value[44] : this.resourceService.resource['en-US'].value[19]) + ' ' + this.categoryLabel + (this.selectedActivities.length === 1 ? 's' : ''),
       subHeader: 'You are about to ' + (['owner', 'admin', 'staff'].includes(this.userData.user.role) && action === 'Archive' ? this.resourceService.resource['en-US'].value[44] : this.resourceService.resource['en-US'].value[19]).toLowerCase() + ' ' + (this.selectedActivities.length === 1 ? (this.selectedActivities[0].matrix_string[0][0]) : (this.selectedActivities.length + ' ' + this.categoryLabel + 's')) + '. Are you sure you want to proceed?',
