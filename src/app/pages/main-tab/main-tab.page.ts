@@ -754,7 +754,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                 window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
             } else { // on iOS
                 await this.menuCtrl.enable(false);
-                this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId]);
+                this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId, { channelLastN: params.channelLastN, startWithAudioMuted: params.startWithAudioMuted, startWithVideoMuted: params.startWithVideoMuted, videoChatRoomSubject: encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, '')}]);
                 if (this.userData.videoChatRoomId) { // if video chat wasn't exited correctly, reload the window
                     setTimeout(() => {
                         window.location.reload();

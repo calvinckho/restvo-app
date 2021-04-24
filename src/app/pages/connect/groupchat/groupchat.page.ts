@@ -1020,6 +1020,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
             setTimeout(() => {
                 this.chatService.toggleVideoChat({
                     videoChatRoomId: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].conversationId,
+                    videoChatRoomSubject: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1].name,
                     channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
                     startWithAudioMuted: false,
                     startWithVideoMuted: false
