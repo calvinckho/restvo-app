@@ -71,8 +71,12 @@ app-showfeature {
       font-size: 35px;
     }
 
-    & p {
-      font-size: 20px;
+    .info {
+      margin-right: 150px;
+
+      & p {
+        font-size: 20px;
+      }
     }
 
     & img {

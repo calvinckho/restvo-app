@@ -442,38 +442,48 @@
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'welcome'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <div class="graphic-banner" *ngFor="let calendarItem of [((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })]">
             <h1>Welcome</h1>
-            <p>Learn and grow towards your goal.</p>
-            <ion-button (click)="openContent($event, calendarItem)">Let's start</ion-button>
-            <img src="/assets/img/welcome.svg" />
+            <div class="info">
+              <p>Learn and grow towards your goal.</p>
+              <ion-button (click)="openContent($event, calendarItem)">Let's start</ion-button>
+              <img src="/assets/img/welcome.svg" />
+            </div>
           </div>
         </div>
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'keep it up'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <div class="graphic-banner orange" *ngFor="let calendarItem of [((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })]">
             <h1>Keep It Up</h1>
-            <p>You have lessons scheduled for today.</p>
-            <ion-button (click)="openContent($event, calendarItem)">Continue</ion-button>
-            <img src="/assets/img/keep.svg" />
+            <div class="info">
+              <p>You have lessons scheduled for today.</p>
+              <ion-button (click)="openContent($event, calendarItem)">Continue</ion-button>
+              <img src="/assets/img/keep.svg" />
+            </div>
           </div>
         </div>
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'done today'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <div class="graphic-banner blue">
             <h1>Great Work</h1>
-            <p>You have completed your lesson for today.</p>
-            <img src="/assets/img/relax.svg" />
+            <div class="info">
+              <p>You have completed your lesson for today.</p>
+              <img src="/assets/img/relax.svg" />
+            </div>
           </div>
         </div>
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'relax'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <div class="graphic-banner blue">
             <h1>Relax</h1>
-            <p>There is no lesson scheduled for today.</p>
-            <img src="/assets/img/relax.svg" />
+            <div class="info">
+              <p>There is no lesson scheduled for today.</p>
+              <img src="/assets/img/relax.svg" />
+            </div>
           </div>
         </div>
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'actionbanner', scheduleIds: scheduleIds }) === 'completed'" [ngStyle]="{'background': null | background : {} : 'color' }" mode="md">
           <div class="graphic-banner blue">
             <h1>Congratulations</h1>
-            <p>You have completed the course.</p>
-            <img src="/assets/img/relax.svg" />
+            <div class="info">
+              <p>You have completed the course.</p>
+              <img src="/assets/img/relax.svg" />
+            </div>
           </div>
         </div>
         <!--Daily Goal Card-->
