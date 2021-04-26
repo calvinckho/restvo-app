@@ -18,7 +18,7 @@ import {CommunityPopoverPageModule} from '../manage/communities/community-popove
 import {UploadmediaPageModule} from '../feature/uploadmedia/uploadmedia.module';
 import {AboutPageModule} from '../user/about/about.module';
 import {UserPageModule} from '../user/user.module';
-import {CreatefeaturePageModule} from '../feature/createfeature/createfeature.module';
+import {CreatecommunityPageModule} from '../feature/createcommunity/createcommunity.module';
 import {CustomreminderPopoverPageModule} from '../feature/customreminder-popover/customreminder-popover.module';
 import {EditparticipantsPageModule} from '../feature/editparticipants/editparticipants.module';
 import {ManagefeaturePageModule} from '../feature/manage/managefeature.module';
@@ -32,7 +32,7 @@ import {SuccessPopoverPageModule} from '../feature/success-popover/success-popov
     MainTabPageRoutingModule,
 
       ManagefeaturePageModule,
-      CreatefeaturePageModule,
+      CreatecommunityPageModule,
       EditfeaturePageModule,
       EditparticipantsPageModule,
 

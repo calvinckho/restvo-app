@@ -28,11 +28,11 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
 
 @Component({
   selector: 'app-createfeature',
-  templateUrl: './createfeature.page.html',
-  styleUrls: ['./createfeature.page.scss'],
+  templateUrl: './createcommunity.page.html',
+  styleUrls: ['./createcommunity.page.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class CreatefeaturePage extends EditfeaturePage implements OnInit {
+export class CreatecommunityPage extends EditfeaturePage implements OnInit {
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
 
     createReachedEnd = false;

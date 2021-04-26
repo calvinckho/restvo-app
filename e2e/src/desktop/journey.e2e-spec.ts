@@ -10,7 +10,7 @@ import {
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
     OnboardingfeaturePage,
-    CreatefeaturePage,
+    CreatecommunityPage,
     AboutPage,
     PreferencesPage,
     SuccessPopoverPage
@@ -29,7 +29,7 @@ let preferences: PreferencesPage;
 let me: DashboardPage;
 let pickfeature: PickfeaturePopoverPage;
 let pickpeople: PickpeoplePopoverPage;
-let createfeature: CreatefeaturePage;
+let createcommunity: CreatecommunityPage;
 let onboardfeature: OnboardingfeaturePage;
 let success: SuccessPopoverPage;
 
@@ -59,7 +59,7 @@ function sharedTest(activityUrl) {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreatefeaturePage();
+        createcommunity = new CreatecommunityPage();
         onboardfeature = new OnboardingfeaturePage();
         success = new SuccessPopoverPage();
     });

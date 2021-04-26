@@ -527,9 +527,9 @@ export class EditparticipantsPage extends PageObjectBase {
     }
 }
 
-export class CreatefeaturePage extends PageObjectBase {
+export class CreatecommunityPage extends PageObjectBase {
     constructor() {
-        super('app-createfeature', '/');
+        super('app-createcommunity', '/');
     }
 
     async enterNewCommunityDescription() {

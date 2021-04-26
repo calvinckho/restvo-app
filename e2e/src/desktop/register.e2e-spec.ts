@@ -10,7 +10,6 @@ import {
     PickfeaturePopoverPage,
     PickpeoplePopoverPage,
     OnboardingfeaturePage,
-    CreatefeaturePage,
     AboutPage,
     PreferencesPage
 } from '../app.po';
@@ -29,7 +28,6 @@ describe('register an account as a new user', () => {
     let me: DashboardPage;
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
-    let createfeature: CreatefeaturePage;
     let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
@@ -49,7 +47,6 @@ describe('register an account as a new user', () => {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreatefeaturePage();
         onboardfeature = new OnboardingfeaturePage();
         await browser.get('/');
     });

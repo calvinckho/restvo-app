@@ -11,7 +11,7 @@ import {
     PickpeoplePopoverPage,
     EditparticipantsPage,
     OnboardingfeaturePage,
-    CreatefeaturePage,
+    CreatecommunityPage,
     AboutPage,
     PreferencesPage
 } from '../app.po';
@@ -31,7 +31,7 @@ describe('add and remove user from group', () => {
     let pickfeature: PickfeaturePopoverPage;
     let pickpeople: PickpeoplePopoverPage;
     let editparticipants: EditparticipantsPage;
-    let createfeature: CreatefeaturePage;
+    let createcommunity: CreatecommunityPage;
     let onboardfeature: OnboardingfeaturePage;
 
     beforeAll(async () => {
@@ -51,7 +51,7 @@ describe('add and remove user from group', () => {
         preferences = new PreferencesPage();
         pickfeature = new PickfeaturePopoverPage();
         pickpeople = new PickpeoplePopoverPage();
-        createfeature = new CreatefeaturePage();
+        createcommunity = new CreatecommunityPage();
         editparticipants = new EditparticipantsPage();
         onboardfeature = new OnboardingfeaturePage();
     });

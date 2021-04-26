@@ -10,7 +10,7 @@ import {
   PickfeaturePopoverPage,
   PickpeoplePopoverPage,
   OnboardingfeaturePage,
-  CreatefeaturePage,
+  CreatecommunityPage,
   AboutPage,
   PreferencesPage,
   ManagePage
@@ -30,7 +30,7 @@ describe(' Create and Delete a Community', () => {
   let me: DashboardPage;
   let pickfeature: PickfeaturePopoverPage;
   let pickpeople: PickpeoplePopoverPage;
-  let createfeature: CreatefeaturePage;
+  let createcommunity: CreatecommunityPage;
   let onboardfeature: OnboardingfeaturePage;
   let manage: ManagePage;
 
@@ -51,7 +51,7 @@ describe(' Create and Delete a Community', () => {
     preferences = new PreferencesPage();
     pickfeature = new PickfeaturePopoverPage();
     pickpeople = new PickpeoplePopoverPage();
-    createfeature = new CreatefeaturePage();
+    createcommunity = new CreatecommunityPage();
     onboardfeature = new OnboardingfeaturePage();
     manage = new ManagePage();
     await browser.get('/');
@@ -84,24 +84,24 @@ describe(' Create and Delete a Community', () => {
     await app.clickElement('#communityCard');
     await pickfeature.clickNextButton();
     await pickfeature.clickCreateNewMoment();
-    await createfeature.waitUntilVisible();
+    await createcommunity.waitUntilVisible();
     expect(await app.currentUrl()).toContain('community');
   });
 
   it('should fill out community info', async () => {
-    await createfeature.waitUntilElementVisible('#communityName');
-    await createfeature.enterTextareaText('#communityName', 'E2E-Community-Test');
-    await createfeature.clickNextButton();
-    await createfeature.waitUntilElementVisible('#addProgramPrompt');
-    await createfeature.clickNextButton();
-    await createfeature.waitUntilElementVisible('#communityDescription'); // because it is a slideshow, needs to wait until visible
-    await createfeature.enterNewCommunityDescription();
-    await createfeature.clickSaveButton();
-    await createfeature.waitUntilElementVisible('#chooseProgramText');
-    await createfeature.clickTutorialNextButton();
-    await createfeature.waitUntilElementVisible('#tutorialDone');
-    await createfeature.clickTutorialDoneButton();
-    await createfeature.waitUntilInvisible();
+    await createcommunity.waitUntilElementVisible('#communityName');
+    await createcommunity.enterTextareaText('#communityName', 'E2E-Community-Test');
+    await createcommunity.clickNextButton();
+    await createcommunity.waitUntilElementVisible('#addProgramPrompt');
+    await createcommunity.clickNextButton();
+    await createcommunity.waitUntilElementVisible('#communityDescription'); // because it is a slideshow, needs to wait until visible
+    await createcommunity.enterNewCommunityDescription();
+    await createcommunity.clickSaveButton();
+    await createcommunity.waitUntilElementVisible('#chooseProgramText');
+    await createcommunity.clickTutorialNextButton();
+    await createcommunity.waitUntilElementVisible('#tutorialDone');
+    await createcommunity.clickTutorialDoneButton();
+    await createcommunity.waitUntilInvisible();
     expect(await app.currentUrl()).toContain('manage');
   });
 

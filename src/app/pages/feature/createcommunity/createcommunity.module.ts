@@ -5,14 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CreatefeaturePage } from './createfeature.page';
+import { CreatecommunityPage } from './createcommunity.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import {PlyrModule} from 'ngx-plyr';
 
 const routes: Routes = [
   {
     path: '',
-    component: CreatefeaturePage
+    component: CreatecommunityPage
   }
 ];
 
@@ -25,6 +25,6 @@ const routes: Routes = [
     PlyrModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CreatefeaturePage]
+  declarations: [CreatecommunityPage]
 })
-export class CreatefeaturePageModule {}
+export class CreatecommunityPageModule {}

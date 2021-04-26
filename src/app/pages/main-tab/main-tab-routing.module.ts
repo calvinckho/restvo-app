@@ -157,7 +157,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../feature/createfeature/createfeature.module#CreatefeaturePageModule'
+                                loadChildren: '../feature/createcommunity/createcommunity.module#CreatecommunityPageModule'
                             }
                         ]
                     },
@@ -175,7 +175,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: ':id',
-                                loadChildren: '../feature/createfeature/createfeature.module#CreatefeaturePageModule'
+                                loadChildren: '../feature/createcommunity/createcommunity.module#CreatecommunityPageModule'
                             }
                         ]
                     },
