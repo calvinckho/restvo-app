@@ -27,10 +27,10 @@ import {Resource} from "../../../services/resource.service";
 import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
 
 @Component({
-  selector: 'app-createfeature',
+  selector: 'app-createcommunity',
   templateUrl: './createcommunity.page.html',
   styleUrls: ['./createcommunity.page.scss'],
-    encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class CreatecommunityPage extends EditfeaturePage implements OnInit {
     @ViewChild(IonSlides, {static: false}) slides: IonSlides;
