@@ -360,7 +360,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
           // 3. if loading an existing Activity
           if (this.moment && this.moment._id) {
-              this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
+              //this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
               // setup People (10500) labels
               let peopleComponentId = -1;
               if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
@@ -533,7 +533,10 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
       this.addComponentActivated = false;
       // append component id, max count, input field in moment object
-      if (componentId === 10220) { // for Lesson
+      if (componentId === 10000) { // for Title
+          this.moment.matrix_number.push([]); // input field
+          this.moment.matrix_string.push(['']); // input field
+      } else if (componentId === 10220) { // for Lesson
           this.moment.matrix_number.push([]); // input field
           this.moment.matrix_string.push([]); // input field
           this.moment.array_boolean[10] = true; // allow unauthenticated access
@@ -1293,7 +1296,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
       await this.loading.dismiss();
       if (closeModal) { // for editFeature.ts
-          const alert = await await this.alertCtrl.create({
+          const alert = await this.alertCtrl.create({
               header: this.resource['en-US'].value[10], // updated
               message: this.moment.matrix_string[0][0] + this.resource['en-US'].value[11] + (this.moment.array_boolean[0] ? this.resource['en-US'].value[12] : ''),
               buttons: [{ text: 'Ok',
