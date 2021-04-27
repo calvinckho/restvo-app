@@ -461,7 +461,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                   if (interactable.length > 2 && interactable[2]) {
                       content = JSON.parse(interactable[2]);
                   } else { // for backward compatibility before quill, need to build the content object from scratch
-                      content = {ops: [{insert: interactable[0] + '\n'}]};
+                      content = {ops: [{insert: (interactable[0] || '') + '\n'}]};
                   }
                   this.interactableDisplay[interactableId].content = content; // insert the response data into the display matrix
               }

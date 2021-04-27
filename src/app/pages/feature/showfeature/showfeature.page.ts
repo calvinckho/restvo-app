@@ -524,6 +524,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 this.showPreview = this.moment.array_boolean.length > 11 && this.moment.array_boolean[11];
                 if (this.showPreview) { // if preview page is enabled
+                    await this.setupPermission();
                     if (this.router.url.includes('discover') && !this.hasParticipantAccess) {
                         this.showPreview = true;
                     } else if (this.router.url.includes('discover') && this.hasParticipantAccess) {

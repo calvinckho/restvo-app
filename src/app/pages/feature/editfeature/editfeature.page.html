@@ -32,9 +32,9 @@
       <ion-input style="font-style: italic" (focus)="change.detach()" (blur)="change.reattach();" (ionChange)="templateChanged = true" [placeholder]="resource['en-US'].value[5]" [(ngModel)]="moment.resource['en-US'].value[0]"></ion-input>
     </ion-item>
     <!--title-->
-    <ion-item lines="none">
+    <ion-item lines="none" *ngIf="moment.matrix_string && moment.matrix_string.length">
       <div class="moment-label" slot="start"><ion-icon class="side-icon" color="grey" name="brush"></ion-icon></div>
-      <ion-textarea [(ngModel)]="moment.matrix_string[resource.matrix_number[0].indexOf(10000)][0]" autoGrow="true" rows="1" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="moment.resource['en-US'].value[0] + ' ' + resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10000)][1]"></ion-textarea>
+      <ion-textarea [(ngModel)]="moment.matrix_string[moment.resource.matrix_number[0].indexOf(10000)][0]" autoGrow="true" rows="1" (focus)="change.detach()" (blur)="change.reattach();" [placeholder]="moment.resource['en-US'].value[0] + ' ' + resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(10000)][1]"></ion-textarea>
     </ion-item>
     <!--Onboarding Options-->
     <ion-item-group *ngIf="moment.program && moment.program.length">
