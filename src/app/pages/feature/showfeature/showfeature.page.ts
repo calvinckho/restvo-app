@@ -282,14 +282,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
       this.categoryIds = this.moment.categories ? this.moment.categories.map((c) => c._id) : [];
 
-      if (this.moment && this.moment._id) {
-          // ready to check authentication status
-          if (this.authService.token && this.userData.user) {
-              this.setupPermission();
-          } else {
-              this.setupPermissionCompleted = true;
-          }
-      }
       // load list of plans. it does not require authentication
       await this.loadPrograms();
 
@@ -418,6 +410,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           }
       }
     if (this.moment) {
+        if (this.moment && this.moment._id) {
+            // ready to check authentication status
+            if (this.authService.token && this.userData.user) {
+                this.setupPermission();
+            } else {
+                this.setupPermissionCompleted = true;
+            }
+        }
         if (this.moment.location && this.moment.location.geo && this.moment.location.geo.coordinates && this.moment.location.geo.coordinates.length) {
             this.mapURL = 'https://maps.locationiq.com/v2/staticmap?key=pk.e5797fe100f9aa5732d5346f742b243f&center=' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0] + '&zoom=12&size=1000x600&maptype=roadmap&markers=icon:%20large-red-cutout%20|' + this.moment.location.geo.coordinates[1] + ',' + this.moment.location.geo.coordinates[0];
             this.addressURL = 'http://maps.google.com/?q=' + this.moment.location.geo.coordinates[1] + '+%2C' + this.moment.location.geo.coordinates[0];
@@ -478,9 +478,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
-                if (this.authService.token && this.userData.user) {
+                /*if (this.authService.token && this.userData.user) {
                     await this.setupPermission(); // this is needed to properly setup permission
-                }
+                }*/
                 this.refreshCalendarDisplay();
                 // console.log("adminOrPublicAccessContentCalendars", this.adminOrPublicAccessContentCalendars)
             }
@@ -501,9 +501,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
-                if (this.authService.token && this.userData.user) {
+                /*if (this.authService.token && this.userData.user) {
                     await this.setupPermission();  // this is needed to properly setup permission
-                }
+                }*/
                 this.refreshCalendarDisplay();
                 //console.log("adminOrPublicAccessContentCalendars", this.scheduleIds, this.adminOrPublicAccessContentCalendars)
             }
@@ -524,7 +524,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 this.showPreview = this.moment.array_boolean.length > 11 && this.moment.array_boolean[11];
                 if (this.showPreview) { // if preview page is enabled
-                    await this.setupPermission();
                     if (this.router.url.includes('discover') && !this.hasParticipantAccess) {
                         this.showPreview = true;
                     } else if (this.router.url.includes('discover') && this.hasParticipantAccess) {
