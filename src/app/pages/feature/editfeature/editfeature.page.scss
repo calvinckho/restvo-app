@@ -545,4 +545,8 @@ app-editfeature, app-editparticipants {
   .ql-snow .ql-editor h3 {
     font-size: 16px;
   }
+
+  .ql-editor.ql-blank::before {
+    color: var(--ion-color-dark) !important;
+  }
 }

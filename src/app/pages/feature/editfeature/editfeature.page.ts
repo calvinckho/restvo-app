@@ -382,7 +382,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               this.moment.array_moment.forEach((moment) => {
                   this.referenceActivities.push(moment);
               });
-              if (this.moment.hasOwnProperty('array_community') && this.moment.array_community.length) {
+              if (this.moment.hasOwnProperty('array_community') && this.moment.array_community.length && typeof this.moment.array_community[0] === 'object') {
                   // convert populated community back to ids
                   const communityIds = this.moment.array_community.map((c) => c._id);
                   delete this.moment.array_community;
@@ -403,7 +403,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               } else {
                   this.moment.array_community = ['5ab62be8f83e2c1a8d41f894'];
               }
-              if (this.moment.hasOwnProperty('categories') && this.moment.categories.length) {
+              if (this.moment.hasOwnProperty('categories') && this.moment.categories.length && typeof this.moment.categories[0] === 'object') {
                   // convert populated categories back to ids
                   const categoryIds = this.moment.categories.map((c) => c._id);
                   delete this.moment.categories;

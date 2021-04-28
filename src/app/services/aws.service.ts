@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Compressor from 'compressorjs';
-import { imgSrcToBlob } from 'blob-util'
+import { imgSrcToBlob } from 'blob-util';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import {ActionSheetController, ToastController, Platform, LoadingController, AlertController} from '@ionic/angular';
@@ -9,7 +9,7 @@ import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 
 import fixOrientation from 'fix-orientation-capacitor';
-import {Resource} from "./resource.service";
+import {Resource} from './resource.service';
 
 // Set S3 endpoint to DigitalOcean Spaces
 
@@ -62,12 +62,12 @@ export class Aws {
             } catch (err) {
                 loading.dismiss();
                 this.presentToast('Failed to process file for upload.');
-                console.log("failed to process photo for upload.", err);
-                return "Upload failed";
+                console.log('failed to process photo for upload.', err);
+                return 'Upload failed';
             }
         } catch (err) {
             loading.dismiss();
-            return "Upload abandoned";
+            return 'Upload abandoned';
         }
     }
 
@@ -111,7 +111,7 @@ export class Aws {
                 try {
                     await loading.present();
                     const result: any = await this.upload(type, id, fileBlob, file.name, file.size, loading);
-                    console.log("result", result);
+                    console.log('result', result);
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
                         if (sessionId) {
@@ -124,7 +124,7 @@ export class Aws {
                     resolve(result.msg);
                 } catch (err) {
                     loading.dismiss();
-                    reject("Upload abandoned");
+                    reject('Upload abandoned');
                 }
             };
             this.reader.readAsArrayBuffer(file);
@@ -132,16 +132,16 @@ export class Aws {
     }
 
     public async uploadImageUri(type: string, id: string, uri: string, sessionId: string) {
-        let filename = uri.substring(uri.lastIndexOf('/') + 1).toLowerCase();
+        const filename = uri.substring(uri.lastIndexOf('/') + 1).toLowerCase();
         const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-        let blob = await imgSrcToBlob(uri, (['jpg', 'jpeg'].indexOf(ext) > -1 ? 'image/jpeg' : 'image/png'), 'Anonymous');
+        const blob = await imgSrcToBlob(uri, (['jpg', 'jpeg'].indexOf(ext) > -1 ? 'image/jpeg' : 'image/png'), 'Anonymous');
         const loading = await this.loadingCtrl.create({
             message: 'Processing File...'
         });
         try {
             await loading.present();
             const result: any = await this.upload(type, id, blob, filename, blob.size, loading);
-            console.log("result", result);
+            console.log('result', result);
             if (result.msg === 'Upload succeeded') {
                 this.url = result.url;
                 if (sessionId) {
@@ -154,7 +154,7 @@ export class Aws {
             return result.msg;
         } catch (err) {
             loading.dismiss();
-            return "Upload abandoned";
+            return 'Upload abandoned';
         }
     }
 
@@ -163,42 +163,52 @@ export class Aws {
         const ext = filename_ext.substring(filename_ext.lastIndexOf('.') + 1).toLowerCase();
         return new Promise(resolve => {
             if (blob) {
-                console.log("beginning to upload...");
+                console.log('beginning to upload...');
                 const formData: any = new FormData();
                 const xhr = new XMLHttpRequest();
-                formData.append("type", type);
-                formData.append("size", fileSize);
-                formData.append("_id", id);
-                formData.append("ext", ext);
+                formData.append('type', type);
+                formData.append('size', fileSize);
+                formData.append('_id', id);
+                formData.append('ext', ext);
                 const time_string = new Date().getTime() + Math.random().toString(36).substring(2, 5);
                 const location = type + '/' + id + '/' + time_string + '/'  + filename + '.' + ext;
-                formData.append("location", location);
-                formData.append("upload", blob, filename + "." + ext);
-                xhr.open('POST', this.networkService.domain + "/api/aws/upload", true);
+                formData.append('location', location);
+                formData.append('upload', blob, filename + '.' + ext);
+                xhr.open('POST', this.networkService.domain + '/api/aws/upload', true);
                 xhr.setRequestHeader('Authorization', this.authService.token);
                 xhr.onload = function () {
                     if (xhr.readyState === 4) {
-                        loading.dismiss();
+                        if (loading) {
+                            loading.dismiss();
+                        }
                         if (xhr.status === 200) {
                             const url = JSON.parse(xhr.responseText);
                             console.log(url);
-                            resolve({msg: "Upload succeeded", url: url});
+                            resolve({msg: 'Upload succeeded', url: url});
                         } else {
                             console.log(xhr.response);
-                            resolve({msg: "Upload failed"});
+                            resolve({msg: 'Upload failed'});
                         }
                     } else {
-                        resolve({msg: "Upload failed"});
-                        loading.dismiss();
+                        resolve({msg: 'Upload failed'});
+                        if (loading) {
+                            loading.dismiss();
+                        }
                     }
                 };
                 xhr.send(formData);
             } else {
-                console.log("file is absent.");
-                resolve({msg: "Upload failed"});
-                loading.dismiss();
+                console.log('file is absent.');
+                resolve({msg: 'Upload failed'});
+                if (loading) {
+                    loading.dismiss();
+                }
             }
-            setTimeout(() => loading.dismiss(), 10000); // remove the loading box after 20 sec
+            setTimeout(() => {
+                if (loading) {
+                    loading.dismiss();
+                }
+            }, 10000); // remove the loading box after 20 sec
         });
     }
 
@@ -215,8 +225,8 @@ export class Aws {
         const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
         // Write the bytes of the string to an ArrayBuffer.
-        let ab = new ArrayBuffer(byteString.length);
-        let ia = new Uint8Array(ab);
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
         for (let i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
@@ -237,7 +247,7 @@ export class Aws {
 
     async selectStockPhoto(photo, sessionId) {
         const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
-        if (result === 'Upload succeeded'){
+        if (result === 'Upload succeeded') {
             this.resourceService.searchKeyword = '';
             this.resourceService.showPixabay = -1;
         }
@@ -259,7 +269,7 @@ export class Aws {
 
     // clean up previously uploaded assets (e.g. in this.moment.assets) that are no longer linked, or clean up all unused uploaded assets
     async cleanUp(sessionId: string, origin: any) {
-        if (!origin) return; // origin cannot be null
+        if (!origin) { return; } // origin cannot be null
         const imageSource: any = JSON.parse(JSON.stringify(origin));
         switch (typeof imageSource) {
             case 'object': // imageSource is an array. Typical use case is to clean up unlinked Media URL from DO
