@@ -52,6 +52,7 @@ export class DiscoverPage implements OnInit {
     ionViewWillEnter() {
         if (this.userData && this.userData.user) {
             this.storage.set('lastVisitedTab', 'discover');
+            this.loadSamples();
         }
     }
 
@@ -74,6 +75,7 @@ export class DiscoverPage implements OnInit {
     async loadMoreSamples() {
         this.pageNum++;
         if (!this.reachedEnd) {
+            this.ionSpinner = true;
             const samples: any = await this.momentService.loadSampleActivities(this.selectedCategoryId);
             this.ionSpinner = false;
             // temp override the paging function: i.e. only load page 1

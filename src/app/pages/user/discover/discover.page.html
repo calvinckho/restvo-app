@@ -57,6 +57,9 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
+  <ion-refresher (ionRefresh)="loadSamples()" slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-grid>
     <ion-row class="ion-justify-content-start">
       <ion-card *ngFor="let sample of samples; index as i" (click)="selectSample(sample)" [hidden]="!(sample.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || sample.parent_programs[0].matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()))">
@@ -74,7 +77,6 @@
       </ion-card>
     </ion-row>
   </ion-grid>
-
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button class="filter-button" color="light">
       <span *ngIf="filterOption === 'all'">
