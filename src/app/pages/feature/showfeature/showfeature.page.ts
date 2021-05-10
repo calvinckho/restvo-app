@@ -888,7 +888,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
             if (this.modalPage) {
               this.closeModal();
             } else {
-              this.router.navigate(['/app/me'], { replaceUrl: true });
+                if (this.router.url.includes('(sub:details')) {
+                    this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
+                    setTimeout(async () => {
+                        this.router.navigate(['/app/me', { outlets: { sub: null }}], { replaceUrl: true });
+                    }, 500);
+                } else {
+                    this.router.navigate(['/app/me', { outlets: { sub: null }}], { replaceUrl: true });
+                }
             }
           });
         }},
