@@ -455,7 +455,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           }
           this.moment.resource.matrix_number[2].forEach((interactableId, index) => { // process the text answer responses
               const interactable = this.moment.matrix_string[index];
-              this.interactableDisplay[interactableId] = { editor: null };
+              if (!this.interactableDisplay[interactableId]) {
+                  this.interactableDisplay[interactableId] = { editor: null };
+              }
               if (this.moment.resource.matrix_number[0][index] === 10010) { // interactableId is a Number
                   let content: any;
                   if (interactable.length > 2 && interactable[2]) {
