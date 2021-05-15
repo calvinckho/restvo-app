@@ -117,7 +117,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
             // the following only works if we run our own video bridge
             SHOW_JITSI_WATERMARK: false,
             SHOW_BRAND_WATERMARK: true,
-            BRAND_WATERMARK_LINK: 'https://wee.nyc3.cdn.digitaloceanspaces.com/app/icon_email.png',
+            BRAND_WATERMARK_LINK: 'https://d2z4pehxidbzz4.cloudfront.net/app/icon_email.png',
             MOBILE_APP_PROMO: false,
           },
           onload: this.onJitsiLoaded()
