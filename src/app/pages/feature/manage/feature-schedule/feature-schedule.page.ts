@@ -284,9 +284,13 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   focusCalendarDateField(type) {
-    this.calendarService.calendar.currentViewDate = type === 'start' ? this.recurrenceStartDate : this.recurrenceEndDate;
-    this.calendarService.updateViewCalendar();
-    this.dateType = type;
+    if (type === this.dateType) {
+      this.dateType = null;
+    } else {
+      this.calendarService.calendar.currentViewDate = type === 'start' ? this.recurrenceStartDate : this.recurrenceEndDate;
+      this.calendarService.updateViewCalendar();
+      this.dateType = type;
+    }
   }
 
   changeSelectedDate(inputDate) {
