@@ -67,6 +67,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       recurrence: '', // enum: ['daily', 'weekly', 'monthly', 'yearly']
       recurrenceInterval: 1,  // e.g. once every 2 months, default: 1
       recurrenceEndDate: new Date().toISOString(), // leave null to add events into infinity and beyond
+      timezoneOffset: new Date().getTimezoneOffset() // store a schedule local timezone offset for accurate computation of weekend value when repeating by weekend
     },
     array_boolean: [ true, true, true, false, true ] // default is to enable floating start date, unique answer for each content item, and to add to both participant's and mentor's timeline
   };
@@ -265,6 +266,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
+      this.schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the local machine's timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
       this.schedule.operation = operation;
       schedule = await this.momentService.touchSchedule(this.schedule);
@@ -300,6 +302,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.recurrenceStartDate = inputDate;
       this.calendarService.calendar.currentViewDate = this.recurrenceEndDate;
       this.dateType = 'end';
+      if (inputDate.getTime() > this.recurrenceEndDate.getTime()) {
+        this.recurrenceEndDate = inputDate;
+      }
     } else if (this.dateType === 'end') {
       this.recurrenceEndDate = inputDate;
       this.dateType = '';
