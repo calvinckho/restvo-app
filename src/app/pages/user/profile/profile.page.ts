@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, ModalController, Platform } from '@ionic/angular';
 import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
 import {ActivatedRoute} from "@angular/router";
+import timezones from 'compact-timezone-list';
 
 @Component({
     selector: 'app-profile',
@@ -32,6 +33,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     showContactInfo = false;
     ionSpinner = true;
+    listOfTimeZones: [];
 
     constructor(private route: ActivatedRoute,
                 private location: Location,
@@ -60,6 +62,7 @@ export class ProfilePage implements OnInit, OnDestroy {
             state: [''],
             zip: [''],
             country: [''],
+            timeZoneId: ['']
         });
         for (let i = 0; i < this.country_list.length; i++){
             this.countries.push({name: this.country_list[i], selected: false});
@@ -67,6 +70,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         for (let i = 0; i < this.calling_code_list.length; i++){
             this.calling_codes.push({value: this.calling_code_list[i], selected: false});
         }
+        this.listOfTimeZones = timezones;
     }
 
     async ngOnInit() {

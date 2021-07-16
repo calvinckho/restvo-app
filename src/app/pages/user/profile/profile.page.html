@@ -94,9 +94,12 @@
                 </p>
             </ion-item>
             <ion-item-divider></ion-item-divider>
-            <!--<ion-item lines="none"  color="lightgrey">
-                <ion-label color="darkgrey">Contact Info</ion-label>
-            </ion-item>-->
+            <ion-item lines="none">
+                <ion-label position="stacked">Local Time Zone</ion-label>
+                <ion-select formControlName="timeZoneId" [interfaceOptions]="{cssClass: 'level-15'}" interface="alert">
+                    <ion-select-option *ngFor="let timezone of listOfTimeZones" [value]="timezone.tzCode">{{timezone.tzCode}} ({{timezone.offset}})</ion-select-option>
+                </ion-select>
+            </ion-item>
             <ion-item class="ion-text-wrap" lines="none">
                 <ion-note class="ion-padding-vertical">Your contact information is private and can only be viewed by people with whom you choose to share.</ion-note>
             </ion-item>

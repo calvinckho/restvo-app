@@ -572,6 +572,7 @@ export class RegisterPage implements OnInit {
             primary_email: this.emailPassForm.get('email').value,
             password: this.emailPassForm.get('password').value,
             mobile_phone: this.mobileForm.get('mobile_calling_code').value + this.mobileForm.get('mobile_sig_number').value,
+            timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
         };
         try {
             const result = await this.authService.registerMobile(data);
@@ -657,6 +658,7 @@ export class RegisterPage implements OnInit {
                 password: this.emailPassForm.get('passwordConfirmation').value,
                 first_name: this.nameForm.get('first_name').value,
                 last_name: this.nameForm.get('last_name').value,
+                timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 deviceToken: this.deviceToken,
                 serializedRouteParams: null,
                 routeId: this.authService.cachedRouteParams ? this.authService.cachedRouteParams.id : null

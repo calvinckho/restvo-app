@@ -1,7 +1,7 @@
 {
   "name": "Restvo",
-  "version": "1.8.3",
-  "description": "Connect with Mentors",
+  "version": "1.8.4",
+  "description": "Learn and Grow",
   "private": true,
   "main": "./build/index.js",
   "scripts": {

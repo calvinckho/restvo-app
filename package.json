@@ -57,6 +57,7 @@
     "call-number": "^1.0.1",
     "capacitor-jitsi-meet": "^1.5.13",
     "capacitor-share-extension": "0.0.18",
+    "compact-timezone-list": "^1.0.6",
     "compressorjs": "^1.0.7",
     "cordova-plugin-app-version": "^0.1.12",
     "cordova-plugin-badge": "^0.8.8",
