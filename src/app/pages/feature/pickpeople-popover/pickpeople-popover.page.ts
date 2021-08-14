@@ -266,11 +266,11 @@ export class PickpeoplePopoverPage implements OnInit {
     async share() {
         try {
             if (this.invitationType === 'user_list_1') { // participants
-                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + ';type=2;' + (this.moment.access_tokens ? 'token=' + this.moment.access_tokens[0] : '');
+                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + (this.moment.access_tokens && this.moment.access_tokens.length > 0 ? (';type=2;token=' + this.moment.access_tokens[0]) : '');
             } else if (this.invitationType === 'user_list_2' && this.hasOrganizerAccess) { // organizers
-                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + ';type=3;' + (this.moment.access_tokens ? 'token=' + this.moment.access_tokens[1] : '');
+                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + (this.moment.access_tokens && this.moment.access_tokens.length > 1 ? (';type=3;token=' + this.moment.access_tokens[1]) : '');
             } else if (this.invitationType === 'user_list_3' && this.hasOrganizerAccess) { // leaders
-                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + ';type=4;' + (this.moment.access_tokens ? 'token=' + this.moment.access_tokens[2] : '');
+                this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + (this.moment.access_tokens && this.moment.access_tokens.length > 2 ? (';type=4;token=' + this.moment.access_tokens[2]) : '');
             }
             const { Share } = Plugins;
             await Share.share({
@@ -286,7 +286,7 @@ export class PickpeoplePopoverPage implements OnInit {
                     });
                     const alert = await this.alertCtrl.create({
                         header: 'Share Link Ready',
-                        message: 'The invitation link ' + this.shareLink + 'has been copied to your clipboard.',
+                        message: 'The invitation link ' + this.shareLink + ' has been copied to your clipboard.',
                         buttons: ['Dismiss'],
                         cssClass: 'level-15'
                     });
