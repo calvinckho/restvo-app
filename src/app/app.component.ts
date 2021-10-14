@@ -13,9 +13,9 @@ import { NetworkService } from './services/network-service.service';
 import { UserData } from './services/user.service';
 import {Chat} from './services/chat.service';
 import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecipientinfo.page';
-import {Capacitor, Plugins} from '@capacitor/core';
+import {Capacitor} from '@capacitor/core';
 import {ProgramsPage} from './pages/user/programs/programs.page';
-const { App } = Plugins;
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-root',

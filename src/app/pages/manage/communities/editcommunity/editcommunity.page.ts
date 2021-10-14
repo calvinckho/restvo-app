@@ -5,7 +5,7 @@ import { ActionSheetController, AlertController, ModalController, Platform } fro
 import { Churches } from '../../../../services/church.service';
 import { UserData } from '../../../../services/user.service';
 import { Aws } from '../../../../services/aws.service';
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 @Component({
   selector: 'app-editcommunity',
@@ -166,7 +166,6 @@ export class EditcommunityPage implements OnInit {
         try {
             let result: any;
             if (this.platform.is('cordova')) {
-                const { Camera } = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,

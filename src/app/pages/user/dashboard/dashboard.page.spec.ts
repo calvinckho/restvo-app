@@ -1,7 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Plugins } from '@capacitor/core';
-const { StatusBar, SplashScreen } = Plugins;
+import { StatusBar } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
+
 import { DashboardPage } from './dashboard.page';
 import {Platform} from "@ionic/angular";
 

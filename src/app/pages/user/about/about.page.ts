@@ -3,7 +3,7 @@ import {ModalController, Platform} from "@ionic/angular";
 import {UserData} from "../../../services/user.service";
 import {PreferencesPage} from "./preferences/preferences.page";
 import {Router} from "@angular/router";
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {Aws} from "../../../services/aws.service";
 import {Auth} from "../../../services/auth.service";
 
@@ -75,7 +75,6 @@ export class AboutPage implements OnInit, OnDestroy {
     try {
       let result: any;
       if (useCapacitor) {
-        const { Camera } = Plugins;
         const image = await Camera.getPhoto({
           quality: 60,
           width: 1280,

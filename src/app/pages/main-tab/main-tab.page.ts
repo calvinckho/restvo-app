@@ -8,8 +8,13 @@ import {
     NOTIFICATION_RECEIVED as ON_NOTIFICATION_RECEIVED,
     TOKEN_UPDATED,
 } from 'electron-push-receiver/src/constants';
-import { Capacitor, Plugins, PushNotificationToken } from '@capacitor/core';
-const { App, Network, LocalNotifications } = Plugins;
+import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
+import { Jitsi } from '@cyril-colin/capacitor3-jitsi-meet';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Network } from '@capacitor/network';
+import { PushNotifications } from '@capacitor/push-notifications';
+
 import { CacheService } from 'ionic-cache';
 
 import {Chat} from '../../services/chat.service';
@@ -250,9 +255,9 @@ export class MainTabPage implements OnInit, OnDestroy {
         if (this.platform.is('cordova')) { // native device push notification strategy
             try {
                 if (!this.pushHandler) {
-                    const {PushNotifications} = Plugins;
-                    PushNotifications.register();
-                    this.pushHandler = PushNotifications.addListener('registration', async (token: PushNotificationToken) => {
+                    await PushNotifications.requestPermissions();
+                    await PushNotifications.register();
+                    this.pushHandler = PushNotifications.addListener('registration', async (token) => {
                         if (token && token.value) {
                             console.log('device token ->', token.value);
                             this.userData.addDeviceToken({token: token.value}).subscribe(() => {
@@ -377,7 +382,7 @@ export class MainTabPage implements OnInit, OnDestroy {
         }
     }
 
-    startEventSubscription() {
+    async startEventSubscription() {
         if (Capacitor.isPluginAvailable('App')) {
             App.addListener('appStateChange', async (appState: any) => {
                 if (appState.isActive) {
@@ -419,8 +424,9 @@ export class MainTabPage implements OnInit, OnDestroy {
 
         });
         try {
-            if (!this.platform.is('android') && Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android
-                Plugins.LocalNotifications.registerActionTypes({
+            if (Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android, !this.platform.is('android') && is included in capacitor 2.0. TODO: check if register actions now works in Android
+                await LocalNotifications.requestPermissions();
+                LocalNotifications.registerActionTypes({
                     types: [
                         {
                             id: 'SHOW_CHAT',
@@ -438,7 +444,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         }
                     ] });
 
-                Plugins.LocalNotifications.addListener('localNotificationActionPerformed', async (result) => {
+                LocalNotifications.addListener('localNotificationActionPerformed', async (result) => {
                     console.log('Notification action performed', result.notification);
                     if (result.notification.extra.type === 'message') {
                         this.openGroupChat(result.notification.extra.data);
@@ -734,17 +740,19 @@ export class MainTabPage implements OnInit, OnDestroy {
             }, 10000); // default video chat load timeout = 10s
             const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
             if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
-                const { Jitsi } = Plugins;
                 await Jitsi.joinConference({
                     roomName: params.videoChatRoomId,
                     url: videoEndpoint.ssl + videoEndpoint.url,
+                    token: null,
                     channelLastN: params.channelLastN,
                     displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
+                    email: null,
                     avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
                     startWithAudioMuted: params.startWithAudioMuted,
                     startWithVideoMuted: params.startWithVideoMuted,
                     chatEnabled: false,
                     inviteEnabled: false,
+                    callIntegrationEnabled: true
                 });
                 window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                 window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);

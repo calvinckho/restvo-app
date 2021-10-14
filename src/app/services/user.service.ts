@@ -14,7 +14,7 @@ import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
 
 import {User} from '../interfaces/user';
-import {Capacitor, Plugins} from '@capacitor/core';
+import {Capacitor} from '@capacitor/core';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 
@@ -196,9 +196,9 @@ export class UserData {
         this.storage.set('user', this.user); // save in local storage for PWA's fast retrieval when booting up mobile app and reloading the myconversations page
         // save user data in native storage for share extension's use
         if (this.platform.is('ios') && Capacitor.isPluginAvailable('ShareExtension')) {
-            const { ShareExtension } = Plugins;
-            const token = this.authService ? (this.authService.token || '') : '';
-            await ShareExtension.saveDataToKeychain({key: 'token', data: token });
+            //const { ShareExtension } = Plugins;
+            //const token = this.authService ? (this.authService.token || '') : '';
+            //await ShareExtension.saveDataToKeychain({key: 'token', data: token });
         }
     }
 
@@ -804,12 +804,12 @@ export class UserData {
             this.socket.close();
         }
         if (this.platform.is('ios')) {
-            const { ShareExtension } = Plugins;
+            /*const { ShareExtension } = Plugins;
             try {
                 await ShareExtension.clearNativeUserDefaults();
             } catch (err) {
                 console.log(err);
-            }
+            }*/
         }
         // clear authService cached routing history
         this.authService.cachedRouteUrl = null;

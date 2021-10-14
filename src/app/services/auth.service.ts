@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
 import { Storage } from '@ionic/storage';
-import {Plugins} from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 import {LoadingController, Platform} from '@ionic/angular';
 
 import { NetworkService } from './network-service.service';
@@ -57,7 +58,6 @@ export class Auth {
         this.cachedRouteUrl = this.router.url.split(';')[0];    // save the URL for after register
         try {
             if (this.platform.is('cordova')) { // speed up app loading when the network is slow
-                const { StatusBar, SplashScreen } = Plugins;
                 StatusBar.show();
                 SplashScreen.hide();
             }

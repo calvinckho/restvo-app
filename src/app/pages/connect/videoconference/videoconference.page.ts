@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Resource} from '../../../services/resource.service';
-import {get} from "scriptjs";
-import {Location} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MenuController, Platform} from "@ionic/angular";
-import {UserData} from "../../../services/user.service";
-import {Chat} from "../../../services/chat.service";
-import {Auth} from "../../../services/auth.service";
-import {Plugins} from "@capacitor/core";
-const { Jitsi } = Plugins;
+import {get} from 'scriptjs';
+import {Location} from '@angular/common';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MenuController, Platform} from '@ionic/angular';
+import {UserData} from '../../../services/user.service';
+import {Chat} from '../../../services/chat.service';
+import {Auth} from '../../../services/auth.service';
+import {Jitsi} from '@cyril-colin/capacitor3-jitsi-meet';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -31,7 +30,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
 
   jitsi: any = {};
   videoEnded = false;
-  isWebRTCSupported: boolean = false;
+  isWebRTCSupported = false;
 
   constructor(
       public platform: Platform,
@@ -66,7 +65,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
     if (this.userData.user && this.authService.token && !this.platform.is('cordova') && !this.userData.videoChatRoomId) {
       this.initializeVideoConference();
     }
-  };
+  }
 
   async initializeVideoConference() {
     setTimeout(() => {
@@ -77,13 +76,16 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       await Jitsi.joinConference({
         roomName: this.videoChatRoomId,
         url: videoEndpoint.ssl + videoEndpoint.url,
+        token: null,
         channelLastN: this.channelLastN,
         displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
+        email: null,
         avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
         startWithAudioMuted: this.startWithAudioMuted,
         startWithVideoMuted: this.startWithVideoMuted,
         chatEnabled: false,
-        inviteEnabled: false
+        inviteEnabled: false,
+        callIntegrationEnabled: true
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
@@ -166,7 +168,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
       $(`#videoConference`).empty();
       this.videoEnded = true;
     }
-  };
+  }
 
   reload() {
     if (this.platform.is('cordova') && !this.userData.videoChatRoomId && this.userData.readyToControlVideoChat) {

@@ -28,7 +28,7 @@ import { UserData } from "../../../services/user.service";
 import { Aws } from '../../../services/aws.service';
 import {ShowrecipientinfoPage} from "../../connect/showrecipientinfo/showrecipientinfo.page";
 import {PickfeaturePopoverPage} from "../../feature/pickfeature-popover/pickfeature-popover.page";
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 
 @Component({
@@ -165,7 +165,6 @@ export class EditboardpostPage implements OnInit, OnDestroy {
     }
 
     async takePhotoAndUpload() {
-        const { Camera } = Plugins;
         const image = await Camera.getPhoto({
             quality: 60,
             width: 1280,
@@ -275,7 +274,6 @@ export class EditboardpostPage implements OnInit, OnDestroy {
     async selectPhotoFromDeviceAndUpload(event) {
         try {
             if (this.platform.is('cordova')) {
-                const { Camera } = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,

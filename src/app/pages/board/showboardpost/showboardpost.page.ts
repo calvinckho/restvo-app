@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, Input, OnDestroy, ViewChild, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
-import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import {Storage} from '@ionic/storage';
 import * as Plyr from "plyr";
@@ -253,7 +253,6 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     //end of UI functions
     async takePhotoAndUpload() {
-        const { Camera } = Plugins;
         const image = await Camera.getPhoto({
             quality: 60,
             width: 1280,
@@ -272,7 +271,6 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
         try {
             let result: any;
             if (this.platform.is('cordova')) {
-                const { Camera } = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,

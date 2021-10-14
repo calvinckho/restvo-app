@@ -1,11 +1,12 @@
 import {Component, OnInit, Input, ViewEncapsulation, ViewChild} from '@angular/core';
 import {AlertController, NavParams, IonSearchbar, ModalController, Platform, IonInfiniteScroll} from '@ionic/angular';
 import { CalendarService } from '../../../services/calendar.service';
-import { UserData } from "../../../services/user.service";
-import {Chat} from "../../../services/chat.service";
-import {Plugins} from "@capacitor/core";
-import {NetworkService} from "../../../services/network-service.service";
-import {Churches} from "../../../services/church.service";
+import { UserData } from '../../../services/user.service';
+import { Chat } from '../../../services/chat.service';
+import { Clipboard } from '@capacitor/clipboard';
+import { Share } from '@capacitor/share';
+import { NetworkService } from '../../../services/network-service.service';
+import { Churches } from '../../../services/church.service';
 
 @Component({
   selector: 'app-pickpeople-popover',
@@ -26,11 +27,11 @@ export class PickpeoplePopoverPage implements OnInit {
 
     shareLink = '';
     hasOrganizerAccess = false;
-    totalSelected: number = 0;
+    totalSelected = 0;
     conversations = [];
     selectedConversations = [];
     searchKeyword = '';
-    displayFriendList: boolean = false;
+    displayFriendList = false;
     listOfAppUsers: any = [];
     selectedAppUsers: any = [];
     listOfFriends: any = [];
@@ -44,7 +45,7 @@ export class PickpeoplePopoverPage implements OnInit {
     organizersLabel = 'Organizers';
     leadersLabel = 'Leaders';
     ionSpinner = true;
-    churchId: string = '';
+    churchId = '';
     selfConversationObj: any;
 
     constructor(
@@ -122,7 +123,7 @@ export class PickpeoplePopoverPage implements OnInit {
       if (index > -1) {
           this.selfConversationObj = this.selectedConversations[index];
       }
-      console.log("organizer status", this.hasOrganizerAccess);
+      console.log('organizer status', this.hasOrganizerAccess);
   }
 
     setupLoadAppUsers() {
@@ -145,7 +146,7 @@ export class PickpeoplePopoverPage implements OnInit {
             this.ionSpinner = false;
             if (churchAppUsers.length) {
                 churchAppUsers.forEach((appuser) => {
-                    if (appuser._id !== this.userData.user._id){
+                    if (appuser._id !== this.userData.user._id) {
                         appuser.name = appuser.first_name + ' ' + appuser.last_name;
                         this.listOfAppUsers.push({_id: appuser._id, name: appuser.name, avatar: appuser.avatar, select: false});
                     }
@@ -174,7 +175,7 @@ export class PickpeoplePopoverPage implements OnInit {
             obj.order = index;
         });
         this.conversations.sort((a, b) => {
-            let badge_diff = b.data.badge - a.data.badge;
+            const badge_diff = b.data.badge - a.data.badge;
             if (badge_diff !== 0) {
                 return badge_diff; // only sort when there is an actual difference
             } else {
@@ -184,7 +185,7 @@ export class PickpeoplePopoverPage implements OnInit {
     }
 
     selectFriend(obj) {
-        if (obj.locked) return;
+        if (obj.locked) { return; }
         if (obj.select) {
             obj.select = false;
             this.totalSelected--;
@@ -199,7 +200,7 @@ export class PickpeoplePopoverPage implements OnInit {
     }
 
     unselectFriend(obj) {
-        if (obj.locked) return;
+        if (obj.locked) { return; }
         this.totalSelected--;
         let index = this.conversations.indexOf(obj);
         if (index > -1) {
@@ -215,7 +216,7 @@ export class PickpeoplePopoverPage implements OnInit {
     }
 
     selectAppUser(person) {
-        if (person.select){
+        if (person.select) {
             person.select = false;
             this.totalSelected--;
             const index = this.selectedAppUsers.indexOf(person);
@@ -228,7 +229,7 @@ export class PickpeoplePopoverPage implements OnInit {
         }
     }
 
-    unselectAppUser(person){
+    unselectAppUser(person) {
         this.totalSelected--;
         let index = this.listOfAppUsers.indexOf(person);
         if (index > -1) {
@@ -272,7 +273,6 @@ export class PickpeoplePopoverPage implements OnInit {
             } else if (this.invitationType === 'user_list_3' && this.hasOrganizerAccess) { // leaders
                 this.shareLink = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + (this.moment.access_tokens && this.moment.access_tokens.length > 2 ? (';type=4;token=' + this.moment.access_tokens[2]) : '');
             }
-            const { Share } = Plugins;
             await Share.share({
                 text: this.shareLink
             });
@@ -280,7 +280,6 @@ export class PickpeoplePopoverPage implements OnInit {
             console.log(err);
             if (err.name !== 'AbortError') { // handle the special condition when Share was loaded but aborted by user
                 try {
-                    const {Clipboard} = Plugins;
                     await Clipboard.write({
                         url: this.shareLink
                     });

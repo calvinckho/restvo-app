@@ -1,10 +1,10 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import * as Plyr from "plyr";
-import {AlertController, ModalController, Platform} from "@ionic/angular";
-import {Aws} from "../../../services/aws.service";
-import {Resource} from "../../../services/resource.service";
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
-import {UserData} from "../../../services/user.service";
+import * as Plyr from 'plyr';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import {Aws} from '../../../services/aws.service';
+import {Resource} from '../../../services/resource.service';
+import {UserData} from '../../../services/user.service';
 
 @Component({
   selector: 'app-uploadmedia',
@@ -52,7 +52,6 @@ export class UploadmediaPage implements OnInit {
   async selectPhotoFromDeviceAndUpload(event) {
     try {
       if (this.platform.is('cordova')) {
-        const { Camera } = Plugins;
         const image = await Camera.getPhoto({
           quality: 60,
           width: 1280,

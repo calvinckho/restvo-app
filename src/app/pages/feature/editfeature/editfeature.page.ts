@@ -12,6 +12,10 @@ import {
     PopoverController,
     ToastController
 } from '@ionic/angular';
+import {Location} from '@angular/common';
+
+import { Clipboard } from '@capacitor/clipboard';
+import { Share } from '@capacitor/share';
 import {Chat} from '../../../services/chat.service';
 import {Churches} from '../../../services/church.service';
 import {UserData} from '../../../services/user.service';
@@ -20,9 +24,7 @@ import {Moment} from '../../../services/moment.service';
 import {Resource} from '../../../services/resource.service';
 import {Response} from '../../../services/response.service';
 import {CalendarService} from '../../../services/calendar.service';
-import {Plugins} from '@capacitor/core';
 import {NetworkService} from '../../../services/network-service.service';
-import {Location} from '@angular/common';
 import {UploadmediaPage} from '../uploadmedia/uploadmedia.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
 
@@ -1349,14 +1351,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     async inviteLinkAction(type) {
         const url = this.networkService.webapp_domain + '/app/activity/' + this.moment._id + ';type=' + type + ';token=' + this.moment.access_tokens[type - 2];
         try {
-            const { Share } = Plugins;
             await Share.share({
                 text: url
             });
         } catch (err) {
             console.log(err);
             if (err.name !== 'AbortError') { // handle the special condition when Share was loaded but aborted by user
-                const {Clipboard} = Plugins;
                 await Clipboard.write({
                     url: url
                 });

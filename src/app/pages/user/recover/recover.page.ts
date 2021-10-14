@@ -2,10 +2,10 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController, MenuController, Platform } from '@ionic/angular';
+import { StatusBar } from '@capacitor/status-bar';
+
 import { Auth } from '../../../services/auth.service';
 import { UserData } from '../../../services/user.service';
-import { Plugins, StatusBarStyle } from '@capacitor/core';
-const { StatusBar } = Plugins;
 
 @Component({
   selector: 'app-recover',
@@ -39,7 +39,7 @@ export class RecoverPage implements OnInit {
 
     ngOnInit() {
         this.menuCtrl.enable(false);
-        if (this.platform.is('cordova')){
+        if (this.platform.is('cordova')) {
             StatusBar.hide();
         }
         this.recoveryURL = this.route.snapshot.paramMap.get('url');
@@ -57,7 +57,7 @@ export class RecoverPage implements OnInit {
                 password: this.passForm.get('passwordConfirmation').value,
                 recoveryURL: this.recoveryURL
             };
-            console.log("recovery data", data);
+            console.log('recovery data', data);
             const result: any = await this.authService.recoverPassword(data);
             if (result.status === 'success') {
                 const alert = await this.alertCtrl.create({
@@ -73,7 +73,7 @@ export class RecoverPage implements OnInit {
                                 await this.userData.loadStoredCommunity();
                                 this.userData.refreshUserStatus({type: 'setup device'});
                                 this.menuCtrl.enable(true);
-                                if(this.platform.is('cordova')){
+                                if (this.platform.is('cordova')) {
                                     StatusBar.show();
                                 }
                                 this.router.navigateByUrl('/app/me');
@@ -95,7 +95,7 @@ export class RecoverPage implements OnInit {
                 });
                 alert.present();
             }
-        } catch (err){
+        } catch (err) {
             const alert = await this.alertCtrl.create({
                 header: 'Something went wrong',
                 subHeader: 'We are not able to process your request. Please try again.',

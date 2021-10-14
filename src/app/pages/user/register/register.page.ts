@@ -1,14 +1,13 @@
 import {Component, Input, OnInit, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
-const { StatusBar, SplashScreen } = Plugins;
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
 import { Auth } from '../../../services/auth.service';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
 import { Chat } from '../../../services/chat.service';
-import {CameraResultType, CameraSource, Plugins} from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {Moment} from '../../../services/moment.service';
 import {Location} from '@angular/common';
 
@@ -330,10 +329,6 @@ export class RegisterPage implements OnInit {
 
     async ngOnInit() {
         this.menuCtrl.enable(false);
-        if (this.platform.is('cordova')) {
-            StatusBar.hide();
-            SplashScreen.hide();
-        }
     }
 
     async ionViewWillEnter() {
@@ -437,9 +432,6 @@ export class RegisterPage implements OnInit {
                         });
                     }, 4000);
                 });
-                if (this.platform.is('cordova')) {
-                    StatusBar.show();
-                }
                 loading.dismiss();
             } else {
                 loading.dismiss();
@@ -814,7 +806,6 @@ export class RegisterPage implements OnInit {
         try {
             let result: any;
             if (useCapacitor) {
-                const {Camera} = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,

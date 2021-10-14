@@ -3,8 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { CacheService } from 'ionic-cache';
 import * as Plyr from 'plyr';
-
-import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Storage } from '@ionic/storage';
 import { Badge } from '@ionic-native/badge/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
@@ -617,7 +616,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
     // end of UI functions
     async takePhotoAndUpload() {
         this.moreMediaOptions = false;
-        const { Camera } = Plugins;
         const image = await Camera.getPhoto({
             quality: 60,
             width: 1280,
@@ -642,7 +640,6 @@ export class GroupchatPage implements OnInit, OnDestroy {
         try {
             let result: any;
             if (this.platform.is('cordova')) {
-                const { Camera } = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,

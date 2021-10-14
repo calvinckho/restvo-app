@@ -1,8 +1,6 @@
 import {Injectable, NgZone} from '@angular/core';
-
 import { Platform, ToastController } from '@ionic/angular';
-import { Plugins } from '@capacitor/core';
-const { Network } = Plugins;
+import { Network } from '@capacitor/network';
 import { SwUpdate } from '@angular/service-worker';
 import {ElectronService} from 'ngx-electron';
 import {Router} from '@angular/router';

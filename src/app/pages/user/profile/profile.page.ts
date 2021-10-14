@@ -6,7 +6,7 @@ import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, ModalController, Platform } from '@ionic/angular';
-import {CameraResultType, CameraSource, Plugins} from "@capacitor/core";
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {ActivatedRoute} from "@angular/router";
 import timezones from 'compact-timezone-list';
 
@@ -121,7 +121,6 @@ export class ProfilePage implements OnInit, OnDestroy {
         try {
             let result: any;
             if (useCapacitor) {
-                const { Camera } = Plugins;
                 const image = await Camera.getPhoto({
                     quality: 60,
                     width: 1280,
