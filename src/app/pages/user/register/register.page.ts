@@ -18,8 +18,8 @@ import {Location} from '@angular/common';
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterPage implements OnInit {
-    @ViewChild('welcomeSlides', {static: false}) welcome_slides: IonSlides;
-    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild('welcomeSlides') welcome_slides: IonSlides;
+    @ViewChild(IonSlides) slides: IonSlides;
 
     @Input() modalPage: any;
     @Input() slide: any;

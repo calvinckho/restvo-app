@@ -12,7 +12,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../analytics/analytics.module#AnalyticsPageModule'
+                        loadChildren: () => import('../analytics/analytics.module').then(m => m.AnalyticsPageModule)
                     }
                 ]
             },
@@ -21,7 +21,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../activities/activities.module#ActivitiesPageModule'
+                        loadChildren: () => import('../activities/activities.module').then(m => m.ActivitiesPageModule)
                     }
                 ] },
             {
@@ -29,14 +29,14 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../members/members.module#MembersPageModule'
+                        loadChildren: () => import('../members/members.module').then(m => m.MembersPageModule)
                     }
                 ] },
             { path: 'administrators',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../administrators/administrators.module#AdministratorsPageModule'
+                        loadChildren: () => import('../administrators/administrators.module').then(m => m.AdministratorsPageModule)
                     }
                 ]
             },
@@ -45,7 +45,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../communities/communities.module#CommunitiesPageModule'
+                        loadChildren: () => import('../communities/communities.module').then(m => m.CommunitiesPageModule)
                     }
                 ]
             },
@@ -54,7 +54,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../development/development.module#DevelopmentPageModule'
+                        loadChildren: () => import('../development/development.module').then(m => m.DevelopmentPageModule)
                     }
                 ]
             },
@@ -63,7 +63,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                        loadChildren: () => import('../../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                     }
                 ]
             },

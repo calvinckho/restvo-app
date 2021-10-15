@@ -8,24 +8,24 @@ const routes: Routes = [
         pathMatch: 'full' },
     {
         path: 'recover',
-        loadChildren: './pages/user/recover/recover.module#RecoverPageModule' },
+        loadChildren: () => import('./pages/user/recover/recover.module').then(m => m.RecoverPageModule) },
     {
         path: 'register',
-        loadChildren: './pages/user/register/register.module#RegisterPageModule' },
+        loadChildren: () => import('./pages/user/register/register.module').then(m => m.RegisterPageModule) },
     {
         path: 'discover',
-        loadChildren: './pages/user/discover/discover.module#DiscoverPageModule' },
+        loadChildren: () => import('./pages/user/discover/discover.module').then(m => m.DiscoverPageModule) },
     {
         path: 'app',
-        loadChildren: './pages/main-tab/main-tab.module#MainTabPageModule' },
+        loadChildren: () => import('./pages/main-tab/main-tab.module').then(m => m.MainTabPageModule) },
     {
         // service in auth.service.ts that handles routing to activities
         path: 'activity/:id',
-        loadChildren: './pages/feature/showfeature/showfeature.module#ShowfeaturePageModule' },
+        loadChildren: () => import('./pages/feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule) },
     {
         // service in auth.service.ts that handles routing to connect
         path: 'connect/:id',
-        loadChildren: './pages/manage/communities/showcommunity/showcommunity.module#ShowcommunityPageModule' },
+        loadChildren: () => import('./pages/manage/communities/showcommunity/showcommunity.module').then(m => m.ShowcommunityPageModule) },
     {
         path: 'video/:id',
         loadChildren: () => import('./pages/connect/videoconference/videoconference.module').then( m => m.VideoconferencePageModule)

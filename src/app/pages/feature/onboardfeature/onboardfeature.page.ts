@@ -21,10 +21,10 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
     encapsulation: ViewEncapsulation.None
 })
 export class OnboardfeaturePage {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
-    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('mediaSlides', {static: false}) mediaSlides: IonSlides;
+    @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('mediaSlides') mediaSlides: IonSlides;
 
     @Input() modalPage: any;
     @Input() programId: any;

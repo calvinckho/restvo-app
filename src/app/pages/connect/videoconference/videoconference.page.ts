@@ -7,7 +7,7 @@ import {MenuController, Platform} from '@ionic/angular';
 import {UserData} from '../../../services/user.service';
 import {Chat} from '../../../services/chat.service';
 import {Auth} from '../../../services/auth.service';
-import {Jitsi} from '@cyril-colin/capacitor3-jitsi-meet';
+import {Jitsi} from 'capacitor-jitsi-meet';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -18,7 +18,7 @@ declare var JitsiMeetExternalAPI: any;
   encapsulation: ViewEncapsulation.None
 })
 export class VideoconferencePage implements OnInit, OnDestroy {
-  @ViewChild('videoConference', {static: false}) videoConference: any;
+  @ViewChild('videoConference') videoConference: any;
 
   videoChatRoomId: any;
   videoChatRoomSubject = ' ';

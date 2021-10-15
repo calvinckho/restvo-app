@@ -10,7 +10,7 @@ import {
 } from 'electron-push-receiver/src/constants';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
-import { Jitsi } from '@cyril-colin/capacitor3-jitsi-meet';
+import { Jitsi } from 'capacitor-jitsi-meet';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Network } from '@capacitor/network';
 import { PushNotifications } from '@capacitor/push-notifications';
@@ -40,7 +40,6 @@ import {Moment} from '../../services/moment.service';
 import {Systemlog} from '../../services/systemlog.service';
 import {Auth} from '../../services/auth.service';
 import {Resource} from '../../services/resource.service';
-import 'capacitor-jitsi-meet';
 import {PreferencesPage} from '../user/about/preferences/preferences.page';
 import {OnboardfeaturePage} from '../feature/onboardfeature/onboardfeature.page';
 import {ShowfeaturePage} from '../feature/showfeature/showfeature.page';
@@ -58,7 +57,7 @@ import {FeatureCreatorPage} from '../feature/manage/feature-creator/feature-crea
   encapsulation: ViewEncapsulation.None
 })
 export class MainTabPage implements OnInit, OnDestroy {
-    @ViewChild('videoSpace', {static: false}) videoSpace: any;
+    @ViewChild('videoSpace') videoSpace: any;
 
     networkHandler: any;
     pushHandler: any;
@@ -424,7 +423,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
         });
         try {
-            if (Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android, !this.platform.is('android') && is included in capacitor 2.0. TODO: check if register actions now works in Android
+            if (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android, !this.platform.is('android') && is included in capacitor 2.0. TODO: check if register actions now works in Android
                 await LocalNotifications.requestPermissions();
                 LocalNotifications.registerActionTypes({
                     types: [

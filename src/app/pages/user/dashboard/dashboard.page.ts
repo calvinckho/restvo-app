@@ -21,7 +21,7 @@ import {Auth} from '../../../services/auth.service';
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonContent) content: IonContent;
 
     @Input() view: any;
     @Input() modalPage: any;

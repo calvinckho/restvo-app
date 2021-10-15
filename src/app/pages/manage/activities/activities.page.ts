@@ -19,7 +19,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./activities.page.scss'],
 })
 export class ActivitiesPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   activities = [];

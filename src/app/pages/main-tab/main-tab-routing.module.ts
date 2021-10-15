@@ -15,7 +15,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../user/about/preferences/preferences.module#PreferencesPageModule'
+                                loadChildren: () => import('../user/about/preferences/preferences.module').then(m => m.PreferencesPageModule)
                             }
                         ]
                     },
@@ -24,7 +24,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../user/home/home.module#HomePageModule'
+                                loadChildren: () => import('../user/home/home.module').then(m => m.HomePageModule)
                             }
                         ]
                     },
@@ -38,7 +38,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../user/about/preferences/preferences.module#PreferencesPageModule'
+                                loadChildren: () => import('../user/about/preferences/preferences.module').then(m => m.PreferencesPageModule)
                             }
                         ]
                     },
@@ -47,7 +47,7 @@ const routes: Routes = [
                         children: [
                             {
                                 path: ':id',
-                                loadChildren: '../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                                loadChildren: () => import('../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                             }
                         ]
                     },
@@ -67,14 +67,14 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../board/communityboard/communityboard.module#CommunityboardPageModule'
+                        loadChildren: () => import('../board/communityboard/communityboard.module').then(m => m.CommunityboardPageModule)
                     },
                     {
                         path: 'activity',
                         children: [
                             {
                                 path: ':id',
-                                loadChildren: '../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                                loadChildren: () => import('../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                             }
                         ]
                     }
@@ -85,7 +85,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../connect/myconversations/myconversations.module#MyconversationsPageModule'
+                        loadChildren: () => import('../connect/myconversations/myconversations.module').then(m => m.MyconversationsPageModule)
 
                     }
                 ]
@@ -99,7 +99,7 @@ const routes: Routes = [
                     },
                     {
                         path: '',
-                        loadChildren: '../user/dashboard/dashboard.module#DashboardPageModule'
+                        loadChildren: () => import('../user/dashboard/dashboard.module').then(m => m.DashboardPageModule)
                     },
                 ]
             },
@@ -109,7 +109,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                        loadChildren: () => import('../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                     }
                 ]
             },
@@ -118,7 +118,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../user/user.module#UserPageModule'
+                        loadChildren: () => import('../user/user.module').then(m => m.UserPageModule)
                     }
                 ]
             },
@@ -130,13 +130,13 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../feature/manage/managefeature.module#ManagefeaturePageModule'
+                                loadChildren: () => import('../feature/manage/managefeature.module').then(m => m.ManagefeaturePageModule)
                             },
                         ]
                     },
                     {
                         path: '',
-                        loadChildren: '../manage/managecommunities/managecommunities.module#ManagecommunitiesPageModule'
+                        loadChildren: () => import('../manage/managecommunities/managecommunities.module').then(m => m.ManagecommunitiesPageModule)
                     }
                 ]
             },
@@ -145,7 +145,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../feature/onboardfeature/onboardfeature.module#OnboardfeaturePageModule'
+                        loadChildren: () => import('../feature/onboardfeature/onboardfeature.module').then(m => m.OnboardfeaturePageModule)
                     }
                 ]
             },
@@ -157,13 +157,13 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../feature/createcommunity/createcommunity.module#CreatecommunityPageModule'
+                                loadChildren: () => import('../feature/createcommunity/createcommunity.module').then(m => m.CreatecommunityPageModule)
                             }
                         ]
                     },
                     {
                         path: '',
-                        loadChildren: '../feature/editfeature/editfeature.module#EditfeaturePageModule'
+                        loadChildren: () => import('../feature/editfeature/editfeature.module').then(m => m.EditfeaturePageModule)
                     },
                 ]
             },
@@ -175,13 +175,13 @@ const routes: Routes = [
                         children: [
                             {
                                 path: ':id',
-                                loadChildren: '../feature/createcommunity/createcommunity.module#CreatecommunityPageModule'
+                                loadChildren: () => import('../feature/createcommunity/createcommunity.module').then(m => m.CreatecommunityPageModule)
                             }
                         ]
                     },
                     {
                         path: ':id',
-                        loadChildren: '../feature/editfeature/editfeature.module#EditfeaturePageModule'
+                        loadChildren: () => import('../feature/editfeature/editfeature.module').then(m => m.EditfeaturePageModule)
                     },
                 ]
             },
@@ -190,13 +190,13 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../connect/showrecipientinfo/showrecipientinfo.module#ShowrecipientinfoModule'
+                        loadChildren: () => import('../connect/showrecipientinfo/showrecipientinfo.module').then(m => m.ShowrecipientinfoModule)
                     }
                 ]
             },
             {
                 path: 'completeprofile',
-                loadChildren: '../user/completeprofile/completeprofile.module#CompleteprofilePageModule'
+                loadChildren: () => import('../user/completeprofile/completeprofile.module').then(m => m.CompleteprofilePageModule)
             },
             {
                 path: 'invite',

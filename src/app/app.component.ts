@@ -24,7 +24,7 @@ import { App } from '@capacitor/app';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, AfterViewInit {
-    @ViewChild('restSelect', {static: false}) select: IonSelect;
+    @ViewChild('restSelect') select: IonSelect;
     selectedProgram: any;
     loading: any;
 

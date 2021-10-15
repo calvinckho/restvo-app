@@ -1,4 +1,4 @@
-import {Injectable, ViewChild} from '@angular/core';
+import { Injectable, ViewChild, Directive } from '@angular/core';
 import {IonInfiniteScroll, ModalController, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {Geolocation} from "@ionic-native/geolocation/ngx";
@@ -10,6 +10,7 @@ import {UserData} from "./user.service";
 declare var mapboxgl: any;
 declare var unwired: any;
 
+@Directive()
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +22,7 @@ export class MapService {
   totalVoteCount: any = {};
 
   // map
-  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   userLocation = {
     lat: 37.7988255,

@@ -17,8 +17,8 @@ import {GroupchatPage} from '../groupchat/groupchat.page';
   encapsulation: ViewEncapsulation.None
 })
 export class MyconversationsPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild('searchBar', {static: false}) searchBar ;
+    @ViewChild(IonContent) content: IonContent;
+    @ViewChild('searchBar') searchBar ;
 
     datas: any = [];
     loading: any;

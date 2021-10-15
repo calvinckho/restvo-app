@@ -36,9 +36,9 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
   encapsulation: ViewEncapsulation.None,
 })
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
-  @ViewChild('InviteSelect', {static: false}) inviteSelect: IonSelect;
-  @ViewChild('RolesSelect', {static: false}) rolesSelect: IonSelect;
-  @ViewChild('RemoveSelect', {static: false}) removeSelect: IonSelect;
+  @ViewChild('InviteSelect') inviteSelect: IonSelect;
+  @ViewChild('RolesSelect') rolesSelect: IonSelect;
+  @ViewChild('RemoveSelect') removeSelect: IonSelect;
   @Input() title = '';
   uniqueParticipantList = [];
   displayParticipantList = [];

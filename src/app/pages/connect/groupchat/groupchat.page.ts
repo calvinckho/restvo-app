@@ -45,8 +45,8 @@ import {Location} from '@angular/common';
     encapsulation: ViewEncapsulation.None,
 })
 export class GroupchatPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     @Input() modalPage: any; // optionally sent if it is a modal page
 

@@ -9,40 +9,40 @@ const routes: Routes = [
         children: [
             {
                 path: 'insight/:id',
-                loadChildren: './feature-insight/feature-insight.module#FeatureInsightPageModule',
+                loadChildren: () => import('./feature-insight/feature-insight.module').then(m => m.FeatureInsightPageModule),
             },
             {
                 path: 'profile/:id',
-                loadChildren: '../showfeature/showfeature.module#ShowfeaturePageModule',
+                loadChildren: () => import('../showfeature/showfeature.module').then(m => m.ShowfeaturePageModule),
                 },
             {
                 path: 'people',
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../editparticipants/editparticipants.module#EditparticipantsPageModule'
+                        loadChildren: () => import('../editparticipants/editparticipants.module').then(m => m.EditparticipantsPageModule)
                     },
                 ]
             },
             {
                 path: 'programs/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'relationships/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'groups/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'journey/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'mentoring/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'creator',
@@ -54,19 +54,19 @@ const routes: Routes = [
             },
             {
                 path: 'contents/:id',
-                loadChildren: './feature-childactivities/feature-childactivities.module#FeatureChildActivitiesPageModule',
+                loadChildren: () => import('./feature-childactivities/feature-childactivities.module').then(m => m.FeatureChildActivitiesPageModule),
             },
             {
                 path: 'schedule',
-                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                loadChildren: () => import('./feature-schedule/feature-schedule.module').then(m => m.FeatureSchedulePageModule),
             },
             {
                 path: 'new-schedule',
-                loadChildren: './feature-schedule/feature-schedule.module#FeatureSchedulePageModule',
+                loadChildren: () => import('./feature-schedule/feature-schedule.module').then(m => m.FeatureSchedulePageModule),
             },
             {
                 path: 'onboarding/:id',
-                loadChildren: '../../user/about/preferences/preferences.module#PreferencesPageModule',
+                loadChildren: () => import('../../user/about/preferences/preferences.module').then(m => m.PreferencesPageModule),
             },
             {
                 path: 'subscription/:id',

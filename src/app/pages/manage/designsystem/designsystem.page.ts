@@ -9,7 +9,7 @@ import {Auth} from "../../../services/auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class DesignsystemPage implements OnInit {
-  @ViewChild('addSelect', {static: false}) select: IonSelect;
+  @ViewChild('addSelect') select: IonSelect;
 
   prefersDark: any;
 

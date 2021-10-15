@@ -30,7 +30,7 @@ import {DevelopmentPage} from '../development/development.page';
   encapsulation: ViewEncapsulation.None
 })
 export class ManagecommunitiesPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
+    @ViewChild(IonContent) content: IonContent;
 
     subscriptions: any = {};
     title = '';

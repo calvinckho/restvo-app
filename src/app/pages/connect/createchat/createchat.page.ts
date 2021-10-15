@@ -16,8 +16,8 @@ import {Moment} from "../../../services/moment.service";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatechatPage implements OnInit {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     chatForm: FormGroup;
     churchId = '';

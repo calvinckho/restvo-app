@@ -15,8 +15,8 @@ import { Churches } from '../../../services/church.service';
   encapsulation: ViewEncapsulation.None
 })
 export class PickpeoplePopoverPage implements OnInit {
-    @ViewChild('searchbar', {static: false}) searchbar: IonSearchbar;
-    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('searchbar') searchbar: IonSearchbar;
+    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     @Input() filter: any;
     @Input() includeSelf: any;

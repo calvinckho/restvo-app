@@ -1,4 +1,4 @@
-platform :ios, '11'
+platform :ios, '12.1'
 use_frameworks!
 
 target 'App' do

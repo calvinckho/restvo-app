@@ -38,7 +38,7 @@ import {FeatureCreatorPage} from './feature-creator/feature-creator.page';
   encapsulation: ViewEncapsulation.None
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
-  @ViewChild(IonSelect, {static: false}) select: IonSelect;
+  @ViewChild(IonSelect) select: IonSelect;
   menu: any;
   schedules: any;
   selectedSchedule: any;

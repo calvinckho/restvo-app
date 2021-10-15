@@ -41,7 +41,7 @@ import {CacheService} from "ionic-cache";
   encapsulation: ViewEncapsulation.None,
 })
 export class FeatureBillingPage extends EditfeaturePage implements OnInit {
-  @ViewChild(StripeCardComponent, {static: false}) card: StripeCardComponent;
+  @ViewChild(StripeCardComponent) card: StripeCardComponent;
   @Input() modalPage: any;
   stripeService: StripeInstance;
   cardOptions: StripeCardElementOptions = {

@@ -42,9 +42,9 @@ import {CacheService} from 'ionic-cache';
   encapsulation: ViewEncapsulation.None,
 })
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
-  @ViewChild(IonContent, {static: false}) content: IonContent;
-  @ViewChild(IonSlides, {static: false}) slides: IonSlides;
-  @ViewChild(StripeCardComponent, {static: false}) card: StripeCardComponent;
+  @ViewChild(IonContent) content: IonContent;
+  @ViewChild(IonSlides) slides: IonSlides;
+  @ViewChild(StripeCardComponent) card: StripeCardComponent;
 
   @Input() modalPage: any;
   stripeService: StripeInstance;

@@ -33,7 +33,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatecommunityPage extends EditfeaturePage implements OnInit {
-    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild(IonSlides) slides: IonSlides;
 
     createReachedEnd = false;
     tutorialReachedEnd = false;

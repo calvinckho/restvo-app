@@ -1,4 +1,4 @@
-import {Injectable, NgZone, ViewChild} from '@angular/core';
+import { Injectable, NgZone, ViewChild, Directive } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ElectronService } from 'ngx-electron';
 import {AlertController, LoadingController, MenuController, Platform} from '@ionic/angular';
@@ -18,10 +18,11 @@ import {Capacitor} from '@capacitor/core';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 
+@Directive()
 @Injectable({ providedIn: 'root' })
 export class UserData {
 
-    @ViewChild('Contact', {static: false}) contact: Contact;
+    @ViewChild('Contact') contact: Contact;
     user: any;
     communitiesboards: any; // [CommunitiesBoards];
     socket: io;

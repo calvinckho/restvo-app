@@ -19,8 +19,8 @@ import {Location} from '@angular/common';
   encapsulation: ViewEncapsulation.None
 })
 export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit {
-  @ViewChild(IonContent, {static: false}) content: IonContent;
-  @ViewChild('SelectGoals', {static: false}) select: IonSelect;
+  @ViewChild(IonContent) content: IonContent;
+  @ViewChild('SelectGoals') select: IonSelect;
 
   @Input() modalPage: any;
   @Input() moment: any; // the program object

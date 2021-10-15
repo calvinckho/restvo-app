@@ -12,7 +12,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: '../groupchat/groupchat.module#GroupchatPageModule'
+                        loadChildren: () => import('../groupchat/groupchat.module').then(m => m.GroupchatPageModule)
                     }
                 ]
             },
@@ -21,7 +21,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                        loadChildren: () => import('../../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                     }
                 ]
             },
@@ -30,7 +30,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../../connect/showrecipientinfo/showrecipientinfo.module#ShowrecipientinfoModule'
+                        loadChildren: () => import('../../connect/showrecipientinfo/showrecipientinfo.module').then(m => m.ShowrecipientinfoModule)
                     }
                 ]
             },

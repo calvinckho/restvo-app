@@ -21,7 +21,7 @@ import {PickfeaturePopoverPage} from '../../../feature/pickfeature-popover/pickf
   encapsulation: ViewEncapsulation.None
 })
 export class PreferencesPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   @Input() modalPage: any;
   @Input() showHeader: any;

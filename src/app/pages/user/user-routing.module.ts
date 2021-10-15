@@ -12,7 +12,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './profile/profile.module#ProfilePageModule'
+                        loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
                     }
                 ]
             },
@@ -21,7 +21,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './about/about.module#AboutPageModule'
+                        loadChildren: () => import('./about/about.module').then(m => m.AboutPageModule)
                     }
                 ]
             },
@@ -30,7 +30,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './about/preferences/preferences.module#PreferencesPageModule'
+                        loadChildren: () => import('./about/preferences/preferences.module').then(m => m.PreferencesPageModule)
                     }
                 ]
             },
@@ -39,7 +39,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':programId',
-                        loadChildren: './about/preferences/preferences.module#PreferencesPageModule'
+                        loadChildren: () => import('./about/preferences/preferences.module').then(m => m.PreferencesPageModule)
                     }
                 ]
             },
@@ -48,7 +48,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './programs/programs.module#ProgramsPageModule'
+                        loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsPageModule)
                     }
                 ]
             },
@@ -57,7 +57,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './dashboard/dashboard.module#DashboardPageModule'
+                        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardPageModule)
                     }
                 ]
             },
@@ -66,7 +66,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './settings/settings.module#SettingsPageModule'
+                        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
                     }
                 ]
             },
@@ -75,7 +75,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':id',
-                        loadChildren: '../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+                        loadChildren: () => import('../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
                     }
                 ]
             },
@@ -84,7 +84,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        loadChildren: './notifications/notifications.module#NotificationsPageModule'
+                        loadChildren: () => import('./notifications/notifications.module').then(m => m.NotificationsPageModule)
                     }
                 ]
             },

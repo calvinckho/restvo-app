@@ -22,7 +22,7 @@ import {Churches} from "../../../services/church.service";
     encapsulation: ViewEncapsulation.None
 })
 export class CommunitiesPage {
-    @ViewChild(IonInfiniteScroll, {static: false}) infiniteScroll: IonInfiniteScroll;
+    @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
     @Input() modalPage: any;
 
     subscriptions: any = {};

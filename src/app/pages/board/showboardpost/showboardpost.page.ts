@@ -33,9 +33,9 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
   encapsulation: ViewEncapsulation.None
 })
 export class ShowboardpostPage implements OnInit, OnDestroy {
-    @ViewChild(IonContent, {static: false}) content: IonContent;
-    @ViewChild('textArea', {static: false}) textArea: ElementRef;
-    @ViewChild(IonSlides, {static: false}) slides: IonSlides;
+    @ViewChild(IonContent) content: IonContent;
+    @ViewChild('textArea') textArea: ElementRef;
+    @ViewChild(IonSlides) slides: IonSlides;
 
     @Input() boardId: any;
     @Input() isGroupLeader: boolean;

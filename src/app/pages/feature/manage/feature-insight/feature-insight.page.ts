@@ -35,7 +35,7 @@ import {Systemlog} from '../../../../services/systemlog.service';
 })
 
 export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnChanges {
-  @ViewChild('OpenFilter', { static: false }) openFilter: IonSelect;
+  @ViewChild('OpenFilter') openFilter: IonSelect;
   relationshipCompletion: any;
   participantAscending = true;
   leaderAscending = true;

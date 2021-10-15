@@ -13,7 +13,7 @@ const routes: Routes = [
         children: [
           {
             path: ':id',
-            loadChildren: '../../feature/showfeature/showfeature.module#ShowfeaturePageModule'
+            loadChildren: () => import('../../feature/showfeature/showfeature.module').then(m => m.ShowfeaturePageModule)
           }
         ]
       },
@@ -22,7 +22,7 @@ const routes: Routes = [
         children: [
           {
             path: ':id',
-            loadChildren: '../../feature/manage/feature-insight/feature-insight.module#FeatureInsightPageModule'
+            loadChildren: () => import('../../feature/manage/feature-insight/feature-insight.module').then(m => m.FeatureInsightPageModule)
           }
         ]
       },

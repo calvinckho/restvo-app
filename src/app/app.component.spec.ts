@@ -32,28 +32,28 @@ describe('AppComponent', () => {
             pathMatch: 'full' },
         {
             path: 'map',
-            loadChildren: './pages/map/map.module#MapPageModule' },
+            loadChildren: () => import('./pages/map/map.module').then(m => m.MapPageModule) },
         {
             path: 'recover',
-            loadChildren: './pages/user/recover/recover.module#RecoverPageModule' },
+            loadChildren: () => import('./pages/user/recover/recover.module').then(m => m.RecoverPageModule) },
         {
             path: 'register',
-            loadChildren: './pages/user/register/register.module#RegisterPageModule' },
+            loadChildren: () => import('./pages/user/register/register.module').then(m => m.RegisterPageModule) },
         {
             path: 'app',
-            loadChildren: './pages/main-tab/main-tab.module#MainTabPageModule' },
+            loadChildren: () => import('./pages/main-tab/main-tab.module').then(m => m.MainTabPageModule) },
         {
             path: 'home',
-            loadChildren: './pages/webflow/home/home.module#HomePageModule' },
+            loadChildren: () => import('./pages/webflow/home/home.module').then(m => m.HomePageModule) },
         {
             path: 'feature',
-            loadChildren: './pages/webflow/feature/feature.module#FeaturePageModule' },
+            loadChildren: () => import('./pages/webflow/feature/feature.module').then(m => m.FeaturePageModule) },
         {
             path: 'pricing',
-            loadChildren: './pages/webflow/pricing/pricing.module#PricingPageModule' },
+            loadChildren: () => import('./pages/webflow/pricing/pricing.module').then(m => m.PricingPageModule) },
         {
             path: 'mission',
-            loadChildren: './pages/webflow/mission/mission.module#MissionPageModule' },
+            loadChildren: () => import('./pages/webflow/mission/mission.module').then(m => m.MissionPageModule) },
         {
             path: '**',
             redirectTo:  '/app/news',
