@@ -5,32 +5,16 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'front',
-  bundledWebRuntime: false,
+  appId: 'com.restvo.app',
+  appName: 'restvo',
   webDir: 'www',
-  /*ios: {
-    'minVersion': '11'
-  },*/
+  bundledWebRuntime: false,
   plugins: {
     SplashScreen: {
       launchAutoHide: false
     },
     Keyboard: {
       resize: 'ionic'
-    }
-  },
-  npmClient: 'npm',
-  cordova: {
-    preferences: {
-      ScrollEnabled: 'false',
-      'android-minSdkVersion': '19',
-      BackupWebStorage: 'none',
-      SplashMaintainAspectRatio: 'true',
-      FadeSplashScreenDuration: '300',
-      SplashShowOnlyFirstTime: 'false',
-      SplashScreen: 'screen',
-      SplashScreenDelay: '3000'
     }
   }
 };
