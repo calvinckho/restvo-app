@@ -1,6 +1,6 @@
 {
   "name": "restvo-app",
-  "version": "1.9.4",
+  "version": "1.10.0",
   "author": "Restvo Inc.",
   "homepage": "https://app.restvo.com",
   "scripts": {
@@ -63,7 +63,7 @@
     "angular-progress-bar": "^1.0.11",
     "blob-util": "^2.0.2",
     "call-number": "^1.0.1",
-    "capacitor-jitsi-meet": "^2.0.0-beta.1",
+    "capacitor-jitsi-meet": "2.0.0",
     "capacitor-share-extension": "0.0.20",
     "compact-timezone-list": "^1.0.6",
     "compressorjs": "^1.0.7",
