@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { FeatureSubscriptionPage } from './feature-subscription.page';
@@ -7,7 +7,7 @@ describe('FeatureSubscriptionPage', () => {
   let component: FeatureSubscriptionPage;
   let fixture: ComponentFixture<FeatureSubscriptionPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FeatureSubscriptionPage ],
       imports: [IonicModule.forRoot()]

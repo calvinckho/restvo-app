@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { StatusBar } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 
@@ -11,7 +11,7 @@ describe('DashboardPage', () => {
   let fixture: ComponentFixture<DashboardPage>;
   let statusBarSpy, splashScreenSpy, platformSpy;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     TestBed.configureTestingModule({

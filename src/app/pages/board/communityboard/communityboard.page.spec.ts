@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CommunityboardPage } from './communityboard.page';
 import {ApplicationPipesModuleMock} from "../../../pipes/mocks/application-pipes.mock";
 import {ActionSheetController, IonContent, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides} from '@ionic/angular';
@@ -12,7 +12,7 @@ describe('CommunityboardPage', () => {
   let component: CommunityboardPage;
   let fixture: ComponentFixture<CommunityboardPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
       const storage = jasmine.createSpyObj('Storage', ['set']);
       storageSetSpy = storage.set.and.returnValue( of(true) );

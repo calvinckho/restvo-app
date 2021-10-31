@@ -47,17 +47,20 @@
                 "glob": "*",
                 "input": "src/assets/json",
                 "output": ".well-known"
-              },
+              }
             ],
             "styles": [
               {
-                "input": "src/theme/variables.scss"
+                "input": "src/theme/variables.scss",
+                "inject": true
               },
               {
-                "input": "src/global.scss"
+                "input": "src/global.scss",
+                "inject": true
               },
               {
-                "input": "node_modules/plyr/dist/plyr.css"
+                "input": "node_modules/plyr/dist/plyr.css",
+                "inject": true
               }
             ],
             "scripts": [],
@@ -82,7 +85,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

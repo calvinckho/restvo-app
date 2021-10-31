@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -63,7 +63,7 @@ describe('AppComponent', () => {
 
   // let platformSpy, platformReadySpy;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     // platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
 
     TestBed.configureTestingModule({
@@ -86,7 +86,7 @@ describe('AppComponent', () => {
           GroupboardPageModule,
           EditgroupPageModule,
           ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-          RouterModule.forRoot(routes)
+          RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

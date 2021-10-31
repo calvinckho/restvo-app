@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { UploadmediaPage } from './uploadmedia.page';
 
@@ -7,7 +7,7 @@ describe('UploadmediaPage', () => {
   let component: UploadmediaPage;
   let fixture: ComponentFixture<UploadmediaPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ UploadmediaPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

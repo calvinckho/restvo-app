@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { SuccessPopoverPage } from './success-popover.page';
@@ -7,7 +7,7 @@ describe('SuccessPopoverPage', () => {
   let component: SuccessPopoverPage;
   let fixture: ComponentFixture<SuccessPopoverPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SuccessPopoverPage ],
       imports: [IonicModule.forRoot()]

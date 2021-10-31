@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PickfeaturePopoverPage } from './pickfeature-popover.page';
 
@@ -7,7 +7,7 @@ describe('PickfeaturePopoverPage', () => {
   let component: PickfeaturePopoverPage;
   let fixture: ComponentFixture<PickfeaturePopoverPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PickfeaturePopoverPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

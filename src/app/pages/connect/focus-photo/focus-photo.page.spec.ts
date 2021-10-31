@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FocusPhotoPage } from './focus-photo.page';
 
@@ -7,7 +7,7 @@ describe('FocusPhotoPage', () => {
   let component: FocusPhotoPage;
   let fixture: ComponentFixture<FocusPhotoPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FocusPhotoPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
