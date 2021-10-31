@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxElectronModule } from 'ngx-electron';
-//import { PinchZoomModule } from 'ngx-pinch-zoom';
+import { PinchZoomModule } from 'ngx-pinch-zoom';
 import { PlyrModule } from 'ngx-plyr';
 
 import {IonicStorageModule} from '@ionic/storage';
