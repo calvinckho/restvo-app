@@ -60,7 +60,10 @@
                 "input": "node_modules/plyr/dist/plyr.css"
               }
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "socket.io-client"
+            ]
           },
           "configurations": {
             "production": {
