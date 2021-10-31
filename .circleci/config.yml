@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/server
     steps:
       # Checkout the code from the branch into the working_directory
