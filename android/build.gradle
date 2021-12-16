@@ -22,7 +22,7 @@ allprojects {
         google()
         jcenter()
         maven {
-            //url "file:/Users/pianokai/Sites/jitsi/jitsi-maven-repository-01"
+            //url "file:/Users/calvinho/Sites/jitsi/jitsi-maven-repository-02"
             url "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases"
         }
     }
