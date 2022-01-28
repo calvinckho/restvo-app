@@ -48,15 +48,16 @@ export class CalendarPipe implements PipeTransform {
       } else {
         cachedCalendarItems = calendarItems;
       }
-      let todayLessonExists;
-      let anyIncompleteLessonToday;
+      let todayLessonExists, anyIncompleteLessonToday;
       let indexOfTodayLesson = null;
+      let indexOfTodayIncompleteLesson = null;
       for (let i = cachedCalendarItems.length - 1; i >= 0; i--) {
         if (new Date(cachedCalendarItems[i].startDate).getFullYear() === new Date().getFullYear() && new Date(cachedCalendarItems[i].startDate).getMonth() === new Date().getMonth() && new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
           if (!cachedCalendarItems[indexOfTodayLesson].completed) {
             anyIncompleteLessonToday = true;
+            indexOfTodayIncompleteLesson = indexOfTodayLesson;
           }
         }
         if (!todayLessonExists && (new Date(cachedCalendarItems[i].startDate).getTime() < new Date().getTime()) && !cachedCalendarItems[i].completed) {
@@ -73,7 +74,9 @@ export class CalendarPipe implements PipeTransform {
         }
       }
       if (data && data.output === 'calendaritem') {
-        if (indexOfTodayLesson !== null) {
+        if (indexOfTodayIncompleteLesson !== null) {
+          return cachedCalendarItems[indexOfTodayIncompleteLesson];
+        } else if (indexOfTodayLesson !== null) {
           return cachedCalendarItems[indexOfTodayLesson];
         } else {
           return null;
