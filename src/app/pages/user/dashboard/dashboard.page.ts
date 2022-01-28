@@ -95,6 +95,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         if (this.view === 'profile') {
             this.loadAnswers();
             this.loadPrograms();
+            this.calendarService.changeMode('week');
         } else if (this.view === 'calendar') {
             this.loadDashboard();
         }
@@ -326,16 +327,11 @@ export class DashboardPage implements OnInit, OnDestroy {
         }
     }
 
-/*
-    async slideChange(event){
-        event.stopPropagation();
-        this.slide = await this.slides.getActiveIndex();
-    }*/
-
-    changeSelectedDate( inputDate ) {
+    changeSelectedDate(inputDate) {
         if (inputDate === ' ') { return; }
         this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
-        this.calendarService.calendar.daysInViewWeek = this.calendarService.getDaysInWeek( inputDate.getDate() , inputDate.getMonth() , inputDate.getFullYear() );
+        // TODO: the following line is not needed. do more research before deleting
+        // this.calendarService.calendar.daysInViewWeek = this.calendarService.getDaysInWeek(inputDate.getDate(), inputDate.getMonth(), inputDate.getFullYear());
     }
 
     async clickCalendarItem(calendarItem) {
@@ -352,7 +348,20 @@ export class DashboardPage implements OnInit, OnDestroy {
             componentProps.relationshipId = calendar.relationship;
             params.relationshipId = calendar.relationship;
         }
-        if (this.modalPage) {
+        if (!this.modalPage && this.platform.width() >= 992) {
+            params.subpanel = true;
+            this.router.navigate([{ outlets: { sub: ['details', moment._id, params ] }}]);
+        } else if (!this.modalPage && this.platform.width() >= 768) {
+            this.router.navigate(['/app/activity/' + moment._id, params ], { replaceUrl: false });
+        } else {
+            const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps: componentProps });
+            await modal.present();
+            const {data: refreshNeeded} = await modal.onDidDismiss();
+            if (refreshNeeded) {
+                return this.loadDashboard();
+            }
+        }
+        /*if (this.modalPage) {
             const modal = await this.modalCtrl.create({component: ShowfeaturePage, componentProps });
             await modal.present();
             const {data: refreshNeeded} = await modal.onDidDismiss();
@@ -361,7 +370,7 @@ export class DashboardPage implements OnInit, OnDestroy {
             }
         } else {
             this.router.navigate(['/app/activity/' + moment._id, params]);
-        }
+        }*/
     }
 
     async loadPrograms() {

@@ -1,16 +1,16 @@
 <ion-header *ngIf="userData" id="discover-header" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
-  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
+  <!--<ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none"  color="lightgrey">
         <ion-avatar slot="start">
           <ion-img src="assets/img/icon.png"></ion-img>
         </ion-avatar>
         <div class="details" class="ion-text-wrap">
-          <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
-          <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
+          <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(&#45;&#45;ion-color-button1)">Download app for better experience</a>
+          <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(&#45;&#45;ion-color-button1)">Download app for better experience</a>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-        <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
+        &lt;!&ndash;<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>&ndash;&gt;
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
@@ -18,7 +18,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-toolbar>
+  </ion-toolbar>-->
   <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle slot="start" menu="main" id="dashboard-menu-toggle">
       <ion-button fill="clear" color="grey">

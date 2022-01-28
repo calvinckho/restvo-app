@@ -1,16 +1,16 @@
 <ion-header [hidden]="router.url.includes('/app/user') && !modalPage" [ngClass]="{'ion-no-border': platform.width() >= 768 }">
-  <ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
+  <!--<ion-toolbar color="lightgrey" *ngIf="(platform.is('mobileweb') && !platform.is('pwa') && (platform.is('ios') || platform.is('android'))) && userData.showDownloadLink">
     <ion-item-sliding side="end">
       <ion-item lines="none" color="lightgrey">
         <ion-avatar slot="start">
           <ion-img src="assets/img/icon.png"></ion-img>
         </ion-avatar>
         <div class="details" class="ion-text-wrap">
-          <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
-          <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(--ion-color-button1)">Download app for better experience</a>
+          <a *ngIf="platform.is('ios')" href="https://itunes.apple.com/us/app/restvo-connect-with-churches/id1365903479?ls=1&mt=8" style="font-size: 14px; color: var(&#45;&#45;ion-color-button1)">Download app for better experience</a>
+          <a *ngIf="platform.is('android')" href="https://play.google.com/store/apps/details?id=com.restvo.app" style="font-size: 14px; color: var(&#45;&#45;ion-color-button1)">Download app for better experience</a>
         </div>
         <ion-icon name="chevron-forward-outline" color="primary" slot="end"></ion-icon>
-        <!--<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>-->
+        &lt;!&ndash;<ion-button fill="clear" slot="end"><ion-icon name="close"></ion-icon></ion-button>&ndash;&gt;
       </ion-item>
       <ion-item-options>
         <ion-item-option color="primary" (click)="userData.showDownloadLink = false">
@@ -18,7 +18,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-toolbar>
+  </ion-toolbar>-->
   <ion-toolbar [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-menu-toggle menu="main" *ngIf="!modalPage && userData.user" slot="start" fill="clear" id='menuToggle'>
       <ion-button fill="clear" color="grey">
@@ -100,7 +100,93 @@
         </ion-item-sliding>
       </ion-card>
     </ion-row>
+    <div *ngIf="view === 'profile' || view === 'calendar'" size-xs="12" size-sm="12" size-md="6">
+      <ion-toolbar *ngIf="view === 'calendar'">
+        <ion-item class="transparent ion-margin-top" lines="none">
+          <ion-row class="calendar-buttons">
+            <ion-col class="calendar-button" (click)="calendarService.changeMode('month')">
+              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'month'}">Month</div>
+            </ion-col>
+            <ion-col class="calendar-button" (click)="calendarService.changeMode('week')">
+              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'week'}">Week</div>
+            </ion-col>
+            <ion-col class="calendar-button" (click)="calendarService.changeMode('upcoming')" *ngIf="calendarService.hasUpcomingItems">
+              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'upcoming'}">Upcoming</div>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-toolbar>
+      <!--CALENDAR SECTION-->
+      <ion-grid class="content-grid">
+        <ion-row>
+          <ion-col [size]="(platform.width() >= 992) ? 6 : 12">
+            <ion-card class="calendar-container ion-padding-vertical" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
+              <div class="month-title-container">
+                <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
+                <div class="month-title">{{calendarService.calendar.viewTitle}}</div>
+                <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
+              </div>
 
+              <div class="monthview-day-headers">S</div>
+              <div class="monthview-day-headers">M</div>
+              <div class="monthview-day-headers">T</div>
+              <div class="monthview-day-headers">W</div>
+              <div class="monthview-day-headers">T</div>
+              <div class="monthview-day-headers">F</div>
+              <div class="monthview-day-headers">S</div>
+
+              <!--month view-->
+              <div *ngIf="calendarService.calendar.mode == 'month'">
+                <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
+                  <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
+                    <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
+                    <div *ngIf="dayOfMonth.date != ' ' ">
+                      {{dayOfMonth.date.getDate()}}
+                    </div>
+                    <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index">
+                      <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--week view-->
+              <div *ngIf="calendarService.calendar.mode == 'week'">
+                <div class="monthview-element" *ngFor="let dayOfWeek of calendarService.calendar.daysInViewWeek; trackBy: customTrackBy">
+                  <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring(0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfWeek.date)">
+                    <div *ngIf="dayOfWeek.date == ' ' ">&nbsp;&nbsp;</div>
+                    <div *ngIf="dayOfWeek.date != ' ' ">
+                      {{dayOfWeek.date.getDate()}}
+                    </div>
+                    <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfWeek.dayEvents; trackBy: customTrackBy; let i = index">
+                      <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-card>
+          </ion-col>
+          <ion-col [size]="(platform.width() >= 992) && calendarService.calendar.mode !== 'upcoming' ? 6 : 12" class="ion-align-self-center">
+            <!-- list features after being filtered -->
+            <ion-card class="list-container" [ngClass]="{'fixed-height': (calendarService.calendar.mode !== 'upcoming') && (view === 'profile')}">
+              <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
+                <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="((((calendarService.calendar.mode == 'month' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) || (calendarService.calendar.mode == 'week' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth())) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )) || (calendarService.calendar.mode == 'upcoming' && calendarItem.validUpcomingItem)) && calendarItem.title.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" id="feature" lines="none">
+                  <ion-label class="moment-icon" slot="start">
+                    <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
+                  </ion-label>
+                  <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
+                  <div class="item-container" slot="end">
+                    <ion-label>{{calendarItem.title}}</ion-label>
+                    <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n'}}</ion-note>
+                    <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n'}}</ion-note>
+                  </div>
+                </ion-item>
+              </div>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
     <ion-grid class="content-grid" *ngIf="view === 'profile'">
       <ion-row>
         <!--List My Journey-->
@@ -496,85 +582,5 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div *ngIf="view === 'calendar'" size-xs="12" size-sm="12" size-md="6">
-      <ion-toolbar>
-        <ion-item class="transparent ion-margin-top" lines="none" *ngIf="view === 'calendar'">
-          <ion-row class="calendar-buttons">
-            <ion-col class="calendar-button" (click)="calendarService.changeMode('month')">
-              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'month'}">Month</div>
-            </ion-col>
-            <ion-col class="calendar-button" (click)="calendarService.changeMode('week')">
-              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'week'}">Week</div>
-            </ion-col>
-            <ion-col class="calendar-button" (click)="calendarService.changeMode('upcoming')" *ngIf="calendarService.hasUpcomingItems">
-              <div class="calendar-label" [ngClass]="{ 'selected' : calendarService.calendar.mode == 'upcoming'}">Upcoming</div>
-            </ion-col>
-          </ion-row>
-        </ion-item>
-      </ion-toolbar>
-      <!--CALENDAR SECTION-->
-      <ion-card class="calendar-container" *ngIf="calendarService.calendar.mode == 'month' || calendarService.calendar.mode == 'week'">
-        <div class="month-title-container">
-          <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
-          <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-          <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
-        </div>
-
-        <div class="monthview-day-headers">S</div>
-        <div class="monthview-day-headers">M</div>
-        <div class="monthview-day-headers">T</div>
-        <div class="monthview-day-headers">W</div>
-        <div class="monthview-day-headers">T</div>
-        <div class="monthview-day-headers">F</div>
-        <div class="monthview-day-headers">S</div>
-
-        <!--month view-->
-        <div *ngIf="calendarService.calendar.mode == 'month'">
-          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
-              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
-              <div *ngIf="dayOfMonth.date != ' ' ">
-                {{dayOfMonth.date.getDate()}}
-              </div>
-              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index">
-                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--week view-->
-        <div *ngIf="calendarService.calendar.mode == 'week'">
-          <div class="monthview-element" *ngFor="let dayOfWeek of calendarService.calendar.daysInViewWeek; trackBy: customTrackBy">
-            <div class="monthview-element-content cursor-pointer" [ngClass]="{'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfWeek.date.toString() && dayOfWeek.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfWeek.date.toString().substring(0 , 15)}" (click)="changeSelectedDate( dayOfWeek.date )">
-              <div *ngIf="dayOfWeek.date == ' ' ">&nbsp;&nbsp;</div>
-              <div *ngIf="dayOfWeek.date != ' ' ">
-                {{dayOfWeek.date.getDate()}}
-              </div>
-              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfWeek.dayEvents; trackBy: customTrackBy; let i = index">
-                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ion-card>
-
-      <!-- list features after being filtered -->
-      <ion-list lines="none" class="list-container ion-padding">
-        <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
-          <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="((((calendarService.calendar.mode == 'month' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) || (calendarService.calendar.mode == 'week' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth())) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )) || (calendarService.calendar.mode == 'upcoming' && calendarItem.validUpcomingItem)) && calendarItem.title.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" id="feature" lines="none">
-            <ion-label class="moment-icon" slot="start">
-              <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
-            </ion-label>
-            <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
-            <div class="item-container" slot="end">
-              <ion-label>{{calendarItem.title}}</ion-label>
-              <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-              <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n,w:s,m:n,d:n'}}</ion-note>
-            </div>
-          </ion-item>
-        </div>
-      </ion-list>
-    </div>
   </div>
 </ion-content>

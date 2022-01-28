@@ -41,6 +41,11 @@ export class DatetimePipe implements PipeTransform {
               minute: 'numeric',
               weekday: 'short'
           });
+      } else if (format === 'h:n,m:n') {
+          return new Date(dateTime).toLocaleString( 'en-US', {
+              hour: 'numeric',
+              minute: 'numeric'
+          });
       } else if (format === 'w:l,m:l,y:n,d:n') {
           return new Date(dateTime).toLocaleString('en-US', {
               weekday: 'long',

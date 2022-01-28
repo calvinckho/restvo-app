@@ -463,7 +463,7 @@
           <div class="graphic-banner blue">
             <h1>Great Work</h1>
             <div class="info">
-              <p>You have completed your lesson for today.</p>
+              <p>You have completed your lessons for today.</p>
               <img src="/assets/img/relax.svg" />
             </div>
           </div>
@@ -489,16 +489,20 @@
         <!--Daily Goal Card-->
         <div *ngIf="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'calendaritem', scheduleIds: scheduleIds })">
           <ion-item lines="none">
-            <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Goal</ion-label>
+            <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">Daily Tasks</ion-label>
           </ion-item>
           <ion-card *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'todaycalendaritems', scheduleIds: scheduleIds })"  [ngStyle]="{'background': null | background : {} : 'color' }" (click)="openContent($event, calendarItem)" mode="md">
             <ion-card-content class="goal-content ion-no-padding">
               <ion-item class="calendar-item">
                 <div>
                   <div class="goal-todo-title ion-text-wrap">{{calendarItem.title}}</div>
-                  <ion-note class="goal-todo-date">{{calendarItem.startDate | datetime: 'm:s,d:n'}}</ion-note>
+                  <ion-note class="goal-todo-date">{{calendarItem.startDate | datetime: 'w:s,m:s,d:n,h:n,m:n'}}</ion-note>
                 </div>
-                <ion-icon class="lesson-item-checkbox" color="success" *ngIf="calendarItem.completed" name="checkmark-circle" slot="end"></ion-icon>
+                <!--<ion-icon class="lesson-item-checkbox" color="success" *ngIf="calendarItem.completed" name="checkmark-circle" slot="end"></ion-icon>-->
+                <ion-button (click)="touchCalendarItemResponse($event, calendarItem, 'check-in')" fill="clear" slot="end">
+                  <ion-icon class="lesson-item-checkbox" color="tertiary" *ngIf="!calendarItem.completed" name="radio-button-off"></ion-icon>
+                  <ion-icon class="lesson-item-checkbox" color="success" *ngIf="calendarItem.completed" name="checkmark-circle"></ion-icon>
+                </ion-button>
               </ion-item>
             </ion-card-content>
           </ion-card>
