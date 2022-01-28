@@ -49,11 +49,15 @@ export class CalendarPipe implements PipeTransform {
         cachedCalendarItems = calendarItems;
       }
       let todayLessonExists;
+      let anyIncompleteLessonToday;
       let indexOfTodayLesson = null;
       for (let i = cachedCalendarItems.length - 1; i >= 0; i--) {
         if (new Date(cachedCalendarItems[i].startDate).getFullYear() === new Date().getFullYear() && new Date(cachedCalendarItems[i].startDate).getMonth() === new Date().getMonth() && new Date(cachedCalendarItems[i].startDate).getDate() === new Date().getDate()) {
           todayLessonExists = true;
           indexOfTodayLesson = i;
+          if (!cachedCalendarItems[indexOfTodayLesson].completed) {
+            anyIncompleteLessonToday = true;
+          }
         }
         if (!todayLessonExists && (new Date(cachedCalendarItems[i].startDate).getTime() < new Date().getTime()) && !cachedCalendarItems[i].completed) {
           indexOfTodayLesson = i;
@@ -81,9 +85,9 @@ export class CalendarPipe implements PipeTransform {
           return null;
         }
       } else if (data && data.output === 'actionbanner') {
-        if (todayLessonExists && cachedCalendarItems[indexOfTodayLesson].completed) {
+        if (todayLessonExists && !anyIncompleteLessonToday) {
           return 'done today';
-        } else if (todayLessonExists && !cachedCalendarItems[indexOfTodayLesson].completed) {
+        } else if (todayLessonExists && anyIncompleteLessonToday) {
           return 'keep it up';
         } else if (!todayLessonExists && indexOfTodayLesson) {
           return 'keep it up';
