@@ -14,7 +14,7 @@
     <ion-title *ngIf="step < 1">{{title}}</ion-title>
     <ion-title *ngIf="step === 1 && currentView === 'new'">Choose a Template</ion-title>
     <div *ngIf="step === 1 && currentView === 'recent'">
-      <ion-title *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Journey</ion-title>
+      <ion-title *ngIf="selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'">Choose a Learning Journey</ion-title>
       <ion-title *ngIf="selectedCategoryId === '5e9fe372c8bf1a622fec69d8'">Choose a Mentoring Relationship</ion-title>
       <ion-title *ngIf="selectedCategoryId === '5e9fe35cc8bf1a622fec69d7'">Choose a Group</ion-title>
       <ion-title *ngIf="selectedCategoryId === '5c915475e172e4e64590e348'">Choose a Program</ion-title>
@@ -52,10 +52,10 @@
         <ion-col size="auto">
           <ion-card class="category-card" mode="md" (click)="selectedCategoryId = '5e9f46e1c8bf1a622fec69d5'" [ngClass]="{'selected': selectedCategoryId === '5e9f46e1c8bf1a622fec69d5'}">
             <ion-card-header>
-              <ion-card-title>Journey</ion-card-title>
+              <ion-card-title>Learning</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <li>Embark on a Journey of Growth</li>
+              <li>Embark on some new Learning</li>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -85,7 +85,7 @@
               <ion-card-title>Program</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <li>Manages Journeys, Mentors, and Groups</li>
+              <li>Manages Learning, Mentors, and Groups</li>
             </ion-card-content>
           </ion-card>
         </ion-col>
