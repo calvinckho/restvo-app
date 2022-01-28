@@ -121,8 +121,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
             SHOW_BRAND_WATERMARK: true,
             BRAND_WATERMARK_LINK: 'https://d2z4pehxidbzz4.cloudfront.net/app/icon_email.png',
             MOBILE_APP_PROMO: false,
-          },
-          onload: this.onJitsiLoaded()
+          }
         };
         if (this.userData && this.userData.user) {
           options.userInfo = {
@@ -130,6 +129,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
           };
         }
         this.jitsi = new JitsiMeetExternalAPI(domain, options);
+        this.jitsi.addListener('videoConferenceJoined', this.onJitsiLoaded);
       });
     }/* else if (this.platform.is('mobileweb') && !this.platform.is('tablet') && this.platform.width() < 768) { // mobile phone browser
       // show warning on the HTML to tell user to download the native app
