@@ -74,7 +74,7 @@
         <ion-col [ngClass]="{'selected': router.url.includes('journey')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))" (click)="clickManageMenu('journey', null)"> <!--Journey-->
           <ion-item class="ion-no-padding" [color]="router.url.includes('journey') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="journey"></ion-icon>
-            <ion-label class="menu-label">Journeys</ion-label>
+            <ion-label class="menu-label">Learning</ion-label>
           </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('mentoring')}" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))" (click)="clickManageMenu('mentoring', null)"> <!--Mentoring-->
@@ -169,7 +169,7 @@
     <!--Journey, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('journey', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9f46e1c8bf1a622fec69d5')))"> <!--Journey-->
       <ion-icon slot="start" name="journey" *ngIf="platform.width() < 768"></ion-icon>
-      <ion-label>Journey</ion-label>
+      <ion-label>Learning</ion-label>
     </ion-item>
     <!--Mentoring, only Show in Community or Program, and if they enabled this Children Category-->
     <ion-item (click)="clickManageMenu('mentoring', null)" *ngIf="moment && moment.categories && (moment.categories.includes('5c915324e172e4e64590e346') || moment.categories.includes('5c915475e172e4e64590e348')) && (!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e9fe372c8bf1a622fec69d8')))"> <!--Mentoring-->
