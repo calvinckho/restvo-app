@@ -5,9 +5,25 @@ import { Pipe, PipeTransform } from '@angular/core';
   pure: false
 })
 export class CalendarPipe implements PipeTransform {
-
   transform(calendarItems: any, type?: any, data?: any): any {
-    if (type === 'chattimestamp') {
+    if (type === 'eventoncalendarday') {
+      let isEventOnCalendarDay;
+      const calendarItem = calendarItems[0];
+      if (calendarItem.startDate && calendarItem.endDate && calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field) {
+        // get all dates as JavaScript Date objects and set the date time to 0 so not comparing hours, mintues, etc.
+        const startDateWithTime = new Date(calendarItem.startDate);
+        const startDate = new Date(startDateWithTime.getFullYear(), startDateWithTime.getMonth(), startDateWithTime.getDate());
+        const endDateWithTime = new Date(calendarItem.endDate);
+        const endDate = new Date(endDateWithTime.getFullYear(), endDateWithTime.getMonth(), endDateWithTime.getDate());
+
+        if ((calendarItem.moment.resource.field === 'User Defined Activity') && (startDate <= data.calendar.selectedDate && data.calendar.selectedDate <= endDate)) {
+          isEventOnCalendarDay = true;
+        }
+      } else {
+        isEventOnCalendarDay = false;
+      }
+      return isEventOnCalendarDay || (data.calendar.mode === 'upcoming' && calendarItem.validUpcomingItem); // disable future event's search of keywords because it is not used in Me page... && (calendarItem.title.toLowerCase().indexOf(data.searchKeyword.toLowerCase()) > -1)
+    } else if (type === 'chattimestamp') {
       if (data.messages && data.messages.length) {
         if (data.index === 0) {
           return new Date(data.messages[data.index].createdAt).toLocaleString('en-US', {

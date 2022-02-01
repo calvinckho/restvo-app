@@ -170,7 +170,7 @@
             <!-- list features after being filtered -->
             <ion-card class="list-container" [ngClass]="{'fixed-height': (calendarService.calendar.mode !== 'upcoming') && (view === 'profile')}">
               <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
-                <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="((((calendarService.calendar.mode == 'month' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) || (calendarService.calendar.mode == 'week' && calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth())) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )) || (calendarService.calendar.mode == 'upcoming' && calendarItem.validUpcomingItem)) && calendarItem.title.toLowerCase().indexOf(this.searchKeyword.toLowerCase()) > -1" id="feature" lines="none">
+                <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="[calendarItem] | calendar : 'eventoncalendarday' : { calendar: calendarService.calendar }" id="feature" lines="none">
                   <ion-label class="moment-icon" slot="start">
                     <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
                   </ion-label>
@@ -219,14 +219,14 @@
               </ion-row>
             </ion-grid>
 
-            <!--Journey Empty State-->
+            <!--Learning Empty State-->
             <div class="empty-state" *ngIf="!(journeys && journeys.length) && !loading">
               <img src="assets/img/journey.svg" alt="" />
               <a [routerLink]="['/app/discover', { filterOption: 'individual' }]" class="underline">
                 You don't have any journeys yet. Find out what is available on Restvo</a>
             </div>
 
-            <!--Journey Mobile View-->
+            <!--Learning Mobile View-->
             <ion-slides class="program-slides" [options]="{slidesPerView: 'auto', slidesOffsetAfter: this.platform.width() - 150, grabCursor: true, updateOnWindowResize: true}" *ngIf="journeys && journeys.length && platform.width() < 768">
               <ion-slide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
                 <ion-card class="program-card" (click)="openProgram($event, journey)">
@@ -239,7 +239,7 @@
                 </ion-card>
               </ion-slide>
             </ion-slides>
-            <!--Journey Desktop View-->
+            <!--Learning Desktop View-->
             <ion-grid *ngIf="journeys && journeys.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
                 <ion-col class="ion-align-self-center" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">

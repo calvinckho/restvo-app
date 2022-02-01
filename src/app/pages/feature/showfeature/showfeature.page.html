@@ -218,7 +218,7 @@
         <!-- list features after being filtered -->
         <ion-list *ngIf="dateType" lines="none" class="list-container ion-padding">
           <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
-            <ion-item *ngIf="calendarService.calendar.mode == 'month' && (calendarService.calendar.selectedDate.getMonth() == calendarService.calendar.currentViewDate.getMonth()) && calendarService.eventOnDay( calendarService.calendar.selectedDate , calendarItem )" id="feature" lines="none">
+            <ion-item *ngIf="[calendarItem] | calendar : 'eventoncalendarday' : { calendar: calendarService.calendar }" id="feature" lines="none">
               <ion-label class="moment-icon" slot="start">
                 <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
               </ion-label>

@@ -1070,7 +1070,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 socketData.goals = [];
             }
         }
-        this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+        if (this.momentService.socket) {
+            this.momentService.socket.emit('refresh moment', this.moment._id, socketData); // Using the moment service socket.io to signal real time dynamic update for other users in the same momentId room
+        }
 
         const index = this.responses.map((c) => c._id).indexOf(response._id);
         if (index < 0) { // if the response hasn't been added to the response list

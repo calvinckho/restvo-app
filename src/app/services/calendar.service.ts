@@ -226,7 +226,7 @@ export class CalendarService {
     }
 
     // returns true if there is an event on this day or event is valid, false otherwise
-    eventOnDay( dayOfMonth , calendarItem ) {
+    eventOnDay(dayOfMonth, calendarItem) {
         // first check if event is valid
         if (calendarItem.startDate && calendarItem.endDate && calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field) {
             // get all dates as JavaScript Date objects and set the date time to 0 so not comparing hours, mintues, etc.
@@ -235,11 +235,7 @@ export class CalendarService {
             let endDateWithTime = new Date(calendarItem.endDate);
             let endDate = new Date(endDateWithTime.getFullYear(), endDateWithTime.getMonth(), endDateWithTime.getDate());
 
-            let eventType = calendarItem.moment.resource.field;
-
-            if ((eventType === "Poll" || eventType === "Goal") && (endDate.toString() === dayOfMonth.toString())) { //two JS date objects will not evaluate to equal so must compare their strings instead
-                return true;
-            } else if ((eventType === "Event" || eventType === "Meetup" || eventType === "Track" || eventType === 'User Defined Activity') && (startDate <= dayOfMonth && dayOfMonth <= endDate)) {
+            if ((calendarItem.moment.resource.field === 'User Defined Activity') && (startDate <= dayOfMonth && dayOfMonth <= endDate)) {
                 return true;
             }
         } else {
