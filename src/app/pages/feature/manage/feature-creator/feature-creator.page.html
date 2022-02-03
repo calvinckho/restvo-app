@@ -36,7 +36,9 @@
           <ion-item-group *ngIf="moment && moment.resource && moment.resource.matrix_number.length && moment.resource.matrix_number[0].includes(10210) || moment.resource.matrix_number[0].includes(10220)"> <!--if Schedule is enabled-->
             <ion-item (click)="clickManageMenu('schedule', schedule)" *ngFor="let schedule of schedules; index as i">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>
-              <ion-label [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(schedule._id)}">Schedule {{i + 1}}</ion-label>
+              <ion-label [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(schedule._id)}" *ngIf="platform.width() < 768 && !schedule.title">Schedule {{i + 1}}</ion-label>
+              <ion-label [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(schedule._id)}" *ngIf="platform.width() < 768 && schedule.title">{{schedule.title}}</ion-label>
+              <ion-input class="schedule-title-input" type="text" [ngClass]="{ 'bold-font': router.url.includes('/schedule/') && router.url.includes(schedule._id)}" (ionInput)="touchSchedule($event, schedule)" [(ngModel)]="schedule.title" [placeholder]="'Schedule ' + (i + 1).toString()" *ngIf="platform.width() >= 768"></ion-input>
             </ion-item>
             <ion-item (click)="clickManageMenu('new-schedule', null)">
               <ion-icon slot="start" name="book" *ngIf="platform.width() < 768"></ion-icon>

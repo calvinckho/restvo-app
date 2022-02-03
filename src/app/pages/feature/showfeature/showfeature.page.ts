@@ -163,7 +163,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   // interactables
   timeoutHandle: any;
   quillEditorToolbarConfig = [
-      ['bold', 'italic'], // toggled buttons
+      ['bold', 'italic', 'strike'], // toggled buttons
       ['link'],           // link and image, video
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],

@@ -41,6 +41,8 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   notes_schedule: any;
   menu: any;
 
+  timeoutHandle: any;
+
   constructor(
       public cache: CacheService,
       public route: ActivatedRoute,
@@ -100,6 +102,16 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
       this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
     }
+  }
+
+  async touchSchedule(event, schedule) {
+    event.stopPropagation();
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(async () => {
+      const updatedSchedule = JSON.parse(JSON.stringify(schedule));
+      updatedSchedule.operation = 'update schedule';
+      await this.momentService.touchSchedule(updatedSchedule, false);
+    }, 500);
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {

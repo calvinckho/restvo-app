@@ -501,7 +501,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
           }
           if (!this.visibleComponents.length) {
               if (this.categoryId === '5e1bbda67b00ea76b75e5a73' || (this.moment.categories && this.moment.categories.includes('5e1bbda67b00ea76b75e5a73'))) { // content default components
-                  this.visibleComponents = [10000, 10010, 10050, 10300, 30000, 40010, 40020];
+                  this.visibleComponents = [10000, 10010, 10050, 10300, 20020, 30000, 40010, 40020];
               } else if (this.categoryId === '5e17acd47b00ea76b75e5a71' || (this.moment.categories && this.moment.categories.includes('5e17acd47b00ea76b75e5a71'))) { // onboarding default components
                   this.visibleComponents = [10000, 10010, 10300, 20010, 40010, 40020];
               }

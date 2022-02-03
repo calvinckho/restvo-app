@@ -57,6 +57,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   dateType = ''; // specifies if user is changing start date or end date
 
   scheduleObj = {       // create the schedule object
+    title: '',
     parent_moments: [], // the Plan's or other parent Activity's ID (expects only 1 parent)
     child_moments: [], // the items in the Schedule (e.g. lessons)
     startDate: new Date().toISOString(),
@@ -269,7 +270,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the local machine's timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
       this.schedule.operation = operation;
-      schedule = await this.momentService.touchSchedule(this.schedule);
+      schedule = await this.momentService.touchSchedule(this.schedule, true);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
         if (this.modalPage) {
@@ -321,7 +322,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         handler: async () => {
           alert.dismiss();
           this.schedule.operation = 'delete schedule';
-          await this.momentService.touchSchedule(this.schedule);
+          await this.momentService.touchSchedule(this.schedule, true);
           if (this.modalPage) {
             this.closeModal();
           } else {
@@ -342,17 +343,23 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         return (e - f);
       });
     }
-    this.momentService.touchContentCalendarItems(null, {operation: 'update calendar item', calendaritem: calendaritem });
-    if (this.schedule.options.recurrence) {
-      this.schedule.options.recurrence = '';
-      this.touchSchedule('update schedule');
-    }
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(async () => {
+      this.momentService.touchContentCalendarItems(null, {
+        operation: 'update calendar item',
+        calendaritem: calendaritem
+      });
+      if (this.schedule.options.recurrence) {
+        this.schedule.options.recurrence = '';
+        this.touchSchedule('update schedule');
+      }
+    }, 500);
   }
 
   reorderContents(event) {
     this.schedule.child_moments = event.detail.complete(this.schedule.child_moments);
     this.schedule.operation = 'update schedule';
-    this.momentService.touchSchedule(this.schedule);
+    this.momentService.touchSchedule(this.schedule, false);
   }
 
   reorderArray(array, from, to) {
@@ -486,7 +493,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   async chooseContent(content) {
     this.schedule.child_moments.push(content);
     this.schedule.operation = 'update schedule';
-    await this.momentService.touchSchedule(this.schedule);
+    await this.momentService.touchSchedule(this.schedule, false);
     this.content.scrollToBottom(50);
   }
 
@@ -494,7 +501,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     event.stopPropagation();
     this.schedule.child_moments.splice(index, 1);
     this.schedule.operation = 'update schedule';
-    await this.momentService.touchSchedule(this.schedule);
+    await this.momentService.touchSchedule(this.schedule, false);
   }
 
   async removeTimelineItem(event, momentId, calendaritem) {

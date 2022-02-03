@@ -643,7 +643,7 @@ export class Moment {
             .toPromise();
     }
 
-    async touchSchedule(data) {
+    async touchSchedule(data, refreshPages) {
         const schedule = JSON.parse(JSON.stringify(data));
         if (schedule && schedule.child_moments && schedule.child_moments.length && typeof schedule.child_moments[0] === 'object') { // depopulate child_moments before send them back to server
             schedule.child_moments = schedule.child_moments.map((c) => c._id);
@@ -653,8 +653,10 @@ export class Moment {
         }
         const promise = await this.http.put(this.networkService.domain + '/api/moment/schedule/touch', JSON.stringify(schedule), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
-        await this.userData.refreshAppPages();
+        if (refreshPages) {
+            await this.calendarService.getUserCalendar();
+            await this.userData.refreshAppPages();
+        }
         return promise;
     }
 
