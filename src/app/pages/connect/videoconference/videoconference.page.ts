@@ -83,9 +83,13 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
         startWithAudioMuted: this.startWithAudioMuted,
         startWithVideoMuted: this.startWithVideoMuted,
-        chatEnabled: false,
-        inviteEnabled: false,
-        callIntegrationEnabled: true
+        featureFlags: {
+          'pip.enabled': true,
+          'chat.enabled': false,
+          'invite.enabled': false,
+          'recording.enabled': false,
+          'android.screensharing.enabled': false
+        }
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
       window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);

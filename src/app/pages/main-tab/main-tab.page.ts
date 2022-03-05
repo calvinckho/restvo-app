@@ -381,6 +381,104 @@ export class MainTabPage implements OnInit, OnDestroy {
         }
     }
 
+    async openGroupChat(data) {
+        if (data) {
+            console.log('incoming data', typeof data);
+            if (data.group) { // for a group chat
+                this.chatService.currentChatProps.push({
+                    conversationId: data.conversationId,
+                    name: data.group.name,
+                    page: 'chat',
+                    group: data.group,
+                    badge: true,
+                    modalPage: true,
+                });
+            } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
+                this.chatService.currentChatProps.push({
+                    conversationId: data.conversationId,
+                    name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
+                    page: 'chat',
+                    moment: data.moment,
+                    badge: true,
+                    modalPage: true,
+                });
+            } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
+                this.chatService.currentChatProps.push({
+                    conversationId: data.conversationId,
+                    name: data.author.first_name + ' ' + data.author.last_name,
+                    page: 'chat',
+                    recipient: data.author,
+                    badge: true,
+                    modalPage: true,
+                });
+            }
+            if (data.subpanel) {
+                this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
+                // if it is displaying the chat view, it will reload the chat data
+                this.userData.refreshMyConversations({action: 'reload chat view'});
+            } else {
+                const messagePage = await this.modalCtrl.create({
+                    component: GroupchatPage,
+                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
+                });
+                await messagePage.present();
+            }
+        }
+    }
+
+    async toggleVideoChat(params) {
+        try {
+            this.userData.readyToControlVideoChat = false;
+            setTimeout(() => {
+                this.userData.readyToControlVideoChat = true;
+            }, 10000); // default video chat load timeout = 10s
+            const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
+            if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
+                await Jitsi.joinConference({
+                    roomName: params.videoChatRoomId,
+                    url: videoEndpoint.ssl + videoEndpoint.url,
+                    token: null,
+                    channelLastN: params.channelLastN,
+                    displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
+                    email: null,
+                    avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
+                    startWithAudioMuted: params.startWithAudioMuted,
+                    startWithVideoMuted: params.startWithVideoMuted,
+                    featureFlags: {
+                        'pip.enabled': true,
+                        'chat.enabled': false,
+                        'invite.enabled': false,
+                        'recording.enabled': false,
+                        'android.screensharing.enabled': false
+                    }
+                });
+                window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
+                window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
+            } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
+                window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
+            } else if (!this.platform.is('ios')) { // Desktop, Android, etc that is not iOS
+                window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
+            } else { // on iOS
+                await this.menuCtrl.enable(false);
+                this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId, { channelLastN: params.channelLastN, startWithAudioMuted: params.startWithAudioMuted, startWithVideoMuted: params.startWithVideoMuted, videoChatRoomSubject: encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, '')}]);
+                if (this.userData.videoChatRoomId) { // if video chat wasn't exited correctly, reload the window
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            }
+        } catch (err) {
+            this.userData.readyToControlVideoChat = true;
+            const networkAlert = await await this.alertCtrl.create({
+                header: 'No Internet Connection',
+                message: 'Please check your internet connection.',
+                buttons: ['Dismiss'],
+                cssClass: 'level-15'
+            });
+            await networkAlert.present();
+        }
+    }
+
     async startEventSubscription() {
         if (Capacitor.isPluginAvailable('App')) {
             App.addListener('appStateChange', async (appState: any) => {
@@ -684,100 +782,6 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         });
         this.hasSetupEventListeners = true;
-    }
-
-    async openGroupChat(data) {
-        if (data) {
-            console.log('incoming data', typeof data);
-            if (data.group) { // for a group chat
-                this.chatService.currentChatProps.push({
-                    conversationId: data.conversationId,
-                    name: data.group.name,
-                    page: 'chat',
-                    group: data.group,
-                    badge: true,
-                    modalPage: true,
-                });
-            } else if (data.moment) { // if no author is provided but only the moment object, it is to view the moment's conversation
-                this.chatService.currentChatProps.push({
-                    conversationId: data.conversationId,
-                    name: data.moment.name || (data.moment.matrix_string ? data.moment.matrix_string[0][0] : ''),
-                    page: 'chat',
-                    moment: data.moment,
-                    badge: true,
-                    modalPage: true,
-                });
-            } else if (data.author) { // for a 1-1 message, which can be a text message or sending a moment as the content
-                this.chatService.currentChatProps.push({
-                    conversationId: data.conversationId,
-                    name: data.author.first_name + ' ' + data.author.last_name,
-                    page: 'chat',
-                    recipient: data.author,
-                    badge: true,
-                    modalPage: true,
-                });
-            }
-            if (data.subpanel) {
-                this.router.navigate([{ outlets: { sub: ['chat', { subpanel: true }] }}]);
-                // if it is displaying the chat view, it will reload the chat data
-                this.userData.refreshMyConversations({action: 'reload chat view'});
-            } else {
-                const messagePage = await this.modalCtrl.create({
-                    component: GroupchatPage,
-                    componentProps: this.chatService.currentChatProps[this.chatService.currentChatProps.length - 1]
-                });
-                await messagePage.present();
-            }
-        }
-    }
-
-    async toggleVideoChat(params) {
-        try {
-            this.userData.readyToControlVideoChat = false;
-            setTimeout(() => {
-                this.userData.readyToControlVideoChat = true;
-            }, 10000); // default video chat load timeout = 10s
-            const videoEndpoint: any = await this.resourceService.assignVideoEndpoint(params.videoChatRoomId);
-            if (this.platform.is('cordova')) { // native device, open jitsi capacitor plugin
-                await Jitsi.joinConference({
-                    roomName: params.videoChatRoomId,
-                    url: videoEndpoint.ssl + videoEndpoint.url,
-                    token: null,
-                    channelLastN: params.channelLastN,
-                    displayName: this.userData && this.userData.user ? this.userData.user.first_name + ' ' + this.userData.user.last_name : null,
-                    email: null,
-                    avatarURL: this.userData && this.userData.user ? this.userData.user.avatar : null,
-                    startWithAudioMuted: params.startWithAudioMuted,
-                    startWithVideoMuted: params.startWithVideoMuted,
-                    chatEnabled: false,
-                    inviteEnabled: false,
-                    callIntegrationEnabled: true
-                });
-                window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
-                window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-            } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
-                window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-            } else if (!this.platform.is('ios')) { // Desktop, Android, etc that is not iOS
-                window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-            } else { // on iOS
-                await this.menuCtrl.enable(false);
-                this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId, { channelLastN: params.channelLastN, startWithAudioMuted: params.startWithAudioMuted, startWithVideoMuted: params.startWithVideoMuted, videoChatRoomSubject: encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, '')}]);
-                if (this.userData.videoChatRoomId) { // if video chat wasn't exited correctly, reload the window
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                }
-            }
-        } catch (err) {
-            this.userData.readyToControlVideoChat = true;
-            const networkAlert = await await this.alertCtrl.create({
-                header: 'No Internet Connection',
-                message: 'Please check your internet connection.',
-                buttons: ['Dismiss'],
-                cssClass: 'level-15'
-            });
-            await networkAlert.present();
-        }
     }
 
     onJitsiLoaded = async (params) => {

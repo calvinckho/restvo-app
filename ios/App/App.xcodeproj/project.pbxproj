@@ -14,7 +14,8 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		8F015447271931FA005E5717 /* public in Resources */ = {isa = PBXBuildFile; fileRef = 8F015446271931FA005E5717 /* public */; };
-		8FD9BD1F27BFAB250070CC42 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD9BD1E27BFAB250070CC42 /* MyViewController.swift */; };
+		8F60C95027CF251F00583849 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F60C94F27CF251F00583849 /* MyViewController.swift */; };
+		8F60C95827CF486800583849 /* textarea-caret-position.js in Resources */ = {isa = PBXBuildFile; fileRef = 8F60C95727CF486800583849 /* textarea-caret-position.js */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		ABB452E52249574900D15CA4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB452E42249574900D15CA4 /* ShareViewController.swift */; };
 		ABB452E82249574900D15CA4 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABB452E62249574900D15CA4 /* MainInterface.storyboard */; };
@@ -58,7 +59,8 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F015446271931FA005E5717 /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
-		8FD9BD1E27BFAB250070CC42 /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
+		8F60C94F27CF251F00583849 /* MyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
+		8F60C95727CF486800583849 /* textarea-caret-position.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "textarea-caret-position.js"; sourceTree = "<group>"; };
 		ABB452E22249574900D15CA4 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB452E42249574900D15CA4 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		ABB452E72249574900D15CA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -130,7 +132,8 @@
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
-				8FD9BD1E27BFAB250070CC42 /* MyViewController.swift */,
+				8F60C94F27CF251F00583849 /* MyViewController.swift */,
+				8F60C95727CF486800583849 /* textarea-caret-position.js */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				8F015447271931FA005E5717 /* public in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+				8F60C95827CF486800583849 /* textarea-caret-position.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,7 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FD9BD1F27BFAB250070CC42 /* MyViewController.swift in Sources */,
+				8F60C95027CF251F00583849 /* MyViewController.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -505,13 +509,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.10.0;
+				MARKETING_VERSION = 1.10.1;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -538,14 +542,14 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.10.0;
+				MARKETING_VERSION = 1.10.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -568,12 +572,12 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.10.0;
+				MARKETING_VERSION = 1.10.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app.ShareExtension;
@@ -597,12 +601,12 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = BXD4YM88M9;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.10.0;
+				MARKETING_VERSION = 1.10.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
