@@ -445,7 +445,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                     startWithAudioMuted: params.startWithAudioMuted,
                     startWithVideoMuted: params.startWithVideoMuted,
                     featureFlags: {
-                        'pip.enabled': true,
                         'chat.enabled': false,
                         'invite.enabled': false,
                         'recording.enabled': false,

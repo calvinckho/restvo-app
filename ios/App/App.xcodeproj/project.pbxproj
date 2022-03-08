@@ -15,7 +15,6 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		8F015447271931FA005E5717 /* public in Resources */ = {isa = PBXBuildFile; fileRef = 8F015446271931FA005E5717 /* public */; };
 		8F60C95027CF251F00583849 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F60C94F27CF251F00583849 /* MyViewController.swift */; };
-		8F60C95827CF486800583849 /* textarea-caret-position.js in Resources */ = {isa = PBXBuildFile; fileRef = 8F60C95727CF486800583849 /* textarea-caret-position.js */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		ABB452E52249574900D15CA4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB452E42249574900D15CA4 /* ShareViewController.swift */; };
 		ABB452E82249574900D15CA4 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABB452E62249574900D15CA4 /* MainInterface.storyboard */; };
@@ -60,7 +59,6 @@
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F015446271931FA005E5717 /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		8F60C94F27CF251F00583849 /* MyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
-		8F60C95727CF486800583849 /* textarea-caret-position.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "textarea-caret-position.js"; sourceTree = "<group>"; };
 		ABB452E22249574900D15CA4 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB452E42249574900D15CA4 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		ABB452E72249574900D15CA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				8F60C94F27CF251F00583849 /* MyViewController.swift */,
-				8F60C95727CF486800583849 /* textarea-caret-position.js */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -276,7 +273,6 @@
 				8F015447271931FA005E5717 /* public in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
-				8F60C95827CF486800583849 /* textarea-caret-position.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

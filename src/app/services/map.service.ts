@@ -1,10 +1,8 @@
 import { Injectable, ViewChild, Directive } from '@angular/core';
-import {IonInfiniteScroll, ModalController, Platform} from "@ionic/angular";
+import {IonInfiniteScroll, Platform} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {Geolocation} from "@ionic-native/geolocation/ngx";
-import {Moment} from "./moment.service";
 import {Router} from "@angular/router";
-import {ShowrecipientinfoPage} from "../pages/connect/showrecipientinfo/showrecipientinfo.page";
 import {UserData} from "./user.service";
 
 declare var mapboxgl: any;

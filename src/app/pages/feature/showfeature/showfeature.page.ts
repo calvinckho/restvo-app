@@ -635,6 +635,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                 }
                 // set up map display
                 if (componentId === 50000 && this.moment.matrix_number[componentIndex][3] === 2) {
+                    // https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md
                     get('https://api.tiles.mapbox.com/mapbox-gl-js/v1.2.1/mapbox-gl.js', () => {
                         get('https://tiles.unwiredmaps.com/v2/js/unwired-gl.js?v=0.1.6', () => {
                             this.mapService.setupMap();
