@@ -88,7 +88,7 @@ export class VideoconferencePage implements OnInit, OnDestroy {
           'chat.enabled': false,
           'invite.enabled': false,
           'recording.enabled': false,
-          'android.screensharing.enabled': false
+          'android.screensharing.enabled': false,
         }
       });
       window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
