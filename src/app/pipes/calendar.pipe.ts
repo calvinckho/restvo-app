@@ -76,9 +76,10 @@ export class CalendarPipe implements PipeTransform {
             indexOfTodayIncompleteLesson = indexOfTodayLesson;
           }
         }
-        if (!todayLessonExists && (new Date(cachedCalendarItems[i].startDate).getTime() < new Date().getTime()) && !cachedCalendarItems[i].completed) {
+        // The following block is reserved for detecting and showing incomplete tasks in the past. In the home schooling app, it is disabled because past incomplete tasks are not relevant, as we only want to show to the homeschoolers the incomplete tasks scheduled for today
+        /*if (!todayLessonExists && (new Date(cachedCalendarItems[i].startDate).getTime() < new Date().getTime()) && !cachedCalendarItems[i].completed) {
           indexOfTodayLesson = i;
-        }
+        }*/
       }
       if (data && data.output === 'filteredcalendaritems') {
         return cachedCalendarItems;
@@ -108,7 +109,7 @@ export class CalendarPipe implements PipeTransform {
           return 'done today';
         } else if (todayLessonExists && anyIncompleteLessonToday) {
           return 'keep it up';
-        } else if (!todayLessonExists && indexOfTodayLesson) {
+        } else if (!todayLessonExists && indexOfTodayLesson != null) {
           return 'keep it up';
         } else if (indexOfTodayLesson === 0) {
           return 'welcome';

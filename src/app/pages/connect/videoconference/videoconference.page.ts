@@ -143,7 +143,9 @@ export class VideoconferencePage implements OnInit, OnDestroy {
   onJitsiLoaded = async () => {
     console.log('loaded Jitsi');
     this.userData.readyToControlVideoChat = true;
-    this.userData.videoChatRoomId = this.videoChatRoomId;
+    if (!this.platform.is('cordova')) { // if on a desktop, laptap, touchscreen tablet, mobile browser, hide the tab bar
+      this.userData.videoChatRoomId = this.videoChatRoomId;
+    }
     if (!this.platform.is('cordova')) {
       setTimeout(async () => {
         if (this.userData && this.userData.user && this.userData.user.avatar) {

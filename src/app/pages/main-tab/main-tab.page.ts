@@ -787,7 +787,9 @@ export class MainTabPage implements OnInit, OnDestroy {
     onJitsiLoaded = async (params) => {
         console.log('loaded Jitsi');
         this.userData.readyToControlVideoChat = true;
-        this.userData.videoChatRoomId = this.pendingVideoChatRoomId;
+        if (!this.platform.is('cordova')) { // if on a desktop, laptap, touchscreen tablet, mobile browser, hide the tab bar
+            this.userData.videoChatRoomId = this.pendingVideoChatRoomId;
+        }
         if (this.userData.user && await this.userData.checkRestExpired()) { this.chatService.socket.emit('online status', this.userData.videoChatRoomId, this.userData.user._id, { action: 'ping', state: 'online', origin: this.chatService.socket.id, videoChatRoomId: this.userData.videoChatRoomId }); }
         if (!this.platform.is('cordova')) {
             if (this.userData.user) {
@@ -877,8 +879,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                 await modal.present();
             });
             this.subscriptions['toggleVideoChat'].unsubscribe('toggleVideoChat', (params) => {
-                this.toggleVideoChat(params);
                 this.pendingVideoChatRoomId = params.videoChatRoomId;
+                this.toggleVideoChat(params);
             });
             this.subscriptions['chatSocketMessage'].unsubscribe(res => { // 'chat socket emit', async (conversationId, data) => {
                 if (res) {
