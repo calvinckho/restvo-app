@@ -16,6 +16,7 @@ import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecip
 import {Capacitor} from '@capacitor/core';
 import {ProgramsPage} from './pages/user/programs/programs.page';
 import { App } from '@capacitor/app';
+import { Contacts } from '@capacitor-community/contacts';
 
 @Component({
   selector: 'app-root',
@@ -76,6 +77,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         } catch (err) {
             console.log('error when activating Capacitor\'s App Plugin');
         }
+    }
+
+    async click() {
+        Contacts.getContacts().then(result => {
+            console.log(result);
+            for (const contact of result.contacts) {
+                console.log(contact);
+            }
+        });
     }
 
     async openUrl(dataUrl) {

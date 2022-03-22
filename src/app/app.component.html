@@ -56,7 +56,7 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item id="inviteLabel" [routerLink]="['/app/invite']" mode="md">
+            <ion-item id="inviteLabel" (click)="invite()" mode="md">
               <ion-icon slot="start" name="invite"></ion-icon>
               <ion-label>Invite</ion-label>
             </ion-item>
