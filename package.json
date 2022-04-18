@@ -88,7 +88,7 @@
     "ionic-cache": "^4.1.0",
     "ionicons": "^5.5.4",
     "jetifier": "^1.6.6",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "ngx-electron": "^2.2.0",
     "ngx-pinch-zoom": "^2.5.5",
     "ngx-plyr": "^4.0.0",
