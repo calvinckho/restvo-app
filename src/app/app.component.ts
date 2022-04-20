@@ -16,7 +16,7 @@ import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecip
 import {Capacitor} from '@capacitor/core';
 import {ProgramsPage} from './pages/user/programs/programs.page';
 import { App } from '@capacitor/app';
-import { Contacts } from '@capacitor-community/contacts';
+import { ContactPicker } from '@calvinckho/capacitor-contact-picker';
 
 @Component({
   selector: 'app-root',
@@ -79,13 +79,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
     }
 
-    async click() {
-        Contacts.getContacts().then(result => {
-            console.log(result);
-            for (const contact of result.contacts) {
-                console.log(contact);
-            }
-        });
+    async loadContacts() {
+        try {
+            const contact: any = await ContactPicker.open();
+            console.log("contact", JSON.stringify(contact));
+        } catch (err) {
+            console.log("error", JSON.stringify(err));
+        }
     }
 
     async openUrl(dataUrl) {
