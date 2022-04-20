@@ -73,12 +73,9 @@
             <ion-item>
               <ion-label position="stacked">Backend:</ion-label>
               <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="developer-selector" [(ngModel)]="networkService.domain" (ionChange)="saveToLocalStorage()">
-                <ion-select-option value="https://server.restvo.com" class="ion-text-wrap">Production Server</ion-select-option>
-                <ion-select-option value="https://server.dev.restvo.com" class="ion-text-wrap">Development Cron Server (4010)</ion-select-option>
-                <ion-select-option value="https://server1.dev.restvo.com" class="ion-text-wrap">11 Dev Server (4011)</ion-select-option>
-                <ion-select-option value="https://server2.dev.restvo.com" class="ion-text-wrap">12 Dev Server (4012)</ion-select-option>
-                <ion-select-option value="https://server3.dev.restvo.com" class="ion-text-wrap">13 Dev Server (4013)</ion-select-option>
-                <ion-select-option value="https://server4.dev.restvo.com" class="ion-text-wrap">14 Dev Server (4014)</ion-select-option>
+                <ion-select-option value="https://server.restvo.com" class="ion-text-wrap">Production Server (3010)</ion-select-option>
+                <ion-select-option value="https://server1.restvo.com" class="ion-text-wrap">Test Server (4010)</ion-select-option>
+                <ion-select-option value="https://server.dev.restvo.com" class="ion-text-wrap">Dev Server (4010)</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
