@@ -5,6 +5,7 @@ import {AlertController, LoadingController, MenuController, Platform} from '@ion
 import { CacheService } from 'ionic-cache';
 import { Storage } from '@ionic/storage';
 import {StripeService} from 'ngx-stripe';
+import { ShareExtension } from 'capacitor-share-extension';
 
 import { Badge } from '@ionic-native/badge/ngx';
 import { Contacts, Contact } from '@ionic-native/contacts/ngx';
@@ -201,9 +202,12 @@ export class UserData {
         this.storage.set('user', this.user); // save in local storage for PWA's fast retrieval when booting up mobile app and reloading the myconversations page
         // save user data in native storage for share extension's use
         if (this.platform.is('ios') && Capacitor.isPluginAvailable('ShareExtension')) {
-            //const { ShareExtension } = Plugins;
-            //const token = this.authService ? (this.authService.token || '') : '';
-            //await ShareExtension.saveDataToKeychain({key: 'token', data: token });
+            const token = this.authService ? (this.authService.token || '') : '';
+            try {
+                await ShareExtension.saveDataToKeychain({key: 'token', data: token });
+            } catch (err) {
+                console.log(err);
+            }
         }
     }
 
@@ -809,12 +813,11 @@ export class UserData {
             this.socket.close();
         }
         if (this.platform.is('ios')) {
-            /*const { ShareExtension } = Plugins;
             try {
                 await ShareExtension.clearNativeUserDefaults();
             } catch (err) {
                 console.log(err);
-            }*/
+            }
         }
         // clear authService cached routing history
         this.authService.cachedRouteUrl = null;

@@ -9,7 +9,7 @@
       <ion-row class="ion-align-items-center full-height">
         <ion-col size-sm="12" size-md="7">
           <form [formGroup]="loginForm" class="login-form">
-            <ion-list lines="none" class="ion-no-padding">
+            <div>
               <ion-buttons *ngIf="!authService.token" slot="start">
                 <ion-button (click)="close()"><ion-icon name="chevron-back-outline" color="primary"></ion-icon></ion-button>
               </ion-buttons>
@@ -46,7 +46,7 @@
                 <input id="password" class="password ion-input" (keyup.enter)="login()" placeholder="Password" formControlName="password" [type]="passwordType" inputmode="text" autocomplete="current-password" />
                 <ion-icon [name]="passwordIcon" class="password-icon" (click)='hideShowPassword()'></ion-icon>
               </ion-card>
-            </ion-list>
+            </div>
             <div>
               <p class="ion-padding-horizontal" *ngIf="loginStatus">{{loginStatus}}</p>
             </div>
