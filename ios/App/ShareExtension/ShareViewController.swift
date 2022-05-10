@@ -1,6 +1,5 @@
 //
 //  ShareViewController.swift
-//  testShareExtension
 //
 //  Created by Jonathan on 3/25/19.
 //
@@ -26,8 +25,7 @@ class ShareViewController: SLComposeServiceViewController {
         if contentsOfKeychain.isEmpty {
             //do nothing
             dataPending = false
-        }
-        else{
+        } else {
             addConversationData(contentsOfKeychain: contentsOfKeychain)
         }
         
@@ -51,12 +49,7 @@ class ShareViewController: SLComposeServiceViewController {
             }
         }
         textView.text = "";
-        
     }
-    
-    
-    
-    
     
     //make sure content given is valid
     //disables post button if content is not valid
@@ -72,16 +65,8 @@ class ShareViewController: SLComposeServiceViewController {
         print("reaches valid content")
         return true
     }
-
-    
-    
-    
-    
     
     override func didSelectPost() {
-        
-        
-        
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
         var composedMessage: Any? = nil
         var groupID: Any? = nil // previously used for socketData
@@ -89,7 +74,7 @@ class ShareViewController: SLComposeServiceViewController {
         //var jsonSocketData: Any? = nil
         
         if !contentText.isEmpty {
-            composedMessage = contentText+"\n"
+            composedMessage = contentText + "\n"
         }
         composedMessage = ((composedMessage ?? "") as! String) + (textString ?? "") + (urlString ?? "")
         if selectedConversation == nil {
@@ -106,17 +91,15 @@ class ShareViewController: SLComposeServiceViewController {
         
         //initialize the serverData
         let serverData = [
-                            "composedMessage": composedMessage,
-                            "sendSocketIO": true
+                "composedMessage": composedMessage,
+                "sendSocketIO": true
             ] as [String : Any?]
         
-        do{
+        do {
             //convert serverData to JSON
             jsonServerData = try JSONSerialization.data(withJSONObject: serverData, options: [])
             // post message
             var request = URLRequest(url: URL(string: "https://server.restvo.com/api/chat/"+(selectedConversation?.convId)!)!)
-            
-            
             
             request.httpMethod = "POST"
             request.setValue(auth, forHTTPHeaderField: "Authorization")
@@ -126,8 +109,7 @@ class ShareViewController: SLComposeServiceViewController {
             URLSession.shared.dataTask(with: request) {data, response, err in
                 print("Entered the completionHandler")
                 }.resume()
-        }
-        catch{
+        } catch {
             print("error converting data to JSON object")
         }
 
@@ -135,10 +117,6 @@ class ShareViewController: SLComposeServiceViewController {
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    
-    
-    
-    
     // adds deck on bottom of share extension
     override func configurationItems() -> [Any]! {
         //configures deck @ bottom of share extension
@@ -173,6 +151,7 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     private func retreiveFromKeyChain()->String{
+        print("Loading from keychain")
         //retrieve from keychain
         let getquery: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                        kSecAttrService as String: "token",
@@ -202,8 +181,8 @@ class ShareViewController: SLComposeServiceViewController {
         
     }
     private func addConversationData(contentsOfKeychain: String){
-        //RESTFull HTTP get request
-        //gets conversations and adds them to a list
+        // RESTFull HTTP get request
+        // gets conversations and adds them to a list
         auth = contentsOfKeychain
         
         let urlPath = "https://server.restvo.com/api/chat"
@@ -231,14 +210,11 @@ class ShareViewController: SLComposeServiceViewController {
                 return
             }
             self.parseToJSON(responseData: responseData)
-            
-            
+
             DispatchQueue.main.async { [weak self] in
                 self?.dataPending = false
                 self?.reloadConfigurationItems()
             }
-            
-
         }
         task.resume()
         
@@ -264,8 +240,7 @@ class ShareViewController: SLComposeServiceViewController {
                             name = group?["name"] as? String
                             tempConversation.type = "group"
                             tempConversation.groupId = group?["_id"] as? String
-                        }
-                        else{
+                        } else {
                             name = (indivResponse["data"] as? [String:Any])?["name"] as? String
                             tempConversation.type = "connect"
                             tempConversation.groupId = nil
@@ -275,27 +250,22 @@ class ShareViewController: SLComposeServiceViewController {
                     // if name does not exist
                     if(name == nil){
                         // do nothing
-                    }
-                    else{
+                    } else {
                         //add converstaion to list
                         tempConversation.name = name as? String
                         self.userConversations.append(tempConversation)
                     }
                 }
-            }
-            else{
+            } else {
                 print("error converting data to dictionary")
             }
-        }
-        catch  {
+        } catch {
             print("error trying to convert data to JSON")
             return
         }
     }
-    
-    
-
 }
+
 extension ShareViewController: ShareSelectViewControllerDelegate {
     func sendingViewController(sentItem: Conversation) {
         self.selectedConversation = sentItem
