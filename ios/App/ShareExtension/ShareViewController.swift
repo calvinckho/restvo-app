@@ -33,8 +33,10 @@ class ShareViewController: SLComposeServiceViewController {
         let extensionItem = extensionContext?.inputItems[0] as! NSExtensionItem
         let contentTypeURL = kUTTypeURL as String
         let contentTypeText = kUTTypeText as String
+        let contentFileURL = kUTTypeFileURL as String
         
         for attachment in extensionItem.attachments as! [NSItemProvider] {
+            print("check types", attachment.registeredTypeIdentifiers)
             if attachment.hasItemConformingToTypeIdentifier(kUTTypeText as String) {
                 attachment.loadItem(forTypeIdentifier: contentTypeText, options: nil, completionHandler: { (results, error) in
                     let text = results as! String
@@ -44,6 +46,14 @@ class ShareViewController: SLComposeServiceViewController {
             if attachment.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
                 attachment.loadItem(forTypeIdentifier: contentTypeURL, options: nil, completionHandler: { (results, error) in
                     let url = results as! URL?
+                    print("loaded url: ", url);
+                    self.urlString = url!.absoluteString
+                })
+            }
+            if attachment.hasItemConformingToTypeIdentifier("public.jpeg" as String) {
+                attachment.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: { (results, error) in
+                    let url = results as! URL?
+                    print("loaded photo: ", url);
                     self.urlString = url!.absoluteString
                 })
             }
