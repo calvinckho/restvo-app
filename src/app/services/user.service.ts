@@ -810,7 +810,7 @@ export class UserData {
         }
         if (this.platform.is('ios')) {
             try {
-                await ShareExtension.clearNativeUserDefaults();
+                await ShareExtension.clearKeychainData({ key: 'token' });
             } catch (err) {
                 console.log(err);
             }
