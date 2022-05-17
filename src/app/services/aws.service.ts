@@ -1,29 +1,32 @@
 import { Injectable } from '@angular/core';
 import Compressor from 'compressorjs';
+import MicRecorder from '@calvinckho/mic-recorder-to-mp3';
 import { imgSrcToBlob } from 'blob-util';
+import fixOrientation from 'fix-orientation-capacitor';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import {ActionSheetController, ToastController, Platform, LoadingController, AlertController} from '@ionic/angular';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-
-import fixOrientation from 'fix-orientation-capacitor';
 import {Resource} from './resource.service';
-
-// Set S3 endpoint to DigitalOcean Spaces
 
 @Injectable({ providedIn: 'root' })
 export class Aws {
 
-    public previewImage: string = null;
-    loading: any;
     public url = '';
     private reader: any = new FileReader();
 
     sessionAllowedCount = 1;
     sessionAssets: any = {}; // sessionAssets stores the latest, valid media URLs for the session (e.g. moment, group, etc)
+    sessionAssetSettings: any = {}; // sessionAssetSettings stores the portrait/landscape info for images
     tempUploadedMedia = []; // list of UploadedUri keeps track of uploaded URLs in a session. If an uploaded URL is no longer in sessionAssets when leaving a session, that media will be removed from DO
+
+    listening = false; // whether the audio is recording
+    recorder = new MicRecorder({
+        bitRate: 128
+    });
+    cachedAudioFileBlob: any;
 
     constructor(private http: HttpClient,
                 private actionSheetCtrl: ActionSheetController,
@@ -36,6 +39,79 @@ export class Aws {
                 private resourceService: Resource,
                 private authService: Auth,
                 public userData: UserData) {
+    }
+
+    async toggleRecordAudio(event) {
+        if (!this.listening) {
+            event.stopPropagation(); // prevent the fab button list from closing
+            try {
+                this.cachedAudioFileBlob = null;
+                const els = document.querySelectorAll('#player');
+                els.forEach((el) => {
+                    if (el.hasChildNodes() && window.getComputedStyle(el).display === 'block') {
+                        el.removeChild(el.firstChild);
+                    }
+                });
+                console.log('Listening to microphone...');
+                await this.recorder.start();
+                this.listening = true;
+            } catch (err) {
+                console.log(err);
+            }
+        } else {
+            const loading = await this.loadingCtrl.create({
+                message: 'Processing...',
+                duration: 5000
+            });
+            try {
+                this.listening = false;
+                await loading.present();
+                const [buffer, blob] = await this.recorder.stop().getMp3();
+                const file = new File(buffer, 'preview.mp3', {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+                const player = new Audio(URL.createObjectURL(file));
+                player.controls = true;
+                this.cachedAudioFileBlob = blob;
+                const els = document.querySelectorAll('#player');
+                els.forEach((el) => {
+                    if (window.getComputedStyle(el).display === 'block') {
+                        el.appendChild(player);
+                    }
+                });
+                await loading.dismiss();
+            } catch (err) {
+                await loading.dismiss();
+                console.log(err);
+            }
+        }
+    }
+
+    removeCachedAudio() {
+        const els = document.querySelectorAll('#player');
+        els.forEach((el) => {
+            if (el.hasChildNodes() && window.getComputedStyle(el).display === 'block') {
+                el.removeChild(el.firstChild);
+            }
+        });
+        this.cachedAudioFileBlob = null;
+    }
+
+    public async uploadCachedAudioBlob() {
+        if (!this.cachedAudioFileBlob) {
+            return;
+        }
+        try {
+            const result: any = await this.upload(this.cachedAudioFileBlob.type, this.userData.user._id, this.cachedAudioFileBlob, 'audio.mp3', this.cachedAudioFileBlob.size, null);
+            if (result.msg === 'Upload succeeded') {
+                this.url = result.url;
+                this.cachedAudioFileBlob = null; // clear the cached blob
+            }
+            return result.msg;
+        } catch (err) {
+            return 'Upload abandoned';
+        }
     }
 
     public async uploadImage(type: string, id: string, image: any, sessionId: string) {
@@ -52,7 +128,7 @@ export class Aws {
                 if (result.msg === 'Upload succeeded') {
                     this.url = result.url;
                     if (sessionId) {
-                        this.addToSessionAssets(sessionId, result.url); // save this as session url
+                        this.addToSessionAssets(sessionId, result.url, 0); // save this as session url
                         if (!this.tempUploadedMedia.includes(this.url)) {
                             this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                         }
@@ -88,7 +164,38 @@ export class Aws {
         });
     }
 
-    public async uploadFile(type: string, id: string, file: any, sessionId: string) {
+    public async readAsDataURL(file: any) {
+        return new Promise(async (resolve, reject) => {
+            if (file && file.size > 50000000) {
+                const largeFileAlert = await this.alertCtrl.create({
+                    header: 'File Too Large',
+                    subHeader: 'Your file exceeds the maximum file size limit of 50 megabytes.',
+                    buttons: ['Dismiss'],
+                    cssClass: 'level-15'
+                });
+                await largeFileAlert.present();
+                return reject({ message: 'file too large' });
+            } else if (!file) {
+                return reject({ message: 'preview canceled' });
+            }
+            this.reader.onload = async (e) => {
+                try {
+                    // read the image width and height, then create a data URL based on the FileReader "result"
+                    const image = new Image();
+                    image.src = this.reader.result;
+                    image.onload = () => {
+                        resolve({ message: 'success', width: image.width, height: image.height, dataURL: this.reader.result, file: file });
+                    };
+                } catch (err) {
+                    reject({ message: 'read abandoned' });
+                }
+            };
+            console.log("loading: ", file)
+            this.reader.readAsDataURL(file);
+        });
+    }
+
+    public async uploadFile(type: string, id: string, file: any, sessionId: string, imageIsPortrait: number) {
         return new Promise(async (resolve, reject) => {
             if (file && file.size > 50000000) {
                 const largeFileAlert = await this.alertCtrl.create({
@@ -115,7 +222,7 @@ export class Aws {
                     if (result.msg === 'Upload succeeded') {
                         this.url = result.url;
                         if (sessionId) {
-                            this.addToSessionAssets(sessionId, result.url); // save this as session url
+                            this.addToSessionAssets(sessionId, result.url, imageIsPortrait); // save this as session url
                             if (!this.tempUploadedMedia.includes(this.url)) {
                                 this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                             }
@@ -145,7 +252,7 @@ export class Aws {
             if (result.msg === 'Upload succeeded') {
                 this.url = result.url;
                 if (sessionId) {
-                    this.addToSessionAssets(sessionId, result.url); // save this as session url
+                    this.addToSessionAssets(sessionId, result.url, 0); // save this as session url
                     if (!this.tempUploadedMedia.includes(this.url)) {
                         this.tempUploadedMedia.push(this.url); // store this for cleaning up DO storage during the clean up cycle
                     }
@@ -246,23 +353,29 @@ export class Aws {
     }
 
     async selectStockPhoto(photo, sessionId) {
-        const result = await this.uploadImageUri('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, photo.largeImageURL, sessionId);
+        const result = await this.uploadImageUri('communities', this.userData.user.churches[0]._id, photo.largeImageURL, sessionId);
         if (result === 'Upload succeeded') {
             this.resourceService.searchKeyword = '';
             this.resourceService.showPixabay = -1;
         }
     }
 
-    addToSessionAssets(sessionId, url) {
-        if (!this.sessionAssets.hasOwnProperty(sessionId)) {
+    addToSessionAssets(sessionId, url, imagePortrait) {
+        if (!this.sessionAssets.hasOwnProperty(sessionId)) { // the array stores the asset url
             this.sessionAssets[sessionId] = []; // initiate the object property with an empty array;
+        }
+        if (!this.sessionAssetSettings.hasOwnProperty(sessionId)) { // the array stores the asset image url portrait/landscape info
+            this.sessionAssetSettings[sessionId] = []; // initiate the object property with an empty array;
         }
         if (url.length) {
             if (this.sessionAssets[sessionId].length < this.sessionAllowedCount) {
                 this.sessionAssets[sessionId].push(url);
+                this.sessionAssetSettings[sessionId].push(imagePortrait);
             } else {
                 this.sessionAssets[sessionId].pop(); // erase the last item
+                this.sessionAssetSettings[sessionId].pop(); // erase the last item
                 this.sessionAssets[sessionId].push(url);
+                this.sessionAssetSettings[sessionId].push(imagePortrait);
             }
         }
     }
@@ -287,8 +400,8 @@ export class Aws {
                     }
                     // sort the list and move any graphics to the front
                     this.sessionAssets[sessionId].sort((a, b) => {
-                        const c: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(a.substring(a.lastIndexOf('.') + 1).toLowerCase()) > -1;
-                        const d: any = (['jpg', 'jpeg', 'gif', 'png']).indexOf(b.substring(b.lastIndexOf('.') + 1).toLowerCase()) > -1;
+                        const c: any = (['jpg', 'jpeg', 'gif', 'png']).includes(a.substring(a.lastIndexOf('.') + 1).toLowerCase());
+                        const d: any = (['jpg', 'jpeg', 'gif', 'png']).includes(b.substring(b.lastIndexOf('.') + 1).toLowerCase());
                         return (d - c);
                     });
                 }
@@ -311,6 +424,7 @@ export class Aws {
                 });
                 this.url = '';
                 this.sessionAssets[sessionId] = [];
+                this.sessionAssetSettings[sessionId] = [];
                 this.tempUploadedMedia = [];
                 this.resourceService.searchKeyword = '';
                 this.resourceService.showPixabay = -1;

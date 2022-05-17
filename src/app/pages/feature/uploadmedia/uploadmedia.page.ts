@@ -14,11 +14,13 @@ import {UserData} from '../../../services/user.service';
 })
 export class UploadmediaPage implements OnInit {
 
-  @Input() sessionId: string;
-  mediaType = 'photo';
+  @Input() sessionId: string; // section id used in awsService to tag session id as key
+  @Input() mediaType: string; // photo, stock, or null (show all types)
+  @Input() files: Array<any>; // allow user to select files and send in for preview
+  menuOption = 'photo';
   urls = [];
   mediaList: Array<{_id: string, player: Plyr}> = [];
-  planModules = [];
+  objectURLs = [];
 
   constructor(
       public platform: Platform,
@@ -30,9 +32,21 @@ export class UploadmediaPage implements OnInit {
 
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.awsService.sessionAllowedCount = 9999; // allow up to 9999 files upload
     this.sessionId = this.sessionId || 'blank';
+    try {
+      if (this.files && this.files.length) {
+        for (let i = 0; i < this.files.length; i++) {
+          const result: any = await this.awsService.readAsDataURL(this.files[i]);
+          if (result && result.message === 'success' && result.dataURL) {
+            this.objectURLs.push(result);
+          }
+        }
+      }
+    } catch (err) {
+      console.log('read file error', err);
+    }
   }
 
   async selectStockPhoto(photo) {
@@ -42,8 +56,8 @@ export class UploadmediaPage implements OnInit {
 
   async selectFileFromDeviceAndUpload(event) {
     try {
-      await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.sessionId);
-          this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
+      await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.sessionId, 0);
+      this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
     } catch (err) {
       console.log(err);
     }
@@ -65,9 +79,9 @@ export class UploadmediaPage implements OnInit {
         }
       } else {
         const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-        await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.sessionId);
+        await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.sessionId, 0);
       }
-          this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
+      this.urls.push(this.awsService.sessionAssets[this.sessionId][this.awsService.sessionAssets[this.sessionId].length - 1]);
     } catch (err) {
       console.log(err);
     }
@@ -77,6 +91,7 @@ export class UploadmediaPage implements OnInit {
     const index = this.awsService.sessionAssets[this.sessionId].indexOf(this.urls[i]);
     if (index > -1) {
       this.awsService.sessionAssets[this.sessionId].splice(index, 1);
+      this.awsService.sessionAssetSettings[this.sessionId].splice(index, 1);
     }
     this.urls.splice(i, 1);
   }
@@ -102,7 +117,7 @@ export class UploadmediaPage implements OnInit {
           handler: data => {
             this.urls.push(data.src);
             if ((['jpg', 'jpeg', 'gif', 'png']).includes(data.src.substring(data.src.lastIndexOf('.') + 1).toLowerCase())) { // only add to the the asset array if an image
-              this.awsService.addToSessionAssets(this.sessionId, data.src);
+              this.awsService.addToSessionAssets(this.sessionId, data.src, 0);
             }
           }
         }
@@ -134,6 +149,10 @@ export class UploadmediaPage implements OnInit {
   }
 
   finish() {
-    this.modalCtrl.dismiss(this.urls);
+    if (this.objectURLs && this.objectURLs.length) {
+      this.modalCtrl.dismiss(this.objectURLs);
+    } else {
+      this.modalCtrl.dismiss(this.urls);
+    }
   }
 }

@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {ModalController, Platform} from "@ionic/angular";
-import {UserData} from "../../../services/user.service";
-import {PreferencesPage} from "./preferences/preferences.page";
-import {Router} from "@angular/router";
+import {ModalController, Platform} from '@ionic/angular';
+import {UserData} from '../../../services/user.service';
+import {PreferencesPage} from './preferences/preferences.page';
+import {Router} from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import {Aws} from "../../../services/aws.service";
-import {Auth} from "../../../services/auth.service";
+import {Aws} from '../../../services/aws.service';
+import {Auth} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-about',
@@ -38,7 +38,7 @@ export class AboutPage implements OnInit, OnDestroy {
     if (this.authService.token && this.userData && this.userData.user) {
       this.loadAnswers();
     }
-  };
+  }
 
   async loadAnswers() {
     const result: any = await this.userData.loadMyOnboardingAnswers();
@@ -88,11 +88,11 @@ export class AboutPage implements OnInit, OnDestroy {
         }
       } else {
         result = await this.awsService.compressPhoto(event.target.files[0]);
-        await this.awsService.uploadFile('users', this.userData.user._id, result, this.userData.user._id);
+        await this.awsService.uploadFile('users', this.userData.user._id, result, this.userData.user._id, 0);
       }
       if (result) {
         if (this.userData.user.avatar) {
-          await this.awsService.removeFile(this.userData.user.avatar); //remove the previous background from Digital Ocean
+          await this.awsService.removeFile(this.userData.user.avatar); // remove the previous background from Digital Ocean
         }
         this.userData.user.avatar = this.awsService.url;
         await this.userData.update({ _id: this.userData.user._id, avatar: this.awsService.url });

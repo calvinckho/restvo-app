@@ -20,9 +20,9 @@
 		8FEB521428333202000FE22F /* ActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB521328333202000FE22F /* ActionViewController.swift */; };
 		8FEB521728333202000FE22F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FEB521528333202000FE22F /* MainInterface.storyboard */; };
 		8FEB521B28333202000FE22F /* MediaActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FEB520D28333202000FE22F /* MediaActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		8FEB522728333A0F000FE22F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB522628333A0F000FE22F /* ShareViewController.swift */; };
 		8FEB522A28333A0F000FE22F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FEB522828333A0F000FE22F /* MainInterface.storyboard */; };
 		8FEB522E28333A0F000FE22F /* MediaShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FEB522428333A0F000FE22F /* MediaShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8FEB523A28335886000FE22F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEB523828335886000FE22F /* ShareViewController.swift */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		ABB452E52249574900D15CA4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB452E42249574900D15CA4 /* ShareViewController.swift */; };
 		ABB452E82249574900D15CA4 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABB452E62249574900D15CA4 /* MainInterface.storyboard */; };
@@ -91,10 +91,10 @@
 		8FEB521828333202000FE22F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FEB521C28333202000FE22F /* MediaActionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MediaActionExtension.entitlements; sourceTree = "<group>"; };
 		8FEB522428333A0F000FE22F /* MediaShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MediaShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FEB522628333A0F000FE22F /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		8FEB522928333A0F000FE22F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		8FEB522B28333A0F000FE22F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8FEB522F28333A0F000FE22F /* MediaShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MediaShareExtension.entitlements; sourceTree = "<group>"; };
+		8FEB523728335886000FE22F /* MediaShareExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MediaShareExtension.entitlements; sourceTree = "<group>"; };
+		8FEB523828335886000FE22F /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		8FEB523C283358A5000FE22F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABB452E22249574900D15CA4 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB452E42249574900D15CA4 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		ABB452E72249574900D15CA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -215,10 +215,10 @@
 		8FEB522528333A0F000FE22F /* MediaShareExtension */ = {
 			isa = PBXGroup;
 			children = (
-				8FEB522F28333A0F000FE22F /* MediaShareExtension.entitlements */,
-				8FEB522628333A0F000FE22F /* ShareViewController.swift */,
+				8FEB523C283358A5000FE22F /* Info.plist */,
+				8FEB523728335886000FE22F /* MediaShareExtension.entitlements */,
+				8FEB523828335886000FE22F /* ShareViewController.swift */,
 				8FEB522828333A0F000FE22F /* MainInterface.storyboard */,
-				8FEB522B28333A0F000FE22F /* Info.plist */,
 			);
 			path = MediaShareExtension;
 			sourceTree = "<group>";
@@ -486,7 +486,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FEB522728333A0F000FE22F /* ShareViewController.swift in Sources */,
+				8FEB523A28335886000FE22F /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,7 +853,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MediaShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MediaShareExtension;
