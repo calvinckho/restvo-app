@@ -66,7 +66,7 @@
     "blob-util": "^2.0.2",
     "call-number": "^1.0.1",
     "capacitor-jitsi-meet": "^2.2.0",
-    "capacitor-share-extension": "git+ssh://git@github.com/calvinckho/capacitor-share-extension.git#capacitor-3",
+    "capacitor-share-extension": "^1.0.0",
     "compact-timezone-list": "^1.0.6",
     "compressorjs": "^1.0.7",
     "cordova-plugin-app-version": "^0.1.14",
