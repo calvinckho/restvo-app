@@ -2,13 +2,13 @@ import {AfterViewInit, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} 
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {StripeService} from 'ngx-stripe';
-
 import {
     ActionSheetController, IonSelect,
     MenuController,
     ModalController,
     Platform,
 } from '@ionic/angular';
+import {Aws} from './services/aws.service';
 import { NetworkService } from './services/network-service.service';
 import { UserData } from './services/user.service';
 import {Chat} from './services/chat.service';
@@ -16,6 +16,7 @@ import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecip
 import {Capacitor} from '@capacitor/core';
 import {ProgramsPage} from './pages/user/programs/programs.page';
 import { App } from '@capacitor/app';
+import {UploadmediaPage} from "./pages/feature/uploadmedia/uploadmedia.page";
 
 @Component({
   selector: 'app-root',
@@ -37,6 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
         public platform: Platform,
+        public awsService: Aws,
         public networkService: NetworkService,
         public userData: UserData,
         public chatService: Chat
@@ -79,26 +81,29 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     async openUrl(dataUrl) {
-        const routeUrl = dataUrl.slice(22, dataUrl.length);
+        const routeUrl = decodeURIComponent(dataUrl);
         if (routeUrl && routeUrl.length) {
             const params = {};
             let urlComponents: any;
-            if (this.platform.is('ios')) {
-                urlComponents = routeUrl.split('%3B'); // to account for the matrix notation ";" in iOS, which encodes as %3B
-            } else {
-                urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
-            }
+            urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
+
             if (urlComponents.length > 1) {
                 for (let i = 1; i < urlComponents.length; i++) {
                     params[urlComponents[i].split('=')[0]] = urlComponents[i].split('=')[1];
                 }
             }
             console.log('launch app!', routeUrl, urlComponents[0], params);
-            const modal = await this.modalCtrl.getTop();
+            let modal = await this.modalCtrl.getTop();
             if (modal) {
                 modal.dismiss();
             }
-            this.router.navigate([urlComponents[0], params]);
+            if (routeUrl.includes('restvo://')) { // if opening URL scheme
+                const dataURL = params['dataURL'] || null;
+                modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [dataURL], modalPage: true }});
+                await modal.present();
+            } else { // if opening Universal Link, i.e. https://app.restvo.com/app, it will navigate to /app
+                this.router.navigate([urlComponents[0].slice(22, urlComponents[0].length), params]);
+            }
         }
     }
 
