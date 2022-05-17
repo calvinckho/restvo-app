@@ -132,18 +132,18 @@ class ShareViewController: SLComposeServiceViewController {
         //configures deck @ bottom of share extension
         if let deck = SLComposeSheetConfigurationItem() {
             deck.title = "Selected Conversation"
- 
+
             deck.tapHandler = {
                 let vc = ShareSelectViewController()
                 vc.delegate = self
                 vc.conversationList = self.userConversations
                 self.pushConfigurationViewController(vc)
             }
-            
+
             print(dataPending)
             deck.valuePending = dataPending
             deck.value = selectedConversation?.name
-            
+
             return [deck]
         }
         return []
@@ -168,11 +168,11 @@ class ShareViewController: SLComposeServiceViewController {
                                        kSecReturnData as String: kCFBooleanTrue,
                                        kSecMatchLimit as String  : kSecMatchLimitOne
         ]
-        
+
         var dataTypeRef :AnyObject? = nil
         // Search for the keychain items
         let status: OSStatus = SecItemCopyMatching(getquery as CFDictionary, &dataTypeRef)
-        
+
         var contentsOfKeychain: String?
         if status == errSecSuccess {
             if let retrievedData = dataTypeRef as? Data {
@@ -188,23 +188,23 @@ class ShareViewController: SLComposeServiceViewController {
         }
         //return the contents of the keychain
         return (contentsOfKeychain!)
-        
+
     }
     private func addConversationData(contentsOfKeychain: String){
         // RESTFull HTTP get request
         // gets conversations and adds them to a list
         auth = contentsOfKeychain
-        
+
         let urlPath = "https://server.restvo.com/api/chat"
         let url: NSURL = NSURL(string: urlPath)!
         var request = URLRequest(url: url as URL)
         request.httpMethod = "GET"
         request.setValue(auth, forHTTPHeaderField: "Authorization")
-        
+
         // set up the session
         let config = URLSessionConfiguration.default
         let session = URLSession(configuration: config)
-        
+
         // make the request
         let task = session.dataTask(with: request) {
             (data, response, error) in
@@ -227,7 +227,7 @@ class ShareViewController: SLComposeServiceViewController {
             }
         }
         task.resume()
-        
+
     }
     private func parseToJSON(responseData: Data){
         var name: Any?
