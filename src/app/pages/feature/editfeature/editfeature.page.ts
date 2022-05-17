@@ -366,7 +366,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
 
           // 3. if loading an existing Activity
           if (this.moment && this.moment._id) {
-              //this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
+              // this.moment = await this.momentService.load(this.moment._id); // this load the activity with the template as its resource
               // setup People (10500) labels
               let peopleComponentId = -1;
               if (this.moment.resource.matrix_number && this.moment.resource.matrix_number.length) {
@@ -674,12 +674,12 @@ export class EditfeaturePage implements OnInit, OnDestroy {
   }
 
     async selectFileFromDeviceAndUpload(event, i) {
-      try {
-          await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.moment._id);
-          this.moment.matrix_string[i][0] = this.awsService.sessionAssets[this.moment._id][this.awsService.sessionAssets[this.moment._id].length - 1];
-      } catch (err) {
-          console.log(err);
-      }
+        try {
+            await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.moment._id, 0);
+            this.moment.matrix_string[i][0] = this.awsService.sessionAssets[this.moment._id][this.awsService.sessionAssets[this.moment._id].length - 1];
+        } catch (err) {
+            console.log(err);
+        }
     }
 
   async selectStockPhoto(photo, component_index, option_index) {
@@ -1424,8 +1424,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     }
 
     async openUploadMedia(i, componentIndex) {
-      const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: this.moment._id, modalPage: true }});
-      await modal.present();
+        const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: this.moment._id, modalPage: true }});
+        await modal.present();
         const {data: media_list} = await modal.onDidDismiss();
         // event is an a moment object see server/models/moment.js
         // event contains a resource with info on the event see server/models/resource.js

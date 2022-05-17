@@ -282,7 +282,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
                 result = await this.awsService.uploadImage('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, image, this.boardId);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, compressed, this.boardId);
+                result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, compressed, this.boardId, 0);
             }
             if (result === "Upload succeeded") {
                 this.sendAttachments();
@@ -294,7 +294,7 @@ export class ShowboardpostPage implements OnInit, OnDestroy {
 
     async selectFileFromDeviceAndUpload(event) {
         try {
-            const result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, event.target.files[0], this.boardId);
+            const result = await this.awsService.uploadFile('communities', this.userData.user.churches[this.userData.currentCommunityIndex]._id, event.target.files[0], this.boardId, 0);
             console.log("result", result);
             if (result === "Upload succeeded") {
                 this.sendAttachments();

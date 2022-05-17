@@ -659,9 +659,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed, this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 }
             }
             if (result === 'Upload succeeded') {
@@ -679,9 +679,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (event.target.files[0].size < 50000000) {
                 console.log('uploading file: ', event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 }
                 console.log('result', result);
                 if (result === 'Upload succeeded') {

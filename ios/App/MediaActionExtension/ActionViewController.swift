@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 class ActionViewController: UIViewController {
 
-    @IBOutlet weak var imageView: UIImageView!
+    //@IBOutlet weak var imageView: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,22 +25,28 @@ class ActionViewController: UIViewController {
             for provider in item.attachments! {
                 if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
                     // This is an image. We'll load it, then place it in our image view.
-                    weak var weakImageView = self.imageView
+                    //weak var weakImageView = self.imageView
                     provider.loadItem(forTypeIdentifier: UTType.image.identifier, options: nil, completionHandler: { (imageURL, error) in
-                        OperationQueue.main.addOperation {
-                            if let strongImageView = weakImageView {
-                                if let imageURL = imageURL as? URL {
-                                    strongImageView.image = UIImage(data: try! Data(contentsOf: imageURL))
-                                }
-                            }
-                        }
+                        //self.extensionContext!.open(URL(string: "https://apple.news/A0PICfkdmTi227OZa-j6XQw")!, completionHandler: nil)
+                        print("photo", imageURL);
+                        self.extensionContext!.completeRequest(returningItems: nil, completionHandler: {_ in
+                            //self.openURL(url: NSURL(string: "restvo://")!)
+                            let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
+
+                            let selector = NSSelectorFromString("openURL:")
+
+                            let url = URL(string: "restvo://")!
+
+                            application.perform(selector, with: url)
+                        })
+                        
                     })
-                    
+
                     imageFound = true
                     break
                 }
             }
-            
+
             if (imageFound) {
                 // We only handle one image, so stop looking for more.
                 break
@@ -48,11 +54,26 @@ class ActionViewController: UIViewController {
         }
     }
 
-    @IBAction func done() {
-        // Return any edited content to the host app.
-        // This template doesn't do anything, so we just echo the passed in items.
-
-        self.extensionContext!.completeRequest(returningItems: self.extensionContext!.inputItems, completionHandler: nil)
+    func openURL(url: NSURL) -> Bool {
+        do {
+            let application = try self.sharedApplication()
+            return application.perform("openURL:", with: url, afterDelay: 0.00) != nil
+        }
+        catch {
+            return false
+        }
     }
 
+    func sharedApplication() throws -> UIApplication {
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                return application
+            }
+
+            responder = responder?.next
+        }
+
+        throw NSError(domain: "UIInputViewController+sharedApplication.swift", code: 1, userInfo: nil)
+    }
 }

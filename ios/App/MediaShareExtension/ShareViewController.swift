@@ -12,17 +12,14 @@ import Foundation.NSURLSession
 class ShareViewController:  UIViewController {
 
     //fileprivate var shareView: UIView?
-    private var urlString: String?
-    private var textString: String?
+    private var mediaURL: String?
     public var item: SLComposeSheetConfigurationItem!
-    //private var selectedConversation: Conversation?
     private var auth : String?
-    //private var userConversations = [Conversation]()
     private var dataPending = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //selectedConversation = nil
+        
         let contentsOfKeychain = retreiveFromKeyChain()
 
         if contentsOfKeychain.isEmpty {
@@ -39,18 +36,62 @@ class ShareViewController:  UIViewController {
             print("check types", attachment.registeredTypeIdentifiers)
             
             if attachment.hasItemConformingToTypeIdentifier("public.jpeg" as String) {
-                attachment.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: { (results, error) in
-                    let url = results as! URL?
-                    print("loaded photo: ", url);
-                    self.urlString = url!.absoluteString
+                attachment.loadItem(forTypeIdentifier: "public.jpeg", options: nil, completionHandler: { (data, error) in
+                    //let url = results as! URL?
+                    //print("loaded photo: ", url);
+                    //self.mediaURL = url!.absoluteString
+                    
+                    var contentData: Data? = nil
+
+                    //data could be raw Data
+                    if let data = data as? Data {
+                        contentData = data
+
+                    //data could be an URL
+                    } else if let url = data as? URL {
+                        contentData = try? Data(contentsOf: url)
+                    }
+
+                    //data could be an UIImage object (e.g. ios11 screenshot editor)
+                    else if let imageData = data as? UIImage {
+                        contentData = imageData.pngData()
+                    
+                    }
+
+                    // proceed here with contentData
+                    let image = UIImage(data: contentData ?? Data())
+                    
+                    // Convert to Data
+                    if let data = image?.pngData() {
+                        // Create URL
+                        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        let url = documents.appendingPathComponent("uploaded.png")
+
+                        do {
+                            // Write to Disk
+                            try data.write(to: url)
+
+                            self.extensionContext!.completeRequest(returningItems: nil, completionHandler: { _ in
+                                let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
+
+                                let selector = NSSelectorFromString("openURL:")
+
+                                let appURL = URL(string: "restvo://%3BdataURL=" + url.absoluteString)!
+
+                                application.perform(selector, with: appURL)
+                            })
+
+                        } catch {
+                            print("Unable to Write Data to Disk (\(error))")
+                        }
+                    }
                 })
-                //self.extensionContext!.completeRequest(returningItems: nil, completionHandler: nil)
-                self.extensionContext!.open(URL(string: "https://apple.news/A0PICfkdmTi227OZa-j6XQw")!, completionHandler: nil)
-            } else {
-                self.extensionContext!.cancelRequest(withError: NSError())
+                
             }
         }
         
+        
+        //self.extensionContext!.cancelRequest(withError: NSError())
     }
     
     func openURL(url: NSURL) -> Bool {
