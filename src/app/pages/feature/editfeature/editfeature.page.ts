@@ -1430,7 +1430,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
                     source: CameraSource.Photos,
                     correctOrientation: false
                 });
-                console.log("photo on cordova: ", image);
+                console.log("photo on cordova: ", image.webPath);
                 const response = await fetch(image.webPath!);
                 const blob = await response.blob();
                 const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'prayer-media', mediaType: 'photo', files: [blob], modalPage: true }});
