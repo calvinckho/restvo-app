@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     async openUrl(dataUrl) {
         const routeUrl = decodeURIComponent(dataUrl);
         if (routeUrl && routeUrl.length) {
-            const params = {};
+            const params: any = {};
             let urlComponents: any;
             urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
 
@@ -97,9 +97,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (modal) {
                 modal.dismiss();
             }
-            if (routeUrl.includes('restvo://')) { // if opening URL scheme
-                const dataURL = params['dataURL'] || null;
-                modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [dataURL], modalPage: true }});
+            if (routeUrl.includes('restvo://') && routeUrl.includes('dataURL')) { // if opening URL scheme
+                const dataURL = params.dataURL || null;
+                console.log("photo received", dataURL);
+                const response = await fetch(dataURL);
+                const blob = await response.blob();
+                modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [blob], modalPage: true }});
                 await modal.present();
             } else { // if opening Universal Link, i.e. https://app.restvo.com/app, it will navigate to /app
                 this.router.navigate([urlComponents[0].slice(22, urlComponents[0].length), params]);

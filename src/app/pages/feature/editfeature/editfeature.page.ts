@@ -13,7 +13,7 @@ import {
     ToastController
 } from '@ionic/angular';
 import {Location} from '@angular/common';
-
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Clipboard } from '@capacitor/clipboard';
 import { Share } from '@capacitor/share';
 import {Chat} from '../../../services/chat.service';
@@ -1424,16 +1424,64 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     }
 
     async openUploadMedia(i, componentIndex) {
-        const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: this.moment._id, modalPage: true }});
-        await modal.present();
-        const {data: media_list} = await modal.onDidDismiss();
-        // event is an a moment object see server/models/moment.js
-        // event contains a resource with info on the event see server/models/resource.js
-        if (media_list) {
-            if ((componentIndex === 10010 || componentIndex === 40010) && this.moment.matrix_string[i].length < 11) { // only when initiating textarea + media component
-                this.moment.matrix_string[i].length = 11;
+        try {
+            if (this.platform.is('cordova')) { // if on native app
+                const image = await Camera.getPhoto({ // open native OS photo album
+                    quality: 60,
+                    width: 1280,
+                    allowEditing: false,
+                    resultType: CameraResultType.Uri,
+                    source: CameraSource.Photos,
+                    correctOrientation: false
+                });
+                console.log("photo on cordova: ", image);
+                const response = await fetch(image.webPath!);
+                const blob = await response.blob();
+                const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'prayer-media', mediaType: 'photo', files: [blob], modalPage: true }});
+                await modal.present();
+                const {data: media_list} = await modal.onDidDismiss();
+                if (media_list && media_list.length) {
+                    this.anyChangeMade = true;
+                    for (let i = 0; i < media_list.length; i++) {
+                        if (media_list[i] && media_list[i].file) {
+                            const compressed = await this.awsService.compressPhoto(media_list[i].file);
+                            await this.awsService.uploadFile('users', this.userData.user._id, compressed, 'prayer-media', media_list[i].height > media_list[i].width ? 1 : 0);
+                        }
+                    }
+                }
+                //await this.awsService.uploadImage('users', this.userData.user._id, image, 'prayer-media');
             }
-            this.moment.matrix_string[i].push(...media_list);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async selectPhotoFromDeviceAndPreview(event) {
+        try {
+            if (event && event.target && event.target.files && event.target.files.length) {
+                console.log("photo on browser: ", event.target.files[0])
+                const modal = await this.modalCtrl.create({component: UploadmediaPage,
+                    componentProps: {
+                        sessionId: 'prayer-media',
+                        mediaType: 'photo',
+                        files: event.target.files,
+                        modalPage: true
+                    }
+                });
+                await modal.present();
+                const {data: media_list} = await modal.onDidDismiss();
+                if (media_list && media_list.length) {
+                    this.anyChangeMade = true;
+                    for (let i = 0; i < media_list.length; i++) {
+                        if (media_list[i] && media_list[i].file) {
+                            const compressed = await this.awsService.compressPhoto(media_list[i].file);
+                            await this.awsService.uploadFile('users', this.userData.user._id, compressed, 'prayer-media', media_list[i].height > media_list[i].width ? 1 : 0);
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.log(err);
         }
     }
 

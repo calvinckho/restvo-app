@@ -16,6 +16,7 @@ class ShareViewController:  UIViewController {
     public var item: SLComposeSheetConfigurationItem!
     private var auth : String?
     private var dataPending = true
+    private var imageCounter = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,7 @@ class ShareViewController:  UIViewController {
         //make sure data given is URL or text
         let extensionItem = extensionContext?.inputItems[0] as! NSExtensionItem
 
-        for attachment in extensionItem.attachments as! [NSItemProvider] {
+        for attachment in extensionItem.attachments! {
             print("check types", attachment.registeredTypeIdentifiers)
             
             if attachment.hasItemConformingToTypeIdentifier("public.jpeg" as String) {
@@ -40,81 +41,74 @@ class ShareViewController:  UIViewController {
                     //let url = results as! URL?
                     //print("loaded photo: ", url);
                     //self.mediaURL = url!.absoluteString
-                    
-                    var contentData: Data? = nil
-
                     //data could be raw Data
+                    var contentData: Data? = nil
                     if let data = data as? Data {
                         contentData = data
-
                     //data could be an URL
                     } else if let url = data as? URL {
                         contentData = try? Data(contentsOf: url)
                     }
-
                     //data could be an UIImage object (e.g. ios11 screenshot editor)
                     else if let imageData = data as? UIImage {
                         contentData = imageData.pngData()
-                    
                     }
-
                     // proceed here with contentData
-                    let image = UIImage(data: contentData ?? Data())
-                    
-                    // Convert to Data
-                    if let data = image?.pngData() {
-                        // Create URL
-                        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                        let url = documents.appendingPathComponent("uploaded.png")
+                    if let image = UIImage(data: contentData ?? Data()) {
+                        let jpeg = self.generateJPEG(image: image, metadata: [:], with: 90)
+                        let fileURL = try? self.saveTemporaryImage(jpeg!);
+                        print("file url", fileURL?.absoluteString)
+                        let webURL = URL(string: "capacitor://localhost/_capacitor_file_")!.appendingPathComponent(fileURL!.path);
+                        self.extensionContext!.completeRequest(returningItems: nil, completionHandler: { _ in
+                            let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
 
-                        do {
-                            // Write to Disk
-                            try data.write(to: url)
+                            let selector = NSSelectorFromString("openURL:")
 
-                            self.extensionContext!.completeRequest(returningItems: nil, completionHandler: { _ in
-                                let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
+                            let appURL = URL(string: "restvo://%3BdataURL=" + webURL.absoluteString)!
 
-                                let selector = NSSelectorFromString("openURL:")
-
-                                let appURL = URL(string: "restvo://%3BdataURL=" + url.absoluteString)!
-
-                                application.perform(selector, with: appURL)
-                            })
-
-                        } catch {
-                            print("Unable to Write Data to Disk (\(error))")
-                        }
+                            application.perform(selector, with: appURL)
+                        })
+                    } else {
+                        print("failed")
+                        self.extensionContext!.cancelRequest(withError: NSError())
                     }
                 })
-                
             }
         }
-        
-        
-        //self.extensionContext!.cancelRequest(withError: NSError())
     }
     
-    func openURL(url: NSURL) -> Bool {
-        do {
-            let application = try self.sharedApplication()
-            return application.perform("openURL:", with: url, afterDelay: 0.00) != nil
-        }
-        catch {
-            return false
-        }
+    func saveTemporaryImage(_ data: Data) throws -> URL {
+        var url: URL
+        repeat {
+            imageCounter += 1
+            url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("photo-\(imageCounter).jpg")
+        } while FileManager.default.fileExists(atPath: url.path)
+
+        try data.write(to: url, options: .atomic)
+        return url
     }
-
-    func sharedApplication() throws -> UIApplication {
-        var responder: UIResponder? = self
-        while responder != nil {
-            if let application = responder as? UIApplication {
-                return application
-            }
-
-            responder = responder?.next
+    
+    
+    func generateJPEG(image: UIImage, metadata: [String: Any], with quality: CGFloat) -> Data? {
+        // convert the UIImage to a jpeg
+        guard let data = image.jpegData(compressionQuality: quality) else {
+            return nil
         }
-
-        throw NSError(domain: "UIInputViewController+sharedApplication.swift", code: 1, userInfo: nil)
+        // define our jpeg data as an image source and get its type
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil), let type = CGImageSourceGetType(source) else {
+            return data
+        }
+        // allocate an output buffer and create the destination to receive the new data
+        guard let output = NSMutableData(capacity: data.count), let destination = CGImageDestinationCreateWithData(output, type, 1, nil) else {
+            return data
+        }
+        // pipe the source into the destination while overwriting the metadata, this encodes the metadata information into the image
+        CGImageDestinationAddImageFromSource(destination, source, 0, metadata as CFDictionary)
+        // finish
+        guard CGImageDestinationFinalize(destination) else {
+            return data
+        }
+        return output as Data
     }
     
     private func retreiveFromKeyChain()->String{
@@ -147,4 +141,6 @@ class ShareViewController:  UIViewController {
         return (contentsOfKeychain!)
 
     }
+    
+    
 }
