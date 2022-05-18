@@ -58,13 +58,13 @@ class ShareViewController:  UIViewController {
                         let jpeg = self.generateJPEG(image: image, metadata: [:], with: 90)
                         let fileURL = try? self.saveTemporaryImage(jpeg!);
                         print("file url", fileURL?.absoluteString)
-                        let webURL = URL(string: "capacitor://localhost/_capacitor_file_")!.appendingPathComponent(fileURL!.path);
+                        let webPath = URL(string: "capacitor://localhost/_capacitor_file_")!.appendingPathComponent(fileURL!.path);
                         self.extensionContext!.completeRequest(returningItems: nil, completionHandler: { _ in
                             let application = UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
 
                             let selector = NSSelectorFromString("openURL:")
 
-                            let appURL = URL(string: "restvo://%3BdataURL=" + webURL.absoluteString)!
+                            let appURL = URL(string: "restvo://%3BwebPath=" + webPath.absoluteString)!
 
                             application.perform(selector, with: appURL)
                         })

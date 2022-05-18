@@ -8,15 +8,18 @@ import {
     ModalController,
     Platform,
 } from '@ionic/angular';
+import {Capacitor} from '@capacitor/core';
+import { ShareExtension } from 'capacitor-share-extension';
+
 import {Aws} from './services/aws.service';
 import { NetworkService } from './services/network-service.service';
 import { UserData } from './services/user.service';
 import {Chat} from './services/chat.service';
 import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecipientinfo.page';
-import {Capacitor} from '@capacitor/core';
+
 import {ProgramsPage} from './pages/user/programs/programs.page';
 import { App } from '@capacitor/app';
-import {UploadmediaPage} from "./pages/feature/uploadmedia/uploadmedia.page";
+import {UploadmediaPage} from './pages/feature/uploadmedia/uploadmedia.page';
 
 @Component({
   selector: 'app-root',
@@ -75,8 +78,35 @@ export class AppComponent implements OnInit, AfterViewInit {
             } else {
                 console.log('App Plugin not available');
             }
+            if (this.platform.is('android') && Capacitor.isPluginAvailable('ShareExtension')) {
+                console.log('is android');
+                window.addEventListener('sendIntentReceived',  () => {
+                    console.log('android window event');
+                    this.checkIntent();
+                });
+                this.checkIntent();
+            }
         } catch (err) {
             console.log('error when activating Capacitor\'s App Plugin');
+        }
+    }
+
+    async checkIntent() {
+        try {
+            const result: any = await ShareExtension.checkSendIntentReceived();
+            if (result) {
+                console.log('Intent received: ', JSON.stringify(result));
+            }
+            if (result.webPath) {
+                const webPath = decodeURIComponent(result.webPath);
+                console.log('photo received', webPath);
+                const response = await fetch(webPath);
+                const blob = await response.blob();
+                const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [blob], modalPage: true }});
+                await modal.present();
+            }
+        } catch (err) {
+            console.log(err);
         }
     }
 
@@ -97,10 +127,10 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (modal) {
                 modal.dismiss();
             }
-            if (routeUrl.includes('restvo://') && routeUrl.includes('dataURL')) { // if opening URL scheme
-                const dataURL = params.dataURL || null;
-                console.log("photo received", dataURL);
-                const response = await fetch(dataURL);
+            if (routeUrl.includes('restvo://') && routeUrl.includes('webPath')) { // if opening URL scheme
+                const webPath = params.webPath || null;
+                console.log('photo received', webPath);
+                const response = await fetch(webPath);
                 const blob = await response.blob();
                 modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [blob], modalPage: true }});
                 await modal.present();
