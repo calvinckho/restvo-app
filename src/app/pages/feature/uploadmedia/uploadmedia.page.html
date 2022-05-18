@@ -131,9 +131,9 @@
       <ion-row class="ion-justify-content-center full-height">
         <ion-col *ngFor="let object of objectURLs" class="ion-align-self-center" size="12">
           <ion-card class="card-container ion-no-padding">
-            <div class="backdrop" [ngStyle]="{ 'background-image': 'url(' + object.dataURL + ')' }">
+            <!--<div class="backdrop" [ngStyle]="{ 'background-image': 'url(' + object.dataURL + ')' }">
               <ion-img [src]="object.dataURL"></ion-img>
-            </div>
+            </div>-->
             <ion-card-content class="ion-no-padding image-card-content" [ngClass]="{'portrait': object.width < object.height }">
               <ion-img [src]="object.dataURL"></ion-img>
             </ion-card-content>
