@@ -94,17 +94,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     async checkIntent() {
         try {
             const result: any = await ShareExtension.checkSendIntentReceived();
-            if (result) {
-                console.log('Intent received: ', JSON.stringify(result));
+            console.log('Intent received: ', JSON.stringify(result));
+            const mediaItems = [result];
+            if (Array.isArray(result.additionalItems)) {
+                mediaItems.push(...result.additionalItems);
             }
-            if (result.webPath) {
-                const webPath = decodeURIComponent(result.webPath);
-                console.log('photo received', webPath);
-                const response = await fetch(webPath);
-                const blob = await response.blob();
-                const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [blob], modalPage: true }});
-                await modal.present();
-            }
+            const blobs = [];
+            const promises = mediaItems.map(async (mediaItem) => {
+                const response = await fetch(decodeURIComponent(mediaItem.webPath));
+                blobs.push(await response.blob());
+            });
+            await Promise.all(promises);
+            console.log("media", blobs);
+            const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: blobs, modalPage: true }});
+            await modal.present();
         } catch (err) {
             console.log(err);
         }
