@@ -94,15 +94,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     async checkIntent() {
         try {
             const result: any = await ShareExtension.checkSendIntentReceived();
-            if (result && result.type) {
-                console.log('Intent received: ', JSON.stringify(result));
-                const mediaItems = [result];
-                if (Array.isArray(result.additionalItems)) {
-                    mediaItems.push(...result.additionalItems);
-                }
+            if (result && result.payload && Array.isArray(result.payload)) {
+                console.log('Intent received: ', JSON.stringify(result.payload));
                 const blobs = [];
-                const promises = mediaItems.map(async (mediaItem) => {
-                    const response = await fetch(decodeURIComponent(mediaItem.webPath));
+                const promises = result.payload.map(async (payloadItem) => {
+                    const response = await fetch(decodeURIComponent(payloadItem.webPath));
                     blobs.push(await response.blob());
                 });
                 await Promise.all(promises);
