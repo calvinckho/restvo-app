@@ -78,10 +78,10 @@ export class AppComponent implements OnInit, AfterViewInit {
             } else {
                 console.log('App Plugin not available');
             }
-            if (this.platform.is('android') && Capacitor.isPluginAvailable('ShareExtension')) {
-                console.log('is android');
+            if (this.platform.is('cordova') && Capacitor.isPluginAvailable('ShareExtension')) {
+                console.log('is cordova');
                 window.addEventListener('sendIntentReceived',  () => {
-                    console.log('android window event');
+                    console.log('cordova window event');
                     this.checkIntent();
                 });
                 this.checkIntent();
@@ -112,7 +112,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     async openUrl(dataUrl) {
         const routeUrl = decodeURIComponent(dataUrl);
-        if (routeUrl && routeUrl.length) {
+        if (routeUrl && routeUrl.length && !routeUrl.includes('restvo://')) { // exclude web scheme
             const params: any = {};
             let urlComponents: any;
             urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
@@ -127,16 +127,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (modal) {
                 modal.dismiss();
             }
-            if (routeUrl.includes('restvo://') && routeUrl.includes('webPath')) { // if opening URL scheme
-                const webPath = params.webPath || null;
-                console.log('photo received', webPath);
-                const response = await fetch(webPath);
-                const blob = await response.blob();
-                modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: [blob], modalPage: true }});
-                await modal.present();
-            } else { // if opening Universal Link, i.e. https://app.restvo.com/app, it will navigate to /app
-                this.router.navigate([urlComponents[0].slice(22, urlComponents[0].length), params]);
-            }
+            this.router.navigate([urlComponents[0].slice(22, urlComponents[0].length), params]);
         }
     }
 
