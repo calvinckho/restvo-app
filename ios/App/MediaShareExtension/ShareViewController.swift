@@ -86,13 +86,14 @@ class ShareViewController:  UIViewController {
                     value: $0.webPath?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")
             ]
         }.flatMap({ $0 })
-        var urlComps = URLComponents(string: "restvo://")!
+        var urlComps = URLComponents(string: "restvo://;")!
         urlComps.queryItems = queryItems
         openURL(urlComps.url!)
     }
     
     fileprivate func createSharedFileUrl(_ url: URL?) -> String {
         let fileManager = FileManager.default
+        print("share url: " + url!.absoluteString)
         let copyFileUrl =
         fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.com.restvo.test")!
             .absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)! + url!
