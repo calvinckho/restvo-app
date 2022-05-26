@@ -23,10 +23,10 @@ class ActionViewController: UIViewController {
         var imageFound = false
         for item in self.extensionContext!.inputItems as! [NSExtensionItem] {
             for provider in item.attachments! {
-                if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                if provider.hasItemConformingToTypeIdentifier(kUTTypeImage as String) {
                     // This is an image. We'll load it, then place it in our image view.
                     //weak var weakImageView = self.imageView
-                    provider.loadItem(forTypeIdentifier: UTType.image.identifier, options: nil, completionHandler: { (imageURL, error) in
+                    provider.loadItem(forTypeIdentifier: kUTTypeImage as String, options: nil, completionHandler: { (imageURL, error) in
                         //self.extensionContext!.open(URL(string: "https://apple.news/A0PICfkdmTi227OZa-j6XQw")!, completionHandler: nil)
                         print("photo", imageURL);
                         self.extensionContext!.completeRequest(returningItems: nil, completionHandler: {_ in
