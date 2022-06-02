@@ -31,7 +31,8 @@ import {Systemlog} from '../../../../services/systemlog.service';
   selector: 'app-feature-insight',
   templateUrl: './feature-insight.page.html',
   styleUrls: ['./feature-insight.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 
 export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnChanges {
@@ -215,7 +216,7 @@ export class FeatureInsightPage extends ShowfeaturePage implements OnInit, OnCha
         const results: any = await this.momentService.loadProgramInsight(this.moment._id);
         if (results && results.relationship_completion) {
           this.relationshipCompletion = results.relationship_completion;
-          console.log(this.relationshipCompletion);
+          //console.log(this.relationshipCompletion);
           const objects = {};
           this.listOfPrograms = this.relationshipCompletion.map((c) => c.program).filter((program) => {
             if (objects[program._id]) {

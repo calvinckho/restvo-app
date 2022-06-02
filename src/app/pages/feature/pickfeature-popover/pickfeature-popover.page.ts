@@ -21,7 +21,8 @@ import {Storage} from '@ionic/storage';
   selector: 'app-pickfeature-popover',
   templateUrl: './pickfeature-popover.page.html',
   styleUrls: ['./pickfeature-popover.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     @Input() title: any;
@@ -97,8 +98,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     ) {}
 
     async ngOnInit() {
+
         this.setup();
         this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
+        this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+            this.calendarService.getUserCalendar();
+        });
     }
 
     ionViewWillEnter() {
@@ -107,6 +112,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     }
 
     async setup() {
+        this.calendarService.calendar.mode = 'month';
         this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
         this.title = this.title || this.route.snapshot.paramMap.get('title') || 'Invite'; // the title
         this.categoryId = this.categoryId || this.route.snapshot.paramMap.get('categoryId');
@@ -130,6 +136,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             activity.cloned = 'new'; // type 'new' is used in parent component to indicate that a selected moment needs to be cloned
             activity.joinAs = this.joinAs;
             activity.startDate = null;
+            activity.endDate = null;
             this.selectedMoments = [activity];
             this.step = 4;
         } else if (this.categoryId === 'all' || !this.categoryId) { // if 'all' category is indicated, begin with 0
@@ -139,7 +146,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             this.step = 1;
             this.selectedCategoryId = JSON.parse(JSON.stringify(this.categoryId));
         }
-        console.log('category', this.categoryId, this.selectedCategoryId);
+        //console.log('category', this.categoryId, this.selectedCategoryId);
     }
 
     refreshAfterCreateMomentHandler = async () => {
@@ -385,7 +392,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else {
                 this.done();
             }
-        } else if (this.step >= 3) { // only allow pick start date if moment has schedule that has floating start date toggled on
+        } else if (this.step === 3) { // only allow pick start date if moment has schedule that has floating start date toggled on
             if (this.selectedMoments && this.selectedMoments.length && this.selectedMoments[0] && this.selectedMoments[0]._id) {
                 const schedules: any = await this.momentService.loadActivitySchedules(this.selectedMoments[0]._id);
                 this.allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
@@ -397,6 +404,12 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else {
                 this.done();
             }
+        } else if (this.step === 4) { // store the start date
+            if (this.selectedMoments && this.selectedMoments.length && this.selectedMoments[0] && this.selectedMoments[0]) {
+                this.selectedMoments[0].startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
+            }
+            this.step++;
+            this.focusCalendarDateField('start');
         }
     }
 
@@ -434,7 +447,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     this.selectedMoments[0].array_boolean[this.type] = true;
                 }
                 if (this.allowCustomStartDate) {
-                    this.selectedMoments[0].startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
+                    this.selectedMoments[0].endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
                 }
                 clonedMoments = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
@@ -613,5 +626,8 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions['refresh'].unsubscribe(this.refreshAfterCreateMomentHandler);
+        this.subscriptions['refreshUserCalendar'].unsubscribe(async (res) => {
+            this.calendarService.getUserCalendar();
+        });
     }
 }

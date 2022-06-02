@@ -40,6 +40,7 @@ import {CacheService} from 'ionic-cache';
   templateUrl: './feature-subscription.page.html',
   styleUrls: ['./feature-subscription.page.scss'],
   encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   @ViewChild(IonContent) content: IonContent;

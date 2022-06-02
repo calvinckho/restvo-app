@@ -32,7 +32,8 @@ import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover
   selector: 'app-editfeature',
   templateUrl: './editfeature.page.html',
   styleUrls: ['./editfeature.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+    providers: [ CalendarService ]
 })
 export class EditfeaturePage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
@@ -198,6 +199,9 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       this.subpanel = !!this.route.snapshot.paramMap.get('subpanel');
       this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.reloadEditPage);
+      this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+          this.calendarService.getUserCalendar();
+      });
   }
 
     // for Desktop routing, it is possible for user to jump between page views without properly using the back button (closeModal and ngOnDestroy).
@@ -1475,5 +1479,8 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       if (this.subscriptions && this.subscriptions.refreshMoment)  {
           this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
       }
+      if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+          this.calendarService.getUserCalendar();
+      }); }
   }
 }

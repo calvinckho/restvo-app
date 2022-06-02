@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ActionSheetController, AlertController, IonContent, IonSelect, ModalController, Platform} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Moment} from '../../../../services/moment.service';
@@ -16,9 +16,10 @@ import {Location} from '@angular/common';
   selector: 'app-feature-schedule',
   templateUrl: './feature-schedule.page.html',
   styleUrls: ['./feature-schedule.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
-export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit {
+export class FeatureSchedulePage extends FeatureChildActivitiesPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('SelectGoals') select: IonSelect;
 
@@ -108,6 +109,9 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   async ngOnInit() {
     await super.ngOnInit();
+    this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+      this.calendarService.getUserCalendar();
+    });
     this.setupSchedulePage();
   }
 
@@ -819,5 +823,11 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
 
   closeModal() {
     this.modalCtrl.dismiss();
+  }
+
+  async ngOnDestroy() {
+    if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+      this.calendarService.getUserCalendar();
+    }); }
   }
 }

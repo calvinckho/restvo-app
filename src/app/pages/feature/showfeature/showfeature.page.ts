@@ -38,7 +38,8 @@ import {SuccessPopoverPage} from '../success-popover/success-popover.page';
   selector: 'app-showfeature',
   templateUrl: './showfeature.page.html',
   styleUrls: ['./showfeature.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonSelect) select: IonSelect;
@@ -249,6 +250,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       // link refreshUserStatus observable with the loadMoment handler. It fires on page loads and subsequent user status refresh
       this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.loadAndProcessMomentHandler);
       this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
+      this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+          this.calendarService.getUserCalendar();
+      });
       await this.processVerificationToken();
   }
 
@@ -475,7 +479,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                     this.adminOrPublicAccessContentCalendars = results || [];
                 } else { // regular participant's calendarService.calendarItems is used, so update user's calendar
-                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                    await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
                 /*if (this.authService.token && this.userData.user) {
@@ -498,7 +502,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                     const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                     this.adminOrPublicAccessContentCalendars = results || [];
                 } else { // regular participant's calendarService.calendarItems is used, so update user's calendar
-                    await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                    await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
                     this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                 }
                 /*if (this.authService.token && this.userData.user) {
@@ -2530,11 +2534,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     if (this.subscriptions && this.subscriptions.refreshUserStatus) { this.subscriptions['refreshUserStatus'].unsubscribe(this.loadAndProcessMomentHandler); }
     if (this.subscriptions && this.subscriptions.refreshMoment) { this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler); }
     if (this.subscriptions && this.subscriptions.chatMessage) {  this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler); }
+    if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+        this.calendarService.getUserCalendar();
+    }); }
   }
 
     // for refreshing moment either because of real-time interactables, or for refreshing participation
     refreshMomentHandler = async (res) => {
-        console.log('incoming refresh', res);
+        // console.log('incoming refresh', res);
         this.zone.run(async () => {
             if (res && res.momentId && res.data) {
                 const momentId = res.momentId;
@@ -2633,7 +2640,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                             const results: any = await this.calendarService.loadRelationshipContentCalendars(this.moment._id, false);
                             this.adminOrPublicAccessContentCalendars = results || [];
                         } else { // adminOrPublicAccessContentCalendars is used instead of calendarService.calendarItems, so no need to update user's calendar for Organizer
-                            await this.calendarService.getUserCalendar(); // refresh and fetch the latest calendar items
+                            await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
                             this.calendarService.updateViewCalendar(); // this will recalculate the past, current, upcoming flags
                         }
                         this.refreshCalendarDisplay();

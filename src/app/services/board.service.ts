@@ -5,7 +5,6 @@ import { Storage } from '@ionic/storage';
 import { Chat } from './chat.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
-import { CalendarService } from './calendar.service';
 import * as io from 'socket.io-client';
 
 import { NetworkService } from './network-service.service';
@@ -24,7 +23,6 @@ export class Board {
                 private authService: Auth,
                 private userData: UserData,
                 private chatService: Chat,
-                private calendarService: CalendarService,
                 private networkService: NetworkService) {
     }
 
@@ -37,7 +35,7 @@ export class Board {
             }
         });
         this.socket.on('connect', () => {
-            console.log("board socket id: ", this.socket.id);
+            //console.log("board socket id: ", this.socket.id);
         });
         this.socket.on('refresh board', async (boardId, data) => {
             this.userData.refreshBoards({ type: 'refresh board', boardId: boardId, data: data });

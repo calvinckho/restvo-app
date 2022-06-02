@@ -7,7 +7,6 @@ import { Auth } from './auth.service';
 import { Response } from './response.service';
 import { Resource } from './resource.service';
 import { UserData } from './user.service';
-import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
 
 import * as io from 'socket.io-client';
@@ -86,7 +85,6 @@ export class Moment {
                 private responseService: Response,
                 private resourceService: Resource,
                 private paymentService: PaymentService,
-                private calendarService: CalendarService,
                 private networkService: NetworkService) {
     }
 
@@ -230,7 +228,7 @@ export class Moment {
         delete data.conversations; // no need to send the converastions field
         const promise = await this.http.post(this.networkService.domain + '/api/moment/create', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
+        await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
         return promise;
@@ -239,7 +237,7 @@ export class Moment {
     async clone(moments, optOutReason) {
         const promises = await this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
+        await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
         return promises;
@@ -253,7 +251,7 @@ export class Moment {
         delete data.conversations; // no need to send the converastions field
         const promise = await this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
+        await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
         return promise;
@@ -262,7 +260,7 @@ export class Moment {
     async adoptPlan(data) {
         const promise = await this.http.put(this.networkService.domain + '/api/moment/plan/adopt', JSON.stringify(data), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
+        await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         this.userData.refreshAppPages();
         return promise;
     }
@@ -352,7 +350,7 @@ export class Moment {
             }
         }
         if (refreshAppPages) {
-            this.calendarService.getUserCalendar();
+            await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
             this.chatService.getAllUserConversations();
             this.userData.refreshAppPages();
         }
@@ -611,7 +609,7 @@ export class Moment {
         }
         setTimeout(async () => {
             await this.refreshMoment({ momentId: moment._id, data: { operation: 'deleted moment'}});
-            await this.calendarService.getUserCalendar();
+            await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
             await this.chatService.getAllUserConversations();
             setTimeout(() => {
                 this.userData.refreshAppPages();
@@ -654,7 +652,7 @@ export class Moment {
         const promise = await this.http.put(this.networkService.domain + '/api/moment/schedule/touch', JSON.stringify(schedule), this.authService.httpAuthOptions)
             .toPromise();
         if (refreshPages) {
-            await this.calendarService.getUserCalendar();
+            await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
             await this.userData.refreshAppPages();
         }
         return promise;
@@ -674,7 +672,7 @@ export class Moment {
         };
         if (momentId) {
             if (this.socket) this.socket.emit('refresh moment', momentId, socketData); // Using the moment service socket.io to signal real time dynamic update for other devices in the same conversationId room
-            await this.calendarService.getUserCalendar();
+            await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
             this.userData.refreshAppPages();
         }
         return promise;

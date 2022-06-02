@@ -35,7 +35,8 @@ import {FeatureCreatorPage} from './feature-creator/feature-creator.page';
   selector: 'app-managefeature',
   templateUrl: './managefeature.page.html',
   styleUrls: ['./managefeature.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class ManagefeaturePage extends EditfeaturePage implements OnInit {
   @ViewChild(IonSelect) select: IonSelect;

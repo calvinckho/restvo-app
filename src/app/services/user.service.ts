@@ -9,7 +9,6 @@ import {StripeService} from 'ngx-stripe';
 import { Badge } from '@ionic-native/badge/ngx';
 import { Contacts, Contact } from '@ionic-native/contacts/ngx';
 import { Auth } from './auth.service';
-import { CalendarService } from './calendar.service';
 import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
 
@@ -53,12 +52,14 @@ export class UserData {
     private _enablePushNotification: BehaviorSubject<boolean> = new BehaviorSubject(false);
     private _refreshMyConversations: BehaviorSubject<boolean> = new BehaviorSubject(false);
     private _refreshBoards: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private _refreshUserCalendar: BehaviorSubject<any> = new BehaviorSubject(null);
 
     public readonly refreshUserStatus$: Observable<any> = this._refreshUserStatus.asObservable();
     public readonly openUserPrograms$: Observable<any> = this._openUserPrograms.asObservable();
     public readonly enablePushNotification$: Observable<boolean> = this._enablePushNotification.asObservable();
     public readonly refreshMyConversations$: Observable<boolean> = this._refreshMyConversations.asObservable();
     public readonly refreshBoards$: Observable<boolean> = this._refreshBoards.asObservable();
+    public readonly refreshUserCalendar$: Observable<any> = this._refreshUserCalendar.asObservable();
 
     constructor(private http: HttpClient,
                 private zone: NgZone,
@@ -74,8 +75,7 @@ export class UserData {
                 private alertCtrl: AlertController,
                 private menuCtrl: MenuController,
                 private authService: Auth,
-                private networkService: NetworkService,
-                private calendarService: CalendarService) {
+                private networkService: NetworkService) {
     }
 
     refreshUserStatus(data) {
@@ -100,6 +100,10 @@ export class UserData {
         this._refreshBoards.next(data);
     }
 
+    refreshUserCalendar(data) {
+        this._refreshUserCalendar.next(data);
+    }
+
     async createUserSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
@@ -109,7 +113,7 @@ export class UserData {
             }
         });
         this.socket.on('connect', () => {
-            console.log('user socket id: ', this.socket.id);
+            // console.log('user socket id: ', this.socket.id);
             this.socket.emit('enter user', this.user._id);
         });
         this.socket.on('refresh user status', async (userId, data) => {
@@ -156,7 +160,7 @@ export class UserData {
                 } else if (data.type === 'update church participation') {
                     await this.load();
                 } else if (data.type === 'update moment and calendar participation') {
-                    await this.calendarService.getUserCalendar();
+                    await this.refreshUserCalendar(true); // refresh and fetch the latest calendar items
                     this.refreshUserStatus({type: 'change aux data'});
                 } else if (data.type === 'update system messages') {
                     this.refreshUserStatus({type: 'change aux data'});
@@ -817,6 +821,6 @@ export class UserData {
         this.authService.cachedRouteParams = null;
 
         // clear calendarService cached data
-        this.calendarService.calendarItems = [];
+        //this.calendarService.calendarItems = [];
     }
 }
