@@ -39,6 +39,7 @@ import {CacheService} from "ionic-cache";
   templateUrl: './feature-billing.page.html',
   styleUrls: ['./feature-billing.page.scss'],
   encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   @ViewChild(StripeCardComponent) card: StripeCardComponent;

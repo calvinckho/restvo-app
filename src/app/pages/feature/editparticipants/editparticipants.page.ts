@@ -34,6 +34,7 @@ import { EditfeaturePage } from "../editfeature/editfeature.page";
   templateUrl: "./editparticipants.page.html",
   styleUrls: ["../editfeature/editfeature.page.scss"],
   encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   @ViewChild('InviteSelect') inviteSelect: IonSelect;

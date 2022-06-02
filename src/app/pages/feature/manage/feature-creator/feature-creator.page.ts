@@ -29,7 +29,8 @@ import {FeatureCurriculumPage} from "../feature-curriculum/feature-curriculum.pa
   selector: 'app-feature-creator',
   templateUrl: './feature-creator.page.html',
   styleUrls: ['./feature-creator.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
 
