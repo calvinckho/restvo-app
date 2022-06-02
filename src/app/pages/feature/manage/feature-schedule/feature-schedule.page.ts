@@ -271,7 +271,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
       this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
-      this.schedule.options.timezoneOffset = this.schedule.startDate.getTimezoneOffset(); // update with the start date's local timezone offset
+      this.schedule.options.timezoneOffset = new Date(this.schedule.startDate).getTimezoneOffset(); // update with the start date's local timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
       this.schedule.operation = operation;
       schedule = await this.momentService.touchSchedule(this.schedule, true);
