@@ -181,7 +181,7 @@ export class EditcommunityPage implements OnInit {
                 result = await this.awsService.uploadImage('communities', this.community._id.length ? this.community._id : "temporary", image, this.community._id);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                result = await this.awsService.uploadFile('communities', this.community._id.length ? this.community._id : "temporary", compressed, this.community._id);
+                result = await this.awsService.uploadFile('communities', this.community._id.length ? this.community._id : "temporary", compressed, this.community._id, 0);
             }
             if (result === "Upload succeeded"){
                 if(this.community.background){

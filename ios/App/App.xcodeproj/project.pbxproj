@@ -14,6 +14,9 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		8F1907252890AB0D003BCB55 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1907242890AB0D003BCB55 /* ShareViewController.swift */; };
+		8F1907282890AB0D003BCB55 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F1907262890AB0D003BCB55 /* MainInterface.storyboard */; };
+		8F19072C2890AB0D003BCB55 /* MediaShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8F1907222890AB0D003BCB55 /* MediaShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		ABB452E52249574900D15CA4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB452E42249574900D15CA4 /* ShareViewController.swift */; };
 		ABB452E82249574900D15CA4 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABB452E62249574900D15CA4 /* MainInterface.storyboard */; };
@@ -23,6 +26,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8F19072A2890AB0D003BCB55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F1907212890AB0D003BCB55;
+			remoteInfo = MediaShareExtension;
+		};
+		8FEB521928333202000FE22F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8FEB520C28333202000FE22F;
+			remoteInfo = MediaActionExtension;
+		};
 		ABB452EA2249574900D15CA4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
@@ -40,6 +57,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				ABB452EC2249574900D15CA4 /* ShareExtension.appex in Embed App Extensions */,
+				8F19072C2890AB0D003BCB55 /* MediaShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,6 +75,11 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = SOURCE_ROOT; };
+		8F1907222890AB0D003BCB55 /* MediaShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MediaShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F1907242890AB0D003BCB55 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		8F1907272890AB0D003BCB55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		8F1907292890AB0D003BCB55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8F19072D2890AB0D003BCB55 /* MediaShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MediaShareExtension.entitlements; sourceTree = "<group>"; };
 		ABB452E22249574900D15CA4 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB452E42249574900D15CA4 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		ABB452E72249574900D15CA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -75,6 +98,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8F19071F2890AB0D003BCB55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FEB520A28333202000FE22F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,6 +138,8 @@
 			children = (
 				504EC3061FED79650016851F /* App */,
 				ABB452E32249574900D15CA4 /* ShareExtension */,
+				8FEB521028333202000FE22F /* MediaActionExtension */,
+				8F1907232890AB0D003BCB55 /* MediaShareExtension */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
 				27E2DDA53C4D2A4D1A88CE4A /* Frameworks */,
@@ -112,6 +151,7 @@
 			children = (
 				504EC3041FED79650016851F /* App.app */,
 				ABB452E22249574900D15CA4 /* ShareExtension.appex */,
+				8F1907222890AB0D003BCB55 /* MediaShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -139,6 +179,25 @@
 				AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		8F1907232890AB0D003BCB55 /* MediaShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				8F19072D2890AB0D003BCB55 /* MediaShareExtension.entitlements */,
+				8F1907242890AB0D003BCB55 /* ShareViewController.swift */,
+				8F1907262890AB0D003BCB55 /* MainInterface.storyboard */,
+				8F1907292890AB0D003BCB55 /* Info.plist */,
+			);
+			path = MediaShareExtension;
+			sourceTree = "<group>";
+		};
+		8FEB521028333202000FE22F /* MediaActionExtension */ = {
+			isa = PBXGroup;
+			children = (
+				8FEB521528333202000FE22F /* MainInterface.storyboard */,
+			);
+			path = MediaActionExtension;
 			sourceTree = "<group>";
 		};
 		ABB452E32249574900D15CA4 /* ShareExtension */ = {
@@ -172,11 +231,46 @@
 			);
 			dependencies = (
 				ABB452EB2249574900D15CA4 /* PBXTargetDependency */,
+				8FEB521A28333202000FE22F /* PBXTargetDependency */,
+				8F19072B2890AB0D003BCB55 /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		8F1907212890AB0D003BCB55 /* MediaShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F19072E2890AB0D003BCB55 /* Build configuration list for PBXNativeTarget "MediaShareExtension" */;
+			buildPhases = (
+				8F19071E2890AB0D003BCB55 /* Sources */,
+				8F19071F2890AB0D003BCB55 /* Frameworks */,
+				8F1907202890AB0D003BCB55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MediaShareExtension;
+			productName = MediaShareExtension;
+			productReference = 8F1907222890AB0D003BCB55 /* MediaShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		8FEB520C28333202000FE22F /* MediaActionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FEB521D28333202000FE22F /* Build configuration list for PBXNativeTarget "MediaActionExtension" */;
+			buildPhases = (
+				8FEB520928333202000FE22F /* Sources */,
+				8FEB520A28333202000FE22F /* Frameworks */,
+				8FEB520B28333202000FE22F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MediaActionExtension;
+			productName = MediaActionExtension;
+			productType = "com.apple.product-type.app-extension";
 		};
 		ABB452E12249574900D15CA4 /* ShareExtension */ = {
 			isa = PBXNativeTarget;
@@ -201,7 +295,7 @@
 		504EC2FC1FED79650016851F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
@@ -222,6 +316,14 @@
 								enabled = 1;
 							};
 						};
+					};
+					8F1907212890AB0D003BCB55 = {
+						CreatedOnToolsVersion = 13.3;
+						ProvisioningStyle = Automatic;
+					};
+					8FEB520C28333202000FE22F = {
+						CreatedOnToolsVersion = 13.3;
+						ProvisioningStyle = Automatic;
 					};
 					ABB452E12249574900D15CA4 = {
 						CreatedOnToolsVersion = 10.1;
@@ -255,6 +357,8 @@
 			targets = (
 				504EC3031FED79650016851F /* App */,
 				ABB452E12249574900D15CA4 /* ShareExtension */,
+				8FEB520C28333202000FE22F /* MediaActionExtension */,
+				8F1907212890AB0D003BCB55 /* MediaShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -270,6 +374,21 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8F1907202890AB0D003BCB55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F1907282890AB0D003BCB55 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FEB520B28333202000FE22F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +434,7 @@
 				"${BUILT_PRODUCTS_DIR}/CapacitorShareExtension/CapacitorShareExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/CordovaPlugins/CordovaPlugins.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/JitsiMeetSDK/JitsiMeetSDK.framework/JitsiMeetSDK",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/WebRTC/WebRTC.framework/WebRTC",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/JitsiMeetSDK/WebRTC.framework/WebRTC",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -343,6 +462,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8F19071E2890AB0D003BCB55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F1907252890AB0D003BCB55 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FEB520928333202000FE22F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ABB452DE2249574900D15CA4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -356,6 +490,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8F19072B2890AB0D003BCB55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8F1907212890AB0D003BCB55 /* MediaShareExtension */;
+			targetProxy = 8F19072A2890AB0D003BCB55 /* PBXContainerItemProxy */;
+		};
+		8FEB521A28333202000FE22F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8FEB520C28333202000FE22F /* MediaActionExtension */;
+			targetProxy = 8FEB521928333202000FE22F /* PBXContainerItemProxy */;
+		};
 		ABB452EB2249574900D15CA4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = ABB452E12249574900D15CA4 /* ShareExtension */;
@@ -378,6 +522,21 @@
 				504EC3111FED79650016851F /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		8F1907262890AB0D003BCB55 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8F1907272890AB0D003BCB55 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		8FEB521528333202000FE22F /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		ABB452E62249574900D15CA4 /* MainInterface.storyboard */ = {
@@ -441,7 +600,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -495,7 +654,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -517,14 +676,14 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BXD4YM88M9;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.9.5;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
-				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
@@ -551,13 +710,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = BXD4YM88M9;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.9.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
@@ -565,6 +724,136 @@
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8F19072F2890AB0D003BCB55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MediaShareExtension/MediaShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MediaShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.MediaShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8F1907302890AB0D003BCB55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MediaShareExtension/MediaShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MediaShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.MediaShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8FEB521E28333202000FE22F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MediaActionExtension/MediaActionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scan;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.MediaActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8FEB521F28333202000FE22F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MediaActionExtension/MediaActionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MediaActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scan;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.MediaActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -580,14 +869,14 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BXD4YM88M9;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.9.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
@@ -609,13 +898,13 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BXD4YM88M9;
+				DEVELOPMENT_TEAM = FN5F2YM2KJ;
 				INFOPLIST_FILE = "$(SRCROOT)/ShareExtension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.9.5;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.app.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.restvo.test.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
@@ -643,6 +932,24 @@
 			buildConfigurations = (
 				504EC3171FED79650016851F /* Debug */,
 				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8F19072E2890AB0D003BCB55 /* Build configuration list for PBXNativeTarget "MediaShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8F19072F2890AB0D003BCB55 /* Debug */,
+				8F1907302890AB0D003BCB55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8FEB521D28333202000FE22F /* Build configuration list for PBXNativeTarget "MediaActionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FEB521E28333202000FE22F /* Debug */,
+				8FEB521F28333202000FE22F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

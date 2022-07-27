@@ -11,7 +11,8 @@ import {Churches} from "../../../services/church.service";
   selector: 'app-pickpeople-popover',
   templateUrl: './pickpeople-popover.page.html',
   styleUrls: ['./pickpeople-popover.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+    providers: [ CalendarService ]
 })
 export class PickpeoplePopoverPage implements OnInit {
     @ViewChild('searchbar', {static: false}) searchbar: IonSearchbar;

@@ -18,7 +18,8 @@ import {Auth} from '../../../services/auth.service';
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+    providers: [ CalendarService ]
 })
 export class DashboardPage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
@@ -71,6 +72,9 @@ export class DashboardPage implements OnInit, OnDestroy {
     async ngOnInit() {
         // link the refreshUserStatus Observable with the refresh handler. It fires on subsequent user refreshes
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshDashboardPageHandler);
+        this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+            this.calendarService.getUserCalendar();
+        });
         this.view = this.view || this.route.snapshot.paramMap.get('view') || 'profile';
     }
 
@@ -465,5 +469,8 @@ export class DashboardPage implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscriptions['refreshUserStatus'].unsubscribe(this.refreshDashboardPageHandler);
+        if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+            this.calendarService.getUserCalendar();
+        }); }
     }
 }

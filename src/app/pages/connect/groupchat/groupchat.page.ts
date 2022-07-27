@@ -44,6 +44,7 @@ import {Location} from '@angular/common';
     templateUrl: './groupchat.page.html',
     styleUrls: ['./groupchat.page.scss'],
     encapsulation: ViewEncapsulation.None,
+    providers: [ CalendarService ]
 })
 export class GroupchatPage implements OnInit, OnDestroy {
     @ViewChild(IonContent, {static: false}) content: IonContent;
@@ -108,7 +109,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.subscriptions['refreshMyConversations'] = this.userData.refreshMyConversations$.subscribe(this.reloadHandler);
         this.subscriptions['refreshGroupStatus'] = this.authService.refreshGroupStatus$.subscribe(this.reloadGroupHandler);
         this.subscriptions['chatMessage'] = this.chatService.chatMessage$.subscribe(this.incomingMessageHandler);
-
+        this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+            this.calendarService.getUserCalendar();
+        });
         this.subscriptions['refreshMoment'] = this.momentService.refreshMoment$.subscribe(this.refreshMomentHandler);
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(this.refreshUserStatusHandler);
         if (this.chatService.currentChatProps && this.chatService.currentChatProps.length) {
@@ -659,9 +662,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, compressed, this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, compressed, this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 }
             }
             if (result === 'Upload succeeded') {
@@ -679,9 +682,9 @@ export class GroupchatPage implements OnInit, OnDestroy {
             if (event.target.files[0].size < 50000000) {
                 console.log('uploading file: ', event.target.files[0]);
                 if (this.chatService.currentChatProps[this.propIndex].group && this.chatService.currentChatProps[this.propIndex].group.churchId && this.chatService.currentChatProps[this.propIndex].group.churchId.length) {
-                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('communities', this.chatService.currentChatProps[this.propIndex].group.churchId, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 } else {
-                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId);
+                    result = await this.awsService.uploadFile('users', this.userData.user._id, event.target.files[0], this.chatService.currentChatProps[this.propIndex].conversationId, 0);
                 }
                 console.log('result', result);
                 if (result === 'Upload succeeded') {
@@ -1199,5 +1202,8 @@ export class GroupchatPage implements OnInit, OnDestroy {
         this.subscriptions['refreshMoment'].unsubscribe(this.refreshMomentHandler);
         // when a new message comes in via socket.io
         this.subscriptions['chatMessage'].unsubscribe(this.incomingMessageHandler);
+        if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+            this.calendarService.getUserCalendar();
+        }); }
     }
 }

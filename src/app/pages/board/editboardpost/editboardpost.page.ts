@@ -287,7 +287,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
                 await this.awsService.uploadImage('communities', this.churchId, image, this.boardId);
             } else {
                 const compressed = await this.awsService.compressPhoto(event.target.files[0]);
-                await this.awsService.uploadFile('boards', this.userData.user._id, compressed, this.boardId);
+                await this.awsService.uploadFile('boards', this.userData.user._id, compressed, this.boardId, 0);
             }
         } catch (err) {
             console.log(err);
@@ -297,7 +297,7 @@ export class EditboardpostPage implements OnInit, OnDestroy {
 
     async selectFileFromDeviceAndUpload(event) {
         try {
-            await this.awsService.uploadFile('communities', this.churchId, event.target.files[0], this.boardId);
+            await this.awsService.uploadFile('communities', this.churchId, event.target.files[0], this.boardId, 0);
         } catch (err) {
             console.log(err);
         }

@@ -1,11 +1,10 @@
 import {Injectable, NgZone} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class CalendarService {
 
     calendarItems: any = [];
@@ -20,6 +19,7 @@ export class CalendarService {
         daysInViewWeek: [],
         eventTimes: [],
     };
+
 
     constructor(private http: HttpClient,
                 private zone: NgZone,
@@ -50,7 +50,7 @@ export class CalendarService {
         return promise;
     }
 
-    getAllUserCalendarItemIds(){
+    getAllUserCalendarItemIds() {
         return this.http.get<[{_id: string}]>(this.networkService.domain + '/api/auth/calendaritemids', this.authService.httpAuthOptions)
             .toPromise();
     }
@@ -87,11 +87,11 @@ export class CalendarService {
                     }
                 }
             }
-            if (this.calendarItems.length){
+            if (this.calendarItems.length) {
                 this.storage.set('calendarItems', this.calendarItems);
                 this.updateViewCalendar();
             }
-            console.log('current calendarItems length', this.calendarItems.length);
+            // console.log('current calendarItems length', this.calendarItems.length);
             await this.calendarItems.sort(function (a, b) {
                 let c: any = new Date(a.startDate);
                 let d: any = new Date(b.startDate);
@@ -127,12 +127,12 @@ export class CalendarService {
 
     changeDate( event, direction ) {
         if ( this.calendar.mode === 'month') {
-            if ( event.direction == 4 || direction == 4 ) { //if right swipe
+            if ( event.direction === 4 || direction === 4 ) { //if right swipe
                 this.calendar.currentViewDate.setMonth( this.calendar.currentViewDate.getMonth() - 1);
                 this.calendar.selectedDate.setMonth(this.calendar.selectedDate.getMonth() - 1);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());
                 this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear() );
-            } else if ( event.direction == 2 || direction == 2 ) { //if left swipe
+            } else if ( event.direction === 2 || direction === 2 ) { //if left swipe
                 this.calendar.currentViewDate.setMonth( this.calendar.currentViewDate.getMonth() + 1);
                 this.calendar.selectedDate.setMonth(this.calendar.selectedDate.getMonth() + 1);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());
@@ -140,12 +140,12 @@ export class CalendarService {
 
             }
         } else if (this.calendar.mode === 'week') {
-            if ( event.direction == 4  || direction == 4) {
+            if ( event.direction === 4  || direction === 4) {
                 this.calendar.currentViewDate.setDate( this.calendar.currentViewDate.getDate() - 7 );
                 this.calendar.selectedDate.setDate(this.calendar.selectedDate.getDate() - 7);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());
                 this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear() );
-            } else if ( event.direction == 2 || direction == 2) {
+            } else if ( event.direction === 2 || direction === 2) {
                 this.calendar.currentViewDate.setDate( this.calendar.currentViewDate.getDate() + 7);
                 this.calendar.selectedDate.setDate(this.calendar.selectedDate.getDate() + 7);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());

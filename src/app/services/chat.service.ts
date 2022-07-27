@@ -74,13 +74,13 @@ export class Chat {
                 this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
             } else {
                 this.socket = io(this.networkService.domain + '/');
-                console.log("initiating chat socket io", this.socket ? this.socket.id : null)
+                // console.log("initiating chat socket io", this.socket ? this.socket.id : null)
             }
         });
         this.socket.on('connect', async () => { //callback after successful socket.io connection
             const conversations = await this.storage.get('conversations');
             this.conversations = conversations || [];
-            console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
+            // console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
             if (this.conversations.length){
                 for(let i = 0; i < this.conversations.length; i++) {
                     // join conversation rooms in socket.io, also send online status if enabled
@@ -268,7 +268,7 @@ export class Chat {
             if (this.conversations.length) {
                 this.storage.set('conversations', this.conversations);
             }
-            console.log('current conv length', this.conversations.length, this.conversations.find((c) => c.conversation._id === '5e0e6f8200b2420a07547c2c'));
+            // console.log('current conv length', this.conversations.length, this.conversations.find((c) => c.conversation._id === '5e0e6f8200b2420a07547c2c'));
             this.userData.refreshMyConversations({action: 'render', data: null}); // refresh the list of conversation
             return this.conversations;
         } catch (err) {

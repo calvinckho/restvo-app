@@ -50,7 +50,8 @@ import {FeatureCreatorPage} from '../feature/manage/feature-creator/feature-crea
   selector: 'app-main-tab',
   templateUrl: './main-tab.page.html',
   styleUrls: ['./main-tab.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+    providers: [ CalendarService ]
 })
 export class MainTabPage implements OnInit, OnDestroy {
     @ViewChild('videoSpace', {static: false}) videoSpace: any;
@@ -101,6 +102,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                     this.jitsi.executeCommand('avatarUrl', this.userData.user.avatar);
                 }
             }
+        });
+        this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
+            this.calendarService.getUserCalendar();
         });
         if (this.platform.is('cordova')) {
             const status = await Network.getStatus();
@@ -192,7 +196,7 @@ export class MainTabPage implements OnInit, OnDestroy {
           this.boardService.createBoardSocket();
           // refresh the conversation and calendar cache
           this.chatService.refreshTabBadges();
-          this.calendarService.getUserCalendar();
+          this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
           this.userData.loginAt = new Date(); // log the sign-on time. will be used later for calculating total session time to be stored in system log
           if (!this.hasSetupEventListeners) { // only set up listeners once
               this.startEventSubscription();
@@ -200,6 +204,9 @@ export class MainTabPage implements OnInit, OnDestroy {
           if (this.userData.user && this.userData.user.churches && this.userData.user.churches.length) {
               await this.userData.checkAdminAccess(this.userData.user.churches[this.userData.currentCommunityIndex]._id);
           }
+        this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
+            this.calendarService.getUserCalendar();
+        });
       }
     }
 

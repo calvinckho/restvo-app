@@ -3,124 +3,158 @@
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Upload Media</ion-title>
+    <ion-title *ngIf="!mediaType">Upload Media</ion-title>
+    <ion-title *ngIf="mediaType === 'stock'">Search from PixaBay</ion-title>
+    <ion-title *ngIf="mediaType === 'photo'">Photo Preview</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="finish()">Done</ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar *ngIf="mediaType === 'stock'">
+    <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-toolbar class="filter">
-    <ion-segment [(ngModel)]="mediaType">
-      <ion-segment-button value="photo">Photo</ion-segment-button>
-      <ion-segment-button value="video">Video</ion-segment-button>
-      <ion-segment-button value="file">File</ion-segment-button>
-      <ion-segment-button value="url">Url</ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
-  <ion-grid *ngIf="mediaType === 'photo'">
-    <ion-row>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label>Choose Photo File</ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></ion-label>
-            <div *ngIf="platform.is('cordova')" class="moment-input" (click)="selectPhotoFromDeviceAndUpload($event)">Choose from Photo Album</div>
-            <input *ngIf="!platform.is('cordova')" type="file" class="moment-input" name="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-      <ion-col size-xs="12" style="padding-top: 20px;">
-        <div class="or">Or</div>
-      </ion-col>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label class="ion-text-wrap">Choose from Pixabay</ion-label>
-          </ion-item>
-          <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
-          <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
-            <ion-row>
-              <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">
-                <ion-thumbnail class="stock-preview" (click)="selectStockPhoto(photo)">
-                  <ion-img [src]="photo.previewURL"></ion-img>
-                </ion-thumbnail>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <!--Video-->
-  <ion-grid *ngIf="mediaType === 'video'">
-    <ion-row>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label>Choose Video File</ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
-            <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-      <ion-col size-xs="12" style="padding-top: 20px;">
-        <div class="or">Or</div>
-      </ion-col>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label>Add Youtube</ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
-            <div class="moment-input" (click)="promptMediaUrl('youtube')">
-              <span>Input Youtube Video Url</span>
-            </div>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid *ngIf="mediaType === 'file'">
-    <ion-row>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label>Choose File</ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <label class="moment-label"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
-            <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid *ngIf="mediaType === 'url'">
-    <ion-row>
-      <ion-col size-xs="12" size-md="8">
-        <ion-card>
-          <ion-item lines="none">
-            <ion-label>Add Media Link</ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <div class="moment-label"><ion-icon class="side-icon" color="grey" name="link-outline"></ion-icon></div>
-            <div class="moment-input" (click)="promptMediaUrl('media')">
-              <span>Select Media Link</span>
-            </div>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div *ngIf="!mediaType">
+    <ion-toolbar class="filter">
+      <ion-segment [(ngModel)]="menuOption">
+        <ion-segment-button value="photo">Photo</ion-segment-button>
+        <ion-segment-button value="video">Video</ion-segment-button>
+        <ion-segment-button value="file">File</ion-segment-button>
+        <ion-segment-button value="url">Url</ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ion-grid *ngIf="menuOption === 'photo'">
+      <ion-row>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label>Choose Photo File</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="images"></ion-icon></ion-label>
+              <div *ngIf="platform.is('cordova')" class="moment-input" (click)="selectPhotoFromDeviceAndUpload($event)">Choose from Photo Album</div>
+              <input *ngIf="!platform.is('cordova')" type="file" class="moment-input" name="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*"/>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+        <ion-col size-xs="12" style="padding-top: 20px;">
+          <div class="or">Or</div>
+        </ion-col>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label class="ion-text-wrap">Choose from Pixabay</ion-label>
+            </ion-item>
+            <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
+            <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
+              <ion-row>
+                <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">
+                  <ion-thumbnail class="stock-preview" (click)="selectStockPhoto(photo)">
+                    <ion-img [src]="photo.previewURL"></ion-img>
+                  </ion-thumbnail>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <!--Video-->
+    <ion-grid *ngIf="menuOption === 'video'">
+      <ion-row>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label>Choose Video File</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
+              <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)" accept="video/*"/>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+        <ion-col size-xs="12" style="padding-top: 20px;">
+          <div class="or">Or</div>
+        </ion-col>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label>Add Youtube</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label class="moment-label"><ion-icon class="side-icon" color="grey" name="logo-youtube"></ion-icon></ion-label>
+              <div class="moment-input" (click)="promptMediaUrl('youtube')">
+                <span>Input Youtube Video Url</span>
+              </div>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="menuOption === 'file'">
+      <ion-row>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label>Choose File</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <label class="moment-label"><ion-icon class="side-icon" color="grey" name="document"></ion-icon></label>
+              <input type="file" class="moment-input" name="image" (change)="selectFileFromDeviceAndUpload($event)"/>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="menuOption === 'url'">
+      <ion-row>
+        <ion-col size-xs="12" size-md="8">
+          <ion-card>
+            <ion-item lines="none">
+              <ion-label>Add Media Link</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <div class="moment-label"><ion-icon class="side-icon" color="grey" name="link-outline"></ion-icon></div>
+              <div class="moment-input" (click)="promptMediaUrl('media')">
+                <span>Select Media Link</span>
+              </div>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div *ngIf="mediaType === 'photo'" class="full-height">
+    <ion-grid class="full-height" *ngIf="objectURLs && objectURLs?.length">
+      <ion-row class="ion-justify-content-center full-height">
+        <ion-col *ngFor="let object of objectURLs" class="ion-align-self-center" size="12">
+          <ion-card class="card-container ion-no-padding">
+            <!--<div class="backdrop" [ngStyle]="{ 'background-image': 'url(' + object.dataURL + ')' }">
+              <ion-img [src]="object.dataURL"></ion-img>
+            </div>-->
+            <ion-card-content class="ion-no-padding image-card-content" [ngClass]="{'portrait': object.width < object.height }">
+              <ion-img [src]="object.dataURL"></ion-img>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div *ngIf="mediaType === 'stock'">
+    <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
+      <ion-row>
+        <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">
+          <ion-thumbnail class="stock-preview" (click)="selectStockPhoto(photo)">
+            <ion-img [src]="photo.previewURL"></ion-img>
+          </ion-thumbnail>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="urls && urls.length">
   <ion-toolbar>
     <ion-grid class="selected-grid">
       <ion-row>

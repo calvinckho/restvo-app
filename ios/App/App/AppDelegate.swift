@@ -1,11 +1,12 @@
 import UIKit
 import Capacitor
 import Security
+import CapacitorShareExtension
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-  var window: UIWindow?
-
+    var window: UIWindow?
+    let store = ShareStore.store
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
@@ -106,7 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     class func savePassword(service: String, account:String, data: String) {
         if let dataFromString = data.data(using: String.Encoding.utf8, allowLossyConversion: false) {
-            
+
             // Instantiate a new default keychain query
             let keychainQuery: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                                 kSecAttrService as String: service,
@@ -116,11 +117,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 //kSecAttrApplicationTag as String: tag,
                 //kSecValueData as String: key.data(using: String.Encoding.utf8)
             ]
-            
-            
+
+
             // Add the new keychain item
             let status = SecItemAdd(keychainQuery as CFDictionary, nil)
-            
+
             if (status != errSecSuccess) {    // Always check the status
                 /*if let err = SecCopyErrorMessageString(status, nil) {
                     print("Write failed: \(err)")
@@ -131,9 +132,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Save to Keychain success")
             }
         }
-    }
-    
-    class func loadPassword(service: String, account:String) -> String? {
+      }
+
+      class func loadPassword(service: String, account:String) -> String? {
         // Instantiate a new default keychain query
         // Tell the query to return a result
         // Limit our results to one item
@@ -145,13 +146,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //kSecAttrApplicationTag as String: tag,
             //kSecValueData as String: key.data(using: String.Encoding.utf8)
         ]
-        
+
         var dataTypeRef :AnyObject?
-        
+
         // Search for the keychain items
         let status: OSStatus = SecItemCopyMatching(keychainQuery as CFDictionary, &dataTypeRef)
         var contentsOfKeychain: String?
-        
+
         if status == errSecSuccess {
             if let retrievedData = dataTypeRef as? Data {
                 contentsOfKeychain = String(data: retrievedData, encoding: String.Encoding.utf8)
@@ -159,8 +160,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             print("Nothing was retrieved from the keychain. Status code \(status)")
         }
-        
+
         return contentsOfKeychain
-    }
+      }
 }
 

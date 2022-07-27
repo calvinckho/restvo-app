@@ -135,7 +135,7 @@ export class ProfilePage implements OnInit, OnDestroy {
                 }
             } else {
                 result = await this.awsService.compressPhoto(event.target.files[0]);
-                await this.awsService.uploadFile('users', this.userData.user._id, result, this.userData.user._id);
+                await this.awsService.uploadFile('users', this.userData.user._id, result, this.userData.user._id, 0);
             }
             if (result) {
                 if (this.userData.user.avatar) {

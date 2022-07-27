@@ -2,13 +2,15 @@ import {AfterViewInit, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} 
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {StripeService} from 'ngx-stripe';
-
 import {
     ActionSheetController, IonSelect,
     MenuController,
     ModalController,
     Platform,
 } from '@ionic/angular';
+import 'capacitor-share-extension';
+
+import {Aws} from './services/aws.service';
 import { NetworkService } from './services/network-service.service';
 import { UserData } from './services/user.service';
 import {Chat} from './services/chat.service';
@@ -38,6 +40,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         private menuCtrl: MenuController,
         private modalCtrl: ModalController,
         public platform: Platform,
+        public awsService: Aws,
         public networkService: NetworkService,
         public userData: UserData,
         public chatService: Chat
@@ -74,32 +77,66 @@ export class AppComponent implements OnInit, AfterViewInit {
             } else {
                 console.log('App Plugin not available');
             }
+            if (this.platform.is('cordova') && Capacitor.isPluginAvailable('ShareExtension')) {
+                console.log('is cordova');
+                window.addEventListener('sendIntentReceived',  () => {
+                    console.log('cordova window event');
+                    this.checkIntent();
+                });
+                this.checkIntent();
+            }
         } catch (err) {
             console.log('error when activating Capacitor\'s App Plugin');
+        }
+    }
+
+    async checkIntent() {
+        try {
+            const result: any = await ShareExtension.checkSendIntentReceived();
+            console.log("payload", result, result.payload);
+            if (result && result.payload && Array.isArray(result.payload) && result.payload.length) {
+                console.log('Intent received: ', JSON.stringify(result.payload));
+                const blobs = [];
+                const promises = result.payload.map(async (payloadItem) => {
+                    const response = await fetch(decodeURIComponent(payloadItem.webPath));
+                    blobs.push(await response.blob());
+                });
+                await Promise.all(promises);
+                console.log("media", blobs);
+                const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: blobs, modalPage: true }});
+                await modal.present();
+            }
+        } catch (err) {
+            console.log(err);
         }
     }
 
     async openUrl(dataUrl) {
         const routeUrl = dataUrl.slice(22, dataUrl.length);
         if (routeUrl && routeUrl.length) {
-            const params = {};
-            let urlComponents: any;
-            if (this.platform.is('ios')) {
-                urlComponents = routeUrl.split('%3B'); // to account for the matrix notation ";" in iOS, which encodes as %3B
-            } else {
-                urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
-            }
-            if (urlComponents.length > 1) {
-                for (let i = 1; i < urlComponents.length; i++) {
-                    params[urlComponents[i].split('=')[0]] = urlComponents[i].split('=')[1];
+            const routeUrl = decodeURIComponent(dataUrl);
+
+            if (routeUrl && routeUrl.length && !routeUrl.includes('restvo://')) { // exclude web scheme
+                const params: any = {};
+                let urlComponents: any;
+                if (this.platform.is('ios')) {
+                    urlComponents = routeUrl.split('%3B'); // to account for the matrix notation ";" in iOS, which encodes as %3B
+                } else {
+                    urlComponents = routeUrl.split(';'); // to account for the matrix notation ";" in Android
                 }
+
+                if (urlComponents.length > 1) {
+                    for (let i = 1; i < urlComponents.length; i++) {
+                        params[urlComponents[i].split('=')[0]] = urlComponents[i].split('=')[1];
+                    }
+                }
+                console.log('launch app!', routeUrl, urlComponents[0], params);
+                const modal = await this.modalCtrl.getTop();
+                if (modal) {
+                    modal.dismiss();
+                }
+                this.router.navigate([urlComponents[0], params]);
             }
-            console.log('launch app!', routeUrl, urlComponents[0], params);
-            const modal = await this.modalCtrl.getTop();
-            if (modal) {
-                modal.dismiss();
-            }
-            this.router.navigate([urlComponents[0], params]);
         }
     }
 
