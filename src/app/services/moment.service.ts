@@ -653,7 +653,7 @@ export class Moment {
         }
         const promise = await this.http.put(this.networkService.domain + '/api/moment/schedule/touch', JSON.stringify(schedule), this.authService.httpAuthOptions)
             .toPromise();
-        await this.calendarService.getUserCalendar();
+        //await this.calendarService.getUserCalendar();
         await this.userData.refreshAppPages();
         return promise;
     }

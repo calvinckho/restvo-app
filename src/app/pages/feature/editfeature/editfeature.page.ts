@@ -20,7 +20,7 @@ import {Moment} from '../../../services/moment.service';
 import {Resource} from '../../../services/resource.service';
 import {Response} from '../../../services/response.service';
 import {CalendarService} from '../../../services/calendar.service';
-import {Plugins} from '@capacitor/core';
+import {Plugins, CameraResultType, CameraSource} from '@capacitor/core';
 import {NetworkService} from '../../../services/network-service.service';
 import {Location} from '@angular/common';
 import {UploadmediaPage} from '../uploadmedia/uploadmedia.page';

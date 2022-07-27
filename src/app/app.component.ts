@@ -15,7 +15,8 @@ import {Chat} from './services/chat.service';
 import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecipientinfo.page';
 import {Capacitor, Plugins} from '@capacitor/core';
 import {ProgramsPage} from './pages/user/programs/programs.page';
-const { App } = Plugins;
+const { App, ShareExtension } = Plugins;
+import {UploadmediaPage} from './pages/feature/uploadmedia/uploadmedia.page';
 
 @Component({
   selector: 'app-root',
