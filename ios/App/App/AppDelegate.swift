@@ -44,15 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-      typealias JSObject = [String:Any]
-        // Called when the app was launched with a url. Feel free to add additional processing here,
-        // but if you want the App API to support tracking app url opens, make sure to keep this call
-        var success = true
-        //if CAPBridge.handleOpenUrl(url, options) {
-        //    success = ApplicationDelegateProxy.shared.application(app, open: url, options: options)
-        //}
-        success = CAPBridge.handleOpenUrl(url, options)
-        
+        typealias JSObject = [String:Any]
+        var success = CAPBridge.handleOpenUrl(url, options)
+
         guard let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
               let params = components.queryItems else {
                   return false
