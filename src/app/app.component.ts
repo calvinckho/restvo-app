@@ -105,6 +105,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                 console.log("media", blobs);
                 const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: blobs, modalPage: true }});
                 await modal.present();
+                setTimeout(() => {
+                    ShareExtension.finish();
+                }, 10000);
             }
         } catch (err) {
             console.log(err);
