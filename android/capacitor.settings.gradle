@@ -31,6 +31,3 @@ project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacit
 
 include ':capacitor-jitsi-meet'
 project(':capacitor-jitsi-meet').projectDir = new File('../node_modules/capacitor-jitsi-meet/android')
-
-include ':capacitor-share-extension'
-project(':capacitor-share-extension').projectDir = new File('../node_modules/capacitor-share-extension/android/capacitor-share-extension')

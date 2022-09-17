@@ -7,7 +7,6 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import {LoadingController, Platform} from '@ionic/angular';
 
 import { NetworkService } from './network-service.service';
-import 'capacitor-share-extension';
 import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({providedIn: 'root'})

@@ -1,5 +1,8 @@
 package com.restvo.app;
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.Plugin;
+import com.capacitor.jitsi.plugin.Jitsi;
+import com.capacitor.shareextension.plugin.ShareExtension;
 
 import android.content.Intent;
 import android.webkit.ValueCallback;
@@ -18,5 +21,13 @@ public class MainActivity extends BridgeActivity {
         }
       });
     }
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    registerPlugin(Jitsi.class);
+    registerPlugin(ShareExtension.class);
   }
 }
