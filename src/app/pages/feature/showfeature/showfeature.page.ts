@@ -1370,7 +1370,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
               buttons: [{ text: 'Start Now',
                   handler: async () => {
                       congratulations.dismiss();
-                      this.router.navigate(['/app/home/activity/' + clonedActivity._id]);
+                      this.router.navigate(['/app/manage/activity/' + clonedActivity._id + '/profile/' + clonedActivity._id]);
                   }}],
               cssClass: 'level-15'
           });
