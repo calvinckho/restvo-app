@@ -85,7 +85,8 @@ export class VideoconferencePage implements OnInit, OnDestroy {
         startWithVideoMuted: this.startWithVideoMuted,
         featureFlags: {
           'pip.enabled': true,
-          'chat.enabled': false,
+          'chat.enabled': true,
+          'prejoinpage.enabled': false, // go straight to the meeting and do not show the pre-join page
           'invite.enabled': false,
           'recording.enabled': false,
           'android.screensharing.enabled': false,
