@@ -93,7 +93,7 @@
         <div style="height: 100px;" *ngIf="userData.developerModeClick < 3 && networkService.domain === 'https://server.restvo.com'" (click)="userData.developerModeClick = userData.developerModeClick + 1"></div>
       </ion-content>
     </ion-menu>
-    <ion-router-outlet id="main-app" [swipeGesture]="false"></ion-router-outlet>
+    <ion-router-outlet id="main-app"></ion-router-outlet>
   </ion-split-pane>
   <ion-router-outlet name="sub" id="sub-panel" [ngStyle]="{'left': router.url.includes('(sub:') ? ((100 - userData.subpanelWidth) + '%') : '100%', 'width': router.url.includes('(sub:') ? (userData.subpanelWidth + '%') : '0'}"></ion-router-outlet>
 </ion-app>
