@@ -1,6 +1,8 @@
 package com.restvo.app;
+
+import android.os.Bundle;
+
 import com.getcapacitor.BridgeActivity;
-import com.getcapacitor.Plugin;
 import com.capacitor.jitsi.plugin.Jitsi;
 import com.capacitor.shareextension.plugin.ShareExtension;
 
