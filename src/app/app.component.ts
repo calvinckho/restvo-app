@@ -79,9 +79,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                 console.log('App Plugin not available');
             }
             if (this.platform.is('cordova') && Capacitor.isPluginAvailable('ShareExtension')) {
-                console.log('is cordova');
+                //console.log('is cordova');
                 window.addEventListener('sendIntentReceived',  () => {
-                    console.log('cordova window event');
+                    //console.log('cordova window event');
                     this.checkIntent();
                 });
                 this.checkIntent();
@@ -95,14 +95,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         try {
             const result: any = await ShareExtension.checkSendIntentReceived();
             if (result && result.payload && Array.isArray(result.payload) && result.payload.length) {
-                console.log('Intent received: ', JSON.stringify(result.payload));
+                //console.log('Intent received: ', JSON.stringify(result.payload));
                 const blobs = [];
                 const promises = result.payload.map(async (payloadItem) => {
                     const response = await fetch(decodeURIComponent(payloadItem.webPath));
                     blobs.push(await response.blob());
                 });
                 await Promise.all(promises);
-                console.log("media", blobs);
+                //console.log("media", blobs);
                 const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'preview-media', mediaType: 'photo', files: blobs, modalPage: true }});
                 await modal.present();
             }
@@ -123,7 +123,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                     params[urlComponents[i].split('=')[0]] = urlComponents[i].split('=')[1];
                 }
             }
-            console.log('launch app!', routeUrl, urlComponents[0], params);
+            //console.log('launch app!', routeUrl, urlComponents[0], params);
             let modal = await this.modalCtrl.getTop();
             if (modal) {
                 modal.dismiss();
