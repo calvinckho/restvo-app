@@ -1,11 +1,20 @@
 version: 2.1
-
+orbs:
+  browser-tools: circleci/browser-tools@1.2.3
 jobs:
   build:
     docker:
-      - image: circleci/node:14-browsers
+      - image: circleci/node:16.13.1-browsers
     working_directory: ~/server
     steps:
+      # Install Chrome
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run:
+          name: Install Chrome
+          command: |
+            google-chrome --version
+            chromedriver --version
       # Checkout the code from the branch into the working_directory
       - checkout
       # Log the current branch
@@ -21,14 +30,7 @@ jobs:
       - run:
           name: Install local dependencies
           command: npm install
-      # Install Chrome
-      - run:
-          name: Install Chrome
-          command: |
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-            sudo apt-get update
-            sudo apt-get -y install google-chrome-stable
+
       # Cache local dependencies if they don't exist
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
