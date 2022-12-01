@@ -821,6 +821,6 @@ export class UserData {
         this.authService.cachedRouteParams = null;
 
         // clear calendarService cached data
-        //this.calendarService.calendarItems = [];
+        // this.calendarService.calendarItems = [];
     }
 }
