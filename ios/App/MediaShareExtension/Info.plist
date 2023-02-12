@@ -6,8 +6,8 @@
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
-            <key>NSExtensionActivationRule</key>
-                <string>SUBQUERY (
+			<key>NSExtensionActivationRule</key>
+			<string>SUBQUERY (
                       extensionItems,
                       $extensionItem,
                       SUBQUERY (
@@ -23,7 +23,7 @@
                         ).@count == $extensionItem.attachments.@count
                         ).@count == 1
                 </string>
-        </dict>
+		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>
