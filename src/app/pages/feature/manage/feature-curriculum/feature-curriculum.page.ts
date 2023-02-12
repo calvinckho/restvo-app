@@ -15,7 +15,8 @@ import {Location} from "@angular/common";
   selector: 'app-feature-curriculum',
   templateUrl: './feature-curriculum.page.html',
   styleUrls: ['./feature-curriculum.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ CalendarService ]
 })
 export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit {
 
@@ -28,11 +29,11 @@ export class FeatureCurriculumPage extends FeatureSchedulePage implements OnInit
       public actionSheetCtrl: ActionSheetController,
       public authService: Auth,
       public chatService: Chat,
-      public calendarService: CalendarService,
       public userData: UserData,
       public momentService: Moment,
       public resourceService: Resource,
       public modalCtrl: ModalController,
+      public calendarService: CalendarService,
       public responseService: Response
   ) {
     super(route, router, location, platform, alertCtrl, authService, chatService,
