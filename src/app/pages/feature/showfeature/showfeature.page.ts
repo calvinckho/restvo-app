@@ -260,7 +260,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      *
      * @param data - data being passed by the refreshUser observable
      *
-     * @example OnInit, when the component is intiated, this will get fired
+     * @example OnInit, when the component is initiated, this will get fired
      * @example PWA fast load, this function gets called 2 times. The first time was when user is not yet authenticated
      * the second time, the user is authenticated, and it sends a userRefresh observable signal and activate this handler
      * @example On normal user fresh broadcast

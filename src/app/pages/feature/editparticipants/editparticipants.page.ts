@@ -93,7 +93,7 @@ export class EditparticipantsPage extends EditfeaturePage implements OnInit {
   }
 
   reloadEditPage = async () => {
-    // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
+    // refresh the Edit Page if it has loaded data. it is only called on entry for PWA fast load when authService has completed
     if (this.userData.user) {
       await this.setup();
       this.prepareParticipantsIntoUniqueParticipantList();

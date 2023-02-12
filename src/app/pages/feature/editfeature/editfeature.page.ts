@@ -214,7 +214,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
       }
   }
 
-    reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PDA fast load when authService has completed
+    reloadEditPage = async () => { // refresh the Edit Page if it has loaded data. it is only called on entry for PWA fast load when authService has completed
       if (this.userData.user && !this.initialSetupCompleted) {
           this.setup();
       }
