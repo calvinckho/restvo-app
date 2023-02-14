@@ -23,6 +23,7 @@
         <img *ngIf="!member.avatar" src="assets/img/avatar-default.jpg"/>
       </ion-avatar>
       <ion-label>{{member.name}}</ion-label>
+      <ion-label>{{member.createdAt | datetime: 'm:l,d:n,y:n'}}</ion-label>
       <ion-icon *ngIf="member.reportStatus?.length" name="alert-circle"></ion-icon>
       <ion-badge slot="end" color={{member.color}}>{{member.role}}</ion-badge>
     </ion-item>
