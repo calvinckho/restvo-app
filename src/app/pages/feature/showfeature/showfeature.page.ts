@@ -267,8 +267,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
      */
 
   loadAndProcessMomentHandler = async (data) => {
-      // if data type is update onboarding answer, or if there are players loaded and one of them is playing or is being paused
-      if ((data && data.type === 'update onboarding answers') || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing)))) {
+      // if an interactable has already been loaded (to prevent any interactable display from being refreshed on app state change, or if there are players loaded and one of them is playing or is being paused, or if data type is update onboarding answer)
+      if (Object.keys(this.interactableDisplay).length !== 0 || this.mediaList.length && this.mediaList.find((c) => (c && c.player && (c.player.playing))) || (data && data.type === 'update onboarding answers') ) {
           // do nothing
       } else { // execute a refresh on all other user refresh type
           this.setup(data, !!(this.authService.token && this.userData.user));
