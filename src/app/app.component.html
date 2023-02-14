@@ -67,6 +67,12 @@
               <ion-label>Admin</ion-label>
             </ion-item>
           </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngIf="userData.hasPlatformAdminAccess">
+            <ion-item [routerLink]="['/app/manage']" mode="md">
+              <ion-icon slot="start" name="eye"></ion-icon>
+              <ion-label>Platform</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
 
           <div *ngIf="userData.developerModeClick > 2 || networkService.domain !== 'https://server.restvo.com'">
             <ion-list-header>Developer Mode</ion-list-header>

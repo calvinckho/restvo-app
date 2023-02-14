@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ActivitiesPage } from './activities.page';
+import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    ApplicationPipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ActivitiesPage]
