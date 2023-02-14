@@ -15,7 +15,7 @@
         <img *ngIf="admin.avatar" [src]="admin.avatar"/>
         <img *ngIf="!admin.avatar" src="assets/img/avatar-default.jpg"/>
       </ion-avatar>
-      {{admin.first_name}} {{admin.last_name}}
+      <ion-label>{{admin.name}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

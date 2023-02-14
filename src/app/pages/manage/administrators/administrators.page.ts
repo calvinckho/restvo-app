@@ -24,6 +24,7 @@ export class AdministratorsPage {
 
     async editAdmin(event, admin) {
         event.stopPropagation();
+        console.log("show admin", admin);
         const recipientModal = await this.modalCtrl.create({component: ShowrecipientinfoPage, componentProps: {recipient: admin, modalPage: true}});
         await recipientModal.present();
         const {data: needsToRefresh} = await recipientModal.onDidDismiss();
