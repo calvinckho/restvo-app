@@ -55,12 +55,12 @@
               <ion-label>Settings</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
+          <!--<ion-menu-toggle auto-hide="false">
             <ion-item id="inviteLabel" [routerLink]="['/app/invite']" mode="md">
               <ion-icon slot="start" name="invite"></ion-icon>
               <ion-label>Invite</ion-label>
             </ion-item>
-          </ion-menu-toggle>
+          </ion-menu-toggle>-->
           <ion-menu-toggle auto-hide="false" *ngIf="userData.activitiesWithAdminAccess && userData.activitiesWithAdminAccess.length">
             <ion-item [routerLink]="['/app/manage/activity/' + userData.currentManageActivityId + '/insight/' + userData.currentManageActivityId]" mode="md">
               <ion-icon slot="start" name="admin"></ion-icon>
