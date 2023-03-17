@@ -185,9 +185,7 @@
         <ion-item lines="none">
           <div class="moment-label"><ion-icon class="side-icon" color="grey" name="calendar"></ion-icon></div>
           <ion-label color="tertiary" class="cursor-pointer" (click)="dateType = (dateType ? '' : 'start')">{{calendarItem.startDate | datetime: 'w:l,m:s,y:n,d:n'}}</ion-label> <!--Start, Choose a date below-->
-          <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="calendarItem.startDate" [pickerOptions]="{cssClass: 'level-15'}" (ionBlur)="anyChangeMade = true"></ion-datetime>
         </ion-item>
-
         <ion-card class="monthview" *ngIf="dateType">
           <div class="month-title-container">
             <ion-icon name="chevron-back-outline" class="calendar-arrow left cursor-pointer" (click)="calendarService.changeDate($event, 4)"></ion-icon>

@@ -8,7 +8,6 @@ import {
   PopoverController,
   ToastController
 } from "@ionic/angular";
-import {CacheService} from "ionic-cache";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ElectronService} from "ngx-electron";
@@ -45,7 +44,6 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   timeoutHandle: any;
 
   constructor(
-      public cache: CacheService,
       public route: ActivatedRoute,
       public router: Router,
       public location: Location,

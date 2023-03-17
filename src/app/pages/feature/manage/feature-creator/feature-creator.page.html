@@ -28,7 +28,7 @@
             <ion-icon slot="start" name="person" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': router.url.includes('/overview/')}">Overview</ion-label>
           </ion-item>
-          <ion-item (click)="clickManageMenu('curriculum', null)">
+          <ion-item (click)="clickManageMenu('curriculum', null)" *ngIf="['owner'].includes(this.userData.user.role)">
             <ion-icon slot="start" name="bicycle" *ngIf="platform.width() < 768"></ion-icon>
             <ion-label [ngClass]="{ 'bold-font': router.url.includes('/curriculum/')}">Curriculum</ion-label>
           </ion-item>

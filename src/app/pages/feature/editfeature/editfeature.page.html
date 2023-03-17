@@ -276,12 +276,24 @@
             </ion-item>
             <ion-item lines="none" *ngIf="!allDay">
               <ion-label class="cursor-pointer" (click)="dateType = 'start'"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][2]}}: {{startDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--Start, Choose a date below-->
-              <ion-datetime *ngIf="startTime" (ionChange)="changeStartTime()" (ionCancel)="dateType = 'end'" placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="startTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+              <!--<ion-datetime *ngIf="startTime" (ionChange)="changeStartTime()" (ionCancel)="dateType = 'end'" minuteValues="0,15,30,45"></ion-datetime>-->
+              <ion-datetime-button datetime="time1" *ngIf="startTime"></ion-datetime-button>
             </ion-item>
+            <ion-popover [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="time1" minuteValues="0,15,30,45" presentation="time" [(ngModel)]="startTime"></ion-datetime>
+              </ng-template>
+            </ion-popover>
             <ion-item lines="none" *ngIf="!allDay && dateType != 'start'">
               <ion-label class="cursor-pointer" (click)="dateType = 'end'"><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][4]}}: {{endDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][3]}}</p></ion-label> <!--End, Choose a date below-->
-              <ion-datetime *ngIf="endTime" placeholder="12:00 pm" (ionCancel)="dateType = ''" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="endTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+<!--              <ion-datetime *ngIf="endTime" (ionCancel)="dateType = ''" minuteValues="0,15,30,45" [(ngModel)]="endTime"></ion-datetime>-->
+              <ion-datetime-button datetime="time2" *ngIf="endTime"></ion-datetime-button>
             </ion-item>
+            <ion-popover [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="time2" minuteValues="0,15,30,45" presentation="time" [(ngModel)]="endTime"></ion-datetime>
+              </ng-template>
+            </ion-popover>
             <ion-card class="monthview" *ngIf="dateType || allDay">
               <div class="month-title-container">
                 <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
@@ -326,8 +338,14 @@
             </ion-list>
             <ion-item lines="none" *ngIf="!allDay && dateType == 'start'">
               <ion-label (click)="dateType = 'end'" class="cursor-pointer" >End: {{endDate  | datetime: 'w:l,m:l,y:n,d:n'}}</ion-label>
-              <ion-datetime placeholder="12:00 pm" displayFormat="h:mm a" minuteValues="0,15,30,45" [(ngModel)]="endTime" [pickerOptions]="{cssClass: 'level-15'}"></ion-datetime>
+              <!--<ion-datetime minuteValues="0,15,30,45" [(ngModel)]="endTime"></ion-datetime>-->
+              <ion-datetime-button datetime="time3" *ngIf="endTime"></ion-datetime-button>
             </ion-item>
+            <ion-popover [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="time3" minuteValues="0,15,30,45" presentation="time" [(ngModel)]="endTime"></ion-datetime>
+              </ng-template>
+            </ion-popover>
           </ion-item-group>
           <!--To-Dos-->
           <ion-item-group *ngIf="item === 10210">
