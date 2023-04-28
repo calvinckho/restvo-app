@@ -34,11 +34,11 @@
           <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer"><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">Start Date: {{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
           <ion-datetime-button datetime="time1" *ngIf="recurrenceStartTime"></ion-datetime-button>
         </ion-item>
-        <ion-popover [keepContentsMounted]="true">
+        <ion-modal [keepContentsMounted]="true">
           <ng-template>
             <ion-datetime id="time1" minuteValues="0,15,30,45" presentation="time" [(ngModel)]="recurrenceStartTime"></ion-datetime>
           </ng-template>
-        </ion-popover>
+        </ion-modal>
         <ion-item lines="none" *ngIf="dateType != 'start'">
           <ion-label (click)="focusCalendarDateField('end')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'end'}">End Date: {{recurrenceEndDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'end'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--End, Choose a date below-->
           <ion-datetime-button datetime="time2" *ngIf="recurrenceEndTime"></ion-datetime-button>
