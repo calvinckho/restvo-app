@@ -65,7 +65,7 @@
     "angular-progress-bar": "^1.0.11",
     "blob-util": "^2.0.2",
     "call-number": "^1.0.1",
-    "capacitor-jitsi-meet": "^2.2.0",
+    "capacitor-jitsi-meet": "github:calvinckho/capacitor-jitsi-meet-premium#capacitor-3-ion-range",
     "capacitor-share-extension": "^1.0.0",
     "compact-timezone-list": "^1.0.6",
     "compressorjs": "^1.0.7",
