@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxElectronModule } from 'ngx-electron';
 import { PinchZoomModule } from 'ngx-pinch-zoom';
 import { PlyrModule } from 'ngx-plyr';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 import {IonicStorageModule} from '@ionic/storage';
 import {CacheModule} from 'ionic-cache';
@@ -55,6 +56,7 @@ import {SuccessPopoverPageModule} from "./pages/feature/success-popover/success-
       NgxElectronModule,
       HttpClientModule,
       //PinchZoomModule,
+      NgxSliderModule,
       PlyrModule,
       CacheModule.forRoot(),
       FormsModule,

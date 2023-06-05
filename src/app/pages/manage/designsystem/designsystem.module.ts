@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { DesignsystemPageRoutingModule } from './designsystem-routing.module';
 
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { DesignsystemPage } from './designsystem.page';
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 
@@ -15,6 +16,7 @@ import {ApplicationPipesModule} from "../../../pipes/application-pipes";
     FormsModule,
     ApplicationPipesModule,
     IonicModule,
+    NgxSliderModule,
     DesignsystemPageRoutingModule
   ],
   declarations: [DesignsystemPage]
