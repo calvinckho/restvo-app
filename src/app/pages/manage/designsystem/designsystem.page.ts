@@ -1,6 +1,8 @@
 import {Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {IonSelect, Platform} from "@ionic/angular";
 import {Auth} from "../../../services/auth.service";
+import {Chat} from "../../../services/chat.service";
+import { Options } from '@angular-slider/ngx-slider';
 
 @Component({
   selector: 'app-designsystem',
@@ -11,12 +13,18 @@ import {Auth} from "../../../services/auth.service";
 export class DesignsystemPage implements OnInit {
   @ViewChild('addSelect') select: IonSelect;
 
+  value: number = 100;
+  options: Options = {
+    floor: 0,
+    ceil: 200
+  };
   prefersDark: any;
 
   constructor(
       public platform: Platform,
       private zone: NgZone,
-      public authService: Auth
+      public authService: Auth,
+      public chatService: Chat,
   ) { }
 
   ngOnInit() {
@@ -33,6 +41,16 @@ export class DesignsystemPage implements OnInit {
     console.log("check color", shouldAdd)
     this.zone.run(() => {
       document.body.classList.toggle('dark', shouldAdd);
+    });
+  }
+
+  testJitsiCall() {
+    this.chatService.toggleVideoChat({
+      videoChatRoomId: '5bd4b9d1ec930b4efdf7ec81',
+      videoChatRoomSubject: 'Test with Family',
+      channelLastN: '6', // only the last 6 active dominate speakers' stream will be sent
+      startWithAudioMuted: true,
+      startWithVideoMuted: false
     });
   }
 }
