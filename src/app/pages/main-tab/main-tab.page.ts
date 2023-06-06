@@ -449,7 +449,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                     startWithAudioMuted: params.startWithAudioMuted,
                     startWithVideoMuted: params.startWithVideoMuted,
                     featureFlags: {
-                        'pip.enabled': false,
+                        'pip.enabled': true,
                         'chat.enabled': true,
                         'prejoinpage.enabled': false, // go straight to the meeting and do not show the pre-join page
                         'invite.enabled': false,
