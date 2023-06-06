@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { AlertController, MenuController, Platform } from '@ionic/angular';
 import { StatusBar } from '@capacitor/status-bar';
 
@@ -14,7 +14,7 @@ import { UserData } from '../../../services/user.service';
   encapsulation: ViewEncapsulation.None
 })
 export class RecoverPage implements OnInit {
-    passForm: FormGroup;
+    passForm: UntypedFormGroup;
     passwordType = 'password';
     passwordIcon = 'eye';
     loading: any;
@@ -24,7 +24,7 @@ export class RecoverPage implements OnInit {
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private platform: Platform,
                 private alertCtrl: AlertController,
                 private menuCtrl: MenuController,
@@ -110,7 +110,7 @@ export class RecoverPage implements OnInit {
     }
 
     matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
-        return (group: FormGroup): {[key: string]: any} => {
+        return (group: UntypedFormGroup): {[key: string]: any} => {
             const password = group.controls[passwordKey];
             const confirmPassword = group.controls[confirmPasswordKey];
 

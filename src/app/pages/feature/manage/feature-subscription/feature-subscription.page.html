@@ -13,8 +13,8 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-slides (ionSlidesDidLoad)="onSlidesLoaded()">
-    <ion-slide>
+  <swiper-container id="swiper" (init)="onSlidesLoaded()">
+    <swiper-slide>
       <ion-grid *ngIf="resource">
         <ion-row>
           <ion-col size-xs="12" size-sm="12" size-md="12" size-lg="6">
@@ -93,8 +93,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid *ngIf="resource">
         <ion-row>
           <ion-col>
@@ -191,6 +191,6 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-  </ion-slides>
+    </swiper-slide>
+  </swiper-container>
 </ion-content>

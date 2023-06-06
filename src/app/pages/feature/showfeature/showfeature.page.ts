@@ -1,4 +1,4 @@
-import {Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Location} from '@angular/common';
 import {Storage} from '@ionic/storage';
 import { ElectronService } from 'ngx-electron';
@@ -11,8 +11,7 @@ import {
     ActionSheetController,
     AlertController,
     IonContent, IonFab,
-    IonInfiniteScroll,
-    IonSlides, LoadingController,
+    IonInfiniteScroll, LoadingController,
     ModalController, PickerController, IonSelect,
     Platform
 } from '@ionic/angular';
@@ -44,16 +43,12 @@ import {SuccessPopoverPage} from '../success-popover/success-popover.page';
 export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonSelect) select: IonSelect;
     @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
-    @ViewChild('mediaSlides') mediaSlides: IonSlides;
-    @ViewChild('peopleSlides') peopleSlides: IonSlides;
-    @ViewChild('plansSlides') plansSlides: IonSlides;
-    @ViewChild('programsSlides') programsSlides: IonSlides;
-    @ViewChild('goalsSlides') goalsSlides: IonSlides;
     @ViewChild(IonFab) fabButtons: IonFab;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+    @ViewChild('peopleSlides') peopleSlides: ElementRef | undefined;
+    @ViewChild('programsSlides') programsSlides: ElementRef | undefined;
 
-  @Input() moment: any = { _id: '' };
+    @Input() moment: any = { _id: '' };
   @Input() modalPage: any; // optional: when initialing a modal page
   @Input() relationshipId: any; // optional: if Content is used in a relationship context
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
@@ -1210,16 +1205,11 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-  /*async swipeMediaSlide() {
-      this.disableMediaPrevBtn = await this.mediaSlides.isBeginning();
-      this.disableMediaNextBtn = await this.mediaSlides.isEnd();
-  }*/
-
     async swipePeopleSlide() {
-        this.disablePrevBtn = await this.peopleSlides.isBeginning();
-        this.disableNextBtn = await this.peopleSlides.isEnd();
+        this.disablePrevBtn = this.peopleSlides?.nativeElement.swiper.isBeginning;
+        this.disableNextBtn = this.peopleSlides?.nativeElement.swiper.isEnd;
         if (this.peopleSlides && this.loadStatus !== 'loading') {
-            const currentSlideIndex = await this.peopleSlides.getActiveIndex();
+            const currentSlideIndex = this.programsSlides?.nativeElement.swiper.getActiveIndex;
             if (currentSlideIndex === this.matchedPeople.length - 4) {
                 this.loadMorePeople(null);
             }
@@ -1897,7 +1887,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   async swipeProgramslide(event) {
     event.stopPropagation();
     if (this.programsSlides) {
-      const currentSlideIndex = await this.programsSlides.getActiveIndex();
+      const currentSlideIndex = this.programsSlides?.nativeElement.swiper.getActiveIndex;
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePrograms();
       }

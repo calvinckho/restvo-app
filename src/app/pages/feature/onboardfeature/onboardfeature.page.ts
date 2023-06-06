@@ -1,6 +1,6 @@
-import {Component, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, Input, NgZone, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as Plyr from 'plyr';
-import {IonContent, IonInfiniteScroll, IonSlides, ModalController, Platform} from '@ionic/angular';
+import {IonContent, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {CacheService} from 'ionic-cache';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -22,19 +22,14 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 })
 export class OnboardfeaturePage {
     @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('mediaSlides') mediaSlides: IonSlides;
+    @ViewChild('swiper') slides: ElementRef | undefined;
 
     @Input() modalPage: any;
     @Input() programId: any;
     @Input() type: number;
     @Input() token: string;
 
-    slidesOpts = {
-        updateOnWindowResize: true,
-        autoHeight: true
-    };
     nextButtonReady = true;
     resource: any;
     moment: any;
@@ -141,9 +136,9 @@ export class OnboardfeaturePage {
             this.ionSpinner = false;
             setTimeout(async () => {
                 if (this.slides) {
-                    await this.slides.update();
-                    await this.slides.slideTo(0);
-                    await this.slides.lockSwipes(true);
+                    await this.slides?.nativeElement.swiper.update();
+                    await this.slides?.nativeElement.swiper.slideTo(0);
+                    await this.slides?.nativeElement.allowTouchMove(true);
                 }
             }, 50);
         } else {
@@ -421,7 +416,7 @@ export class OnboardfeaturePage {
 
     async slideChanges() {
         if (this.slides) {
-            const currentSlideIndex = await this.slides.getActiveIndex();
+            const currentSlideIndex = this.slides?.nativeElement.swiper.activeIndex;
             // if slide from the last slide
             // console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
             if (currentSlideIndex >= this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1) {
@@ -432,13 +427,13 @@ export class OnboardfeaturePage {
 
     clickNextButton(direction) {
         if (!this.moment) { return; }
-        this.slides.lockSwipes(false);
+        this.slides?.nativeElement.swiper.allowTouchMove(false);
         if (direction === 'prev') {
-            this.slides.slidePrev();
+            this.slides?.nativeElement.swiper.slidePrev();
         } else {
-            this.slides.slideNext();
+            this.slides?.nativeElement.swiper.slideNext();
         }
-        this.slides.lockSwipes(true);
+        this.slides?.nativeElement.swiper.allowTouchMove(true);
     }
 
     async seeUserInfo(event, user) {

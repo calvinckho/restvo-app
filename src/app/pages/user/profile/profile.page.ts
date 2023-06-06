@@ -4,7 +4,7 @@ import { Storage } from '@ionic/storage';
 import { Auth } from '../../../services/auth.service';
 import { UserData } from '../../../services/user.service';
 import { Aws } from '../../../services/aws.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, ModalController, Platform } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {ActivatedRoute} from "@angular/router";
@@ -23,7 +23,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     @Input() modalPage: any;
 
     subscriptions: any = {};
-    userForm: FormGroup;
+    userForm: UntypedFormGroup;
     loading: any;
     user: any = {};
     countries: Array<{name: string, selected: boolean}> = [];
@@ -39,7 +39,7 @@ export class ProfilePage implements OnInit, OnDestroy {
                 private location: Location,
                 private storage: Storage,
                 public platform: Platform,
-                public fb: FormBuilder,
+                public fb: UntypedFormBuilder,
                 private alertCtrl: AlertController,
                 private loadingCtrl: LoadingController,
                 public modalCtrl: ModalController,

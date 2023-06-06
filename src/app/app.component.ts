@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { register } from 'swiper/element/bundle';
 import {StripeService} from 'ngx-stripe';
 import {
     ActionSheetController, IonSelect,
@@ -20,6 +21,8 @@ import {ShowrecipientinfoPage} from './pages/connect/showrecipientinfo/showrecip
 import {ProgramsPage} from './pages/user/programs/programs.page';
 import { App } from '@capacitor/app';
 import {UploadmediaPage} from './pages/feature/uploadmedia/uploadmedia.page';
+
+register();
 
 @Component({
   selector: 'app-root',

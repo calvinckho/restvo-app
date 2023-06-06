@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { PickpeoplePopoverPage } from './pickpeople-popover.page';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    ScrollingModule,
     RouterModule.forChild(routes)
   ],
   declarations: [PickpeoplePopoverPage]

@@ -1,10 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {EditfeaturePage} from "../editfeature/editfeature.page";
 import {Churches} from "../../../services/church.service";
 import {
     ActionSheetController,
     AlertController,
-    IonSlides,
     LoadingController,
     ModalController,
     Platform,
@@ -33,7 +32,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatecommunityPage extends EditfeaturePage implements OnInit {
-    @ViewChild(IonSlides) slides: IonSlides;
+    @ViewChild('swiper') slides: ElementRef | undefined;
 
     createReachedEnd = false;
     tutorialReachedEnd = false;
@@ -81,19 +80,19 @@ export class CreatecommunityPage extends EditfeaturePage implements OnInit {
     async clickNextButton(direction) {
         if (!this.moment) return;
         if (direction === 'prev') {
-            this.slides.slidePrev();
+            this.slides?.nativeElement.swiper.slidePrev();
         } else {
             // assuming it is Community creation and moving from Slide 1 will assign it with the Community category
             this.moment.categories = ['5c915324e172e4e64590e346'];
-            this.slides.slideNext();
+            this.slides?.nativeElement.swiper.slideNext();
         }
     }
 
     async changeSlide(type) {
       if (type === 'create') {
-          this.createReachedEnd = await this.slides.isEnd();
+          this.createReachedEnd = this.slides?.nativeElement.swiper.isEnd;
       } else {
-          this.tutorialReachedEnd = await this.slides.isEnd();
+          this.tutorialReachedEnd = this.slides?.nativeElement.swiper.isEnd;
       }
     }
 

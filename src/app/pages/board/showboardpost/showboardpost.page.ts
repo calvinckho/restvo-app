@@ -10,7 +10,7 @@ import {
     ActionSheetController,
     AlertController,
     Platform,
-    ModalController, IonSlides,
+    ModalController,
 } from '@ionic/angular';
 import { Aws } from "../../../services/aws.service";
 import { Chat } from "../../../services/chat.service";
@@ -35,7 +35,6 @@ import {ShowfeaturePage} from "../../feature/showfeature/showfeature.page";
 export class ShowboardpostPage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild('textArea') textArea: ElementRef;
-    @ViewChild(IonSlides) slides: IonSlides;
 
     @Input() boardId: any;
     @Input() isGroupLeader: boolean;

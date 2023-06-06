@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import { CacheService } from 'ionic-cache';
-import {Validators, FormBuilder, FormGroup} from '@angular/forms';
+import {Validators, UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { Churches } from '../../../../services/church.service';
 import { UserData } from '../../../../services/user.service';
@@ -15,7 +15,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 })
 export class EditcommunityPage implements OnInit {
 
-    communityForm: FormGroup;
+    communityForm: UntypedFormGroup;
     @Input() community: any;
     loading: any;
     @Input() industries: any;
@@ -26,7 +26,7 @@ export class EditcommunityPage implements OnInit {
 
     constructor(
                 private cache: CacheService,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private alertCtrl: AlertController,
                 private actionSheetCtrl: ActionSheetController,
                 public modalCtrl: ModalController,

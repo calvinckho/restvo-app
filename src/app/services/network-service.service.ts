@@ -27,7 +27,7 @@ export class NetworkService {
                 private toastCtrl: ToastController) {
         this.onDevice = this.platform.is('cordova');
         if (!this.electronService.isElectronApp && this.swUpdate.isEnabled) {
-            this.swUpdate.versionUpdates.subscribe(evt => {
+            this.swUpdate.checkForUpdate().then(() => {
                 if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
                     window.location.reload();
                 }
@@ -35,7 +35,7 @@ export class NetworkService {
             this.zone.runOutsideAngular(() => {
                 setInterval(() => {
                     this.zone.run(() => {
-                        this.swUpdate.versionUpdates.subscribe(evt => {
+                        this.swUpdate.checkForUpdate().then(() => {
                             if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
                                 window.location.reload();
                             }

@@ -8,10 +8,6 @@ app-groupchat {
     cursor: pointer;
   }
 
-  ion-infinite-scroll {
-    //background: transparent; TODO: trying to make infinite-scroll background transparent in dark mode
-  }
-
   .titles {
     margin: 0 10%;
   }
@@ -539,7 +535,7 @@ app-groupchat {
 
     ion-textarea {
       margin: 8px;
-      width: auto;
+      width: 100%;
       --color: #222428;
       --background: white;
       border-style: solid;

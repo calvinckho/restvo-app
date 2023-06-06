@@ -456,7 +456,7 @@
   <ion-toolbar class="ion-no-padding">
     <div class="message-form">
       <ion-buttons>
-        <ion-button class="moreButton" fill="clear" (click)="messageMoreOptions()" [disabled]="!chatFinishedLoading">
+        <ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions">
           <ion-icon name="add-circle" size="large" color="grey"></ion-icon>
         </ion-button>
         <div id="expandable-right" *ngIf="moreMediaOptions">
@@ -475,9 +475,9 @@
             <input type="file" class="file-picker" name="file" id="file" (change)="selectFileFromDeviceAndUpload($event)"/>
           </ion-button>
         </div>
-        <ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions" [hidden]="moreMediaOptions">
+        <!--<ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions" [hidden]="moreMediaOptions">
           <ion-icon name="chevron-forward-outline" size="large" color="grey"></ion-icon>
-        </ion-button>
+        </ion-button>-->
       </ion-buttons>
       <ion-textarea name="{{chatService.currentChatProps[propIndex].name}}" autoGrow="true" rows="1" (keyup.enter)="sendMessage()" [(ngModel)]="composedMessage" (ionFocus)="moreMediaOptions = false">
         <!--Multiple attachments-->
@@ -533,8 +533,8 @@
   </ion-toolbar>
   <ion-toolbar id="expandable" *ngIf="moreOptions" class="ion-no-padding">
     <div class="moreoptions">
-      <ion-slides class="program-slides" [options]="{grabCursor: true}">
-        <ion-slide class="program-slide" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : 20; index as i; trackBy: customTrackBy" [hidden]="!((calendarItem.relationship ? (calendarItem.relationship === chatService.currentChatProps[this.propIndex].moment?._id) : true) && calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && calendarItem.moment.resource['en-US'].value[0] !== 'Onboarding Process')">
+      <swiper-container class="program-slides" [options]="{grabCursor: true}">
+        <swiper-slide class="program-slide" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : 20; index as i; trackBy: customTrackBy" [hidden]="!((calendarItem.relationship ? (calendarItem.relationship === chatService.currentChatProps[this.propIndex].moment?._id) : true) && calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && calendarItem.moment.resource['en-US'].value[0] !== 'Onboarding Process')">
           <ion-card class="program-card" (click)="selectCalendarItem($event, calendarItem)" *ngIf="calendarItem.moment">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
@@ -544,8 +544,8 @@
             <div class="program-type"><ion-badge color="button1">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge></div>
             <div class="program-name light">{{calendarItem.title}}</div>
           </ion-card>
-        </ion-slide>
-        <ion-slide class="program-slide">
+        </swiper-slide>
+        <swiper-slide class="program-slide">
           <ion-card class="program-card" (click)="openPickFeature()">
             <ion-card-header class="ion-no-padding" color="lightgrey">
               <ion-row class="program-photo-container ion-justify-content-center ion-align-items-center">
@@ -554,8 +554,8 @@
             </ion-card-header>
             <div class="program-name dark">More</div>
           </ion-card>
-        </ion-slide>
-      </ion-slides>
+        </swiper-slide>
+      </swiper-container>
     </div>
   </ion-toolbar>
 </ion-footer>

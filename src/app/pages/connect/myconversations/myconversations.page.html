@@ -102,8 +102,8 @@
           <ion-searchbar #searchBar slot="start" [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" value=""></ion-searchbar>
         </ion-toolbar>
         <ion-content>
-          <ion-virtual-scroll [items]="datas" approxItemHeight="100px">
-            <ion-item-sliding *virtualItem="let obj">
+          <ion-list>
+            <ion-item-sliding *ngFor="let obj of datas">
               <div *ngIf="obj.conversation.type === 'connect'">
                 <ion-item>
                   <ion-avatar class="user-avatar" [ngClass]="{'online': (chatService.onlineUsers.indexOf(obj.data.participant._id) > -1), 'fade': (chatService.liveVideoChats.hasOwnProperty(obj.conversation._id) && chatService.liveVideoChats[obj.conversation._id].users.length)}" slot="start" (click)="seeUserInfo($event, obj)">
@@ -187,7 +187,7 @@
                 </ion-item-options>
               </div>
             </ion-item-sliding>
-          </ion-virtual-scroll>
+          </ion-list>
         </ion-content>
       </ion-col>
       <ion-col size-xs="0" size-sm="0" size-md="7" size-lg="8" class="ion-no-padding group-chat">

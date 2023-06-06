@@ -132,8 +132,8 @@
       </ion-grid>
     </div>
     <ion-grid class="program-grid" *ngIf="currentView === 'recent'">
-      <ion-virtual-scroll [items]="recentCalendarItems" approxItemHeight="100px">
-        <ion-item *virtualItem="let calendarItem; index as i"  (click)="selectCalendarItem($event, calendarItem)" class="cursor-pointer">
+      <ion-list>
+        <ion-item *ngFor="let calendarItem of recentCalendarItems; index as i"  (click)="selectCalendarItem($event, calendarItem)" class="cursor-pointer">
           <ion-avatar class="ion-margin-end" *ngIf="calendarItem.moment">
             <ion-img [src]="(calendarItem.moment.assets && calendarItem.moment.assets.length && calendarItem.moment.assets[0]) | background: calendarItem.moment._id"></ion-img>
           </ion-avatar>
@@ -142,7 +142,7 @@
           </ion-label>
           <ion-badge color="button1" class="type-col ion-text-wrap" slot="end">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
         </ion-item>
-      </ion-virtual-scroll>
+      </ion-list>
     </ion-grid>
   </div>
   <ion-grid *ngIf="step === 2" class="full-height">

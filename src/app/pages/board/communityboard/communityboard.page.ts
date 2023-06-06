@@ -12,7 +12,6 @@ import {
     ModalController,
     AlertController,
     Platform,
-    IonSlides
 } from '@ionic/angular';
 
 import {UserData} from '../../../services/user.service';
@@ -38,7 +37,6 @@ import {ShowfeaturePage} from '../../feature/showfeature/showfeature.page';
 })
 export class CommunityboardPage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
-    @ViewChild(IonSlides) slides: IonSlides;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
     communitiesboards: any;

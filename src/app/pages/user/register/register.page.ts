@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation, ViewChild, NgZone, ElementRef} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { AlertController, LoadingController, MenuController, ModalController, IonSlides, Platform } from '@ionic/angular';
+import { Validators, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { AlertController, LoadingController, MenuController, ModalController, Platform } from '@ionic/angular';
 import { Auth } from '../../../services/auth.service';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
@@ -18,14 +18,13 @@ import {Location} from '@angular/common';
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterPage implements OnInit {
-    @ViewChild('welcomeSlides') welcome_slides: IonSlides;
-    @ViewChild(IonSlides) slides: IonSlides;
 
     @Input() modalPage: any;
     @Input() slide: any;
     @Input() loginStatus = '';
+    @ViewChild('welcomeSlides') slides: ElementRef | undefined;
 
-    public loginForm: FormGroup;
+    public loginForm: UntypedFormGroup;
     view = 'signin';
     ionSpinner: any;
     loginMode = 'email';
@@ -35,12 +34,12 @@ export class RegisterPage implements OnInit {
     passwordIcon = 'eye';
     recovery_mode = false;
 
-    nameForm: FormGroup;
-    mobileForm: FormGroup;
-    verifyCodeForm: FormGroup;
-    emailForm: FormGroup;
-    emailPassForm: FormGroup;
-    passForm: FormGroup;
+    nameForm: UntypedFormGroup;
+    mobileForm: UntypedFormGroup;
+    verifyCodeForm: UntypedFormGroup;
+    emailForm: UntypedFormGroup;
+    emailPassForm: UntypedFormGroup;
+    passForm: UntypedFormGroup;
     loading: any;
     deviceToken: any;
     slidesOpts: any;
@@ -277,7 +276,7 @@ export class RegisterPage implements OnInit {
                 private storage: Storage,
                 public platform: Platform,
                 private route: ActivatedRoute,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 private alertCtrl: AlertController,
                 private loadingCtrl: LoadingController,
                 private menuCtrl: MenuController,
@@ -349,24 +348,24 @@ export class RegisterPage implements OnInit {
             this.location.back();
             // this.router.navigateByUrl('/app/dashboard');
         } else {
-            await this.slides.lockSwipes(false);
-            await this.slides.slidePrev();
-            await this.slides.lockSwipes(true);
+            await this.slides?.nativeElement.allowTouchMove(false);
+            await this.slides?.nativeElement.swiper.slidePrev();
+            await this.slides?.nativeElement.allowTouchMove(true);
         }
     }
 
     async nextSlide() {
         if (!this.nameForm.get('first_name').errors && !this.nameForm.get('last_name').errors) { // ensure first name and last name have no error
-            await this.slides.lockSwipes(false);
-            await this.slides.slideNext();
-            await this.slides.lockSwipes(true);
+            await this.slides?.nativeElement.allowTouchMove(false);
+            await this.slides?.nativeElement.swiper.slideNext();
+            await this.slides?.nativeElement.allowTouchMove(true);
         }
     }
 
     async goToSlide(number) {
-        await this.slides.lockSwipes(false);
-        await this.slides.slideTo(number);
-        await this.slides.lockSwipes(true);
+        await this.slides?.nativeElement.allowTouchMove(false);
+        await this.slides?.nativeElement.swiper.slideTo(number);
+        await this.slides?.nativeElement.allowTouchMove(true);
     }
 
     async loadRegisterSlides() {
@@ -377,7 +376,7 @@ export class RegisterPage implements OnInit {
     }
 
     async registerSlidesLoaded() {
-        await this.slides.lockSwipes(true);
+        await this.slides?.nativeElement.allowTouchMove(true);
         this.ionSpinner = false;
     }
 
@@ -860,7 +859,7 @@ export class RegisterPage implements OnInit {
     }
 
     matchingEmails(emailKey: string, confirmEmailKey: string) {
-        return (group: FormGroup): {[key: string]: any} => {
+        return (group: UntypedFormGroup): {[key: string]: any} => {
             const email = group.controls[emailKey];
             const confirmEmail = group.controls[confirmEmailKey];
 
@@ -873,7 +872,7 @@ export class RegisterPage implements OnInit {
     }
 
     matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
-        return (group: FormGroup): {[key: string]: any} => {
+        return (group: UntypedFormGroup): {[key: string]: any} => {
             const password = group.controls[passwordKey];
             const confirmPassword = group.controls[confirmPasswordKey];
 

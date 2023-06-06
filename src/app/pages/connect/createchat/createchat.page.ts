@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { AlertController, IonContent, IonInfiniteScroll, ModalController, Platform} from '@ionic/angular';
 import { Aws } from '../../../services/aws.service';
 import { UserData } from '../../../services/user.service';
@@ -19,7 +19,7 @@ export class CreatechatPage implements OnInit {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-    chatForm: FormGroup;
+    chatForm: UntypedFormGroup;
     churchId = '';
     pageNum = 0;
     displayGroup = false;
@@ -37,11 +37,11 @@ export class CreatechatPage implements OnInit {
     type: string;
 
     //group creation variables
-    groupForm: FormGroup;
+    groupForm: UntypedFormGroup;
 
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private alertCtrl: AlertController,
         public modalCtrl: ModalController,
         public platform: Platform,

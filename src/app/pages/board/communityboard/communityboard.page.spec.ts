@@ -33,7 +33,7 @@ describe('CommunityboardPage', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-          ActionSheetController, IonContent, IonInfiniteScroll, NavController, ModalController, AlertController, IonSlides,
+          ActionSheetController, IonContent, IonInfiniteScroll, NavController, ModalController, AlertController,
           { provide: Storage, useValue: storage },
           { provide: CacheService, useValue: cacheService },
           { provide: Router, useValue: router }

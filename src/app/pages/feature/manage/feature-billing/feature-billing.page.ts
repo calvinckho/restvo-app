@@ -8,7 +8,7 @@ import {
   StripeCardElementOptions,
   StripeElementsOptions
 } from '@stripe/stripe-js';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
   ActionSheetController,
@@ -62,7 +62,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
   elementsOptions: StripeElementsOptions = {
     locale: 'en'
   };
-  billingForm: FormGroup;
+  billingForm: UntypedFormGroup;
   refreshNeeded = false;
   numberOfActiveUsers: any;
   sources: any;
@@ -99,7 +99,7 @@ export class FeatureBillingPage extends EditfeaturePage implements OnInit {
       public resourceService: Resource,
       public responseService: Response,
       public calendarService: CalendarService,
-      private formBuilder: FormBuilder,
+      private formBuilder: UntypedFormBuilder,
       private stripeFactory: StripeFactoryService,
       public paymentService: PaymentService,
       private cache: CacheService,

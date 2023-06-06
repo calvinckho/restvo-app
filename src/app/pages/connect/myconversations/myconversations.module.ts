@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-
 import { MyconversationsPage } from './myconversations.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import {MyconversationsRoutingModule} from "./myconversations-routing.module";
@@ -14,7 +13,7 @@ import {MyconversationsRoutingModule} from "./myconversations-routing.module";
       FormsModule,
       IonicModule,
       MyconversationsRoutingModule,
-      ApplicationPipesModule
+      ApplicationPipesModule,
   ],
   declarations: [
       MyconversationsPage,

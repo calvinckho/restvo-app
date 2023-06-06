@@ -64,7 +64,7 @@ export class GroupchatPage implements OnInit, OnDestroy {
     replyQuote: any;
     sendQuoteAndReplyTag = false;
     moreOptions = false;
-    moreMediaOptions = true;
+    moreMediaOptions = false;
     noNetwork = false;
     listening = false;
     audioToast: any;

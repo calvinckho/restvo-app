@@ -30,8 +30,8 @@
       <ion-icon slot="end" color="tertiary" *ngIf="!this.selfConversationObj.select" name="radio-button-off"></ion-icon>
       <ion-icon slot="end" color="tertiary" *ngIf="this.selfConversationObj.select" name="checkmark-circle"></ion-icon>
     </ion-item>
-    <ion-virtual-scroll [items]="conversations" approxItemHeight="60px">
-      <div *virtualItem="let obj">
+    <cdk-virtual-scroll-viewport itemSize="60">
+      <div *cdkVirtualFor="let obj of conversations">
         <ion-item class="pickpeople-friend" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
           <ion-avatar slot="start">
             <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
@@ -51,7 +51,7 @@
           <ion-icon slot="end" color="tertiary" *ngIf="obj.select" name="checkmark-circle"></ion-icon>
         </ion-item>
       </div>
-    </ion-virtual-scroll>
+    </cdk-virtual-scroll-viewport>
     <ion-list-header *ngIf="hasOrganizerAccess">{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list *ngIf="hasOrganizerAccess">
       <ion-item class="pickpeople-user" *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">

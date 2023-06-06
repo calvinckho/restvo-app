@@ -1,9 +1,8 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {
   ActionSheetController,
   AlertController,
-  IonContent,
-  IonSlides, LoadingController,
+  IonContent, LoadingController,
   ModalController,
   Platform, PopoverController,
   ToastController
@@ -17,7 +16,7 @@ import {
   StripeCardElementOptions,
   StripeElementsOptions
 } from '@stripe/stripe-js';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserData} from '../../../../services/user.service';
 import {Churches} from '../../../../services/church.service';
@@ -44,8 +43,8 @@ import {CacheService} from 'ionic-cache';
 })
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
-  @ViewChild(IonSlides) slides: IonSlides;
   @ViewChild(StripeCardComponent) card: StripeCardComponent;
+  @ViewChild('swiper') slides: ElementRef | undefined;
 
   @Input() modalPage: any;
   stripeService: StripeInstance;
@@ -66,7 +65,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   elementsOptions: StripeElementsOptions = {
     locale: 'en'
   };
-  billingForm: FormGroup;
+  billingForm: UntypedFormGroup;
   community: any;
   numberOfActiveUsers: any;
   refreshNeeded = false;
@@ -99,7 +98,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
       public resourceService: Resource,
       public responseService: Response,
       public calendarService: CalendarService,
-      private formBuilder: FormBuilder,
+      private formBuilder: UntypedFormBuilder,
       private stripeFactory: StripeFactoryService,
       public paymentService: PaymentService,
       private cache: CacheService,
@@ -144,7 +143,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   }
 
   onSlidesLoaded () {
-    this.slides.lockSwipes(true);
+    this.slides?.nativeElement.allowTouchMove(true);
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
@@ -154,17 +153,17 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   }
 
   prevSlide() {
-    this.slides.lockSwipes(false);
-    this.slides.slidePrev();
+    this.slides?.nativeElement.allowTouchMove(false);
+    this.slides?.nativeElement.swiper.slidePrev();
     this.content.scrollToTop();
-    this.slides.lockSwipes(true);
+    this.slides?.nativeElement.allowTouchMove(true);
   }
 
   nextSlide() {
-    this.slides.lockSwipes(false);
-    this.slides.slideNext();
+    this.slides?.nativeElement.allowTouchMove(false);
+    this.slides?.nativeElement.swiper.slideNext();
     this.content.scrollToTop();
-    this.slides.lockSwipes(true);
+    this.slides?.nativeElement.allowTouchMove(true);
   }
 
   async selectPlan(plan) {
