@@ -17,7 +17,7 @@
 </ion-header>
 
 <ion-content>
-  <swiper-container id="swiper" [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slidechangetransitionstart)="slideChanges()">
+  <swiper-container id="swiper" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slidechangetransitionstart)="slideChanges()">
     <swiper-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
@@ -99,7 +99,7 @@
               </ion-grid>
               <!--Slideshow and has two or more items-->
               <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] === 2 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length > 1">
-                <swiper-container #mediaSlides pager="true" [options]="mediaSlideOpts">
+                <swiper-container #mediaSlides pager="true" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
                   <swiper-slide *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
                     <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                       <ion-img [src]="url"></ion-img>

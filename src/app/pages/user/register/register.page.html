@@ -141,7 +141,7 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
         <ion-col size-sm="12" size-md="7" class="full-height">
-          <swiper-container id="createAccount" [options]="slidesOpts" scrollbar (ionSlidesDidLoad)="registerSlidesLoaded()">
+          <swiper-container id="createAccount" [initialSlide]="this.slide ? this.slide : 0" scrollbar (ionSlidesDidLoad)="registerSlidesLoaded()">
             <!--First Name-->
             <!--slide index 0-->
             <swiper-slide>

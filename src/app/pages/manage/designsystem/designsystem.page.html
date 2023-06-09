@@ -246,7 +246,7 @@
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
             </ion-item>
-            <swiper-container class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
               <swiper-slide class="program-slide">
                 <ion-card class="program-card">
                   <ion-card-header class="ion-no-padding">
@@ -299,7 +299,7 @@
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
             </ion-item>
-            <swiper-container class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
               <swiper-slide class="program-slide">
                 <ion-card class="program-card">
                   <ion-card-header class="ion-no-padding">
@@ -352,7 +352,7 @@
             <ion-item class="section" lines="none"> <!--section header-->
               <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
             </ion-item>
-            <swiper-container class="program-slides" [options]="{slidesPerView: 1, grabCursor: true, updateOnWindowResize: true}" *ngIf="platform.width() < 768">
+            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" *ngIf="platform.width() < 768">
               <swiper-slide class="program-slide">
                 <ion-card class="program-card">
                   <ion-card-header class="ion-no-padding">

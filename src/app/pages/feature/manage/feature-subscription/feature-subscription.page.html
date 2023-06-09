@@ -13,7 +13,7 @@
       <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <swiper-container id="swiper" (init)="onSlidesLoaded()">
+  <swiper-container id="swiper" (init)="onSlidesLoaded()" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
     <swiper-slide>
       <ion-grid *ngIf="resource">
         <ion-row>
