@@ -579,6 +579,7 @@ app-groupchat {
   }
 
   #expandable-right {
+    min-width: 100px;
     animation-name: move-right;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;

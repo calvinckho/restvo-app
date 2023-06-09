@@ -456,23 +456,26 @@
   <ion-toolbar class="ion-no-padding">
     <div class="message-form">
       <ion-buttons>
-        <ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions">
+        <ion-button fill="clear" (click)="moreMediaOptions = !moreMediaOptions">
           <ion-icon name="add-circle" size="large" color="grey"></ion-icon>
         </ion-button>
         <div id="expandable-right" *ngIf="moreMediaOptions">
-          <ion-button class="moreButton" fill="clear" (click)="takePhotoAndUpload()" [disabled]="!chatFinishedLoading">
+          <ion-button fill="clear" (click)="takePhotoAndUpload()" [disabled]="!chatFinishedLoading">
             <ion-icon ios="camera-sharp" md="camera-sharp" size="large" color="grey"></ion-icon>
           </ion-button>
-          <ion-button class="moreButton" *ngIf="platform.is('cordova')" fill="clear" (click)="selectPhotoFromDeviceAndUpload($event)" [disabled]="!chatFinishedLoading">
+          <ion-button *ngIf="platform.is('cordova')" fill="clear" (click)="selectPhotoFromDeviceAndUpload($event)" [disabled]="!chatFinishedLoading">
             <ion-icon ios="image-sharp" md="image-sharp" size="large" color="grey"></ion-icon>
           </ion-button>
-          <ion-button class="moreButton" *ngIf="!platform.is('cordova')" fill="clear" [hidden]="!chatFinishedLoading">
+          <ion-button *ngIf="!platform.is('cordova')" fill="clear" [hidden]="!chatFinishedLoading">
             <label for="image" style="height: 32px"><ion-icon ios="image-sharp" md="image-sharp" size="large" color="grey"></ion-icon></label>
             <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndUpload($event)" accept="image/*" />
           </ion-button>
-          <ion-button class="moreButton" fill="clear" [hidden]="!chatFinishedLoading">
+          <ion-button fill="clear" [hidden]="!chatFinishedLoading">
             <label for="file" style="height: 32px"><ion-icon name="folder" size="large" color="grey"></ion-icon></label>
             <input type="file" class="file-picker" name="file" id="file" (change)="selectFileFromDeviceAndUpload($event)"/>
+          </ion-button>
+          <ion-button fill="clear" (click)="moreOptions = !moreOptions" [disabled]="!chatFinishedLoading">
+            <ion-icon name="book" size="large" color="grey"></ion-icon>
           </ion-button>
         </div>
         <!--<ion-button class="moreButton" fill="clear" (click)="moreMediaOptions = !moreMediaOptions" [hidden]="moreMediaOptions">
@@ -533,7 +536,7 @@
   </ion-toolbar>
   <ion-toolbar id="expandable" *ngIf="moreOptions" class="ion-no-padding">
     <div class="moreoptions">
-      <swiper-container class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
+      <swiper-container class="program-slides" [slidesPerView]="'auto'" [grabCursor]="true" [updateOnWindowResize]="true">
         <swiper-slide class="program-slide" *ngFor="let calendarItem of calendarService.calendarItems.slice().reverse() | slice : 0 : 20; index as i; trackBy: customTrackBy" [hidden]="!((calendarItem.relationship ? (calendarItem.relationship === chatService.currentChatProps[this.propIndex].moment?._id) : true) && calendarItem.moment?.resource && calendarItem.moment.resource.field === 'User Defined Activity' && calendarItem.moment.resource['en-US'].value[0] !== 'Onboarding Process')">
           <ion-card class="program-card" (click)="selectCalendarItem($event, calendarItem)" *ngIf="calendarItem.moment">
             <ion-card-header class="ion-no-padding">
