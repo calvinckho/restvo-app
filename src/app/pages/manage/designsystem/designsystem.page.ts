@@ -1,8 +1,9 @@
-import {Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterContentChecked, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {IonSelect, Platform} from "@ionic/angular";
 import {Auth} from "../../../services/auth.service";
 import {Chat} from "../../../services/chat.service";
 import { Options } from '@angular-slider/ngx-slider';
+import SwiperCore, { SwiperOptions } from 'swiper';
 
 @Component({
   selector: 'app-designsystem',
@@ -12,6 +13,7 @@ import { Options } from '@angular-slider/ngx-slider';
 })
 export class DesignsystemPage implements OnInit {
   @ViewChild('addSelect') select: IonSelect;
+  //@ViewChild('swiper') swiper: SwiperComponent;
 
   value: number = 100;
   options: Options = {

@@ -101,7 +101,7 @@
     "scriptjs": "^2.5.9",
     "socket.io-client": "^2.4.0",
     "sw-toolbox": "^3.6.0",
-    "swiper": "^9.3.2",
+    "swiper": "^8.4.7",
     "tslib": "^2.0.0",
     "underscore": "^1.13.2",
     "xml2js": "^0.4.23",

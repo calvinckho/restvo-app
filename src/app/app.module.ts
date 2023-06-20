@@ -8,7 +8,6 @@ import { NgxElectronModule } from 'ngx-electron';
 import { PinchZoomModule } from 'ngx-pinch-zoom';
 import { PlyrModule } from 'ngx-plyr';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import {IonicStorageModule} from '@ionic/storage';
 import {CacheModule} from 'ionic-cache';
@@ -49,7 +48,6 @@ import {OnboardfeaturePageModule} from './pages/feature/onboardfeature/onboardfe
 import {SuccessPopoverPageModule} from "./pages/feature/success-popover/success-popover.module";
 
 @NgModule({
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
       AppComponent,
   ],

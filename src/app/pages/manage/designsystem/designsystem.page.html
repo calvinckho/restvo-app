@@ -53,6 +53,212 @@
       </ion-row>
     </ion-toolbar>
 
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Grid + Cards</ion-badge>
+
+    <ion-grid class="content-grid">
+      <ion-row>
+        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <swiper class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ng-template>
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ng-template>
+            </swiper>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <swiper class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ng-template>
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ng-template>
+            </swiper>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
+          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
+            <ion-item class="section" lines="none"> <!--section header-->
+              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
+            </ion-item>
+            <swiper class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" *ngIf="platform.width() < 768">
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'abc'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 1</div>
+                </ion-card>
+              </ng-template>
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'cde'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 2</div>
+                </ion-card>
+              </ng-template>
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'efg'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 3</div>
+                </ion-card>
+              </ng-template>
+              <ng-template swiperSlide class="program-slide">
+                <ion-card class="program-card">
+                  <ion-card-header class="ion-no-padding">
+                    <div class="program-photo-container">
+                      <img class="program-photo" [src]="null | background: 'ijk'" />
+                    </div>
+                  </ion-card-header>
+                  <div class="program-name">Object 4</div>
+                </ion-card>
+              </ng-template>
+            </swiper>
+            <ion-grid *ngIf="platform.width() >= 768">
+              <ion-row class="ion-justify-content-start">
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'abc'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 1</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'cde'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 2</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'efg'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 3</div>
+                  </ion-card>
+                </ion-col>
+                <ion-col class="ion-align-self-center" size="auto">
+                  <ion-card class="grid-program-card">
+                    <ion-card-header class="ion-no-padding">
+                      <div class="program-photo-container">
+                        <img class="program-photo" [src]="null | background: 'ijk'" />
+                      </div>
+                    </ion-card-header>
+                    <div class="program-name">Object 4</div>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Typography</ion-badge>
 
     <ion-item lines="none">
@@ -237,211 +443,7 @@
       </ion-card>
     </ion-row>
 
-    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Grid + Cards</ion-badge>
 
-    <ion-grid class="content-grid">
-      <ion-row>
-        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
-          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
-            <ion-item class="section" lines="none"> <!--section header-->
-              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
-            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'abc'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 1</div>
-                </ion-card>
-              </swiper-slide>
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'cde'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 2</div>
-                </ion-card>
-              </swiper-slide>
-            </swiper-container>
-            <ion-grid *ngIf="platform.width() >= 768">
-              <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'cde'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 1</div>
-                  </ion-card>
-                </ion-col>
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'cde'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 2</div>
-                  </ion-card>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card>
-        </ion-col>
-        <ion-col [size]="(platform.width() >= 768) ? 6 : 12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
-          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
-            <ion-item class="section" lines="none"> <!--section header-->
-              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
-            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true *ngIf="platform.width() < 768">
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'abc'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 1</div>
-                </ion-card>
-              </swiper-slide>
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'cde'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 2</div>
-                </ion-card>
-              </swiper-slide>
-            </swiper-container>
-            <ion-grid *ngIf="platform.width() >= 768">
-              <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'cde'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 1</div>
-                  </ion-card>
-                </ion-col>
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'cde'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 2</div>
-                  </ion-card>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card>
-        </ion-col>
-        <ion-col size="12" [ngStyle]="{'padding': platform.width() >= 768 ? '6px 5px' : '6px 0'}">
-          <ion-card class="ion-no-margin ion-no-padding section-card" [ngClass]="{'mobile-card': platform.width() < 768}">
-            <ion-item class="section" lines="none"> <!--section header-->
-              <ion-label class="section-label" color="darkgrey">Category Name</ion-label>
-            </ion-item>
-            <swiper-container class="program-slides" [slidesPerView]="1" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" *ngIf="platform.width() < 768">
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'abc'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 1</div>
-                </ion-card>
-              </swiper-slide>
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'cde'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 2</div>
-                </ion-card>
-              </swiper-slide>
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'efg'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 3</div>
-                </ion-card>
-              </swiper-slide>
-              <swiper-slide class="program-slide">
-                <ion-card class="program-card">
-                  <ion-card-header class="ion-no-padding">
-                    <div class="program-photo-container">
-                      <img class="program-photo" [src]="null | background: 'ijk'" />
-                    </div>
-                  </ion-card-header>
-                  <div class="program-name">Object 4</div>
-                </ion-card>
-              </swiper-slide>
-            </swiper-container>
-            <ion-grid *ngIf="platform.width() >= 768">
-              <ion-row class="ion-justify-content-start">
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'abc'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 1</div>
-                  </ion-card>
-                </ion-col>
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'cde'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 2</div>
-                  </ion-card>
-                </ion-col>
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'efg'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 3</div>
-                  </ion-card>
-                </ion-col>
-                <ion-col class="ion-align-self-center" size="auto">
-                  <ion-card class="grid-program-card">
-                    <ion-card-header class="ion-no-padding">
-                      <div class="program-photo-container">
-                        <img class="program-photo" [src]="null | background: 'ijk'" />
-                      </div>
-                    </ion-card-header>
-                    <div class="program-name">Object 4</div>
-                  </ion-card>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
 
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Item with Underline + Label</ion-badge>
     <ion-item>

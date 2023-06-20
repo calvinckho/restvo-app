@@ -9,6 +9,7 @@ import { DesignsystemPageRoutingModule } from './designsystem-routing.module';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { DesignsystemPage } from './designsystem.page';
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
+import { SwiperModule } from 'swiper/angular';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {ApplicationPipesModule} from "../../../pipes/application-pipes";
     ApplicationPipesModule,
     IonicModule,
     NgxSliderModule,
+      SwiperModule,
     DesignsystemPageRoutingModule
   ],
   declarations: [DesignsystemPage]
