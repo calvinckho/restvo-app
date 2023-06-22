@@ -9,6 +9,7 @@ import { OnboardfeaturePage } from './onboardfeature.page';
 import {ApplicationPipesModule} from "../../../pipes/application-pipes";
 import {PlyrModule} from "ngx-plyr";
 import {QuillModule} from "ngx-quill";
+import {SwiperModule} from "swiper/angular";
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     FormsModule,
       ApplicationPipesModule,
       PlyrModule,
+    SwiperModule,
     IonicModule,
     QuillModule.forRoot(),
     RouterModule.forChild(routes)

@@ -9,6 +9,7 @@ import { FeatureSubscriptionPageRoutingModule } from './feature-subscription-rou
 import { FeatureSubscriptionPage } from './feature-subscription.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
 import {NgxStripeModule} from "ngx-stripe";
+import {SwiperModule} from "swiper/angular";
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import {NgxStripeModule} from "ngx-stripe";
     FormsModule,
     ReactiveFormsModule,
     ApplicationPipesModule,
+    SwiperModule,
     IonicModule,
     NgxStripeModule,
     FeatureSubscriptionPageRoutingModule

@@ -24,6 +24,7 @@ import {CalendarService} from "../../../services/calendar.service";
 import {Moment} from "../../../services/moment.service";
 import {Resource} from "../../../services/resource.service";
 import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
+import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-createcommunity',
@@ -32,7 +33,7 @@ import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatecommunityPage extends EditfeaturePage implements OnInit {
-    @ViewChild('swiper') slides: ElementRef | undefined;
+    @ViewChild('swiper') slides: SwiperComponent | undefined;
 
     createReachedEnd = false;
     tutorialReachedEnd = false;
@@ -80,19 +81,21 @@ export class CreatecommunityPage extends EditfeaturePage implements OnInit {
     async clickNextButton(direction) {
         if (!this.moment) return;
         if (direction === 'prev') {
-            this.slides?.nativeElement.swiper.slidePrev();
+            this.slides?.swiperRef.slidePrev();
         } else {
             // assuming it is Community creation and moving from Slide 1 will assign it with the Community category
             this.moment.categories = ['5c915324e172e4e64590e346'];
-            this.slides?.nativeElement.swiper.slideNext();
+            this.slides?.swiperRef.slideNext();
         }
     }
 
-    async changeSlide(type) {
+    async changeSlide(type, event) {
+      const [swiper] = event;
+      if (!swiper) return;
       if (type === 'create') {
-          this.createReachedEnd = this.slides?.nativeElement.swiper.isEnd;
+          this.createReachedEnd = swiper.isEnd;
       } else {
-          this.tutorialReachedEnd = this.slides?.nativeElement.swiper.isEnd;
+          this.tutorialReachedEnd = swiper.isEnd;
       }
     }
 

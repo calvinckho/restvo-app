@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 import { RegisterPage } from './register.page';
+import {SwiperModule} from "swiper/angular";
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    SwiperModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],

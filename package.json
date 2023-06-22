@@ -71,7 +71,7 @@
     "compact-timezone-list": "^1.0.6",
     "compressorjs": "^1.0.7",
     "cordova-plugin-app-version": "^0.1.14",
-    "cordova-plugin-badge": "^0.8.8",
+    "cordova-plugin-badge": "github:katzer/cordova-plugin-badge#8e870f7f",
     "cordova-plugin-calendar": "^5.1.6",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-email-composer": "^0.8.15",

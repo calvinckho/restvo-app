@@ -10,6 +10,7 @@ import {PickfeaturePopoverPageModule} from '../../feature/pickfeature-popover/pi
 import {FocusPhotoPageModule} from '../focus-photo/focus-photo.module';
 import {GroupchatPageRoutingModule} from './groupchat-routing.module';
 import {ProfilePageModule} from '../../user/profile/profile.module';
+import {SwiperModule} from "swiper/angular";
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {ProfilePageModule} from '../../user/profile/profile.module';
     FormsModule,
     IonicModule,
     PlyrModule,
+    SwiperModule,
     ApplicationPipesModule,
     GroupchatPageRoutingModule,
     PickfeaturePopoverPageModule,

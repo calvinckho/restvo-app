@@ -10,6 +10,7 @@ import { PlyrModule } from 'ngx-plyr';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import { QuillModule } from 'ngx-quill';
 import {ProgressBarModule} from 'angular-progress-bar';
+import {SwiperModule} from "swiper/angular";
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     IonicModule,
     ApplicationPipesModule,
     PlyrModule,
+    SwiperModule,
     QuillModule.forRoot(),
     RouterModule.forChild(routes),
     ProgressBarModule

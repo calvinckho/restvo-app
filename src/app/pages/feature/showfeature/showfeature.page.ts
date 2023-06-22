@@ -32,6 +32,7 @@ import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
 import {SuccessPopoverPage} from '../success-popover/success-popover.page';
+import {EventsParams, SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-showfeature',
@@ -45,8 +46,8 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonFab) fabButtons: IonFab;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('peopleSlides') peopleSlides: ElementRef | undefined;
-    @ViewChild('programsSlides') programsSlides: ElementRef | undefined;
+    @ViewChild('peopleSlides') peopleSlides: SwiperComponent | undefined;
+    @ViewChild('programsSlides') programsSlides: SwiperComponent | undefined;
 
     @Input() moment: any = { _id: '' };
   @Input() modalPage: any; // optional: when initialing a modal page
@@ -1205,11 +1206,12 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-    async swipePeopleSlide() {
-        this.disablePrevBtn = this.peopleSlides?.nativeElement.swiper.isBeginning;
-        this.disableNextBtn = this.peopleSlides?.nativeElement.swiper.isEnd;
-        if (this.peopleSlides && this.loadStatus !== 'loading') {
-            const currentSlideIndex = this.programsSlides?.nativeElement.swiper.getActiveIndex;
+    async swipePeopleSlide(event) {
+        const [swiper] = event;
+        this.disablePrevBtn = swiper.isBeginning;
+        this.disableNextBtn = swiper.isEnd;
+        if (swiper && this.loadStatus !== 'loading') {
+            const currentSlideIndex = swiper.activeIndex;
             if (currentSlideIndex === this.matchedPeople.length - 4) {
                 this.loadMorePeople(null);
             }
@@ -1885,9 +1887,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   }
 
   async swipeProgramslide(event) {
-    event.stopPropagation();
-    if (this.programsSlides) {
-      const currentSlideIndex = this.programsSlides?.nativeElement.swiper.getActiveIndex;
+    //event.stopPropagation()
+      const [swiper] = event;
+    if (swiper) {
+      const currentSlideIndex = swiper.activeIndex;
       if (currentSlideIndex === this.matchedPeople.length - 4) {
         this.loadMorePrograms();
       }

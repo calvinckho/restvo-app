@@ -8,9 +8,9 @@
 </ion-header>
 
 <ion-content *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.resource.matrix_number.length && moment.matrix_string && moment.matrix_string.length">
-  <swiper-container id="swiper" (slidechangetransitionstart)="changeSlide('create')" pager *ngIf="view === 'create'" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
+  <swiper id="swiper" (activeIndexChange)="changeSlide('create', $event)" pager *ngIf="view === 'create'" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
     <!--Collect Community Name-->
-    <swiper-slide *ngIf="moment.resource.matrix_number[0].indexOf(10000) > -1">
+    <ng-template swiperSlide *ngIf="moment.resource.matrix_number[0].indexOf(10000) > -1">
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col>
@@ -24,8 +24,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-    <swiper-slide>
+    </ng-template>
+    <ng-template swiperSlide>
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col class="ion-align-self-center">
@@ -62,8 +62,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-    <swiper-slide> <!--Edit Form-->
+    </ng-template>
+    <ng-template swiperSlide> <!--Edit Form-->
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col>
@@ -142,12 +142,12 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-  </swiper-container>
+    </ng-template>
+  </swiper>
   <!--Community Tutorial-->
-  <swiper-container (ionSlideWillChange)="changeSlide('tutorial')" (ionSlidesDidLoad)="loadedTutorialSlides()" pager *ngIf="view === 'tutorial' && moment._id" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
+  <swiper (activeIndexChange)="changeSlide('tutorial', $event)" (init)="loadedTutorialSlides()" pager *ngIf="view === 'tutorial' && moment._id" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
     <!--Manage Users-->
-    <swiper-slide>
+    <ng-template swiperSlide>
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-col class="ion-align-self-center">
@@ -181,15 +181,15 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-    <swiper-slide>
+    </ng-template>
+    <ng-template swiperSlide>
       <ion-grid class="slide-grid">
         <ion-row class="ion-justify-content-center ion-align-items-center slide-row">
           <ion-item lines="none">Congratulations! You have completed the set up process for {{moment.matrix_string[0][0]}}.</ion-item>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-  </swiper-container>
+    </ng-template>
+  </swiper>
   <ion-grid style="height: 100%" *ngIf="ionSpinner">
     <ion-row class="ion-align-items-center" style="height: 25px">
       <ion-spinner name="dots"></ion-spinner>

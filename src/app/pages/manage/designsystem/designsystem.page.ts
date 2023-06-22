@@ -1,4 +1,4 @@
-import {AfterContentChecked, Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {IonSelect, Platform} from "@ionic/angular";
 import {Auth} from "../../../services/auth.service";
 import {Chat} from "../../../services/chat.service";

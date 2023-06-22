@@ -227,8 +227,8 @@
             </div>
 
             <!--Learning Mobile View-->
-            <swiper-container class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150" *ngIf="journeys && journeys.length && platform.width() < 768">
-              <swiper-slide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy" [hidden]="!((journey.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || journey.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+            <swiper class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150" *ngIf="journeys && journeys.length && platform.width() < 768">
+              <ng-template swiperSlide class="program-slide" *ngFor="let journey of journeys; trackBy: customTrackBy">
                 <ion-card class="program-card" (click)="openProgram($event, journey)">
                   <ion-card-header class="ion-no-padding">
                     <div class="program-photo-container">
@@ -237,8 +237,8 @@
                   </ion-card-header>
                   <div class="program-name">{{journey.matrix_string[0][0]}}</div>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
             <!--Learning Desktop View-->
             <ion-grid *ngIf="journeys && journeys.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
@@ -294,8 +294,8 @@
             </div>-->
 
             <!--Mentors Mobile View-->
-            <swiper-container class="relationship-slides" [slidesPerView]="'auto'" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150" *ngIf="myMentors && myMentors.length && platform.width() < 768">
-              <swiper-slide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+            <swiper class="relationship-slides" [slidesPerView]="'auto'" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150" *ngIf="myMentors && myMentors.length && platform.width() < 768">
+              <ng-template swiperSlide class="relationship-slide" *ngFor="let relationship of myMentors; trackBy: customTrackBy;">
                 <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
                   <ion-card-header class="ion-no-padding ion-justify-content-center">
                     <div class="relationship-photo-container">
@@ -320,8 +320,8 @@
                     </ion-row>
                   </ion-card-content>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
             <!--Mentors Desktop View-->
             <ion-grid *ngIf="myMentors && myMentors.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
@@ -393,8 +393,8 @@
             </div>-->
 
             <!--Mentees Mobile View-->
-            <swiper-container class="relationship-slides" [slidesPerView]="'auto'" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 129"  *ngIf="myMentees && myMentees.length && platform.width() < 768">
-              <swiper-slide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;" [hidden]="!(relationship.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || relationship.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase()))">
+            <swiper class="relationship-slides" [slidesPerView]="'auto'" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 129"  *ngIf="myMentees && myMentees.length && platform.width() < 768">
+              <ng-template swiperSlide class="relationship-slide" *ngFor="let relationship of myMentees; trackBy: customTrackBy;">
                 <ion-card class="relationship-card" (click)="openProgram($event, relationship)">
                   <ion-card-header class="ion-no-padding">
                     <div class="relationship-photo-container ion-justify-content-center">
@@ -419,8 +419,8 @@
                     </ion-row>
                   </ion-card-content>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
             <!--Mentees Desktop View-->
             <ion-grid *ngIf="myMentees && myMentees.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
@@ -491,8 +491,8 @@
             </div>
 
             <!--Group Mobile View-->
-            <swiper-container class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150"  *ngIf="groups && groups.length && platform.width() < 768">
-              <swiper-slide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy" [hidden]="!((group.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || group.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+            <swiper class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150"  *ngIf="groups && groups.length && platform.width() < 768">
+              <ng-template swiperSlide class="program-slide" *ngFor="let group of groups; trackBy: customTrackBy">
                 <ion-card class="program-card" (click)="openProgram($event, group)">
                   <ion-card-header class="ion-no-padding">
                     <div class="program-photo-container">
@@ -501,8 +501,8 @@
                   </ion-card-header>
                   <div class="program-name">{{group.matrix_string[0][0]}}</div>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
             <!--Group Desktop View-->
             <ion-grid *ngIf="groups && groups.length && platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
@@ -529,8 +529,8 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
             </ion-item>
-            <swiper-container class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150"  *ngIf="platform.width() < 768">
-              <swiper-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))">
+            <swiper class="program-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true" [slidesOffsetAfter]="this.platform.width() - 150"  *ngIf="platform.width() < 768">
+              <ng-template swiperSlide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
                 <ion-card class="program-card" (click)="openProgram($event, program)">
                   <ion-card-header class="ion-no-padding">
                     <div class="program-photo-container">
@@ -539,8 +539,8 @@
                   </ion-card-header>
                   <div class="program-name">{{program.matrix_string[0][0]}}</div>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
             <ion-grid *ngIf="platform.width() >= 768">
               <ion-row class="ion-justify-content-start">
                 <ion-col class="ion-align-self-center" *ngFor="let program of programs; trackBy: customTrackBy" [hidden]="!((program.matrix_string[0][0].toLowerCase().includes(searchKeyword.toLowerCase()) || program.resource['en-US'].value[0].toLowerCase().includes(searchKeyword.toLowerCase())))" size="auto">

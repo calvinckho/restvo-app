@@ -77,9 +77,9 @@
               <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
             </ion-button>
           </ion-buttons>
-          <swiper-container id="welcomeSlides" pager class="ion-padding-bottom">
+          <swiper id="welcomeSlides" pager class="ion-padding-bottom">
             <!--Intro slide 1-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-list>
                 <ion-item class="ion-justify-content-center intro-graphics" style="margin-left: 2%; margin-right: 2%" lines="none">
                   <div class="graphics-container">
@@ -93,9 +93,9 @@
                   <p class="intro-description">Restvo helps you discover new mentors</p>
                 </ion-row>
               </ion-list>
-            </swiper-slide>
+            </ng-template>
             <!--Intro slide 2-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-list>
                 <ion-item class="ion-justify-content-center intro-graphics" style="margin-left: 7%; margin-right: 7%" lines="none">
                   <div class="graphics-container">
@@ -109,9 +109,9 @@
                   <p class="intro-description">Invest in relationship that fosters growth.</p>
                 </ion-row>
               </ion-list>
-            </swiper-slide>
+            </ng-template>
             <!--Intro slide 3-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-list>
                 <ion-item class="ion-justify-content-center intro-graphics" lines="none">
                   <div class="graphics-container">
@@ -125,8 +125,8 @@
                   <p class="intro-description">It is better to do it with others.</p>
                 </ion-row>
               </ion-list>
-            </swiper-slide>
-          </swiper-container>
+            </ng-template>
+          </swiper>
           <ion-row class="form">
             <ion-col>
               <ion-button shape="round" fill="outline clear" (click)="loadRegisterSlides()" id="leaveWelcomeSlides">Sign up</ion-button>
@@ -141,10 +141,10 @@
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
         <ion-col size-sm="12" size-md="7" class="full-height">
-          <swiper-container id="createAccount" [initialSlide]="this.slide ? this.slide : 0" scrollbar (ionSlidesDidLoad)="registerSlidesLoaded()">
+          <swiper id="registerSlides" [initialSlide]="this.slide ? this.slide : 0" scrollbar (init)="registerSlidesLoaded($event)">
             <!--First Name-->
             <!--slide index 0-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <ion-list lines="none" class="form">
@@ -284,10 +284,10 @@
                   </ion-list>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--Verify SMS-->
             <!--Slide index 1-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <form [formGroup]="verifyCodeForm"  class="form">
@@ -318,10 +318,10 @@
                   </form>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--My Email-->
             <!--Slide index 2-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <form [formGroup]="emailForm" class="form">
@@ -348,10 +348,10 @@
                   </form>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--Pick Password-->
               <!--Slide index 3-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <form [formGroup]="passForm" class="form">
@@ -397,10 +397,10 @@
                   </form>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--Upload Photo-->
             <!--Slide index 4-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <ion-list class="form">
@@ -427,10 +427,10 @@
                   </ion-list>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--Upload Contacts (not used)-->
             <!--Slide index 5-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <div class="form">
@@ -451,10 +451,10 @@
                   </div>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
+            </ng-template>
             <!--Slide Index 6-->
             <!--Mobile Phone-->
-            <swiper-slide>
+            <ng-template swiperSlide>
               <ion-grid class="full-height">
                 <ion-row class="ion-align-items-center full-height">
                   <form [formGroup]="mobileForm" class="form">
@@ -491,8 +491,8 @@
                   </form>
                 </ion-row>
               </ion-grid>
-            </swiper-slide>
-          </swiper-container>
+            </ng-template>
+          </swiper>
         </ion-col>
 
         <ion-col class="right-signUp" *ngIf="platform.width() >= 768">

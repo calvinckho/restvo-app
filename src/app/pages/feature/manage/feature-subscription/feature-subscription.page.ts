@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {
   ActionSheetController,
   AlertController,
@@ -33,6 +33,7 @@ import {Response} from '../../../../services/response.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {PaymentService} from '../../../../services/payment.service';
 import {CacheService} from 'ionic-cache';
+import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-feature-subscription',
@@ -44,7 +45,7 @@ import {CacheService} from 'ionic-cache';
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild(StripeCardComponent) card: StripeCardComponent;
-  @ViewChild('swiper') slides: ElementRef | undefined;
+  @ViewChild('swiper') slides: SwiperComponent;
 
   @Input() modalPage: any;
   stripeService: StripeInstance;
@@ -142,8 +143,11 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
     }
   }
 
-  onSlidesLoaded () {
-    this.slides?.nativeElement.allowTouchMove(true);
+  onSlidesLoaded (event) {
+    const [swiper] = event;
+    if (swiper) {
+      swiper.disable();
+    }
   }
 
   reloadEditPage = async () => { // refresh the Edit Page
@@ -153,17 +157,17 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   }
 
   prevSlide() {
-    this.slides?.nativeElement.allowTouchMove(false);
-    this.slides?.nativeElement.swiper.slidePrev();
+    this.slides?.swiperRef.enable();
+    this.slides?.swiperRef.slidePrev();
     this.content.scrollToTop();
-    this.slides?.nativeElement.allowTouchMove(true);
+    this.slides?.swiperRef.disable();
   }
 
   nextSlide() {
-    this.slides?.nativeElement.allowTouchMove(false);
-    this.slides?.nativeElement.swiper.slideNext();
+    this.slides?.swiperRef.enable();
+    this.slides?.swiperRef.slideNext();
     this.content.scrollToTop();
-    this.slides?.nativeElement.allowTouchMove(true);
+    this.slides?.swiperRef.disable();
   }
 
   async selectPlan(plan) {

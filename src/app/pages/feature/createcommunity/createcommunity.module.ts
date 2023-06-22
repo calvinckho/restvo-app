@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { CreatecommunityPage } from './createcommunity.page';
 import {ApplicationPipesModule} from '../../../pipes/application-pipes';
 import {PlyrModule} from 'ngx-plyr';
+import { SwiperModule } from 'swiper/angular';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     IonicModule,
     ApplicationPipesModule,
     PlyrModule,
+    SwiperModule,
     RouterModule.forChild(routes)
   ],
   declarations: [CreatecommunityPage]

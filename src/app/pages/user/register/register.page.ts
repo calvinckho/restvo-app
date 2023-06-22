@@ -10,6 +10,7 @@ import { Chat } from '../../../services/chat.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {Moment} from '../../../services/moment.service';
 import {Location} from '@angular/common';
+import { SwiperComponent } from "swiper/angular";
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,8 @@ export class RegisterPage implements OnInit {
     @Input() modalPage: any;
     @Input() slide: any;
     @Input() loginStatus = '';
-    @ViewChild('welcomeSlides') slides: ElementRef | undefined;
+    @ViewChild('welcomeSlides', { static: false }) slides?: SwiperComponent;
+    @ViewChild('registerSlides', { static: false }) regSlides?: SwiperComponent;
 
     public loginForm: UntypedFormGroup;
     view = 'signin';
@@ -348,24 +350,24 @@ export class RegisterPage implements OnInit {
             this.location.back();
             // this.router.navigateByUrl('/app/dashboard');
         } else {
-            await this.slides?.nativeElement.allowTouchMove(false);
-            await this.slides?.nativeElement.swiper.slidePrev();
-            await this.slides?.nativeElement.allowTouchMove(true);
+            await this.slides?.swiperRef.enable();
+            await this.slides?.swiperRef.slidePrev();
+            await this.slides?.swiperRef.disable();
         }
     }
 
     async nextSlide() {
         if (!this.nameForm.get('first_name').errors && !this.nameForm.get('last_name').errors) { // ensure first name and last name have no error
-            await this.slides?.nativeElement.allowTouchMove(false);
-            await this.slides?.nativeElement.swiper.slideNext();
-            await this.slides?.nativeElement.allowTouchMove(true);
+            await this.slides?.swiperRef.enable();
+            await this.slides?.swiperRef.slideNext();
+            await this.slides?.swiperRef.disable();
         }
     }
 
     async goToSlide(number) {
-        await this.slides?.nativeElement.allowTouchMove(false);
-        await this.slides?.nativeElement.swiper.slideTo(number);
-        await this.slides?.nativeElement.allowTouchMove(true);
+        await this.slides?.swiperRef.enable();
+        await this.slides?.swiperRef.slideTo(number);
+        await this.slides?.swiperRef.disable();
     }
 
     async loadRegisterSlides() {
@@ -375,9 +377,13 @@ export class RegisterPage implements OnInit {
         }, 2000);
     }
 
-    async registerSlidesLoaded() {
-        await this.slides?.nativeElement.allowTouchMove(true);
-        this.ionSpinner = false;
+    async registerSlidesLoaded(event) {
+        const [swiper] = event;
+        console.log("reg loaded", swiper);
+        if (swiper) {
+            await swiper.disable();
+            this.ionSpinner = false;
+        }
     }
 
     async login() {

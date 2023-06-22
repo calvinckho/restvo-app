@@ -17,8 +17,8 @@
 </ion-header>
 
 <ion-content>
-  <swiper-container id="swiper" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slidechangetransitionstart)="slideChanges()">
-    <swiper-slide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
+  <swiper id="swiper" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slidechangetransitionstart)="slideChanges($event)">
+    <ng-template swiperSlide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->
         <ion-row class="ion-justify-content-center slide-row" [ngClass]="{'slide-row-align': !((item === 40010) || (item == 40000 || item == 40020) && interactableDisplay[moment.resource.matrix_number[2][i + moment.resource.matrix_number[0].indexOf(20010) + 1]].length > 4)}">
@@ -99,8 +99,8 @@
               </ion-grid>
               <!--Slideshow and has two or more items-->
               <div *ngIf="moment.matrix_number[i + moment.resource.matrix_number[0].indexOf(20010) + 1][0] === 2 && moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1]?.length > 1">
-                <swiper-container #mediaSlides pager="true" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
-                  <swiper-slide *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
+                <swiper #mediaSlides pager="true" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
+                  <ng-template swiperSlide *ngFor="let url of moment.matrix_string[i + moment.resource.matrix_number[0].indexOf(20010) + 1] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
                     <ion-thumbnail class="thumbnail-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                       <ion-img [src]="url"></ion-img>
                     </ion-thumbnail>
@@ -113,8 +113,8 @@
                     <div *ngIf="(['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()" plyrType="audio" [plyrCrossOrigin]="false"></div>
                     <div *ngIf="(['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container slideshow" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
                     <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" [ngClass]="{'slideshow': platform.width() >=768 }" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i + moment.resource.matrix_number[0].indexOf(20010) + 1)" (click)="$event.stopPropagation()"></div>
-                  </swiper-slide>
-                </swiper-container>
+                  </ng-template>
+                </swiper>
               </div>
             </div>
             <!--Photo Viewer-->
@@ -346,8 +346,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </swiper-slide>
-  </swiper-container>
+    </ng-template>
+  </swiper>
   <div *ngIf="loadCompleted && reachedEnd" style="height: 100%"><!--[ngStyle]="{'height': (platform.width() < 768) ? '65vh' : '75vh'}">-->
     <ion-row class="ion-justify-content-center ion-align-items-center slide-row" style="height: 100%">
       <ion-item lines="none">You have completed the onboarding process.</ion-item>

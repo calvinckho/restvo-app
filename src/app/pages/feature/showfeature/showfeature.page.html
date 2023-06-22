@@ -520,8 +520,8 @@
             <ion-item lines="none" class="ion-no-margin">
               <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">{{goal[5]}}</ion-label>
             </ion-item>
-            <swiper-container #lessonSlides class="lesson-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 124" [initialSlide]="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'index', scheduleIds: scheduleIds, goal: goal })">
-              <swiper-slide class="lesson-slide" *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'filteredcalendaritems', scheduleIds: scheduleIds, goal: goal }); index as i; trackBy: customTrackBy">
+            <swiper #lessonSlides class="lesson-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 124" [initialSlide]="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'index', scheduleIds: scheduleIds, goal: goal })">
+              <ng-template swiperSlide class="lesson-slide" *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'filteredcalendaritems', scheduleIds: scheduleIds, goal: goal }); index as i; trackBy: customTrackBy">
                 <ion-card class="lesson-card" (click)="openContent($event, calendarItem)">
                   <ion-card-content class="ion-no-padding ion-padding-top">
                     <div class="lesson-title">{{calendarItem.title}}</div>
@@ -532,8 +532,8 @@
                     </ion-button>
                   </ion-card-content>
                 </ion-card>
-              </swiper-slide>
-            </swiper-container>
+              </ng-template>
+            </swiper>
           </div>
         </div>
       </div>
@@ -561,8 +561,8 @@
         <!--Slideshow and has two or more items-->
         <div *ngIf="moment.matrix_number[i][0] === 2 && moment.matrix_string[i]?.length > 1">
           <!--<div class="media-swiper-button-prev swiper-button-prev swiper-button-white" (click)="mediaSlides.slidePrev()" [hidden]="disableMediaPrevBtn || (this.platform.width() < 768)"></div>-->
-          <swiper-container #mediaSlides pager="true" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 150" >
-            <swiper-slide *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
+          <swiper #mediaSlides pager="true" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 150" >
+            <ng-template swiperSlide *ngFor="let url of moment.matrix_string[i] | slice: ((item === 10010 || item === 40010) ? 11 : 0)" class="ion-justify-content-center">
               <ion-thumbnail class="photo-item" (click)="focusPhoto($event, url)" *ngIf="(['jpg', 'jpeg', 'gif', 'png']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())">
                 <ion-img [src]="url"></ion-img>
               </ion-thumbnail>
@@ -575,8 +575,8 @@
               <div *ngIf="loadStatus === 'completed' && (['mp3']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="audio-container" plyr [plyrSources]="[{ 'src': url, 'type': 'audio/' + url.substring(url.lastIndexOf('.') + 1).toLowerCase() }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (plyrLoadedMetadata)="setPlyrCurrentTime('audio', i)" (plyrPause)="savePlyrCurrentTime(i)" plyrType="audio" [plyrCrossOrigin]="false"></div>
               <div *ngIf="loadStatus === 'completed' && (['mp4', 'webm', 'ogg', 'mov']).includes(url.substring(url.lastIndexOf('.') + 1).toLowerCase())" class="video-container" plyr [plyrSources]="[{ 'src': url, 'type': 'video/' + (url.substring(url.lastIndexOf('.') + 1).toLowerCase() === 'mov' ? 'mp4' : url.substring(url.lastIndexOf('.') + 1).toLowerCase()) }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (plyrLoadedMetadata)="setPlyrCurrentTime('video', i)" (plyrPlay)="mediaSlides.stopAutoplay()" (plyrPause)="savePlyrCurrentTime(i)" (plyrEnterFullScreen)="showHeader = false" (plyrExitFullScreen)="showHeader = true"></div>
               <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (plyrPlay)="mediaSlides.stopAutoplay()" (plyrReady)="setPlyrCurrentTime('youtube', i)" (plyrPause)="savePlyrCurrentTime(i)" (plyrEnterFullScreen)="showHeader = false" (plyrExitFullScreen)="showHeader = true"></div>
-            </swiper-slide>
-          </swiper-container>
+            </ng-template>
+          </swiper>
           <!--<div class="media-swiper-button-next swiper-button-next swiper-button-white" (click)="mediaSlides.slideNext()" [hidden]="disableMediaNextBtn || (this.platform.width() < 768)"></div>-->
         </div>
       </div>
@@ -669,8 +669,8 @@
         </div>
       </div>
       <div class="component" *ngIf="item === 10370"> <!--References-->
-        <swiper-container class="program-slides" #plansSlides [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
-          <swiper-slide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
+        <swiper class="program-slides" #plansSlides [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
+          <ng-template swiperSlide class="program-slide" *ngFor="let program of planModules; trackBy: customTrackBy">
             <ion-card class="program-card" (click)="openProgram($event, program)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
               <ion-card-content class="ion-no-padding">
                 <div class="program-photo-container">
@@ -679,8 +679,8 @@
               </ion-card-content>
               <div class="program-name">{{program.matrix_string[0][0]}}</div>
             </ion-card>
-          </swiper-slide>
-        </swiper-container>
+          </ng-template>
+        </swiper>
       </div>
       <div class="component" *ngIf="item === 11000 && moment.matrix_number[i][0] && moment.conversation"> <!--Show Chat-->
         <ion-buttons class="ion-justify-content-center" *ngIf="preloadedMessages.length">
@@ -992,9 +992,9 @@
           <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
-          <div class="swiper-button-prev swiper-button-white" (click)="peopleSlides.slidePrev()" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
-          <swiper-container class="person-slides" #peopleSlides (ionSlideDidChange)="swipePeopleSlide()" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
-            <swiper-slide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
+          <div class="swiper-button-prev swiper-button-white" (click)="peopleSlides.swiperRef.slidePrev()" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <swiper class="person-slides" #peopleSlides (activeIndexChange)="swipePeopleSlide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
+            <ng-template swiperSlide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
               <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header>
                   <div class="person-photo-container">
@@ -1023,8 +1023,8 @@
                   </ion-item>
                 </ion-card-content>
               </ion-card>
-            </swiper-slide>
-            <swiper-slide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
+            </ng-template>
+            <ng-template swiperSlide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
               <ion-card class="person-card" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header>
                   <div class="person-photo-container">
@@ -1047,9 +1047,9 @@
                   </ion-item>
                 </ion-card-content>
               </ion-card>
-            </swiper-slide>
-          </swiper-container>
-          <div class="swiper-button-next swiper-button-white" (click)="peopleSlides.slideNext()" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+            </ng-template>
+          </swiper>
+          <div class="swiper-button-next swiper-button-white" (click)="peopleSlides.swiperRef.slideNext()" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
         </div>
         <!--List-->
         <div *ngIf="moment.matrix_number[i][3] === 1">
@@ -1112,8 +1112,8 @@
       <ion-item color="secondary" lines="none" class="section"> <!--Featured Section Header-->
         <ion-label color="dark" class="section-label">Featured</ion-label>
       </ion-item>
-      <swiper-container class="program-slides" #programsSlides (ionSlideDidChange)="swipeProgramslide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
-        <swiper-slide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
+      <swiper class="program-slides" #programsSlides (activeIndexChange)="swipeProgramslide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
+        <ng-template swiperSlide class="program-slide" *ngFor="let program of programs; trackBy: customTrackBy">
           <ion-card class="program-card" (click)="openProgram($event, program)">
             <ion-card-header class="ion-no-padding">
               <div class="program-photo-container">
@@ -1122,8 +1122,8 @@
             </ion-card-header>
             <div class="program-name">{{program.matrix_string[0][0]}}</div>
           </ion-card>
-        </swiper-slide>
-      </swiper-container>
+        </ng-template>
+      </swiper>
     </div>
   </ion-list>
   <!--Space to create cushion for the Fab buttons-->

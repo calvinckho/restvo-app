@@ -13,6 +13,7 @@ import {Chat} from '../../../services/chat.service';
 import {Location} from '@angular/common';
 import {Auth} from '../../../services/auth.service';
 import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
+import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-onboardfeature',
@@ -23,7 +24,7 @@ import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
 export class OnboardfeaturePage {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('swiper') slides: ElementRef | undefined;
+    @ViewChild('swiper') slides: SwiperComponent | undefined;
 
     @Input() modalPage: any;
     @Input() programId: any;
@@ -136,9 +137,9 @@ export class OnboardfeaturePage {
             this.ionSpinner = false;
             setTimeout(async () => {
                 if (this.slides) {
-                    await this.slides?.nativeElement.swiper.update();
-                    await this.slides?.nativeElement.swiper.slideTo(0);
-                    await this.slides?.nativeElement.allowTouchMove(true);
+                    await this.slides?.swiperRef.update();
+                    await this.slides?.swiperRef.slideTo(0);
+                    await this.slides?.swiperRef.enable();
                 }
             }, 50);
         } else {
@@ -414,9 +415,10 @@ export class OnboardfeaturePage {
         }, 1500);
     }
 
-    async slideChanges() {
-        if (this.slides) {
-            const currentSlideIndex = this.slides?.nativeElement.swiper.activeIndex;
+    async slideChanges(event) {
+        const [swiper] = event;
+        if (swiper) {
+            const currentSlideIndex = swiper.activeIndex;
             // if slide from the last slide
             // console.log("change", currentSlideIndex, this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1);
             if (currentSlideIndex >= this.moment.resource.matrix_number[0].slice(this.moment.resource.matrix_number[0].indexOf(20010) + 1).length - 1) {
@@ -427,13 +429,13 @@ export class OnboardfeaturePage {
 
     clickNextButton(direction) {
         if (!this.moment) { return; }
-        this.slides?.nativeElement.swiper.allowTouchMove(false);
+        this.slides?.swiperRef.enable();
         if (direction === 'prev') {
-            this.slides?.nativeElement.swiper.slidePrev();
+            this.slides?.swiperRef.slidePrev();
         } else {
-            this.slides?.nativeElement.swiper.slideNext();
+            this.slides?.swiperRef.slideNext();
         }
-        this.slides?.nativeElement.swiper.allowTouchMove(true);
+        this.slides?.swiperRef.enable();
     }
 
     async seeUserInfo(event, user) {
