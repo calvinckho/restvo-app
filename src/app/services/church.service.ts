@@ -6,6 +6,7 @@ import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import {Board} from "./board.service";
+import {lastValueFrom} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Churches {
@@ -23,22 +24,22 @@ export class Churches {
     }
 
     findOnMap(userLocation, searchKeyword, searchRadius, searchType, pageNum, communityFilter) {
-        return this.http.get(this.networkService.domain + '/api/church/findonmap?lat=' + userLocation.lat + '&lng=' + userLocation.lng + '&keyword=' + searchKeyword + '&radius=' + searchRadius + '&type=' + searchType + '&page=' + pageNum + '&community=' + communityFilter, this.authService.httpOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/findonmap?lat=' + userLocation.lat + '&lng=' + userLocation.lng + '&keyword=' + searchKeyword + '&radius=' + searchRadius + '&type=' + searchType + '&page=' + pageNum + '&community=' + communityFilter, this.authService.httpOptions)
+            );
     }
 
     loadListOfChurchProfiles(searchPhrase) {
-        return this.http.get(this.networkService.domain + '/api/church/search/' + searchPhrase, this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/search/' + searchPhrase, this.authService.httpAuthOptions)
+            );
     }
 
     loadAllChurchProfiles(searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/church?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions));
     }
 
     loadChurchProfile(id) {
-        return this.http.get<[any]>(this.networkService.domain + '/api/church/load/' + id, this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get<[any]>(this.networkService.domain + '/api/church/load/' + id, this.authService.httpAuthOptions)
+            );
     }
 
     async reportUserAbuse(reportedUser) {
@@ -70,16 +71,16 @@ export class Churches {
                 reportedAt: new Date()
             }
         };
-        await this.http.post(this.networkService.domain + '/api/church/reportUserAbuse', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        await lastValueFrom(this.http.post(this.networkService.domain + '/api/church/reportUserAbuse', JSON.stringify(data), this.authService.httpAuthOptions));
     }
 
     async checkAbuseReport(id) {
-        this.abuseReports = await this.http.get(this.networkService.domain + '/api/church/checkabusereport/' + id, this.authService.httpAuthOptions).toPromise();
+        this.abuseReports = await lastValueFrom(this.http.get(this.networkService.domain + '/api/church/checkabusereport/' + id, this.authService.httpAuthOptions));
     }
 
     async clearAbuseReport(churchId, recipient) {
-        const promise = await this.http.put(this.networkService.domain + '/api/church/clearabusereport/' + churchId, JSON.stringify({reportedUser: recipient}), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/church/clearabusereport/' + churchId, JSON.stringify({reportedUser: recipient}), this.authService.httpAuthOptions)
+            );
         this.userData.refreshUserStatus({ type: 'refresh manage page' }); //send to self to update managecommunities page
         this.userData.refreshUserStatus({ type: 'update member' });  //send to self to update manage-members page
         this.userData.socket.emit('refresh user status', this.userData.user._id, { type: 'update member' }); //send to other devices to update manage-members page
@@ -87,51 +88,51 @@ export class Churches {
     }
 
     loadChurchAppUsers(churchId, searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/church/appusers/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString(), this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/appusers/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString(), this.authService.httpAuthOptions)
+            );
     }
 
     loadListOfChurchMembersProfiles(churchId, searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/church/loadmembers/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString(), this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/loadmembers/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString(), this.authService.httpAuthOptions)
+            );
     }
 
     loadChurchGroupProfiles(id, published) {
-        return this.http.get(this.networkService.domain + '/api/church/loadgroups/' + id + '?published=' + published, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/loadgroups/' + id + '?published=' + published, this.authService.httpAuthOptions));
     }
 
     loadAllChurchGroupProfiles(churchId) {
-        return this.http.get(this.networkService.domain + '/api/church/loadallgroups/' + churchId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/loadallgroups/' + churchId, this.authService.httpAuthOptions));
     }
 
     loadAllCommunityActivities(churchId, searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/church/activities/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum + '&version=1', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/activities/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum + '&version=1', this.authService.httpAuthOptions));
     }
 
     async createChurchProfile(church) {
-        let promise = await this.http.post(this.networkService.domain + '/api/church/create', JSON.stringify(church), this.authService.httpAuthOptions)
-            .toPromise();
+        let promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/church/create', JSON.stringify(church), this.authService.httpAuthOptions)
+            );
         await this.userData.load();
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'update church participation'});
         return promise;
     }
 
     updateChurchProfile(profile) {
-        return this.http.put(this.networkService.domain + '/api/church/update', JSON.stringify(profile), this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/church/update', JSON.stringify(profile), this.authService.httpAuthOptions)
+            );
     }
 
     addAdmin(churchId, admin) {
-        return this.http.put(this.networkService.domain + '/api/church/addadmin/' + churchId, JSON.stringify(admin), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/church/addadmin/' + churchId, JSON.stringify(admin), this.authService.httpAuthOptions));
     }
 
     removeAdmin(churchId, admin) {
-        return this.http.put(this.networkService.domain + '/api/church/removeadmin/' + churchId, JSON.stringify(admin), this.authService.httpAuthOptions).toPromise()
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/church/removeadmin/' + churchId, JSON.stringify(admin), this.authService.httpAuthOptions))
     }
 
     async editCommunityBoard(data) {
-        const promise = await this.http.put<string>(this.networkService.domain + '/api/church/editchurchboard', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put<string>(this.networkService.domain + '/api/church/editchurchboard', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         await this.userData.load();
         this.userData.communitiesboards = await this.boardService.loadUserChurchBoards(); //in case of a board group
         this.userData.socket.emit('refresh user status', this.userData.user._id, {
@@ -142,25 +143,25 @@ export class Churches {
     };
 
     inviteNewAppUsers(data) {
-        return this.http.post(this.networkService.domain + '/api/church/inviteNewAppUsers', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/church/inviteNewAppUsers', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
     }
 
     invitePendingMembers(data) {
-        return this.http.post(this.networkService.domain + '/api/church/invitePendingMembers', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/church/invitePendingMembers', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
     }
 
     approveCommunity(id) {
-        return this.http.put(this.networkService.domain + '/api/church/approve/' + id, {}, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/church/approve/' + id, {}, this.authService.httpAuthOptions));
     }
 
     unlistCommunity(id) {
-        return this.http.put(this.networkService.domain + '/api/church/unlist/' + id, {}, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/church/unlist/' + id, {}, this.authService.httpAuthOptions));
     }
 
     getAppUserUsage(id) {
-        return this.http.get(this.networkService.domain + '/api/church/appusersusage/' + id, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/appusersusage/' + id, this.authService.httpAuthOptions));
     }
 }
 

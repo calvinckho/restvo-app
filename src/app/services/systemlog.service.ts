@@ -5,6 +5,7 @@ import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import {Platform} from '@ionic/angular';
+import {lastValueFrom} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Systemlog {
@@ -26,7 +27,7 @@ export class Systemlog {
         if (this.platform.is('cordova')) {
             data.appVersionNumber = await this.appVersion.getVersionNumber();
         }
-        return this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions));
     }
 
     async logMessage(data) {
@@ -34,11 +35,11 @@ export class Systemlog {
         if (this.platform.is('cordova')) {
             data.appVersionNumber = await this.appVersion.getVersionNumber();
         }
-        return this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/systemlog/appusage?version=1', JSON.stringify(data), this.authService.httpAuthOptions));
     }
 
     async loadMetrics(activityId, durationUnit, durationValue) {
-        // return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=month&type=activity&durationValue=1&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions).toPromise();
-        return this.http.get(this.networkService.domain + `/api/systemlog/loadmetrics?durationUnit=${durationUnit}&type=activity&durationValue=${durationValue}&timeMeasurement=day&topic=Load Activity&activity=` + activityId, this.authService.httpAuthOptions).toPromise();
+        // return this.http.get(this.networkService.domain + '/api/systemlog/loadmetrics?durationUnit=month&type=activity&durationValue=1&timeMeasurement=day&topic=Load Activity&activity=' + activityId, this.authService.httpAuthOptions));
+        return lastValueFrom(this.http.get(this.networkService.domain + `/api/systemlog/loadmetrics?durationUnit=${durationUnit}&type=activity&durationValue=${durationValue}&timeMeasurement=day&topic=Load Activity&activity=` + activityId, this.authService.httpAuthOptions));
     }
 }

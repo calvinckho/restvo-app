@@ -10,6 +10,7 @@ import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 import {Resource} from './resource.service';
+import {lastValueFrom} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Aws {
@@ -320,7 +321,7 @@ export class Aws {
     }
 
     public async removeFile(url) {
-        return this.http.put(this.networkService.domain + '/api/aws/remove', JSON.stringify({url: url}), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/aws/remove', JSON.stringify({url: url}), this.authService.httpAuthOptions));
     }
 
     public base64ToBlob(dataURI) {

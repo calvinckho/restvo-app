@@ -8,6 +8,7 @@ import { UserData } from './user.service';
 import * as io from 'socket.io-client';
 
 import { NetworkService } from './network-service.service';
+import {lastValueFrom} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Board {
@@ -59,15 +60,15 @@ export class Board {
     }
 
     loadUserChurchBoardsHTTP() {
-        return this.http.get(this.networkService.domain + '/api/auth/loaduserchurchboards?sort=true', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/loaduserchurchboards?sort=true', this.authService.httpAuthOptions));
     }
 
     loadBoard(boardId) {
-        return this.http.get(this.networkService.domain + '/api/board/' + boardId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/board/' + boardId, this.authService.httpAuthOptions));
     }
 
     loadBoardBuckets(boardId, searchKeyword, pageNum) {
-        return this.http.get<[any]>(this.networkService.domain + '/api/board/buckets/' + boardId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString() , this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get<[any]>(this.networkService.domain + '/api/board/buckets/' + boardId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString() , this.authService.httpAuthOptions));
     }
 
     loadBoardBucket(bucketId, postId){

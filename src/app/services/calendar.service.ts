@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
+import {lastValueFrom} from "rxjs";
 
 @Injectable()
 export class CalendarService {
@@ -41,18 +42,18 @@ export class CalendarService {
     async loadRelationshipContentCalendars(relationshipId, authenticationStrategy) {
         let promise: any;
         if (authenticationStrategy && this.authService.token) {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
-                .toPromise();
+            promise = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/relationship/contentcalendars/' + relationshipId, this.authService.httpAuthOptions)
+                );
         } else {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/relationship/publiccontentcalendars/' + relationshipId, this.authService.httpOptions)
-                .toPromise();
+            promise = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/relationship/publiccontentcalendars/' + relationshipId, this.authService.httpOptions)
+                );
         }
         return promise;
     }
 
     getAllUserCalendarItemIds() {
-        return this.http.get<[{_id: string}]>(this.networkService.domain + '/api/auth/calendaritemids', this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get<[{_id: string}]>(this.networkService.domain + '/api/auth/calendaritemids', this.authService.httpAuthOptions)
+            );
     }
 
     async getUserCalendar() {
@@ -106,8 +107,8 @@ export class CalendarService {
 
     async fetchLatestCalendarItems(lastUpdatedAt){
         const urlString = lastUpdatedAt ? '?lastUpdatedAt=' + new Date(lastUpdatedAt).getTime() : '';
-        return this.http.get<[any]>(this.networkService.domain + '/api/auth/calendaritems' + urlString, this.authService.httpAuthOptions)
-            .toPromise();
+        return lastValueFrom(this.http.get<[any]>(this.networkService.domain + '/api/auth/calendaritems' + urlString, this.authService.httpAuthOptions)
+            );
     }
 
     findLatestTimeStamp(calendarItems){

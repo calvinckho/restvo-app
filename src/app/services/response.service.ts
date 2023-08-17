@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Auth } from './auth.service';
 
 import { NetworkService } from './network-service.service';
+import {lastValueFrom} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class Response {
 
     findResponsesByMomentId(momentId, relationshipId, calendarId) {
         if (this.authService.token) {
-            return this.http.get<any>(this.networkService.domain + '/api/moment/findresponsesbymomentid/' + momentId + '?relationshipId=' + (relationshipId || '') + '&calendarId=' + (calendarId || '') + '&version=1', this.authService.httpAuthOptions).toPromise();
+            return lastValueFrom(this.http.get<any>(this.networkService.domain + '/api/moment/findresponsesbymomentid/' + momentId + '?relationshipId=' + (relationshipId || '') + '&calendarId=' + (calendarId || '') + '&version=1', this.authService.httpAuthOptions));
         } else {
             return [];
         }
@@ -24,15 +25,15 @@ export class Response {
     }
 
     submit(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions));
     };
 
     submitDependentResponse(data) {
-        return this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post<any>(this.networkService.domain + '/api/moment/submitresponse?version=1', JSON.stringify(data), this.authService.httpAuthOptions));
     };
 
     deleteResponse(responseId) {
-        return this.http.delete(this.networkService.domain + '/api/moment/response/' + responseId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.delete(this.networkService.domain + '/api/moment/response/' + responseId, this.authService.httpAuthOptions));
     }
 }
 

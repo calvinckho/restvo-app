@@ -12,7 +12,7 @@ import { NetworkService } from './network-service.service';
 import * as io from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import {SuccessPopoverPage} from '../pages/feature/success-popover/success-popover.page';
-import { Observable, BehaviorSubject } from 'rxjs';
+import {Observable, BehaviorSubject, lastValueFrom} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {PaymentService} from './payment.service';
 import {Router} from '@angular/router';
@@ -137,9 +137,9 @@ export class Moment {
     async load(id) {
         let promise: any;
         if (this.authService.token) {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions).toPromise();
+            promise = lastValueFrom(await this.http.get(this.networkService.domain + '/api/moment/' + id, this.authService.httpAuthOptions));
         } else {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions).toPromise();
+            promise = lastValueFrom(await this.http.get(this.networkService.domain + '/api/moment/public/' + id, this.authService.httpOptions));
         }
         return promise;
     }
@@ -171,53 +171,53 @@ export class Moment {
     }
 
     loadUserPreferences(pageNum, programId, type) {
-        return this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=' + pageNum + '&programId=' + (programId || '') + '&type=' + (type || ''), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=' + pageNum + '&programId=' + (programId || '') + '&type=' + (type || ''), this.authService.httpAuthOptions));
     }
 
     loadProgramOnboardActivities(programId, type, returnResponses) {
-        return this.http.get(this.networkService.domain + '/api/moment/onboardactivities/' + programId + '?version=' + (returnResponses ? '1' : '') + (type ? '&type=' + type : ''), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/onboardactivities/' + programId + '?version=' + (returnResponses ? '1' : '') + (type ? '&type=' + type : ''), this.authService.httpAuthOptions));
     }
 
     loadProgramChildActivities(programId, categoryId) {
-        return this.http.get(this.networkService.domain + '/api/moment/childactivities/' + programId + '?category=' + categoryId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/childactivities/' + programId + '?category=' + categoryId, this.authService.httpAuthOptions));
     }
 
     async loadSampleActivities(categoryId) {
         let promise: any;
         if (this.authService.token) {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/samples?version=1&category=' + (categoryId || ''), this.authService.httpAuthOptions).toPromise();
+            promise = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/samples?version=1&category=' + (categoryId || ''), this.authService.httpAuthOptions));
         } else {
-            promise = await this.http.get(this.networkService.domain + '/api/moment/discover/public?version=1&category=' + (categoryId || ''), this.authService.httpOptions).toPromise();
+            promise = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/discover/public?version=1&category=' + (categoryId || ''), this.authService.httpOptions));
         }
         return promise;
     }
 
     loadNotes(relationshipId, calendarId) {
         if (this.authService.token) {
-            return this.http.get(this.networkService.domain + '/api/moment/notes?relationship=' + (relationshipId || '') + '&calendar=' + (calendarId || ''), this.authService.httpAuthOptions).toPromise();
+            return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/notes?relationship=' + (relationshipId || '') + '&calendar=' + (calendarId || ''), this.authService.httpAuthOptions));
         } else {
             return [];
         }
     }
 
     loadMatchedPeople(momentId, searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/moment/match?momentId=' + momentId + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/match?momentId=' + momentId + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions));
     }
 
     loadOnboardingFlow(momentId, searchKeyword, pageNum) { // admin only - Manage Development page
-        return this.http.get(this.networkService.domain + '/api/moment/onboarding?momentId=' + (momentId || '') + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/onboarding?momentId=' + (momentId || '') + '&searchKeyword=' + searchKeyword + '&pageNum=' + pageNum, this.authService.httpAuthOptions));
     }
 
     loadPublicActivityByCategory(categoryId, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/moment/activity/' + categoryId + '?pageNum=' + pageNum).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activity/' + categoryId + '?pageNum=' + pageNum));
     }
 
     loadPublicActivities(searchKeyword, time, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/moment/activity/v2' + '?type=moment&time=' + time + '&pageNum=' + pageNum + '&keyword=' + searchKeyword).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activity/v2' + '?type=moment&time=' + time + '&pageNum=' + pageNum + '&keyword=' + searchKeyword));
     }
 
     loadNearbyPublicActivities(searchKeyword, searchType, userLocation, pageNum, searchRadius) {
-        return this.http.get(this.networkService.domain + '/api/moment/activity/v3' + '?type=' + searchType + '&keyword=' + searchKeyword + '&page=' + pageNum + '&lat=' + userLocation.lat + '&lng=' + userLocation.lng + '&radius=' + searchRadius).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activity/v3' + '?type=' + searchType + '&keyword=' + searchKeyword + '&page=' + pageNum + '&lat=' + userLocation.lat + '&lng=' + userLocation.lng + '&radius=' + searchRadius));
     }
 
     async create(moment) {
@@ -226,8 +226,8 @@ export class Moment {
             data.resource = data.resource._id; // depopulate resource before creation
         }
         delete data.conversations; // no need to send the converastions field
-        const promise = await this.http.post(this.networkService.domain + '/api/moment/create', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/moment/create', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -235,8 +235,8 @@ export class Moment {
     }
 
     async clone(moments, optOutReason) {
-        const promises = await this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions)
-            .toPromise();
+        const promises = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions)
+            );
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -249,8 +249,8 @@ export class Moment {
             data.resource = data.resource._id; // depopulate resource before update
         }
         delete data.conversations; // no need to send the converastions field
-        const promise = await this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -258,8 +258,8 @@ export class Moment {
     }
 
     async adoptPlan(data) {
-        const promise = await this.http.put(this.networkService.domain + '/api/moment/plan/adopt', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/plan/adopt', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         this.userData.refreshAppPages();
         return promise;
@@ -333,8 +333,8 @@ export class Moment {
     }
 
     async updateMomentUserLists(data, token, refreshAppPages) {
-        const promise: any = await this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise: any = await lastValueFrom(this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         if (this.socket) this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
         if (data.operation === 'remove from lists') {
             data.users.forEach((user) => {
@@ -600,8 +600,8 @@ export class Moment {
     }
 
     async delete(moment, intent) {
-        const promise = await this.http.delete(this.networkService.domain + '/api/moment/' + moment._id + (intent === 'archive' ? '?archive=true' : ''), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.delete(this.networkService.domain + '/api/moment/' + moment._id + (intent === 'archive' ? '?archive=true' : ''), this.authService.httpAuthOptions)
+            );
         let duration = 5;
         if (this.router.url.includes('outlets')) { // just in case the subpanel view of the deleted Moment is open
             this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
@@ -624,21 +624,21 @@ export class Moment {
 
     async loadActivitySchedules(activityId) {
         if (this.authService.token) {
-            return await this.http.get(this.networkService.domain + '/api/moment/activityschedules/' + activityId, this.authService.httpAuthOptions)
-                .toPromise();
+            return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activityschedules/' + activityId, this.authService.httpAuthOptions)
+                );
         } else {
             return [];
         }
     }
 
     async loadSchedule(scheduleId) {
-        return await this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId, this.authService.httpAuthOptions)
-            .toPromise();
+        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId, this.authService.httpAuthOptions)
+            );
     }
 
     async loadProgramInsight(programId) {
-        return await this.http.get(this.networkService.domain + '/api/moment/program/insight/' + programId, this.authService.httpAuthOptions)
-            .toPromise();
+        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/program/insight/' + programId, this.authService.httpAuthOptions)
+            );
     }
 
     async touchSchedule(data, refreshPages) {
@@ -649,8 +649,7 @@ export class Moment {
         if (schedule.options && schedule.options.hasOwnProperty('recurrence') && schedule.options.recurrence === '') {
             delete schedule.options.recurrence;
         }
-        const promise = await this.http.put(this.networkService.domain + '/api/moment/schedule/touch', JSON.stringify(schedule), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/schedule/touch', JSON.stringify(schedule), this.authService.httpAuthOptions));
         if (refreshPages) {
             await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
             await this.userData.refreshAppPages();
@@ -659,8 +658,8 @@ export class Moment {
     }
 
     async touchContentCalendarItems(momentId, data) {
-        const promise = await this.http.put(this.networkService.domain + '/api/moment/contentcalendaritems/touch', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/contentcalendaritems/touch', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         const socketData = {
             type: 'refresh calendar items',
             author: {

@@ -16,7 +16,7 @@ import * as io from 'socket.io-client';
 import {User} from '../interfaces/user';
 import {Capacitor} from '@capacitor/core';
 import {Router} from '@angular/router';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, lastValueFrom, Observable} from 'rxjs';
 
 @Directive()
 @Injectable({ providedIn: 'root' })
@@ -222,7 +222,7 @@ export class UserData {
     }
 
     loadUser() {
-        return this.http.get<User>(this.networkService.domain + '/api/auth', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get<User>(this.networkService.domain + '/api/auth', this.authService.httpAuthOptions));
     }
 
     async loadStoredCommunity() {
@@ -277,7 +277,7 @@ export class UserData {
     }
 
     async checkAdminAccess(communityId) {
-        const result: any = await this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions).toPromise();
+        const result: any = await lastValueFrom(this.http.get<boolean>(this.networkService.domain + '/api/auth/hasadminaccess/' + communityId + '?version=1', this.authService.httpAuthOptions));
         this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
         this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
         if (this.activitiesWithAdminAccess.length) { // if the user has at least one admin activity
@@ -294,7 +294,7 @@ export class UserData {
     }
 
     initializeUser() {
-        return this.http.get(this.networkService.domain + '/api/auth/initialize', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/initialize', this.authService.httpAuthOptions));
     }
 
     async resetOSBadges() {
@@ -310,7 +310,7 @@ export class UserData {
     }
 
     loadPrograms(loadParticipants) {
-        return this.http.get(this.networkService.domain + '/api/auth/programs?loadParticipants=' + loadParticipants, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/programs?loadParticipants=' + loadParticipants, this.authService.httpAuthOptions));
     }
 
     async refreshDefaultActivity(momentId) {
@@ -332,11 +332,11 @@ export class UserData {
     }
 
     loadMyChurches() {
-        return this.http.get(this.networkService.domain + '/api/mychurch', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/mychurch', this.authService.httpAuthOptions));
     }
 
     loadMyAdminChurches(searchKeyword, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/mychurch/adminchurches?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum,  this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/mychurch/adminchurches?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum,  this.authService.httpAuthOptions));
     }
 
 
@@ -345,7 +345,7 @@ export class UserData {
     }
 
     loadMyFriends() {
-        return this.http.get(this.networkService.domain + '/api/auth/friends', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/friends', this.authService.httpAuthOptions));
     }
 
     loadMySystemMessages() {
@@ -353,8 +353,8 @@ export class UserData {
     }
 
     async update(profile) {
-        const promise = await this.http.put(this.networkService.domain + '/api/auth', JSON.stringify(profile), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/auth', JSON.stringify(profile), this.authService.httpAuthOptions)
+            );
         if (this.socket) { // only emit if the user socket has been setup. eg. after a user has logged in. this will be false in the registration process
             this.socket.emit('refresh user status', this.user._id, {type: 'update user info'});
         }
@@ -378,8 +378,8 @@ export class UserData {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', this.authService.token);
-        const data = await this.http.put(this.networkService.domain + '/api/mychurch', JSON.stringify(church), this.authService.httpAuthOptions)
-            .toPromise();
+        const data = await lastValueFrom(this.http.put(this.networkService.domain + '/api/mychurch', JSON.stringify(church), this.authService.httpAuthOptions)
+            );
         await this.load();
         this.currentCommunityIndex = this.user.churches.length - 1;
         this.storage.set('currentCommunityIndex', this.currentCommunityIndex.toString()); // store this for the next time the app starts up
@@ -393,14 +393,14 @@ export class UserData {
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', this.authService.token);
 
-        const promise = await this.http.put(this.networkService.domain + '/api/auth/removepending', JSON.stringify(data), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/auth/removepending', JSON.stringify(data), this.authService.httpAuthOptions)
+            );
         this.socket.emit('refresh user status', this.user._id, {type: 'update system messages'});
         return promise;
     }
 
     async leaveCommunity(id) {
-        const promise = await this.http.delete(this.networkService.domain + '/api/mychurch/' + id, this.authService.httpAuthOptions).toPromise();
+        const promise = await lastValueFrom(this.http.delete(this.networkService.domain + '/api/mychurch/' + id, this.authService.httpAuthOptions));
         this.socket.emit('refresh user status', this.user._id, {type: 'update church participation'});
         await this.load();
         await this.loadStoredCommunity();
@@ -421,8 +421,8 @@ export class UserData {
     }
 
     async joinGroupHTTP(group) {
-        const data = await this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
-            .toPromise();
+        const data = await lastValueFrom(this.http.put(this.networkService.domain + '/api/mygroup', JSON.stringify(group), this.authService.httpAuthOptions)
+            );
         await this.load();
         if (group.conversation) {
             this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation._id, group: group});
@@ -437,8 +437,8 @@ export class UserData {
 
     async acceptJoinGroupRequest(group) {
         try {
-            const data = await this.http.put(this.networkService.domain + '/api/mygroup/accept', JSON.stringify(group), this.authService.httpAuthOptions)
-                .toPromise();
+            const data = await lastValueFrom(this.http.put(this.networkService.domain + '/api/mygroup/accept', JSON.stringify(group), this.authService.httpAuthOptions)
+                );
             if (group.conversation) {
                 this.socket.emit('refresh user status', this.user._id, {type: 'update group participation', conversationId: group.conversation, group: group}); // conversationId is unpopulated ObjectId
                 this.authService.chatSocketMessage({topic: 'chat socket emit', conversationId: group.conversation, data: {action: 'update group member list'}});
@@ -611,8 +611,8 @@ export class UserData {
     }
 
     async leaveGroup(group) {
-        const promise = await this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
-            .toPromise();
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/mygroup/leave', JSON.stringify(group), this.authService.httpAuthOptions)
+            );
         await this.load();
         this.refreshUserStatus({ type: 'close group view', data: { _id: group._id }});
         if (group.conversation) {
@@ -670,7 +670,7 @@ export class UserData {
     }
 
     uploadContactListHTTP(newlyAddedContacts) {
-        return this.http.post(this.networkService.domain + '/api/contact/upload', JSON.stringify({contacts: newlyAddedContacts}), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/contact/upload', JSON.stringify({contacts: newlyAddedContacts}), this.authService.httpAuthOptions));
     }
 
     getNewlyAddedContacts() {
@@ -722,7 +722,7 @@ export class UserData {
     }
 
     loadMyOnboardingAnswers() {
-        return this.http.get(this.networkService.domain + '/api/auth/onboardinganswers', this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/onboardinganswers', this.authService.httpAuthOptions));
     }
 
     async logout() {

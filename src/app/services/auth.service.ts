@@ -7,7 +7,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import {LoadingController, Platform} from '@ionic/angular';
 
 import { NetworkService } from './network-service.service';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, lastValueFrom, Observable} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class Auth {
@@ -228,13 +228,13 @@ export class Auth {
         const type = (this.cachedRouteParams && this.cachedRouteParams.type) ? parseInt(this.cachedRouteParams.type, 10) : null; // if no type is provided via the URL, it should be set to null so it doesn't trigger the sign up process (requires programId and type)
 
         if (programId) { // check designated program's onboarding
-            onboardProcesses = await this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1&programId=' + programId + '&type=' + type, this.httpAuthOptions).toPromise();
+            onboardProcesses = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1&programId=' + programId + '&type=' + type, this.httpAuthOptions));
             this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
             designatedIncompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
         }
         // in the case if the designated onboarding is completed, check if other processes need to be completed
         if (!programId || !this.incompleteOnboardProcess) {
-            onboardProcesses = await this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1', this.httpAuthOptions).toPromise();
+            onboardProcesses = await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/preferences?pageNum=1', this.httpAuthOptions));
             this.incompleteOnboardProcess = onboardProcesses.find((m) => !m.response || (m.response.matrix_number.filter((c) => c.length > 5).length < m.resource.matrix_number[0].filter((c) => c === 40000 || c === 40020).length) || (m.response.matrix_string.filter((c) => (c.length > 1) && (c[1].length > 0)).length < m.resource.matrix_number[0].filter((c) => (c === 40010)).length));
         }
 
@@ -248,12 +248,12 @@ export class Auth {
     }
 
     checkAuthenticationHTTP() {
-        return this.http.get(this.networkService.domain + '/api/auth/protected', this.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/protected', this.httpAuthOptions));
     }
 
     registerMobile(data) {
         const url = this.networkService.domain + '/api/auth/registermobile';
-        return this.http.put<{success: string, msg: string}>(url, JSON.stringify(data), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.put<{success: string, msg: string}>(url, JSON.stringify(data), this.httpOptions));
     }
 
     async verifyEmail(data) {
@@ -268,7 +268,7 @@ export class Auth {
     }
 
     verifyEmailHTTP(data) {
-        return this.http.put(this.networkService.domain + '/api/auth/verifyemail', JSON.stringify(data), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/auth/verifyemail', JSON.stringify(data), this.httpOptions));
     }
 
     async verifyMobile(data) {
@@ -283,11 +283,11 @@ export class Auth {
     }
 
     verifyMobileHTTP(data) {
-        return this.http.put(this.networkService.domain + '/api/auth/verifymobile', JSON.stringify(data), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/auth/verifymobile', JSON.stringify(data), this.httpOptions));
     }
 
     registerEmail(data) {
-        return this.http.post<{success: boolean, msg: string}>(this.networkService.domain + '/api/auth/register', JSON.stringify(data), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.post<{success: boolean, msg: string}>(this.networkService.domain + '/api/auth/register', JSON.stringify(data), this.httpOptions));
     }
 
     async login(credentials) {
@@ -301,7 +301,7 @@ export class Auth {
 
     loginHTTP(credentials) {
         const url = this.networkService.domain + '/api/auth/login';
-        return this.http.post(url, JSON.stringify(credentials), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.post(url, JSON.stringify(credentials), this.httpOptions));
     }
 
     async recoverPassword(data) {
@@ -316,7 +316,7 @@ export class Auth {
     }
 
     recoverPasswordHTTP(data) {
-        return this.http.post(this.networkService.domain + '/api/auth/recover', JSON.stringify(data), this.httpOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/auth/recover', JSON.stringify(data), this.httpOptions));
     }
 
     logout() {

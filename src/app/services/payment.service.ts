@@ -5,6 +5,7 @@ import { NetworkService } from './network-service.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import {AlertController} from "@ionic/angular";
+import {lastValueFrom} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
@@ -35,7 +36,7 @@ export class PaymentService {
         } else {
             orgId = moment._id;
         }
-        const promise: any = await this.http.get(this.networkService.domain + '/api/payment/checkallowance/' + orgId + '?momentId=' + moment._id, this.authService.httpAuthOptions).toPromise();
+        const promise: any = await lastValueFrom(this.http.get(this.networkService.domain + '/api/payment/checkallowance/' + orgId + '?momentId=' + moment._id, this.authService.httpAuthOptions));
         if (promise) {
             if (promise.status === 'success') {
                 return true;
@@ -60,27 +61,27 @@ export class PaymentService {
     }
 
     loadCommunityParticipants(orgId) {
-        return this.http.get(this.networkService.domain + '/api/payment/loadcommunityparticipants/' + orgId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/payment/loadcommunityparticipants/' + orgId, this.authService.httpAuthOptions));
     }
 
     loadCustomer(orgId) {
-        return this.http.get(this.networkService.domain + '/api/payment/loadcustomer/' + orgId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/payment/loadcustomer/' + orgId, this.authService.httpAuthOptions));
     }
 
     loadBillingInfo(orgId) {
-        return this.http.get(this.networkService.domain + '/api/payment/loadbilling/' + orgId, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/payment/loadbilling/' + orgId, this.authService.httpAuthOptions));
     }
 
     listInvoices(orgId, query) {
-        return this.http.get(this.networkService.domain + '/api/payment/listinvoices/' + orgId + query, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/payment/listinvoices/' + orgId + query, this.authService.httpAuthOptions));
     }
 
 
     subscribe(orgId, plan, owner, source) {
-        return this.http.post(this.networkService.domain + '/api/payment/subscribe/' + orgId, JSON.stringify({plan: plan, owner: owner, source: source}), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/payment/subscribe/' + orgId, JSON.stringify({plan: plan, owner: owner, source: source}), this.authService.httpAuthOptions));
     }
 
     updateBillingMethod(orgId, source) {
-        return this.http.post(this.networkService.domain + '/api/payment/updatebilling/' + orgId, JSON.stringify({source: source}), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/payment/updatebilling/' + orgId, JSON.stringify({source: source}), this.authService.httpAuthOptions));
     }
 }

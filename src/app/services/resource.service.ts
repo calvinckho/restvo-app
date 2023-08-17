@@ -12,6 +12,7 @@ import { NetworkService } from './network-service.service';
 import { Storage } from "@ionic/storage";
 import { CacheService } from "ionic-cache";
 import {UserData} from "./user.service";
+import {lastValueFrom} from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class Resource {
@@ -148,15 +149,15 @@ export class Resource {
     }
 
     loadUserResource(id) {
-        return this.http.get(this.networkService.domain + '/api/resource/userresource/' + id.toString(), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/resource/userresource/' + id.toString(), this.authService.httpAuthOptions));
     }
 
     loadUserResources(language, field, pageNum) {
-        return this.http.get(this.networkService.domain + '/api/resource/userresources/' + language + '?field=' + field + '&pageNum=' + pageNum, this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/resource/userresources/' + language + '?field=' + field + '&pageNum=' + pageNum, this.authService.httpAuthOptions));
     }
 
     create(resource) {
-        return this.http.post(this.networkService.domain + '/api/resource/create', JSON.stringify(resource), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.post(this.networkService.domain + '/api/resource/create', JSON.stringify(resource), this.authService.httpAuthOptions));
     }
 
     update(resource) {
