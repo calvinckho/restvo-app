@@ -339,6 +339,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
 
     async clickCalendarItem(calendarItem) {
+      console.log("calendar", calendarItem);
         // restore moment as parent and calendar as child object
         const calendar = JSON.parse(JSON.stringify(calendarItem));
         const moment = JSON.parse(JSON.stringify(calendarItem.moment));

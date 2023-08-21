@@ -172,13 +172,13 @@
               <div *ngFor="let calendarItem of calendarService.calendarItems; trackBy: customTrackBy" id="event-title" >
                 <ion-item (click)="clickCalendarItem(calendarItem)" *ngIf="[calendarItem] | calendar : 'eventoncalendarday' : { calendar: calendarService.calendar }" id="feature" lines="none">
                   <ion-label class="moment-icon" slot="start">
-                    <img [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
+                    <img *ngIf="calendarItem.users && calendarItem.users.length" [src]="calendarItem.users[0].avatar" />
+                    <img *ngIf="!(calendarItem.users && calendarItem.users.length)" [src]="momentService.loadIcon(calendarItem.moment.resource.field).url" />
                   </ion-label>
                   <ion-badge [color]="momentService.loadIcon(calendarItem.moment.resource.field).color">{{calendarItem.moment.resource['en-US'].value[0]}}</ion-badge>
                   <div class="item-container" slot="end">
                     <ion-label>{{calendarItem.title}}</ion-label>
-                    <ion-note *ngIf="calendarItem.moment.resource.field !== 'Poll'">{{calendarItem.startDate | datetime: 'h:n,m:n'}}</ion-note>
-                    <ion-note *ngIf="calendarItem.moment.resource.field === 'Poll'">{{calendarItem.endDate | datetime: 'h:n,m:n'}}</ion-note>
+                    <ion-note>{{calendarItem.startDate | datetime: 'h:n,m:n'}}</ion-note>
                   </div>
                 </ion-item>
               </div>

@@ -2,8 +2,9 @@ import {Injectable, NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Auth } from './auth.service';
+import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import {lastValueFrom} from "rxjs";
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class CalendarService {
@@ -26,6 +27,7 @@ export class CalendarService {
                 private zone: NgZone,
                 public storage: Storage,
                 public authService: Auth,
+                public userService: UserData,
                 public networkService: NetworkService) {
         this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
         this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth(), this.calendar.currentViewDate.getFullYear());
@@ -72,18 +74,18 @@ export class CalendarService {
             const latestCalendarItems = await this.fetchLatestCalendarItems(lastUpdatedAt);
             const calendarItemIdList = this.calendarItems.map((c) => c._id);
             latestCalendarItems.forEach((latestCalendarItem) => {
-                let index = calendarItemIdList.indexOf(latestCalendarItem._id);
-                if (index > -1){ // if the item was loaded and new update is available
+                const index = calendarItemIdList.indexOf(latestCalendarItem._id);
+                if (index > -1) { // if the item was loaded and new update is available
                     this.calendarItems[index] = latestCalendarItem;
                 } else { // if the item has not been loaded before
                     this.calendarItems.push(latestCalendarItem);
                     calendarItemIdList.push(latestCalendarItem._id);
                 }
             });
-            if (this.calendarItems.length){
+            if (this.calendarItems.length) {
                 const latestCalendarItemIdList = await this.getAllUserCalendarItemIds();
-                for (let i = calendarItemIdList.length - 1; i >= 0; i--){
-                    if(latestCalendarItemIdList.indexOf(calendarItemIdList[i]) === -1) { //if an item is deleted on the server
+                for (let i = calendarItemIdList.length - 1; i >= 0; i--) {
+                    if (latestCalendarItemIdList.indexOf(calendarItemIdList[i]) === -1) { // if an item is deleted on the server
                         this.calendarItems.splice(i, 1);
                     }
                 }
@@ -94,24 +96,24 @@ export class CalendarService {
             }
             // console.log('current calendarItems length', this.calendarItems.length);
             await this.calendarItems.sort(function (a, b) {
-                let c: any = new Date(a.startDate);
-                let d: any = new Date(b.startDate);
+                const c: any = new Date(a.startDate);
+                const d: any = new Date(b.startDate);
                 return (c - d); // oldest to newest
             });
             return this.calendarItems;
-        } catch (err){
+        } catch (err) {
             console.log(err);
             return this.calendarItems = [];
         }
-    };
+    }
 
-    async fetchLatestCalendarItems(lastUpdatedAt){
+    async fetchLatestCalendarItems(lastUpdatedAt) {
         const urlString = lastUpdatedAt ? '?lastUpdatedAt=' + new Date(lastUpdatedAt).getTime() : '';
         return lastValueFrom(this.http.get<[any]>(this.networkService.domain + '/api/auth/calendaritems' + urlString, this.authService.httpAuthOptions)
             );
     }
 
-    findLatestTimeStamp(calendarItems){
+    findLatestTimeStamp(calendarItems) {
         let latestTimeStamp = 0;
         calendarItems.forEach((item) => {
             latestTimeStamp = (new Date(item.updatedAt).getTime() > new Date(latestTimeStamp).getTime()) ? item.updatedAt : latestTimeStamp;
@@ -128,12 +130,12 @@ export class CalendarService {
 
     changeDate( event, direction ) {
         if ( this.calendar.mode === 'month') {
-            if ( event.direction === 4 || direction === 4 ) { //if right swipe
+            if ( event.direction === 4 || direction === 4 ) { // if right swipe
                 this.calendar.currentViewDate.setMonth( this.calendar.currentViewDate.getMonth() - 1);
                 this.calendar.selectedDate.setMonth(this.calendar.selectedDate.getMonth() - 1);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());
                 this.calendar.daysInViewWeek = this.getDaysInWeek( this.calendar.currentViewDate.getDate() , this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear() );
-            } else if ( event.direction === 2 || direction === 2 ) { //if left swipe
+            } else if ( event.direction === 2 || direction === 2 ) { // if left swipe
                 this.calendar.currentViewDate.setMonth( this.calendar.currentViewDate.getMonth() + 1);
                 this.calendar.selectedDate.setMonth(this.calendar.selectedDate.getMonth() + 1);
                 this.calendar.daysInViewMonth = this.getDaysInMonth( this.calendar.currentViewDate.getMonth() , this.calendar.currentViewDate.getFullYear());
@@ -223,6 +225,9 @@ export class CalendarService {
                     dayOfWeek.dayEvents.push(calendarItem);
                 }
             }
+            if (calendarItem.users && calendarItem.users.length) {
+                calendarItem.users = calendarItem.users.filter((c) => c._id.toString() !== this.userService.user._id.toString());
+            }
         }
     }
 
@@ -231,10 +236,10 @@ export class CalendarService {
         // first check if event is valid
         if (calendarItem.startDate && calendarItem.endDate && calendarItem.moment && calendarItem.moment.resource && calendarItem.moment.resource.field) {
             // get all dates as JavaScript Date objects and set the date time to 0 so not comparing hours, mintues, etc.
-            let startDateWithTime = new Date(calendarItem.startDate);
-            let startDate = new Date(startDateWithTime.getFullYear(), startDateWithTime.getMonth(), startDateWithTime.getDate());
-            let endDateWithTime = new Date(calendarItem.endDate);
-            let endDate = new Date(endDateWithTime.getFullYear(), endDateWithTime.getMonth(), endDateWithTime.getDate());
+            const startDateWithTime = new Date(calendarItem.startDate);
+            const startDate = new Date(startDateWithTime.getFullYear(), startDateWithTime.getMonth(), startDateWithTime.getDate());
+            const endDateWithTime = new Date(calendarItem.endDate);
+            const endDate = new Date(endDateWithTime.getFullYear(), endDateWithTime.getMonth(), endDateWithTime.getDate());
 
             if ((calendarItem.moment.resource.field === 'User Defined Activity') && (startDate <= dayOfMonth && dayOfMonth <= endDate)) {
                 return true;
@@ -245,8 +250,8 @@ export class CalendarService {
     }
 
     getDaysEvents( day ) {
-        var daysEvents = [];
-        for ( var i = 0; i < this.calendarItems.length; i++ ) {
+        const daysEvents = [];
+        for ( let i = 0; i < this.calendarItems.length; i++ ) {
             if ( this.eventOnDay( day , this.calendarItems[i] ) ) {
                 daysEvents.push( this.calendarItems[i] );
             }
