@@ -500,7 +500,25 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                 default:
                     type = 'journey';
             }
-            if (this.router.url.includes('newplan') && this.parent_programId && type && this.selectedCategoryId) { // if admin mode -> new activity
+            if (this.modalPage) {
+                this.modalCtrl.dismiss(clonedMoments);
+            }
+            if (this.activityId) { // if cloning Activity and the current view is opened in subpanel view, show congratulations pop-up before closing subpanel
+                await this.loading.dismiss();
+                const congratulations = await this.alertCtrl.create({
+                    header: 'Congratulations',
+                    message: 'You have successfully joined ' + this.selectedMoments[0].matrix_string[0][0] + '.',
+                    buttons: [{ text: 'Start Now',
+                        handler: async () => {
+                            this.userData.defaultProgram = selectedProgram;
+                            this.storage.set('defaultProgram', this.userData.defaultProgram);
+                            congratulations.dismiss();
+                            this.router.navigate(['/app/manage/activity/' + selectedProgram._id + '/profile/' + selectedProgram._id]);
+                        }}],
+                    cssClass: 'level-15'
+                });
+                await congratulations.present();
+            } else if (this.router.url.includes('newplan') && this.parent_programId && type && this.selectedCategoryId) { // if admin mode -> new activity
                 this.router.navigate(['/app/manage/activity/' + this.parent_programId + '/' + type + '/' + this.parent_programId, { categoryId: this.selectedCategoryId }]);
                 await this.loading.dismiss();
             } else if (this.router.url.includes('invite') || this.router.url.includes('choose')) { // else, in invite flow,  send user to the addParticipant page if the user is an organizer, or to the
@@ -526,25 +544,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             } else { // in Admin - Schedule view
                 this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
                 await this.loading.dismiss();
-            }
-            if (this.activityId && this.subpanel) { // if cloning Activity and the current view is opened in subpanel view, show congratulations pop-up before closing subpanel
-                const congratulations = await this.alertCtrl.create({
-                    header: 'Congratulations',
-                    message: 'You have successfully joined ' + this.selectedMoments[0].matrix_string[0][0] + '.',
-                    buttons: [{ text: 'Start Now',
-                        handler: async () => {
-                            this.userData.defaultProgram = selectedProgram;
-                            this.storage.set('defaultProgram', this.userData.defaultProgram);
-                            congratulations.dismiss();
-                            this.router.navigate(['/app/home/activity/' + selectedProgram._id]);
-                        }}],
-                    cssClass: 'level-15'
-                });
-                await congratulations.present();
-            } else if (this.activityId && this.modalPage) {
-                this.userData.defaultProgram = selectedProgram;
-                this.storage.set('defaultProgram', this.userData.defaultProgram);
-                this.modalCtrl.dismiss(clonedMoments);
             }
             this.cleanup();
         }

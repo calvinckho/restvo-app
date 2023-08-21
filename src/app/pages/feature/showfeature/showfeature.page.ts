@@ -1313,10 +1313,10 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
           const allowCustomStartDate = schedules.find((c) => c.array_boolean && (c.array_boolean.length > 0) && c.array_boolean[0]);
           if (allowCustomStartDate) {
               const componentProps: any = { activityId: this.moment._id, joinAs: 'user_list_1' };
-              if (!this.modalPage && this.platform.width() >= 992) {
+              if (!this.modalPage && this.platform.width() >= 992) { // on desktop wide view, open side bar
                   componentProps.subpanel = true;
                   return this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]); // congrats pop-up in handled in the pickfeature subpanel
-              } else {
+              } else { // on narrower view, open modal page
                   componentProps.modalPage = true;
                   const modal = await this.modalCtrl.create({component: PickfeaturePopoverPage, componentProps});
                   await modal.present();
@@ -1325,7 +1325,9 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
                       return;
                   }
                   clonedActivity = clonedActivities[0];
-                  await this.modalCtrl.dismiss();
+                  if (this.modalPage) { // if showfeature is already a modal, also close itself
+                      await this.modalCtrl.dismiss();
+                  }
               }
           } else {
               this.loading = await this.loadingCtrl.create({

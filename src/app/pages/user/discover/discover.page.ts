@@ -46,6 +46,7 @@ export class DiscoverPage implements OnInit {
 
     async ngOnInit() {
         this.filterOption = this.filterOption || this.route.snapshot.paramMap.get('filterOption') || 'all';
+        this.loadSamples();
         //this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 

@@ -213,7 +213,7 @@
     <ion-row class="full-height grid-row ion-align-items-center">
       <ion-col>
         <ion-item lines="none">
-          <div style="font-size: 14px" class="ion-text-wrap">What is the start date of {{selectedMoments[0].matrix_string[0][0]}}?</div>
+          <div style="font-size: 14px" class="ion-text-wrap">Pick the beginning date and time of {{selectedMoments[0].matrix_string[0][0]}}?</div>
         </ion-item>
         <ion-item lines="none">
           <ion-datetime minuteValues="0,15,30,45" [(ngModel)]="recurrenceDate"></ion-datetime>
@@ -225,10 +225,10 @@
     <ion-row class="full-height grid-row ion-align-items-center">
       <ion-col>
         <ion-item lines="none">
-          <div style="font-size: 14px" class="ion-text-wrap">What is the end date of {{selectedMoments[0].matrix_string[0][0]}}?</div>
+          <div style="font-size: 14px" class="ion-text-wrap">Pick the last date of {{selectedMoments[0].matrix_string[0][0]}}?</div>
         </ion-item>
         <ion-item lines="none">
-          <ion-datetime minuteValues="0,15,30,45" [(ngModel)]="recurrenceDate"></ion-datetime>
+          <ion-datetime presentation="date" minuteValues="0,15,30,45" [(ngModel)]="recurrenceDate"></ion-datetime>
         </ion-item>
       </ion-col>
     </ion-row>

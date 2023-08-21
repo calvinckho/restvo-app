@@ -1,9 +1,10 @@
 import {Injectable, NgZone} from '@angular/core';
 import { Platform, ToastController } from '@ionic/angular';
 import { Network } from '@capacitor/network';
-import { SwUpdate } from '@angular/service-worker';
+import {SwUpdate, VersionReadyEvent} from '@angular/service-worker';
 import {ElectronService} from 'ngx-electron';
 import {Router} from '@angular/router';
+import {filter, map} from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class NetworkService {
@@ -27,19 +28,32 @@ export class NetworkService {
                 private toastCtrl: ToastController) {
         this.onDevice = this.platform.is('cordova');
         if (!this.electronService.isElectronApp && this.swUpdate.isEnabled) {
-            this.swUpdate.checkForUpdate().then(() => {
+            /*this.swUpdate.checkForUpdate().then(() => {
                 if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
                     window.location.reload();
+                }
+            });*/
+            this.swUpdate.versionUpdates.subscribe((evt) => {
+                switch (evt.type) {
+                    case 'VERSION_READY':
+                        this.swUpdate.activateUpdate().then(() => {
+                            console.log("reloading")
+                            window.location.reload();
+                        });
+                        break;
                 }
             });
             this.zone.runOutsideAngular(() => {
                 setInterval(() => {
-                    this.zone.run(() => {
-                        this.swUpdate.checkForUpdate().then(() => {
-                            if (!this.router.url.includes('/app/video/')) { // only reload if user is not in a video call
-                                window.location.reload();
-                            }
-                        });
+                    this.swUpdate.versionUpdates.subscribe((evt) => {
+                        switch (evt.type) {
+                            case 'VERSION_READY':
+                                this.swUpdate.activateUpdate().then(() => {
+                                    console.log("reloading")
+                                    window.location.reload();
+                                });
+                                break;
+                        }
                     });
                 }, 3600000); // check for update every hour
             });
