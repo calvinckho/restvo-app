@@ -143,7 +143,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       if (this.scheduleId && this.scheduleId !== 'null') {
         const result: any = await this.momentService.loadSchedule(this.scheduleId);
         if (result && result.schedule) {
-          console.log("loaded schedule", result.schedule)
+          // console.log("loaded schedule", result.schedule)
           this.schedule = result.schedule;
           if (!this.schedule.hasOwnProperty('array_boolean')) {
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
