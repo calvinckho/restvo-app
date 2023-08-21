@@ -13,20 +13,7 @@
     </ion-buttons>
     <!--<ion-title *ngIf="!modalPage && userData.currentManageActivityId && userData.activitiesWithAdminAccess" class="ion-text-wrap">
     </ion-title>-->
-    <ion-title (click)="select.open($event)" *ngIf="!modalPage">
-      <ion-select [(ngModel)]="userData.currentManageActivityId" (ngModelChange)="changeManageActivity($event)" [interface]="platform.width() < 768 ? 'alert' : 'alert'" [interfaceOptions]="{header: 'Manage'}">
-        <div *ngFor="let activity of userData.activitiesWithAdminAccess">
-          <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5c915324e172e4e64590e346')">{{activity.name}}</ion-select-option>
-        </div>
-        <div *ngFor="let activity of userData.activitiesWithAdminAccess">
-          <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5c915475e172e4e64590e348')">{{activity.name}}</ion-select-option>
-        </div>
-        <div *ngFor="let activity of userData.activitiesWithAdminAccess">
-          <ion-select-option [value]="activity._id" *ngIf="activity.categories.includes('5dfdbb547b00ea76b75e5a70')">{{activity.name}}</ion-select-option>
-        </div>
-      </ion-select>
-    </ion-title>
-    <ion-title *ngIf="modalPage">{{moment.matrix_string[0][0]}}</ion-title>
+    <ion-title>{{moment.matrix_string[0][0]}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="chatService.openChat({ conversationId: moment.conversation, moment: moment, subpanel: this.platform.width() >= 768 })" [hidden]="moment && moment.array_boolean && (moment.array_boolean.length <= 5 || !moment.array_boolean[5])" color="grey"> <!--hide if subpanel or if content calendar and participant group chat is turned off-->
         <ion-icon name="chatbubbles"></ion-icon>
@@ -207,3 +194,4 @@
 <ion-content *ngIf="resource && resource._id && moment.resource && moment.resource.field && platform.width() >= 768" forceOverscroll="false">
   <ion-router-outlet></ion-router-outlet>
 </ion-content>
+

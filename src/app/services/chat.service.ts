@@ -217,8 +217,7 @@ export class Chat {
     };
 
     getAllUserConversationIds() {
-        return lastValueFrom(this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
-            );
+        return lastValueFrom(this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions));
         /*return new Promise((resolve) => {
             this.http.get<[{_id: string}]>(this.networkService.domain + '/api/chat/ids', this.authService.httpAuthOptions)
                 .map((result) => {
@@ -318,31 +317,26 @@ export class Chat {
     };
 
     getConversationByRecipientId(recipientId, returnRecipientData, programId) {
-        return lastValueFrom(this.http.get<any>(this.networkService.domain + '/api/chat/check/' + recipientId + (returnRecipientData ? '?version=2' : '' + (programId ? '&programId=' + programId : '')), this.authService.httpAuthOptions)
-            );
+        return lastValueFrom(this.http.get<any>(this.networkService.domain + '/api/chat/check/' + recipientId + (returnRecipientData ? '?version=2' : '' + (programId ? '&programId=' + programId : '')), this.authService.httpAuthOptions));
     };
 
     getConversationById(conversationId, pageNum) {
-        return lastValueFrom(this.http.get<Conversation>(this.networkService.domain + '/api/chat/' + conversationId + '?pageNum=' + pageNum, this.authService.httpAuthOptions)
-            );
+        return lastValueFrom(this.http.get<Conversation>(this.networkService.domain + '/api/chat/' + conversationId + '?pageNum=' + pageNum, this.authService.httpAuthOptions));
     };
 
     async newConversation(recipientId, message){
-        const promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/chat/new/' + recipientId, JSON.stringify(message), this.authService.httpAuthOptions)
-            );
+        const promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/chat/new/' + recipientId, JSON.stringify(message), this.authService.httpAuthOptions));
         this.userData.socket.emit('refresh user status', recipientId, {type: 'connect conversation'});
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'connect conversation'});
         return promise;
     };
 
     resetBadgeCount(conversationId){
-        return lastValueFrom(this.http.post<number>(this.networkService.domain + '/api/chat/resetbadgecount/' + conversationId, {}, this.authService.httpAuthOptions)
-            );
+        return lastValueFrom(this.http.post<number>(this.networkService.domain + '/api/chat/resetbadgecount/' + conversationId, {}, this.authService.httpAuthOptions));
     };
 
     async sendReply(conversationId, serverData, socketData){
-        let promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/chat/' + conversationId, JSON.stringify(serverData), this.authService.httpAuthOptions)
-            );
+        let promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/chat/' + conversationId, JSON.stringify(serverData), this.authService.httpAuthOptions));
         if (serverData.groupId) {
             socketData.group = {_id: serverData.groupId, name: serverData.groupName};
         }
@@ -421,21 +415,18 @@ export class Chat {
     };
 
     shareContactInfo(conversationId){
-        return lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/sharecontactinfo/' + conversationId, {}, this.authService.httpAuthOptions)
-            );
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/sharecontactinfo/' + conversationId, {}, this.authService.httpAuthOptions));
     }
 
     async blockConversation(conversationId, recipientId, data){
-        let promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/block/' + conversationId, data,this.authService.httpAuthOptions)
-            );
+        let promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/block/' + conversationId, data,this.authService.httpAuthOptions));
         this.userData.socket.emit('refresh user status', recipientId, {type: 'disconnect conversation', conversationId: conversationId});
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'disconnect conversation', conversationId: conversationId});
         return promise;
     };
 
     async unblockConversation(conversationId, recipientId){
-        let promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/unblock/' + conversationId, null,this.authService.httpAuthOptions)
-            );
+        let promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/chat/unblock/' + conversationId, null,this.authService.httpAuthOptions));
         this.userData.socket.emit('refresh user status', this.userData.user._id, {type: 'connect conversation', data: {_id: conversationId}});
         this.userData.socket.emit('refresh user status', recipientId, {type: 'connect conversation', data: {_id: conversationId}});
         return promise;

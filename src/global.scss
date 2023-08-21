@@ -98,6 +98,10 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--ion-color-dark);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .desktop-header-toolbar {
   --background: var(--ion-color-lightgrey);
   background-color: var(--ion-color-lightgrey);

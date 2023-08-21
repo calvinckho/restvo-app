@@ -50,10 +50,8 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   timeoutHandle: any;
   toDosPrivate: any;
 
-  recurrenceStartDate = new Date();
-  recurrenceEndDate = new Date();
-  recurrenceStartTime: string;
-  recurrenceEndTime: string;
+  recurrenceStartDate: string;
+  recurrenceEndDate: string;
   recurrenceByDay = [];
   dateType = ''; // specifies if user is changing start date or end date
 
@@ -145,6 +143,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       if (this.scheduleId && this.scheduleId !== 'null') {
         const result: any = await this.momentService.loadSchedule(this.scheduleId);
         if (result && result.schedule) {
+          console.log("loaded schedule", result.schedule)
           this.schedule = result.schedule;
           if (!this.schedule.hasOwnProperty('array_boolean')) {
             this.schedule.array_boolean = []; // initialize the property for backward compatibility
@@ -160,10 +159,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       if (this.schedule) {
         this.parentCategoryId = this.parentCategoryId || this.route.snapshot.paramMap.get('parentCategoryId');
         this.schedule.parent_moments = [this.programId]; // for Plan's and Relationship's schedule, parent_moments is used
-        this.recurrenceStartDate = new Date(this.schedule.startDate);
-        this.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate || new Date().toISOString());
-        this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
-        this.recurrenceEndTime = this.recurrenceEndDate.toISOString();
         if (this.schedule.options.recurrenceByDay) {
           this.recurrenceByDay = this.schedule.options.recurrenceByDay.split(',');
         } else {
@@ -265,16 +260,18 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async touchSchedule(operation) {
-    let schedule;
     this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
+    let schedule;
+    const cachedSchedule = JSON.parse(JSON.stringify(this.schedule));
     if (this.schedule._id || operation === 'create schedule') {
-      this.schedule.startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
-      this.schedule.endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours() + 1, new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
-      this.schedule.options.recurrenceEndDate = new Date( this.recurrenceEndDate.getFullYear(), this.recurrenceEndDate.getMonth(), this.recurrenceEndDate.getDate(), new Date(this.recurrenceEndTime).getHours(), new Date(this.recurrenceEndTime).getMinutes() ).toISOString();
-      this.schedule.options.timezoneOffset = new Date(this.schedule.startDate).getTimezoneOffset(); // update with the start date's local timezone offset
+      // convert timestamp into UTC format before sending to server
+      cachedSchedule.startDate = new Date(this.schedule.startDate).toISOString(); // always convert from local to UTC time
+      cachedSchedule.endDate = cachedSchedule.startDate;
+      cachedSchedule.options.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate).toISOString(); // always convert from local to UTC time
+      cachedSchedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
-      this.schedule.operation = operation;
-      schedule = await this.momentService.touchSchedule(this.schedule, true);
+      cachedSchedule.operation = operation;
+      schedule = await this.momentService.touchSchedule(cachedSchedule, true);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
         if (this.modalPage) {
@@ -288,33 +285,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         }
       }
     }
-  }
-
-  focusCalendarDateField(type) {
-    if (type === this.dateType) {
-      this.dateType = null;
-    } else {
-      this.calendarService.calendar.currentViewDate = type === 'start' ? this.recurrenceStartDate : this.recurrenceEndDate;
-      this.calendarService.updateViewCalendar();
-      this.dateType = type;
-    }
-  }
-
-  changeSelectedDate(inputDate) {
-    if (inputDate === ' ') { return; }
-    this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
-    if ( this.dateType === 'start' ) {
-      this.recurrenceStartDate = inputDate;
-      this.calendarService.calendar.currentViewDate = this.recurrenceEndDate;
-      this.dateType = 'end';
-      if (inputDate.getTime() > this.recurrenceEndDate.getTime()) {
-        this.recurrenceEndDate = inputDate;
-      }
-    } else if (this.dateType === 'end') {
-      this.recurrenceEndDate = inputDate;
-      this.dateType = '';
-    }
-    this.calendarService.updateViewCalendar();
   }
 
   async deleteSchedule() {
@@ -826,6 +796,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async ngOnDestroy() {
+    this.subscriptions['refreshUserStatus'].unsubscribe();
     if (this.subscriptions && this.subscriptions.refreshUserCalendar) { this.subscriptions['refreshUserCalendar'].unsubscribe((res) => {
       this.calendarService.getUserCalendar();
     }); }

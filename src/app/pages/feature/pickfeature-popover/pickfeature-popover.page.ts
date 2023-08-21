@@ -71,8 +71,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
     subscriptions: any = {};
 
     // calendar
-    recurrenceStartDate = new Date();
-    recurrenceStartTime = new Date().toISOString();
+    recurrenceDate: string;
     recurrenceByDay = [];
     allDay = false;
     dateType = 'start'; // open the calendar by default
@@ -128,8 +127,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
         this.allowCreate = this.allowCreate || this.route.snapshot.paramMap.get('allowCreate') === 'true';
         this.allowSwitchCategory = this.allowSwitchCategory === undefined ? !this.categoryId : this.allowSwitchCategory;
         this.allowCustomStartDate = false; // reset the property
-        this.recurrenceStartDate = new Date();
-        this.recurrenceStartTime = this.recurrenceStartDate.toISOString();
         if (this.activityId) { // if an activityId is provided, the activity is already selected to be cloned, and this component is used to select the custom startdate before cloning
             this.allowCustomStartDate = true; // custom startdate config has already been checked
             const activity: any = await this.momentService.load(this.activityId);
@@ -406,10 +403,10 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             }
         } else if (this.step === 4) { // store the start date
             if (this.selectedMoments && this.selectedMoments.length && this.selectedMoments[0] && this.selectedMoments[0]) {
-                this.selectedMoments[0].startDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
+                this.selectedMoments[0].startDate = new Date(this.recurrenceDate).toISOString();
             }
             this.step++;
-            this.focusCalendarDateField('start');
+            // this.focusCalendarDateField('start');
         }
     }
 
@@ -447,7 +444,7 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
                     this.selectedMoments[0].array_boolean[this.type] = true;
                 }
                 if (this.allowCustomStartDate) {
-                    this.selectedMoments[0].endDate = new Date( this.recurrenceStartDate.getFullYear(), this.recurrenceStartDate.getMonth(), this.recurrenceStartDate.getDate(), new Date(this.recurrenceStartTime).getHours(), new Date(this.recurrenceStartTime).getMinutes() ).toISOString();
+                    this.selectedMoments[0].endDate = new Date(this.recurrenceDate).toISOString();
                 }
                 clonedMoments = await this.momentService.clone(this.selectedMoments, null);
                 if (clonedMoments && clonedMoments.length) {
@@ -569,22 +566,6 @@ export class PickfeaturePopoverPage implements OnInit, OnDestroy {
             cssClass: 'level-15'
         });
         alert.present();
-    }
-
-    focusCalendarDateField(type) {
-        this.calendarService.calendar.currentViewDate = this.recurrenceStartDate;
-        this.calendarService.updateViewCalendar();
-        this.dateType = type;
-    }
-
-    changeSelectedDate(inputDate) {
-        if (inputDate === ' ') { return; }
-        if ( this.dateType === 'start' ) {
-            this.recurrenceStartDate = inputDate;
-            this.calendarService.calendar.selectedDate = new Date(inputDate.getTime());
-            this.dateType = '';
-        }
-        this.calendarService.updateViewCalendar();
     }
 
     // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction

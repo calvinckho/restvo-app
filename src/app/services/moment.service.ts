@@ -226,8 +226,7 @@ export class Moment {
             data.resource = data.resource._id; // depopulate resource before creation
         }
         delete data.conversations; // no need to send the converastions field
-        const promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/moment/create', JSON.stringify(data), this.authService.httpAuthOptions)
-            );
+        const promise = await lastValueFrom(this.http.post(this.networkService.domain + '/api/moment/create', JSON.stringify(data), this.authService.httpAuthOptions));
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -235,8 +234,7 @@ export class Moment {
     }
 
     async clone(moments, optOutReason) {
-        const promises = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions)
-            );
+        const promises = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/clone', JSON.stringify({moments: moments, optOutReason: optOutReason}), this.authService.httpAuthOptions));
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -249,8 +247,7 @@ export class Moment {
             data.resource = data.resource._id; // depopulate resource before update
         }
         delete data.conversations; // no need to send the converastions field
-        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions)
-            );
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/update', JSON.stringify(data), this.authService.httpAuthOptions));
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         await this.chatService.getAllUserConversations();
         this.userData.refreshAppPages();
@@ -258,8 +255,7 @@ export class Moment {
     }
 
     async adoptPlan(data) {
-        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/plan/adopt', JSON.stringify(data), this.authService.httpAuthOptions)
-            );
+        const promise = await lastValueFrom(this.http.put(this.networkService.domain + '/api/moment/plan/adopt', JSON.stringify(data), this.authService.httpAuthOptions));
         await this.userData.refreshUserCalendar(true); // refresh and fetch the latest calendar items
         this.userData.refreshAppPages();
         return promise;
@@ -333,8 +329,7 @@ export class Moment {
     }
 
     async updateMomentUserLists(data, token, refreshAppPages) {
-        const promise: any = await lastValueFrom(this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions)
-            );
+        const promise: any = await lastValueFrom(this.http.put<string>(this.networkService.domain + '/api/moment/updatemomentuserlists?token=' + token, JSON.stringify(data), this.authService.httpAuthOptions));
         if (this.socket) this.socket.emit('refresh moment', data.momentId, {type: 'refresh participation'});
         if (data.operation === 'remove from lists') {
             data.users.forEach((user) => {
@@ -600,8 +595,7 @@ export class Moment {
     }
 
     async delete(moment, intent) {
-        const promise = await lastValueFrom(this.http.delete(this.networkService.domain + '/api/moment/' + moment._id + (intent === 'archive' ? '?archive=true' : ''), this.authService.httpAuthOptions)
-            );
+        const promise = await lastValueFrom(this.http.delete(this.networkService.domain + '/api/moment/' + moment._id + (intent === 'archive' ? '?archive=true' : ''), this.authService.httpAuthOptions));
         let duration = 5;
         if (this.router.url.includes('outlets')) { // just in case the subpanel view of the deleted Moment is open
             this.router.navigate([{ outlets: { sub: null }}], { replaceUrl: true });
@@ -624,21 +618,18 @@ export class Moment {
 
     async loadActivitySchedules(activityId) {
         if (this.authService.token) {
-            return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activityschedules/' + activityId, this.authService.httpAuthOptions)
-                );
+            return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/activityschedules/' + activityId, this.authService.httpAuthOptions));
         } else {
             return [];
         }
     }
 
     async loadSchedule(scheduleId) {
-        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId, this.authService.httpAuthOptions)
-            );
+        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId, this.authService.httpAuthOptions));
     }
 
     async loadProgramInsight(programId) {
-        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/program/insight/' + programId, this.authService.httpAuthOptions)
-            );
+        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/program/insight/' + programId, this.authService.httpAuthOptions));
     }
 
     async touchSchedule(data, refreshPages) {

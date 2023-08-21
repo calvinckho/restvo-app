@@ -216,36 +216,8 @@
           <div style="font-size: 14px" class="ion-text-wrap">What is the start date of {{selectedMoments[0].matrix_string[0][0]}}?</div>
         </ion-item>
         <ion-item lines="none">
-          <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
-          <ion-datetime *ngIf="recurrenceStartTime" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime"></ion-datetime>
+          <ion-datetime minuteValues="0,15,30,45" [(ngModel)]="recurrenceDate"></ion-datetime>
         </ion-item>
-
-        <ion-card class="monthview" *ngIf="dateType">
-          <div class="month-title-container">
-            <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
-            <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-            <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
-          </div>
-          <div class="monthview-day-headers">S</div>
-          <div class="monthview-day-headers">M</div>
-          <div class="monthview-day-headers">T</div>
-          <div class="monthview-day-headers">W</div>
-          <div class="monthview-day-headers">T</div>
-          <div class="monthview-day-headers">F</div>
-          <div class="monthview-day-headers">S</div>
-
-          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div class="monthview-element-content cursor-pointer" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
-              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
-              <div *ngIf="dayOfMonth.date != ' ' ">
-                {{dayOfMonth.date.getDate()}}
-              </div>
-              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index;">
-                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
-              </div>
-            </div>
-          </div>
-        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -256,36 +228,8 @@
           <div style="font-size: 14px" class="ion-text-wrap">What is the end date of {{selectedMoments[0].matrix_string[0][0]}}?</div>
         </ion-item>
         <ion-item lines="none">
-          <ion-label (click)="focusCalendarDateField('start')" class="cursor-pointer" ><span [ngClass]="{ 'underline-datestring': dateType == 'start'}">{{recurrenceStartDate | datetime: 'w:l,m:s,y:n,d:n'}}</span><p style="color: red; font-style: italic;" *ngIf="dateType === 'start'"><ion-icon name="alert-circle"></ion-icon>Choose a Date Below</p></ion-label> <!--Start, Choose a date below-->
-          <ion-datetime *ngIf="recurrenceStartTime" minuteValues="0,15,30,45" [(ngModel)]="recurrenceStartTime"></ion-datetime>
+          <ion-datetime minuteValues="0,15,30,45" [(ngModel)]="recurrenceDate"></ion-datetime>
         </ion-item>
-
-        <ion-card class="monthview" *ngIf="dateType">
-          <div class="month-title-container">
-            <ion-icon name="chevron-back-outline" class="calendar-arrow left" (click)="calendarService.changeDate($event, 4)"></ion-icon>
-            <h4 class="month-title">{{calendarService.calendar.viewTitle}}</h4>
-            <ion-icon name="chevron-forward-outline" class="calendar-arrow right" (click)="calendarService.changeDate($event, 2)"></ion-icon>
-          </div>
-          <div class="monthview-day-headers">S</div>
-          <div class="monthview-day-headers">M</div>
-          <div class="monthview-day-headers">T</div>
-          <div class="monthview-day-headers">W</div>
-          <div class="monthview-day-headers">T</div>
-          <div class="monthview-day-headers">F</div>
-          <div class="monthview-day-headers">S</div>
-
-          <div class="monthview-element" *ngFor="let dayOfMonth of calendarService.calendar.daysInViewMonth; trackBy: customTrackBy">
-            <div class="monthview-element-content cursor-pointer" [ngClass]="{ 'selected-date' : calendarService.calendar.selectedDate.toString() === dayOfMonth.date.toString() && dayOfMonth.date != ' ','current-date': calendarService.calendar.currentDate.toString().substring( 0 , 15) == dayOfMonth.date.toString().substring(0 , 15)}" (click)="changeSelectedDate(dayOfMonth.date)">
-              <div *ngIf="dayOfMonth.date == ' ' ">&nbsp;&nbsp;</div>
-              <div *ngIf="dayOfMonth.date != ' ' ">
-                {{dayOfMonth.date.getDate()}}
-              </div>
-              <div class="monthview-dot-container" *ngFor="let calendarItem of dayOfMonth.dayEvents; trackBy: customTrackBy; let i = index;">
-                <div class="monthview-element-dot" [ngClass]="{'past-calendar-item' : calendarItem.pastEvent}" *ngIf="i < 5"></div>
-              </div>
-            </div>
-          </div>
-        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>

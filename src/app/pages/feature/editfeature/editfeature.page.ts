@@ -511,7 +511,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
           }
           this.initialSetupCompleted = true;
-          console.log('editfeature setup completed', this.moment, this.interactableDisplay);
+          // console.log('editfeature setup completed', this.moment, this.interactableDisplay);
       } catch (err) {
           console.log('editfeature setup error', err);
           // currently, if an Activity is deleted and the user was in the Admin view, needs to redirect to Me coz the url is no longer valid

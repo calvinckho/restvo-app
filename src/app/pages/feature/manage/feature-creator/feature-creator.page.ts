@@ -158,7 +158,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
     const menuItem: any = this.menu.find((c) => c.url === menuOption);
     console.log(menuOption);
     if (this.platform.width() >= 768) {
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: false });
+      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: true });
     } else {
       menuItem.params.modalPage = true;
       menuItem.params.moment = this.moment;

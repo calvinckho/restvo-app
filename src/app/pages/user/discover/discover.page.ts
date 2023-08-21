@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
+import {Component, ViewEncapsulation, OnDestroy, OnInit, Input} from '@angular/core';
 import { Storage } from '@ionic/storage';
 import {
     ModalController,
@@ -46,7 +46,7 @@ export class DiscoverPage implements OnInit {
 
     async ngOnInit() {
         this.filterOption = this.filterOption || this.route.snapshot.paramMap.get('filterOption') || 'all';
-        this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
+        //this.subscriptions['refresh'] = this.userData.refreshUserStatus$.subscribe(this.refreshAfterCreateMomentHandler);
     }
 
     ionViewWillEnter() {
@@ -56,9 +56,9 @@ export class DiscoverPage implements OnInit {
         }
     }
 
-    refreshAfterCreateMomentHandler = async () => {
+    /*refreshAfterCreateMomentHandler = async () => {
         this.loadSamples();
-    }
+    }*/
 
     async changeFilterOption(newFilterOption) {
         this.filterOption = newFilterOption;
@@ -130,4 +130,8 @@ export class DiscoverPage implements OnInit {
         const registerModal = await this.modalCtrl.create(modalObject);
         await registerModal.present();
     }
+
+    /*async ngOnDestroy() {
+        this.subscriptions['refresh'].unsubscribe();
+    }*/
 }
