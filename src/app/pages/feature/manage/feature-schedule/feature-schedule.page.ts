@@ -260,18 +260,14 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async touchSchedule(operation) {
-    this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
     let schedule;
-    const cachedSchedule = JSON.parse(JSON.stringify(this.schedule));
+    this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
     if (this.schedule._id || operation === 'create schedule') {
-      // convert timestamp into UTC format before sending to server
-      cachedSchedule.startDate = new Date(this.schedule.startDate).toISOString(); // always convert from local to UTC time
-      cachedSchedule.endDate = cachedSchedule.startDate;
-      cachedSchedule.options.recurrenceEndDate = new Date(this.schedule.options.recurrenceEndDate).toISOString(); // always convert from local to UTC time
-      cachedSchedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
+      this.schedule.endDate = this.schedule.startDate;
+      this.schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
-      cachedSchedule.operation = operation;
-      schedule = await this.momentService.touchSchedule(cachedSchedule, true);
+      this.schedule.operation = operation;
+      schedule = await this.momentService.touchSchedule(this.schedule, true);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
         if (this.modalPage) {
