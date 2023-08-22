@@ -55,7 +55,6 @@
     "@ionic-native/speech-recognition": "^5.31.1",
     "@ionic-native/splash-screen": "^5.31.1",
     "@ionic/angular": "^7.0.10",
-    "@ionic/angular-server": "^7.3.0",
     "@ionic/pwa-elements": "^1.5.2",
     "@ionic/storage": "2.2.0",
     "@stripe/stripe-js": "^1.27.0",
