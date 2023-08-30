@@ -268,7 +268,7 @@ export class EditfeaturePage implements OnInit, OnDestroy {
               }
               this.editTemplate = false;
           }
-          console.log('loaded moment', this.moment);
+          // console.log('loaded moment', this.moment);
 
           // there are now 3 scenarios: 1) create a new Activity, 2) create a new activity with a predefined template, 3) load an existing activity (with the predefined template with it)
 

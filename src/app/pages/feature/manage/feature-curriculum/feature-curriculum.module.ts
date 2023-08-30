@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { FeatureCurriculumPageRoutingModule } from './feature-curriculum-routing.module';
 import { FeatureCurriculumPage } from './feature-curriculum.page';
 import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
+import {CalendarModule} from "angular-calendar";
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import {ApplicationPipesModule} from "../../../../pipes/application-pipes";
     FormsModule,
     IonicModule,
     ApplicationPipesModule,
+    CalendarModule,
     FeatureCurriculumPageRoutingModule
   ],
   declarations: [FeatureCurriculumPage]

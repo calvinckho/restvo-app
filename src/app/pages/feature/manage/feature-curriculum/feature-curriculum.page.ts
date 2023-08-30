@@ -21,6 +21,43 @@ import {Moment} from '../../../../services/moment.service';
 import {Resource} from '../../../../services/resource.service';
 import {Response} from '../../../../services/response.service';
 import {CalendarService} from '../../../../services/calendar.service';
+import {
+  startOfWeek,
+  startOfDay,
+  endOfDay,
+  subDays,
+  addDays,
+  endOfMonth,
+  isSameDay,
+  isSameMonth,
+  addHours,
+  setDay,
+  setHours,
+  setMinutes
+} from 'date-fns';
+import { Subject } from 'rxjs';
+import {
+  CalendarEvent,
+  CalendarEventAction,
+  CalendarEventTimesChangedEvent,
+  CalendarView,
+} from 'angular-calendar';
+import { EventColor } from 'calendar-utils';
+import {FeatureSchedulePage} from "../feature-schedule/feature-schedule.page";
+const colors: Record<string, EventColor> = {
+  red: {
+    primary: '#ad2121',
+    secondary: '#FAE3E3',
+  },
+  blue: {
+    primary: '#1e90ff',
+    secondary: '#D1E8FF',
+  },
+  yellow: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA',
+  },
+};
 
 @Component({
   selector: 'app-feature-curriculum',
@@ -39,6 +76,18 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   notes_schedule: any;
   menu: any;
   timeoutHandle: any;
+
+  view: CalendarView = CalendarView.Week;
+
+  CalendarView = CalendarView;
+
+  viewDate: Date = new Date();
+
+  events: any = [];
+
+  refresh = new Subject<void>();
+
+  activeDayIsOpen: boolean = true;
 
   constructor(
       public route: ActivatedRoute,
@@ -94,10 +143,37 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
     // check to see if it has any schedules
     if (this.id) {
       const schedules: any = await this.momentService.loadActivitySchedules(this.id);
-      this.schedules = schedules.filter((c) => (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
+      this.schedules = schedules.filter((c) => c.options && c.options.recurrence && c.options.recurrence === 'weekly' && c.options.recurrenceByDay && c.options.recurrenceByDay.length && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
       this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
-      console.log("schedules", this.schedules)
+      /*this.schedules.map((c) => {
+        c.startDate = new Date(new Date(c.startDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+        c.endDate = new Date(new Date(c.endDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+        c.options.recurrenceEndDate = new Date(new Date(c.recurrenceEndDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+      });*/
+      console.log("schedules", this.schedules);
+
+      this.events = [];
+      const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+      this.viewDate = startOfWeek(this.schedules.length ? new Date(this.schedules[0].startDate) : new Date()); // viewDate is always a Sunday for iterating purposes
+      this.schedules.forEach((schedule) => {
+        if (schedule && schedule.child_moments && schedule.child_moments.length) {
+          schedule.options.recurrenceByDay.split(',').forEach((dayOfWeekName, index) => {
+            this.events.push({
+              start: setDay(new Date(schedule.startDate), days.indexOf(dayOfWeekName)),
+              end: setDay(new Date(schedule.endDate), days.indexOf(dayOfWeekName)),
+              schedule: schedule._id,
+              title: schedule.child_moments[index % schedule.child_moments.length].matrix_string[0],
+              color: { ...colors.red },
+              allDay: false,
+              resizable: {
+                beforeStart: true,
+                afterEnd: true,
+              },
+              draggable: true });
+          });
+        }
+      });
     }
   }
 
@@ -109,5 +185,46 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
       updatedSchedule.operation = 'update schedule';
       await this.momentService.touchSchedule(updatedSchedule, false);
     }, 500);
+  }
+
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+      if (
+          (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+          events.length === 0
+      ) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = date;
+    }
+  }
+
+  async clickEvent(event: any) {
+    const menuItem: any = {
+      url: 'schedule',
+      label: 'Schedule',
+      categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
+      parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
+      component: FeatureSchedulePage,
+      params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: event.schedule } // sends in the parent category ID
+    };
+    if (this.platform.width() >= 768) {
+      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.moment._id + '/schedule/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+    } else {
+      menuItem.params.modalPage = true;
+      menuItem.params.moment = this.moment;
+      const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
+      await manageModal.present();
+    }
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
   }
 }

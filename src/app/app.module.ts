@@ -46,6 +46,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {ErrorService} from './services/error.service';
 import {OnboardfeaturePageModule} from './pages/feature/onboardfeature/onboardfeature.module';
 import {SuccessPopoverPageModule} from "./pages/feature/success-popover/success-popover.module";
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 @NgModule({
   declarations: [
@@ -76,6 +78,10 @@ import {SuccessPopoverPageModule} from "./pages/feature/success-popover/success-
       OnboardfeaturePageModule,
       NgxChartsModule,
       BrowserAnimationsModule,
+      CalendarModule.forRoot({
+          provide: DateAdapter,
+          useFactory: adapterFactory,
+      }),
       NgxStripeModule.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
