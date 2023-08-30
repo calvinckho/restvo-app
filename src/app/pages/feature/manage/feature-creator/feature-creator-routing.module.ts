@@ -17,6 +17,10 @@ const routes: Routes = [
         loadChildren: () => import('../feature-curriculum/feature-curriculum.module').then( m => m.FeatureCurriculumPageModule),
       },
       {
+        path: 'template',
+        loadChildren: () => import('../feature-template/feature-template.module').then( m => m.FeatureTemplatePageModule),
+      },
+      {
         path: 'schedule',
         loadChildren: () => import('../feature-schedule/feature-schedule.module').then( m => m.FeatureSchedulePageModule),
       },

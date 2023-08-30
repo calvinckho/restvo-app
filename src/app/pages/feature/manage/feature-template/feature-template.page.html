@@ -3,7 +3,7 @@
     <ion-buttons slot="start" *ngIf="modalPage">
       <ion-button fill="solid" (click)="closeModal(false)" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Curriculum</ion-title>
+    <ion-title>Template</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -82,7 +82,7 @@
     <mwl-calendar-month-view
             *ngSwitchCase="CalendarView.Month"
             [viewDate]="viewDate"
-            [events]="contentCalendarItems"
+            [events]="events"
             [refresh]="refresh"
             [activeDayIsOpen]="activeDayIsOpen"
             (dayClicked)="dayClicked($event.day)"
@@ -92,7 +92,7 @@
     <mwl-calendar-week-view
             *ngSwitchCase="CalendarView.Week"
             [viewDate]="viewDate"
-            [events]="contentCalendarItems"
+            [events]="events"
             [refresh]="refresh"
             [dayStartHour]="6"
             [dayEndHour]="21"
@@ -102,7 +102,7 @@
     <mwl-calendar-day-view
             *ngSwitchCase="CalendarView.Day"
             [viewDate]="viewDate"
-            [events]="contentCalendarItems"
+            [events]="events"
             [refresh]="refresh"
             [dayStartHour]="6"
             [dayEndHour]="21"

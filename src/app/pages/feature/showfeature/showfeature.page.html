@@ -520,7 +520,7 @@
             <ion-item lines="none" class="ion-no-margin">
               <ion-label [ngStyle]="{'font-weight': ((moment.matrix_number[i].length > 4 && moment.matrix_number[i][4]) ? 'bold' : 'none')}">{{goal[5]}}</ion-label>
             </ion-item>
-            <swiper #lessonSlides class="lesson-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 124" [initialSlide]="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'index', scheduleIds: scheduleIds, goal: goal })">
+            <swiper #lessonSlides class="lesson-slides" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [slidesOffsetAfter]="this.platform.width() - 124">  <!--[initialSlide]="((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'index', scheduleIds: scheduleIds, goal: goal })"-->
               <ng-template swiperSlide class="lesson-slide" *ngFor="let calendarItem of ((adminOrPublicAccessContentCalendars.length ? adminOrPublicAccessContentCalendars : calendarService.calendarItems) | calendar : 'extracttodayorincompletelesson' : { output: 'filteredcalendaritems', scheduleIds: scheduleIds, goal: goal }); index as i; trackBy: customTrackBy">
                 <ion-card class="lesson-card" (click)="openContent($event, calendarItem)">
                   <ion-card-content class="ion-no-padding ion-padding-top">

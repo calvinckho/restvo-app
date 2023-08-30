@@ -49,7 +49,7 @@
         <ion-col [ngClass]="{'selected': router.url.includes('/profile')}" (click)="clickManageMenu('profile', null)">
           <ion-item class="ion-no-padding" [color]="router.url.includes('/profile') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="profile"></ion-icon>
-            <ion-label class="menu-label">Profile</ion-label>
+            <ion-label class="menu-label">User View</ion-label>
           </ion-item>
         </ion-col>
         <ion-col [ngClass]="{'selected': router.url.includes('people')}" (click)="clickManageMenu('people', null)">
@@ -139,7 +139,7 @@
     </ion-item>
     <ion-item (click)="clickManageMenu('profile', null)">
       <ion-icon slot="start" name="profile" *ngIf="platform.width() < 768"></ion-icon>
-      <ion-label>Profile</ion-label>
+      <ion-label>User View</ion-label>
     </ion-item>
     <ion-item (click)="clickManageMenu('people', null)">
       <ion-icon slot="start" name="people" *ngIf="platform.width() < 768"></ion-icon>

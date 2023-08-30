@@ -624,8 +624,8 @@ export class Moment {
         }
     }
 
-    async loadSchedule(scheduleId) {
-        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId, this.authService.httpAuthOptions));
+    async loadSchedule(scheduleId, includeCalendarItems: boolean) {
+        return await lastValueFrom(this.http.get(this.networkService.domain + '/api/moment/schedule/' + scheduleId + '?includeCalendarItems=' + includeCalendarItems, this.authService.httpAuthOptions));
     }
 
     async loadProgramInsight(programId) {

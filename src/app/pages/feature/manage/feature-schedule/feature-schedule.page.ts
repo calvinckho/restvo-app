@@ -27,6 +27,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   @Input() moment: any; // the program object
   @Input() schedule: any; // the schedule object
   @Input() parentCategoryId: any; // the category ID
+  includeCalendarItems = false;
   loadCompleted = false;
   scheduleId: any;
   programId: any;
@@ -49,9 +50,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   selectCalendarItem: any = { goals: [] };
   timeoutHandle: any;
   toDosPrivate: any;
-
-  recurrenceStartDate: string;
-  recurrenceEndDate: string;
   recurrenceByDay = [];
   dateType = ''; // specifies if user is changing start date or end date
 
@@ -141,7 +139,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
       this.scheduleId = this.scheduleId || this.route.snapshot.paramMap.get('scheduleId');
       if (this.scheduleId && this.scheduleId !== 'null') {
-        const result: any = await this.momentService.loadSchedule(this.scheduleId);
+        const result: any = await this.momentService.loadSchedule(this.scheduleId, this.includeCalendarItems);
         if (result && result.schedule) {
           // console.log("loaded schedule", result.schedule)
           this.schedule = result.schedule;
@@ -162,10 +160,12 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         if (this.schedule.options.recurrenceByDay) {
           this.recurrenceByDay = this.schedule.options.recurrenceByDay.split(',');
         } else {
-          this.recurrenceByDay = [this.getWeekDay(this.recurrenceStartDate)];
+          this.recurrenceByDay = [];
         }
       }
-      await this.loadGoals();
+      if (this.includeCalendarItems) {
+        await this.loadGoals();
+      }
     }
   }
 
@@ -775,11 +775,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       cssClass: 'level-15'
     });
     await actionSheet.present();
-  }
-
-  getWeekDay(dateObj) {
-    const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-    return days[dateObj.getDay()];
   }
 
 // this function is used by Angular *ngFor to track the dynamic DOM creation and destruction

@@ -94,12 +94,12 @@ export class CalendarService {
                 this.storage.set('calendarItems', this.calendarItems);
                 this.updateViewCalendar();
             }
-            // console.log('current calendarItems length', this.calendarItems.length);
             await this.calendarItems.sort(function (a, b) {
                 const c: any = new Date(a.startDate);
                 const d: any = new Date(b.startDate);
                 return (c - d); // oldest to newest
             });
+            //console.log('current calendarItems length', this.calendarItems[this.calendarItems.length - 20]);
             return this.calendarItems;
         } catch (err) {
             console.log(err);

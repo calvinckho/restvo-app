@@ -14,7 +14,7 @@ const routes: Routes = [
             {
                 path: 'profile/:id',
                 loadChildren: () => import('../showfeature/showfeature.module').then(m => m.ShowfeaturePageModule),
-                },
+            },
             {
                 path: 'people',
                 children: [
@@ -77,7 +77,7 @@ const routes: Routes = [
                 loadChildren: () => import('./feature-billing/feature-billing.module').then( m => m.FeatureBillingPageModule),
             },
         ]
-    },
+    }
     ];
 
 @NgModule({

@@ -202,7 +202,7 @@ export class ManagefeaturePage extends EditfeaturePage implements OnInit {
     const menuItem: any = this.menu.find((c) => c.url === menuOption);
     if (this.platform.width() >= 768) {
       if (menuOption === 'creator') {
-        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/overview/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
+        this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id + '/curriculum/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
       } else {
         this.router.navigate(['/app/manage/activity/' + this.moment._id + '/' + menuOption + '/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
       }

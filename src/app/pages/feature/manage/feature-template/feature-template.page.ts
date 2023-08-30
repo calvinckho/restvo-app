@@ -50,13 +50,14 @@ const colors: Record<string, EventColor> = {
 };
 
 @Component({
-  selector: 'app-feature-curriculum',
-  templateUrl: './feature-curriculum.page.html',
-  styleUrls: ['./feature-curriculum.page.scss'],
+  selector: 'app-feature-template',
+  templateUrl: './feature-template.page.html',
+  styleUrls: ['./feature-template.page.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [ CalendarService ]
 })
-export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
+
+export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
 
   @Input() id: any;
 
@@ -67,10 +68,10 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   menu: any;
   timeoutHandle: any;
 
-  view: CalendarView = CalendarView.Month;
+  view: CalendarView = CalendarView.Week;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
-  contentCalendarItems: any = [];
+  events: any = [];
   refresh = new Subject<void>();
   activeDayIsOpen: boolean = true;
 
@@ -119,34 +120,46 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
     // refresh the Edit Page if it has loaded data. it is only called on entry for PWA fast load when authService has completed
     if (this.userData.user && (this.router.url.includes('creator') || this.modalPage)) {
       this.id = (this.moment && this.moment._id) ? this.moment._id : this.route.snapshot.paramMap.get('id');
-      this.loadContentCalendars();
+      this.loadSchedules();
       await this.setup();
     }
   };
 
-  async loadContentCalendars() {
+  async loadSchedules() {
     // check to see if it has any schedules
     if (this.id) {
-      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
-      //this.contentCalendarItems = results.map((c) => {c.start = new Date(c.startDate); c.end = new Date(c.endDate)}) || [];
-      results.forEach((calendarItem, index) => {
-        if (index === 0) {
-          this.viewDate = new Date(calendarItem.startDate);
+      const schedules: any = await this.momentService.loadActivitySchedules(this.id);
+      this.schedules = schedules.filter((c) => c.options && c.options.recurrence && c.options.recurrence === 'weekly' && c.options.recurrenceByDay && c.options.recurrenceByDay.length && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
+      this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
+      this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
+      /*this.schedules.map((c) => {
+        c.startDate = new Date(new Date(c.startDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+        c.endDate = new Date(new Date(c.endDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+        c.options.recurrenceEndDate = new Date(new Date(c.recurrenceEndDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
+      });*/
+      //console.log("schedules", this.schedules);
+
+      this.events = [];
+      const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+      this.viewDate = startOfWeek(this.schedules.length ? new Date(this.schedules[0].startDate) : new Date()); // viewDate is always a Sunday for iterating purposes
+      this.schedules.forEach((schedule) => {
+        if (schedule && schedule.child_moments && schedule.child_moments.length) {
+          schedule.options.recurrenceByDay.split(',').forEach((dayOfWeekName, index) => {
+            this.events.push({
+              start: setDay(new Date(schedule.startDate), days.indexOf(dayOfWeekName)),
+              end: setDay(new Date(schedule.endDate), days.indexOf(dayOfWeekName)),
+              schedule: schedule._id,
+              title: schedule.child_moments[index % schedule.child_moments.length].matrix_string[0],
+              color: { ...colors.red },
+              allDay: false,
+              resizable: {
+                beforeStart: true,
+                afterEnd: true,
+              },
+              draggable: true });
+          });
         }
-        this.contentCalendarItems.push({
-          start: new Date(calendarItem.startDate),
-          end: new Date(calendarItem.endDate),
-          schedule: calendarItem.schedule,
-          title: calendarItem.title,
-          color: { ...colors.red },
-          allDay: false,
-          resizable: {
-            beforeStart: true,
-            afterEnd: true,
-          },
-          draggable: true });
       });
-      //console.log("check", this.contentCalendarItems.length, this.contentCalendarItems[0])
     }
   }
 
@@ -201,3 +214,4 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
     this.activeDayIsOpen = false;
   }
 }
+

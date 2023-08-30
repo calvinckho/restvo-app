@@ -23,6 +23,7 @@ import {Response} from "../../../../services/response.service";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FeatureSchedulePage} from "../feature-schedule/feature-schedule.page";
 import {FeatureCurriculumPage} from "../feature-curriculum/feature-curriculum.page";
+import {FeatureTemplatePage} from "../feature-template/feature-template.page";
 
 @Component({
   selector: 'app-feature-creator',
@@ -114,19 +115,19 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
   }
 
   async clickManageMenu(menuOption, selectedSchedule) {
-    let curriculumId = null;
+    let selectedScheduleId = null;
     if (this.schedules.length) {
-      let curriculum = this.schedules.find((c) => c.options && c.options.recurrence);
-      if (curriculum && curriculum._id) {
-        curriculumId = curriculum._id;
+      let selectedSchedule = this.schedules.find((c) => c.options && c.options.recurrence);
+      if (selectedSchedule && selectedSchedule._id) {
+        selectedScheduleId = selectedSchedule._id;
       } else {
-        curriculumId = this.schedules[0]._id;
+        selectedScheduleId = this.schedules[0]._id;
       }
     }
     this.menu = [
       {
         url: 'overview',
-        label: 'Overview',
+        label: 'Basic Info',
         component: EditfeaturePage,
         params: { visibleComponents: '10000,10010,10050,10300' } // for /creator/id/overview/id which is editfeature
       },
@@ -136,7 +137,15 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureCurriculumPage,
-        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: curriculumId } // sends in the parent category ID
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: selectedScheduleId } // sends in the parent category ID
+      },
+      {
+        url: 'template',
+        label: 'Template',
+        categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
+        parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
+        component: FeatureTemplatePage,
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: selectedScheduleId } // sends in the parent category ID
       },
       {
         url: 'schedule',
