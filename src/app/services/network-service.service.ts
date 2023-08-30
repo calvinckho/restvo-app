@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import { Platform, ToastController } from '@ionic/angular';
 import { Network } from '@capacitor/network';
-import {SwUpdate, VersionReadyEvent} from '@angular/service-worker';
+import {SwUpdate} from '@angular/service-worker';
 import {ElectronService} from 'ngx-electron';
 import {Router} from '@angular/router';
 import {filter, map} from 'rxjs/operators';
@@ -37,7 +37,6 @@ export class NetworkService {
                 switch (evt.type) {
                     case 'VERSION_READY':
                         this.swUpdate.activateUpdate().then(() => {
-                            console.log("reloading")
                             window.location.reload();
                         });
                         break;
@@ -49,7 +48,6 @@ export class NetworkService {
                         switch (evt.type) {
                             case 'VERSION_READY':
                                 this.swUpdate.activateUpdate().then(() => {
-                                    console.log("reloading")
                                     window.location.reload();
                                 });
                                 break;
