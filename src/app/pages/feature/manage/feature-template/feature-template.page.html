@@ -108,6 +108,7 @@
     <ion-title *ngIf="view === CalendarView.Day">Preview {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</ion-title>
     <ion-title *ngIf="view === CalendarView.Week">Preview {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</ion-title>
     <ion-title *ngIf="view === CalendarView.Month">Preview  {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</ion-title>
+    <ion-checkbox [(ngModel)]="showOnlyPartialDay" slot="end" *ngIf="view !== CalendarView.Month">6am - 6pm</ion-checkbox>
   </ion-toolbar>
 </ion-header>
 
@@ -128,8 +129,8 @@
             [viewDate]="viewDate"
             [events]="events"
             [refresh]="refresh"
-            [dayStartHour]="6"
-            [dayEndHour]="21"
+            [dayStartHour]="showOnlyPartialDay ? 6 : 0"
+            [dayEndHour]="showOnlyPartialDay ? 18 : 24"
             (eventClicked)="clickEvent($event.event)"
     >
     </mwl-calendar-week-view>
@@ -138,8 +139,8 @@
             [viewDate]="viewDate"
             [events]="events"
             [refresh]="refresh"
-            [dayStartHour]="6"
-            [dayEndHour]="21"
+            [dayStartHour]="showOnlyPartialDay ? 6 : 0"
+            [dayEndHour]="showOnlyPartialDay ? 18 : 24"
             (eventClicked)="clickEvent($event.event)"
     >
     </mwl-calendar-day-view>

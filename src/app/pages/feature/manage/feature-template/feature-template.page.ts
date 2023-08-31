@@ -83,6 +83,7 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
   refresh = new Subject<void>();
   activeDayIsOpen: boolean = true;
   progress = 0;
+  showOnlyPartialDay = true;
 
   constructor(
       public route: ActivatedRoute,
@@ -139,11 +140,13 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
     if (this.id) {
       const schedules: any = await this.momentService.loadActivitySchedules(this.id);
       this.schedules = schedules.filter((c) => c.options && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
-      this.selectedScheduleIds = this.schedules.map((c) => c._id);
       this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
-      this.populateStartDate = this.populateStartDate || this.schedules.length ? new Date(this.schedules[0].startDate).toISOString() : new Date().toISOString();
-      this.populateEndDate = this.populateEndDate || this.schedules.length ? new Date(this.schedules[0].options.recurrenceEndDate).toISOString() : addDays(new Date(), 6).toISOString();
+      if (!this.selectedScheduleIds) { // only on first load, subsequent reload will not erase 
+        this.selectedScheduleIds = this.schedules.map((c) => c._id);
+        this.populateStartDate = this.populateStartDate || this.schedules.length ? new Date(this.schedules[0].startDate).toISOString() : new Date().toISOString();
+        this.populateEndDate = this.populateEndDate || this.schedules.length ? new Date(this.schedules[0].options.recurrenceEndDate).toISOString() : addDays(new Date(), 6).toISOString();
+      }
       this.repopulateTemplate();
     }
   }

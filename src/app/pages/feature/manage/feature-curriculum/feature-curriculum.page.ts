@@ -71,6 +71,7 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   contentCalendarItems: any = [];
   refresh = new Subject<void>();
   activeDayIsOpen: boolean = true;
+  showOnlyPartialDay = true;
 
   constructor(
       public route: ActivatedRoute,

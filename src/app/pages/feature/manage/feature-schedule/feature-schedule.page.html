@@ -85,13 +85,13 @@
         <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
       </ion-item>
       <ion-row class="ion-justify-content-center">
-        <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
+        <ion-button (click)="touchSchedule('create schedule', true)" *ngIf="!this.schedule._id">
           <span>Create Template</span>
         </ion-button>
         <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.schedule.options.recurrence" shape="round" [hidden]="!includeCalendarItems"> <!--Only available for non-Plan child Activity-->
           <span>Repopulate Timeline</span>
         </ion-button>
-        <ion-button (click)="touchSchedule('update schedule')" *ngIf="this.schedule._id" shape="round"  [hidden]="includeCalendarItems"> <!--Only available for non-Plan child Activity-->
+        <ion-button (click)="touchSchedule('update schedule', true)" *ngIf="this.schedule._id" shape="round"  [hidden]="includeCalendarItems"> <!--Only available for non-Plan child Activity-->
           <span>Save</span>
         </ion-button>
       </ion-row>
@@ -316,5 +316,5 @@
   </div>
 </ion-content>
 <ion-toolbar *ngIf="view === 'settings'">
-  <ion-button expand="block" shape="round" (click)="touchSchedule('update schedule')">Save</ion-button>
+  <ion-button shape="round" (click)="touchSchedule('update schedule', false)">Save</ion-button>
 </ion-toolbar>

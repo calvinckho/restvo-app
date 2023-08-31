@@ -253,13 +253,13 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       cssClass: 'level-15',
       buttons: [{ text: 'Re-populate',
         handler: async () => {
-          this.touchSchedule('repopulate timeline');
+          this.touchSchedule('repopulate timeline', false);
           }}, { text: 'Cancel' }]
     });
     await alert.present();
   }
 
-  async touchSchedule(operation) {
+  async touchSchedule(operation, closeModal) {
     let schedule;
     this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
     if (this.schedule._id || operation === 'create schedule') {
@@ -270,15 +270,15 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       schedule = await this.momentService.touchSchedule(this.schedule, true);
       if (operation === 'create schedule' && schedule && schedule._id) {
         this.schedule = schedule;
-        if (this.modalPage) {
-          this.closeModal();
-        } else {
-          this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: {scheduleId: this.schedule._id},
-            queryParamsHandling: 'merge', // remove to replace all query params by provided
-          });
-        }
+      }
+      if (this.modalPage && closeModal) {
+        this.closeModal();
+      } else {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {scheduleId: this.schedule._id},
+          queryParamsHandling: 'merge', // remove to replace all query params by provided
+        });
       }
     }
   }
@@ -319,10 +319,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
         operation: 'update calendar item',
         calendaritem: calendaritem
       });
-      if (this.schedule.options.recurrence) {
-        this.schedule.options.recurrence = '';
-        this.touchSchedule('update schedule');
-      }
     }, 500);
   }
 
