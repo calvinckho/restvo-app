@@ -87,6 +87,7 @@
             [activeDayIsOpen]="activeDayIsOpen"
             (dayClicked)="dayClicked($event.day)"
             (eventClicked)="clickEvent($event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-month-view>
     <mwl-calendar-week-view
@@ -97,6 +98,7 @@
             [dayStartHour]="showOnlyPartialDay ? 6 : 0"
             [dayEndHour]="showOnlyPartialDay ? 18 : 24"
             (eventClicked)="clickEvent($event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-week-view>
     <mwl-calendar-day-view
@@ -107,6 +109,7 @@
             [dayStartHour]="showOnlyPartialDay ? 6 : 0"
             [dayEndHour]="showOnlyPartialDay ? 18 : 24"
             (eventClicked)="clickEvent($event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-day-view>
   </div>

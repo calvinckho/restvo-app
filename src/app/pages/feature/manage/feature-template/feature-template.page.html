@@ -8,23 +8,23 @@
   <ion-item-group>
     <ion-item lines="none">
       <ion-label class="cursor-pointer">Date Range: </ion-label> <!--Start, Choose a date below-->
-      <ion-datetime-button datetime="feature-template-time1"></ion-datetime-button>
+      <ion-datetime-button datetime="featureTemplateTime1"></ion-datetime-button>
       <span> - </span>
-      <ion-datetime-button datetime="feature-template-time2"></ion-datetime-button>
+      <ion-datetime-button datetime="featureTemplateTime2"></ion-datetime-button>
     </ion-item>
     <ion-popover [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime id="feature-template-time1" presentation="date" [(ngModel)]="populateStartDate" (ionChange)="repopulateTemplate()"></ion-datetime>
+        <ion-datetime id="featureTemplateTime1" presentation="date" [(ngModel)]="populateStartDate" (ngModelChange)="repopulateTemplate('updated begin date')" max="2050-12-31T23:59:59"></ion-datetime>
       </ng-template>
     </ion-popover>
     <ion-popover [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime id="feature-template-time2" presentation="date" [(ngModel)]="populateEndDate" (ionChange)="repopulateTemplate()"></ion-datetime>
+        <ion-datetime id="featureTemplateTime2" presentation="date" [(ngModel)]="populateEndDate" (ngModelChange)="repopulateTemplate('updated end date')" max="2050-12-31T23:59:59"></ion-datetime>
       </ng-template>
     </ion-popover>
     <ion-item lines="none">
       <ion-label class="cursor-pointer">Templates:</ion-label>
-      <ion-select [(ngModel)]="selectedScheduleIds" (ionChange)="repopulateTemplate()" slot="end" [multiple]="true">
+      <ion-select [(ngModel)]="selectedScheduleIds" (ionChange)="repopulateTemplate(null)" slot="end" [multiple]="true">
         <ion-select-option *ngFor="let schedule of schedules" [value]="schedule._id">{{schedule.title}}</ion-select-option>
       </ion-select>
     </ion-item>

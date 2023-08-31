@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {EditfeaturePage} from "../../editfeature/editfeature.page";
 import {
   ActionSheetController,
-  AlertController,
+  AlertController, IonContent, IonDatetime,
   LoadingController, ModalController,
   Platform,
   PopoverController,
@@ -25,9 +25,6 @@ import {
   differenceInDays,
   isSameDay,
   isSameMonth,
-    setYear,
-    setMonth,
-    setDate,
   setHours,
   setMinutes,
   addDays,
@@ -63,7 +60,6 @@ const colors: Record<string, EventColor> = {
 })
 
 export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
-
   @Input() id: any;
 
   populateStartDate: string = null;
@@ -142,16 +138,21 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
       this.schedules = schedules.filter((c) => c.options && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
       this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
-      if (!this.selectedScheduleIds) { // only on first load, subsequent reload will not erase 
+      if (!this.selectedScheduleIds) { // only on first load, subsequent reload will not erase
         this.selectedScheduleIds = this.schedules.map((c) => c._id);
-        this.populateStartDate = this.populateStartDate || this.schedules.length ? new Date(this.schedules[0].startDate).toISOString() : new Date().toISOString();
-        this.populateEndDate = this.populateEndDate || this.schedules.length ? new Date(this.schedules[0].options.recurrenceEndDate).toISOString() : addDays(new Date(), 6).toISOString();
+        this.populateStartDate = this.schedules.length ? new Date(this.schedules[0].startDate).toISOString() : new Date().toISOString();
+        this.populateEndDate = this.schedules.length ? new Date(this.schedules[0].options.recurrenceEndDate).toISOString() : addDays(new Date(), 6).toISOString();
       }
-      this.repopulateTemplate();
+      this.repopulateTemplate('updated begin date');
     }
   }
 
-  async repopulateTemplate() {
+  async repopulateTemplate(updatedSlot) {
+    if (updatedSlot === 'updated begin date' && new Date(this.populateStartDate).getTime() > new Date(this.populateEndDate).getTime()) {
+      this.populateEndDate = JSON.parse(JSON.stringify(this.populateStartDate));
+    } else if (updatedSlot === 'updated end date' && new Date(this.populateStartDate).getTime() > new Date(this.populateEndDate).getTime()) {
+      this.populateStartDate = JSON.parse(JSON.stringify(this.populateEndDate));
+    }
     this.viewDate = new Date(this.populateStartDate);
     this.events = [];
     const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];

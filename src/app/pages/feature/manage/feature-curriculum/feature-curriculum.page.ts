@@ -30,6 +30,7 @@ import { Subject } from 'rxjs';
 import {
   CalendarEvent,
   CalendarView,
+  CalendarEventTimesChangedEvent,
 } from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
 const colors: Record<string, EventColor> = {
@@ -68,9 +69,10 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
+  loadedCalendarItems: any = [];
   contentCalendarItems: any = [];
   refresh = new Subject<void>();
-  activeDayIsOpen: boolean = true;
+  activeDayIsOpen = true;
   showOnlyPartialDay = true;
 
   constructor(
@@ -127,17 +129,17 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
     // check to see if it relationship ID exists
     this.contentCalendarItems = [];
     if (this.id) {
-      const results: any = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
+      this.loadedCalendarItems = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
       //this.contentCalendarItems = results.map((c) => {c.start = new Date(c.startDate); c.end = new Date(c.endDate)}) || [];
-      results.forEach((calendarItem, index) => {
+      this.loadedCalendarItems.forEach((calendarItem, index) => {
         if (index === 0) {
           this.viewDate = new Date(calendarItem.startDate);
         }
         this.contentCalendarItems.push({
+          _id: calendarItem._id,
           start: new Date(calendarItem.startDate),
           end: addHours(new Date(calendarItem.startDate), 1),
           moment: calendarItem.moment,
-          calendar: calendarItem._id,
           schedule: calendarItem.schedule,
           uniqueAnswersPerCalendar: calendarItem.uniqueAnswersPerCalendar,
           title: calendarItem.title,
@@ -177,11 +179,39 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
     }
   }
 
+  eventTimesChanged({
+                      event,
+                      newStart,
+                      newEnd,
+                    }: any): void {
+    this.contentCalendarItems = this.contentCalendarItems.map((contentCalendarItem) => {
+      if (contentCalendarItem._id === event._id) {
+        return {
+          ...contentCalendarItem,
+          start: newStart,
+          end: newEnd,
+        };
+      }
+      return contentCalendarItem;
+    });
+    this.loadedCalendarItems.map((loadedCalendarItem) => {
+      if (loadedCalendarItem._id === event._id) {
+        loadedCalendarItem.startDate = newStart.toISOString();
+        loadedCalendarItem.endDate = newEnd.toISOString();
+      }
+    });
+    const updatedCalendarItem = this.loadedCalendarItems.find((c) => (c._id === event._id));
+    this.momentService.touchContentCalendarItems(null, {
+      operation: 'update calendar item',
+      calendaritem: updatedCalendarItem
+    });
+  }
+
   async clickEvent(event: any) {
     let componentProps: any;
     componentProps = { moment: { _id: event.moment }, momentId: event.moment, relationshipId: this.id, modalPage: this.platform.width() < 768, subpanel: true };
-    if (event.uniqueAnswersPerCalendar && event.calendar) {
-      componentProps.calendarId = event.calendar;
+    if (event.uniqueAnswersPerCalendar && event._id) {
+      componentProps.calendarId = event._id;
     }
     this.momentService.openMoment(componentProps);
   }
