@@ -153,7 +153,8 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureSchedulePage,
-        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: selectedSchedule ? selectedSchedule._id : null } // sends in the parent category ID
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: selectedSchedule ? selectedSchedule._id : null }, // sends in the parent category ID
+        modalOnly: true
       },
       {
         url: 'new-schedule',
@@ -161,18 +162,19 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureSchedulePage,
-        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73' } // sends in the parent category ID
+        params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73' }, // sends in the parent category ID
+        modalOnly: true
       },
     ];
     const menuItem: any = this.menu.find((c) => c.url === menuOption);
     // console.log(menuOption);
-    if (this.platform.width() >= 768) {
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: true });
-    } else {
+    if (this.platform.width() < 768 || menuItem.modalOnly) {
       menuItem.params.modalPage = true;
       menuItem.params.moment = this.moment;
       const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
       await manageModal.present();
+    } else {
+      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.id + '/' + menuOption + '/' + this.id, (menuItem.params || {}) ], { replaceUrl: true });
     }
   }
 }

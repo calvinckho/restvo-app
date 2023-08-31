@@ -22,10 +22,9 @@ import {Resource} from '../../../../services/resource.service';
 import {Response} from '../../../../services/response.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {
-  startOfWeek,
+  addHours,
   isSameDay,
   isSameMonth,
-  setDay,
 } from 'date-fns';
 import { Subject } from 'rxjs';
 import {
@@ -33,7 +32,6 @@ import {
   CalendarView,
 } from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
-import {FeatureSchedulePage} from "../feature-schedule/feature-schedule.page";
 const colors: Record<string, EventColor> = {
   red: {
     primary: '#ad2121',
@@ -125,7 +123,8 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   };
 
   async loadContentCalendars() {
-    // check to see if it has any schedules
+    // check to see if it relationship ID exists
+    this.contentCalendarItems = [];
     if (this.id) {
       const results: any = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
       //this.contentCalendarItems = results.map((c) => {c.start = new Date(c.startDate); c.end = new Date(c.endDate)}) || [];
@@ -135,8 +134,11 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
         }
         this.contentCalendarItems.push({
           start: new Date(calendarItem.startDate),
-          end: new Date(calendarItem.endDate),
+          end: addHours(new Date(calendarItem.startDate), 1),
+          moment: calendarItem.moment,
+          calendar: calendarItem._id,
           schedule: calendarItem.schedule,
+          uniqueAnswersPerCalendar: calendarItem.uniqueAnswersPerCalendar,
           title: calendarItem.title,
           color: { ...colors.red },
           allDay: false,
@@ -175,22 +177,23 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
   }
 
   async clickEvent(event: any) {
-    const menuItem: any = {
-      url: 'schedule',
-      label: 'Schedule',
-      categoryId: '5e1bbda67b00ea76b75e5a73', // content's category ID
-      parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
-      component: FeatureSchedulePage,
-      params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: event.schedule } // sends in the parent category ID
-    };
-    if (this.platform.width() >= 768) {
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.moment._id + '/schedule/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
-    } else {
-      menuItem.params.modalPage = true;
-      menuItem.params.moment = this.moment;
-      const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
-      await manageModal.present();
+    let componentProps: any;
+    componentProps = { moment: { _id: event.moment }, momentId: event.moment, relationshipId: this.id, modalPage: this.platform.width() < 768, subpanel: true };
+    if (event.uniqueAnswersPerCalendar && event.calendar) {
+      componentProps.calendarId = event.calendar;
     }
+    this.momentService.openMoment(componentProps);
+  }
+
+  // open Content requires providing the relationshipId
+  async openContent(event, calendarItem) {
+    event.stopPropagation();
+    let componentProps: any;
+    componentProps = { moment: { _id: calendarItem.moment._id }, momentId: calendarItem.moment._id, relationshipId: this.programId, modalPage: this.platform.width() < 768, subpanel: true };
+    if (calendarItem.uniqueAnswersPerCalendar && calendarItem._id) {
+      componentProps.calendarId = calendarItem._id;
+    }
+    this.momentService.openMoment(componentProps);
   }
 
   setView(view: CalendarView) {

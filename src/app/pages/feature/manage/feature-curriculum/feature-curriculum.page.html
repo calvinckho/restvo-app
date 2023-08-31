@@ -3,11 +3,10 @@
     <ion-buttons slot="start" *ngIf="modalPage">
       <ion-button fill="solid" (click)="closeModal(false)" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Curriculum</ion-title>
+    <ion-title>
+      {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
+    </ion-title>
   </ion-toolbar>
-</ion-header>
-
-<ion-content>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button fill="solid">
@@ -18,7 +17,8 @@
                 [(viewDate)]="viewDate"
                 (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Previous
+          <span *ngIf="platform.width() >= 768">Previous</span>
+          <span *ngIf="platform.width() < 768"><ion-icon name="chevron-back-outline"></ion-icon></span>
         </div>
       </ion-button>
       <ion-button fill="solid">
@@ -38,14 +38,11 @@
                 [(viewDate)]="viewDate"
                 (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Next
+          <span *ngIf="platform.width() >= 768">Next</span>
+          <span *ngIf="platform.width() < 768"><ion-icon name="chevron-forward-outline"></ion-icon></span>
         </div>
       </ion-button>
     </ion-buttons>
-
-    <ion-title>
-      {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
-    </ion-title>
 
     <ion-buttons slot="end">
       <ion-button fill="solid">
@@ -66,7 +63,7 @@
           Week
         </div>
       </ion-button>
-      <!--<ion-button fill="solid">
+      <ion-button fill="solid">
         <div
                 class="btn btn-primary"
                 (click)="setView(CalendarView.Day)"
@@ -74,10 +71,12 @@
         >
           Day
         </div>
-      </ion-button>-->
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
+</ion-header>
 
+<ion-content>
   <div [ngSwitch]="view">
     <mwl-calendar-month-view
             *ngSwitchCase="CalendarView.Month"
@@ -94,8 +93,6 @@
             [viewDate]="viewDate"
             [events]="contentCalendarItems"
             [refresh]="refresh"
-            [dayStartHour]="6"
-            [dayEndHour]="21"
             (eventClicked)="clickEvent($event.event)"
     >
     </mwl-calendar-week-view>
@@ -104,8 +101,6 @@
             [viewDate]="viewDate"
             [events]="contentCalendarItems"
             [refresh]="refresh"
-            [dayStartHour]="6"
-            [dayEndHour]="21"
             (eventClicked)="clickEvent($event.event)"
     >
     </mwl-calendar-day-view>

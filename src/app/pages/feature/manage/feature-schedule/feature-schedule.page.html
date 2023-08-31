@@ -3,11 +3,12 @@
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()" color="grey"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Schedule</ion-title>
+    <ion-title *ngIf="schedule && !schedule.title">Template</ion-title>
+    <ion-title *ngIf="schedule && schedule.title">{{schedule.title}}</ion-title>
   </ion-toolbar>
   <ion-toolbar class="filter">
     <ion-segment [(ngModel)]="view">
-      <ion-segment-button value="timeline">Timeline</ion-segment-button>
+      <ion-segment-button value="timeline">Template</ion-segment-button>
       <ion-segment-button value="content" [disabled]="!scheduleId">Content</ion-segment-button>
       <ion-segment-button value="settings" [disabled]="!scheduleId">Settings</ion-segment-button>
     </ion-segment>
@@ -25,28 +26,35 @@
       <ion-item-group>
         <ion-item lines="none">
           <div class="moment-label"> <img class="side-image" src="assets/img/Calendar_Gray.png"></div>
-          <div class="moment-input">Timeline</div>
+          <div class="moment-input">Template</div>
           <ion-buttons slot="end" class="ion-no-margin">
             <!--<ion-button (click)="touchSchedule('update schedule')">Save</ion-button>-->
             <ion-button fill="clear" (click)="deleteSchedule()" class="close-button"><ion-icon name="trash" color="grey"></ion-icon></ion-button>
           </ion-buttons>
         </ion-item>
         <ion-item lines="none">
-          <ion-label class="cursor-pointer">Start Date: </ion-label> <!--Start, Choose a date below-->
-          <ion-datetime-button datetime="time1"></ion-datetime-button>
+          <ion-input
+              label="Name"
+              labelPlacement="stacked"
+              [(ngModel)]="schedule.title" placeholder="Please Enter Template Name">
+          </ion-input>
         </ion-item>
-        <ion-modal [keepContentsMounted]="true">
-          <ng-template>
-            <ion-datetime id="time1" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.startDate"></ion-datetime>
-          </ng-template>
-        </ion-modal>
         <ion-item lines="none">
-          <ion-label class="cursor-pointer">End Date: </ion-label> <!--Start, Choose a date below-->
-          <ion-datetime-button datetime="time2"></ion-datetime-button>
+          <ion-label class="cursor-pointer">Start Date: </ion-label> <!--Start, Choose a date below-->
+          <ion-datetime-button datetime="feature-schedule-time1"></ion-datetime-button>
         </ion-item>
         <ion-popover [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="time2" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.options.recurrenceEndDate"></ion-datetime>
+            <ion-datetime id="feature-schedule-time1" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.startDate"></ion-datetime>
+          </ng-template>
+        </ion-popover>
+        <ion-item lines="none">
+          <ion-label class="cursor-pointer">End Date: </ion-label> <!--Start, Choose a date below-->
+          <ion-datetime-button datetime="feature-schedule-time2"></ion-datetime-button>
+        </ion-item>
+        <ion-popover [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="feature-schedule-time2" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.options.recurrenceEndDate"></ion-datetime>
           </ng-template>
         </ion-popover>
       </ion-item-group>
@@ -54,15 +62,11 @@
         <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Frequency</ion-label>
         <ion-select [(ngModel)]="schedule.options.recurrence" slot="end">
           <ion-select-option value=''>None</ion-select-option>
-          <ion-select-option value='daily'>Daily</ion-select-option>
+          <!--<ion-select-option value='daily'>Daily</ion-select-option>-->
           <ion-select-option value='weekly'>Weekly</ion-select-option>
-          <ion-select-option value='monthly'>Monthly</ion-select-option>
-          <ion-select-option value='yearly'>Yearly</ion-select-option>
+          <!--<ion-select-option value='monthly'>Monthly</ion-select-option>
+          <ion-select-option value='yearly'>Yearly</ion-select-option>-->
         </ion-select>
-      </ion-item>
-      <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
-        <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
-        <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
       </ion-item>
       <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence === 'weekly'">
         <ion-label style="width: 90%" class="ion-margin-left" slot="start">Days of the Week</ion-label>
@@ -76,9 +80,13 @@
           <ion-select-option value='SU'>Sunday</ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-item lines="none" *ngIf="schedule.options.recurrence && schedule.options.recurrence.length">
+        <ion-label style="width: 90%" class="ion-margin-left" slot="start">Repeat Interval</ion-label>
+        <ion-input style="width: 10%; text-align: right" type="number" [placeholder]="1" [max]="200" [(ngModel)]="schedule.options.recurrenceInterval" slot="end"></ion-input>
+      </ion-item>
       <ion-row class="ion-justify-content-center">
         <ion-button (click)="touchSchedule('create schedule')" *ngIf="!this.schedule._id">
-          <span>Create Schedule</span>
+          <span>Create Template</span>
         </ion-button>
         <ion-button (click)="promptTouchSchedule()" *ngIf="this.schedule._id && this.schedule.options.recurrence" shape="round" [hidden]="!includeCalendarItems"> <!--Only available for non-Plan child Activity-->
           <span>Repopulate Timeline</span>
@@ -92,7 +100,7 @@
         <ion-label class="ion-text-center message-label">Your timeline is empty.</ion-label>
       </ion-item>
       <ion-item *ngIf="!this.schedule._id">
-        <ion-label class="ion-text-center message-label">Click 'Create Schedule' to begin.</ion-label>
+        <ion-label class="ion-text-center message-label">Click 'Create Template' to begin.</ion-label>
       </ion-item>
       <div *ngFor="let favoriteGoal of listOfDisplayGoals; trackBy: customTrackBy" [hidden]="(favoriteGoal[1] === 'goal')">
         <!--Favorite Goals-->

@@ -22,10 +22,15 @@ import {Resource} from '../../../../services/resource.service';
 import {Response} from '../../../../services/response.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {
-  startOfWeek,
+  differenceInDays,
   isSameDay,
   isSameMonth,
-  setDay,
+    setYear,
+    setMonth,
+    setDate,
+  setHours,
+  setMinutes,
+  addDays,
 } from 'date-fns';
 import { Subject } from 'rxjs';
 import {
@@ -61,19 +66,23 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
 
   @Input() id: any;
 
+  populateStartDate: string = null;
+  populateEndDate: string = null;
   resource: any;
   hasOrganizerAccess = false;
   schedules: any;
+  selectedScheduleIds: any;
   notes_schedule: any;
   menu: any;
   timeoutHandle: any;
 
   view: CalendarView = CalendarView.Week;
   CalendarView = CalendarView;
-  viewDate: Date = new Date();
+  viewDate = new Date();
   events: any = [];
   refresh = new Subject<void>();
   activeDayIsOpen: boolean = true;
+  progress = 0;
 
   constructor(
       public route: ActivatedRoute,
@@ -129,48 +138,66 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
     // check to see if it has any schedules
     if (this.id) {
       const schedules: any = await this.momentService.loadActivitySchedules(this.id);
-      this.schedules = schedules.filter((c) => c.options && c.options.recurrence && c.options.recurrence === 'weekly' && c.options.recurrenceByDay && c.options.recurrenceByDay.length && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
+      this.schedules = schedules.filter((c) => c.options && (c.array_boolean.length <= 5) || (c.array_boolean.length > 5) && !c.array_boolean[5]);
+      this.selectedScheduleIds = this.schedules.map((c) => c._id);
       this.notes_schedule = schedules.find((c) => (c.array_boolean.length > 5) && c.array_boolean[5]);
       this.schedules.sort((a, b) => b.options && b.options.recurrence ? 1 : -1);
-      /*this.schedules.map((c) => {
-        c.startDate = new Date(new Date(c.startDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
-        c.endDate = new Date(new Date(c.endDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
-        c.options.recurrenceEndDate = new Date(new Date(c.recurrenceEndDate).getTime() - ((c.options.timezoneOffset || 0) * 60000));
-      });*/
-      //console.log("schedules", this.schedules);
-
-      this.events = [];
-      const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-      this.viewDate = startOfWeek(this.schedules.length ? new Date(this.schedules[0].startDate) : new Date()); // viewDate is always a Sunday for iterating purposes
-      this.schedules.forEach((schedule) => {
-        if (schedule && schedule.child_moments && schedule.child_moments.length) {
-          schedule.options.recurrenceByDay.split(',').forEach((dayOfWeekName, index) => {
-            this.events.push({
-              start: setDay(new Date(schedule.startDate), days.indexOf(dayOfWeekName)),
-              end: setDay(new Date(schedule.endDate), days.indexOf(dayOfWeekName)),
-              schedule: schedule._id,
-              title: schedule.child_moments[index % schedule.child_moments.length].matrix_string[0],
-              color: { ...colors.red },
-              allDay: false,
-              resizable: {
-                beforeStart: true,
-                afterEnd: true,
-              },
-              draggable: true });
-          });
-        }
-      });
+      this.populateStartDate = this.populateStartDate || this.schedules.length ? new Date(this.schedules[0].startDate).toISOString() : new Date().toISOString();
+      this.populateEndDate = this.populateEndDate || this.schedules.length ? new Date(this.schedules[0].options.recurrenceEndDate).toISOString() : addDays(new Date(), 6).toISOString();
+      this.repopulateTemplate();
     }
   }
 
-  async touchSchedule(event, schedule) {
-    event.stopPropagation();
-    clearTimeout(this.timeoutHandle);
-    this.timeoutHandle = setTimeout(async () => {
-      const updatedSchedule = JSON.parse(JSON.stringify(schedule));
-      updatedSchedule.operation = 'update schedule';
-      await this.momentService.touchSchedule(updatedSchedule, false);
-    }, 500);
+  async repopulateTemplate() {
+    this.viewDate = new Date(this.populateStartDate);
+    this.events = [];
+    const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+    this.schedules.forEach((schedule) => {
+      let contentIndex = 0;
+      for (let dayIndex = 0; dayIndex <= differenceInDays(new Date(this.populateEndDate), new Date(this.populateStartDate)); dayIndex++) {
+        if (schedule && this.selectedScheduleIds.includes(schedule._id) && schedule.options.recurrence === 'weekly' && schedule.child_moments && schedule.child_moments.length && schedule.options.recurrenceByDay.includes(days[addDays(new Date(this.populateStartDate), dayIndex).getDay()]) && (Math.floor(dayIndex / 7) % schedule.options.recurrenceInterval === 0)) {
+          this.events.push({
+            start: setHours(setMinutes(addDays(new Date(this.populateStartDate), dayIndex), new Date(schedule.startDate).getMinutes()), new Date(schedule.startDate).getHours()),
+            end: setHours(setMinutes(addDays(new Date(this.populateStartDate), dayIndex), new Date(schedule.startDate).getMinutes()), new Date(schedule.startDate).getHours() + 1),
+            schedule: schedule._id,
+            title: schedule.child_moments[contentIndex % schedule.child_moments.length].matrix_string[0],
+            color: { ...colors.red },
+            allDay: false,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true,
+            },
+            draggable: true });
+          contentIndex++;
+        }
+      }
+    });
+    this.closeOpenMonthViewDay();
+  }
+
+  async addToCurriculum() {
+    const alert = await this.alertCtrl.create({
+      header: 'Add to Curriculum',
+      subHeader: 'You are about to add the selected templates to your curriculum. All old records in the same date range will be replaced and erased. Are you sure you want to proceed?',
+      cssClass: 'level-15',
+      buttons: [{ text: 'Yes',
+        handler: async () => {
+          const promises = this.schedules.map(async (schedule, index) => {
+            schedule.startDate = new Date(new Date(this.populateStartDate).setUTCHours(new Date(schedule.startDate).getHours(), new Date(schedule.startDate).getMinutes())).toISOString();
+            schedule.options.recurrenceEndDate = new Date(new Date(this.populateEndDate).setUTCHours(new Date(schedule.options.recurrenceEndDate).getHours(), new Date(schedule.options.recurrenceEndDate).getMinutes())).toISOString();
+            schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
+            // for Activity, either create schedule or send to the backend to repopulate the timeline
+            schedule.operation = this.selectedScheduleIds.includes(schedule._id) ? 'repopulate timeline' : 'update schedule';
+            if (schedule.operation === 'repopulate timeline') {
+              await this.momentService.touchSchedule(schedule, false);
+              //console.log("schedule", schedule._id, schedule.startDate)
+            }
+            this.progress = (index + 1) / this.selectedScheduleIds.length;
+          });
+          await Promise.all(promises);
+        }}, { text: 'Cancel' }]
+    });
+    await alert.present();
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -196,14 +223,10 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
       component: FeatureSchedulePage,
       params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: event.schedule } // sends in the parent category ID
     };
-    if (this.platform.width() >= 768) {
-      this.router.navigate(['/app/manage/activity/' + this.moment._id + '/creator/' + this.moment._id + '/schedule/' + this.moment._id, (menuItem.params || {}) ], { replaceUrl: true });
-    } else {
-      menuItem.params.modalPage = true;
-      menuItem.params.moment = this.moment;
-      const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
-      await manageModal.present();
-    }
+    menuItem.params.modalPage = true;
+    menuItem.params.moment = this.moment;
+    const manageModal = await this.modalCtrl.create({ component: menuItem.component, componentProps: menuItem.params });
+    await manageModal.present();
   }
 
   setView(view: CalendarView) {
