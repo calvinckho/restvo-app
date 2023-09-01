@@ -45,9 +45,9 @@ import {SwiperComponent} from "swiper/angular";
 export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild(StripeCardComponent) card: StripeCardComponent;
-  @ViewChild('swiper') slides: SwiperComponent;
-
   @Input() modalPage: any;
+
+  slides: any;
   stripeService: StripeInstance;
   cardOptions: StripeCardElementOptions = {
     style: {
@@ -146,6 +146,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   onSlidesLoaded (event) {
     const [swiper] = event;
     if (swiper) {
+      this.slides = swiper;
       swiper.disable();
     }
   }
@@ -157,17 +158,17 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
   }
 
   prevSlide() {
-    this.slides?.swiperRef.enable();
-    this.slides?.swiperRef.slidePrev();
+    this.slides.enable();
+    this.slides.slidePrev();
     this.content.scrollToTop();
-    this.slides?.swiperRef.disable();
+    this.slides.disable();
   }
 
   nextSlide() {
-    this.slides?.swiperRef.enable();
-    this.slides?.swiperRef.slideNext();
+    this.slides.enable();
+    this.slides.slideNext();
     this.content.scrollToTop();
-    this.slides?.swiperRef.disable();
+    this.slides.disable();
   }
 
   async selectPlan(plan) {

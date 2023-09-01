@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content *ngIf="resource && resource._id && moment && moment.resource && moment.resource.field && moment.resource.matrix_number.length && moment.matrix_string && moment.matrix_string.length">
-  <swiper id="swiper" (activeIndexChange)="changeSlide('create', $event)" pager *ngIf="view === 'create'" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
+  <swiper id="swiper" (init)="onSlidesLoaded($event)" (activeIndexChange)="changeSlide('create', $event)" pager *ngIf="view === 'create'" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]="true" [updateOnWindowResize]="true">
     <!--Collect Community Name-->
     <ng-template swiperSlide *ngIf="moment.resource.matrix_number[0].indexOf(10000) > -1">
       <ion-grid class="slide-grid">

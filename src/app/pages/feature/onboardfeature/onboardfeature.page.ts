@@ -24,13 +24,13 @@ import {SwiperComponent} from "swiper/angular";
 export class OnboardfeaturePage {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('swiper') slides: SwiperComponent | undefined;
 
     @Input() modalPage: any;
     @Input() programId: any;
     @Input() type: number;
     @Input() token: string;
 
+    slides: any;
     nextButtonReady = true;
     resource: any;
     moment: any;
@@ -108,6 +108,14 @@ export class OnboardfeaturePage {
         await this.loadActivities();
     }
 
+    onSlidesLoaded (event) {
+        const [swiper] = event;
+        if (swiper) {
+            this.slides = swiper;
+            swiper.disable();
+        }
+    }
+
     async loadActivities() {
         this.loadCompleted = false;
         let onboardingProcesses: any;
@@ -137,9 +145,9 @@ export class OnboardfeaturePage {
             this.ionSpinner = false;
             setTimeout(async () => {
                 if (this.slides) {
-                    await this.slides?.swiperRef.update();
-                    await this.slides?.swiperRef.slideTo(0);
-                    await this.slides?.swiperRef.enable();
+                    await this.slides.update();
+                    await this.slides.slideTo(0);
+                    await this.slides.enable();
                 }
             }, 50);
         } else {
@@ -429,13 +437,13 @@ export class OnboardfeaturePage {
 
     clickNextButton(direction) {
         if (!this.moment) { return; }
-        this.slides?.swiperRef.enable();
+        this.slides.enable();
         if (direction === 'prev') {
-            this.slides?.swiperRef.slidePrev();
+            this.slides.slidePrev();
         } else {
-            this.slides?.swiperRef.slideNext();
+            this.slides.slideNext();
         }
-        this.slides?.swiperRef.enable();
+        this.slides.enable();
     }
 
     async seeUserInfo(event, user) {

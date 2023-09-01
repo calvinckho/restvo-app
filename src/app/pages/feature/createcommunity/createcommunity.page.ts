@@ -33,8 +33,7 @@ import {SwiperComponent} from "swiper/angular";
   encapsulation: ViewEncapsulation.None
 })
 export class CreatecommunityPage extends EditfeaturePage implements OnInit {
-    @ViewChild('swiper') slides: SwiperComponent | undefined;
-
+    slides: any;
     createReachedEnd = false;
     tutorialReachedEnd = false;
     view = 'create';
@@ -78,14 +77,22 @@ export class CreatecommunityPage extends EditfeaturePage implements OnInit {
         }
     }
 
+    onSlidesLoaded (event) {
+        const [swiper] = event;
+        if (swiper) {
+            this.slides = swiper;
+            swiper.disable();
+        }
+    }
+
     async clickNextButton(direction) {
         if (!this.moment) return;
         if (direction === 'prev') {
-            this.slides?.swiperRef.slidePrev();
+            this.slides.slidePrev();
         } else {
             // assuming it is Community creation and moving from Slide 1 will assign it with the Community category
             this.moment.categories = ['5c915324e172e4e64590e346'];
-            this.slides?.swiperRef.slideNext();
+            this.slides.slideNext();
         }
     }
 
