@@ -577,7 +577,7 @@
               <div *ngIf="url.toLowerCase().includes('youtu')" class="video-container" plyr [plyrSources]="[{ 'src': url, 'provider': 'youtube' }]" [plyrOptions]="resourceService.plyrOptions" (plyrInit)="initPlyr($event, i)" (plyrPlay)="mediaSlides.stopAutoplay()" (plyrReady)="setPlyrCurrentTime('youtube', i)" (plyrPause)="savePlyrCurrentTime(i)" (plyrEnterFullScreen)="showHeader = false" (plyrExitFullScreen)="showHeader = true"></div>
             </ng-template>
           </swiper>
-          <!--<div class="media-swiper-button-next swiper-button-next swiper-button-white" (click)="mediaSlides.slideNext()" [hidden]="disableMediaNextBtn || (this.platform.width() < 768)"></div>-->
+          <!--<div class="media-swiper-button-next swiper-button-next swiper-button-white" (click)="mediaSlides.slideNext(100, true)" [hidden]="disableMediaNextBtn || (this.platform.width() < 768)"></div>-->
         </div>
       </div>
       <!--Video Conference-->
@@ -992,7 +992,7 @@
           <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
-          <div class="swiper-button-prev swiper-button-white" (click)="peopleSlides.swiperRef.slidePrev()" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <div class="swiper-button-prev swiper-button-white" (click)="peopleSlides.slidePrev(100, true)" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
           <swiper class="person-slides" #peopleSlides (activeIndexChange)="swipePeopleSlide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
             <ng-template swiperSlide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
               <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
@@ -1049,7 +1049,7 @@
               </ion-card>
             </ng-template>
           </swiper>
-          <div class="swiper-button-next swiper-button-white" (click)="peopleSlides.swiperRef.slideNext()" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <div class="swiper-button-next swiper-button-white" (click)="peopleSlides.slideNext(100, true)" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
         </div>
         <!--List-->
         <div *ngIf="moment.matrix_number[i][3] === 1">

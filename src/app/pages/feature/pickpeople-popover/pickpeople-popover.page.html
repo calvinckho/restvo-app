@@ -10,7 +10,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar #searchbar [(ngModel)]="searchKeyword" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" [placeholder]="action" debounce="500"></ion-searchbar>
+    <ion-searchbar #searchbar [(ngModel)]="searchKeyword" (ionInput)="executeSearch($event)" (ionCancel)="cancelSearch($event)" [placeholder]="action" debounce="500"></ion-searchbar>
     <!--Add Friends-->
     <div class="selected-buttons">
       <ion-button *ngFor="let obj of selectedConversations" size="small" color="primary" (click)="unselectFriend(obj)" ><span *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect' || obj.conversation.type === 'self')">{{obj.data.name}}</span><span *ngIf="(filter === 'group' || filter === 'both') && obj.conversation.type === 'group'">{{obj.conversation.group.name}}</span><ion-icon [hidden]="obj.locked" name="close-circle" style="margin-left: 5px;"></ion-icon></ion-button>
@@ -30,28 +30,17 @@
       <ion-icon slot="end" color="tertiary" *ngIf="!this.selfConversationObj.select" name="radio-button-off"></ion-icon>
       <ion-icon slot="end" color="tertiary" *ngIf="this.selfConversationObj.select" name="checkmark-circle"></ion-icon>
     </ion-item>
-    <cdk-virtual-scroll-viewport itemSize="60">
-      <div *cdkVirtualFor="let obj of conversations">
-        <ion-item class="pickpeople-friend" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
-          <ion-avatar slot="start">
-            <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
-            <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
-          </ion-avatar>
-          {{obj.data.name}}
-          <ion-icon slot="end" color="tertiary" *ngIf="!obj.select" name="radio-button-off"></ion-icon>
-          <ion-icon slot="end" color="tertiary" *ngIf="obj.select" name="checkmark-circle"></ion-icon>
-        </ion-item>
-        <ion-item (click)="selectFriend(obj)" *ngIf="(filter === 'group' || filter === 'both') && obj.conversation.type === 'group'">
-          <ion-avatar slot="start">
-            <img *ngIf="obj.conversation.group.background" [src]="obj.conversation.group.background"/>
-            <img *ngIf="!obj.conversation.group.background" src="assets/img/group-default.png"/>
-          </ion-avatar>
-          {{obj.conversation.group.name}}
-          <ion-icon slot="end" color="tertiary" *ngIf="!obj.select" name="radio-button-off"></ion-icon>
-          <ion-icon slot="end" color="tertiary" *ngIf="obj.select" name="checkmark-circle"></ion-icon>
-        </ion-item>
-      </div>
-    </cdk-virtual-scroll-viewport>
+    <div *ngFor="let obj of conversations | slice: 0 : 5; trackBy: customTrackBy">
+      <ion-item class="pickpeople-friend" (click)="selectFriend(obj)" *ngIf="(filter === 'connect' || filter === 'both') && (obj.conversation.type === 'connect')">
+        <ion-avatar slot="start">
+          <ion-img *ngIf="obj.data.participant.avatar" [src]="obj.data.participant.avatar"></ion-img>
+          <ion-img *ngIf="!obj.data.participant.avatar" src="assets/img/avatar-default.jpg"></ion-img>
+        </ion-avatar>
+        {{obj.data.name}}
+        <ion-icon slot="end" color="tertiary" *ngIf="!obj.select" name="radio-button-off"></ion-icon>
+        <ion-icon slot="end" color="tertiary" *ngIf="obj.select" name="checkmark-circle"></ion-icon>
+      </ion-item>
+    </div>
     <ion-list-header *ngIf="hasOrganizerAccess">{{userData.user.churches[userData.currentCommunityIndex].name}}</ion-list-header>
     <ion-list *ngIf="hasOrganizerAccess">
       <ion-item class="pickpeople-user" *ngFor="let person of listOfAppUsers; trackBy: customTrackBy" (click)="selectAppUser(person)">

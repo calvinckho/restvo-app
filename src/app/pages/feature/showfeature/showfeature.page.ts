@@ -32,7 +32,6 @@ import {Badge} from '@ionic-native/badge/ngx';
 import {EditparticipantsPage} from '../editparticipants/editparticipants.page';
 import {PickfeaturePopoverPage} from '../pickfeature-popover/pickfeature-popover.page';
 import {SuccessPopoverPage} from '../success-popover/success-popover.page';
-import {EventsParams, SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-showfeature',
@@ -46,8 +45,6 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     @ViewChild(IonContent) content: IonContent;
     @ViewChild(IonFab) fabButtons: IonFab;
     @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-    @ViewChild('peopleSlides') peopleSlides: SwiperComponent | undefined;
-    @ViewChild('programsSlides') programsSlides: SwiperComponent | undefined;
 
     @Input() moment: any = { _id: '' };
   @Input() modalPage: any; // optional: when initialing a modal page
@@ -55,6 +52,7 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
   @Input() calendarId: any; // optional: if Content is used multiple times so it needs to know the content calendar context
   @Input() responseId: any; // optional: if Content has no calendar (repeated content) or if calendar is deleted, use response Id to load response obj
 
+    peopleSlides: any;
   subpanel = false;
   subscriptions: any = {};
   loading: any;
@@ -1887,6 +1885,14 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
       }
     }
   }
+
+    onSlidesLoaded (event) {
+        const [swiper] = event;
+        if (swiper) {
+            this.peopleSlides = swiper;
+            swiper.disable();
+        }
+    }
 
   async swipeProgramslide(event) {
     //event.stopPropagation()

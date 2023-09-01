@@ -13,7 +13,6 @@ import {Chat} from '../../../services/chat.service';
 import {Location} from '@angular/common';
 import {Auth} from '../../../services/auth.service';
 import {FocusPhotoPage} from '../../connect/focus-photo/focus-photo.page';
-import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-onboardfeature',
@@ -146,7 +145,7 @@ export class OnboardfeaturePage {
             setTimeout(async () => {
                 if (this.slides) {
                     await this.slides.update();
-                    await this.slides.slideTo(0);
+                    await this.slides.slideTo(0, 100, true);
                     await this.slides.enable();
                 }
             }, 50);
@@ -439,9 +438,9 @@ export class OnboardfeaturePage {
         if (!this.moment) { return; }
         this.slides.enable();
         if (direction === 'prev') {
-            this.slides.slidePrev();
+            this.slides.slidePrev(100, true);
         } else {
-            this.slides.slideNext();
+            this.slides.slideNext(100, true);
         }
         this.slides.enable();
     }

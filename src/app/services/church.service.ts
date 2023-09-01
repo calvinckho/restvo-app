@@ -87,7 +87,7 @@ export class Churches {
         return promise;
     }
 
-    loadChurchAppUsers(churchId, searchKeyword, pageNum) {
+    loadPlatformAppUsers(churchId, searchKeyword, pageNum) {
         return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/appusers/' + churchId + '?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum.toString(), this.authService.httpAuthOptions)
             );
     }

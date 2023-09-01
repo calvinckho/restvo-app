@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="mediaType === 'stock'">
-    <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionInput)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -47,7 +47,7 @@
             <ion-item lines="none">
               <ion-label class="ion-text-wrap">Choose from Pixabay</ion-label>
             </ion-item>
-            <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
+            <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionInput)="resourceService.searchPixabay()" placeholder="Type keywords" debounce="500"></ion-searchbar>
             <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
               <ion-row>
                 <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">

@@ -24,7 +24,6 @@ import {CalendarService} from "../../../services/calendar.service";
 import {Moment} from "../../../services/moment.service";
 import {Resource} from "../../../services/resource.service";
 import {EditparticipantsPage} from "../editparticipants/editparticipants.page";
-import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-createcommunity',
@@ -92,7 +91,7 @@ export class CreatecommunityPage extends EditfeaturePage implements OnInit {
         } else {
             // assuming it is Community creation and moving from Slide 1 will assign it with the Community category
             this.moment.categories = ['5c915324e172e4e64590e346'];
-            this.slides.slideNext();
+            this.slides.slideNext(100, true);
         }
     }
 

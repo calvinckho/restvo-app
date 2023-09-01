@@ -116,7 +116,7 @@
             </ion-item>
             <ion-item lines="none">
               <p *ngIf="moment.location.location.length" class="ion-text-wrap">{{moment.location.location}}</p>
-              <ion-searchbar *ngIf="!moment.location.location.length" [(ngModel)]="addressSearchString" debounce="1500" (ionChange)="searchAddress()" searchIcon="navigate" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]"></ion-searchbar>
+              <ion-searchbar *ngIf="!moment.location.location.length" [(ngModel)]="addressSearchString" debounce="1500" (ionInput)="searchAddress()" searchIcon="navigate" [placeholder]="resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]"></ion-searchbar>
               <ion-button *ngIf="moment.location.location.length" (click)="clearAddress()" slot="end" size="small">
                 <ion-icon name="close"></ion-icon>
               </ion-button>
@@ -758,7 +758,7 @@
                 <ion-button slot="end" fill="clear" (click)="removeInteractableItem($event, i, j)" class="close-button" ion-button><ion-icon name="trash" color="grey"></ion-icon></ion-button>
               </ion-item>
               <div *ngIf="j % 2 == 0 && resourceService.showPixabay === moment.matrix_number[i][j+5]">
-                <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionChange)="resourceService.searchPixabay()" placeholder="Type keywords to search Pixabay" debounce="500"></ion-searchbar>
+                <ion-searchbar [(ngModel)]="resourceService.searchKeyword" (ionInput)="resourceService.searchPixabay()" placeholder="Type keywords to search Pixabay" debounce="500"></ion-searchbar>
                 <ion-grid class="pixabay-grid" *ngIf="resourceService.stockPhotoResults && resourceService.stockPhotoResults.hits?.length">
                   <ion-row>
                     <ion-col *ngFor="let photo of resourceService.stockPhotoResults.hits">

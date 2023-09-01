@@ -17,7 +17,7 @@
 </ion-header>
 
 <ion-content>
-  <swiper id="swiper" (init)="onSlidesLoaded($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slidechangetransitionstart)="slideChanges($event)">
+  <swiper id="swiper" (init)="onSlidesLoaded($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true [autoHeight]=true *ngIf="loadCompleted && !reachedEnd" (slideChangeTransitionStart)="slideChanges($event)">
     <ng-template swiperSlide *ngFor="let item of moment.resource.matrix_number[0] | slice : (moment.resource.matrix_number[0].indexOf(20010) + 1); trackBy: customTrackBy; index as i;">
       <ion-grid class="slide-grid">
         <!--align vertical center except m.c. and tile choice when their choices are 4+ (they need overflow: scroll to show all the options)-->

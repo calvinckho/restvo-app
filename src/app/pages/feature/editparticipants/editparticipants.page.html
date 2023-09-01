@@ -23,14 +23,14 @@
   <ion-toolbar>
     <ion-list>
       <ion-item lines="none">
-        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionInput)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
         <ion-select [(ngModel)]="rolesFilter" #RolesSelect (ionChange)="renderUniqueParticipantList()" placeholder="Role" interface="popover" [interfaceOptions]="{header: 'Role'}" [multiple]="true" style="width: 20%; min-width: 40px" *ngIf="!modalPage">
           <ion-select-option [value]="this.participantLabel">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="this.organizerLabel">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="this.leaderLabel">{{leaderLabel}}</ion-select-option>
         </ion-select>
         <ion-button slot="end" (click)="inviteSelect.value = null; inviteSelect.open($event)" *ngIf="!modalPage">Add</ion-button>
-        <ion-select #InviteSelect placeholder="Add" interface="popover" (ionChange)="openPopUpModalAddParticipants($event)" [interfaceOptions]="{header: 'Add'}" hidden>
+        <ion-select #InviteSelect placeholder="Add" interface="modal" (ionChange)="openPopUpModalAddParticipants($event)" [interfaceOptions]="{header: 'Add'}" hidden>
           <ion-select-option [value]="{user_list: ['user_list_1'], label: this.participantLabel}">{{participantLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_2'], label: this.organizerLabel}">{{organizerLabel}}</ion-select-option>
           <ion-select-option [value]="{user_list: ['user_list_3'], label: this.leaderLabel}">{{leaderLabel}}</ion-select-option>

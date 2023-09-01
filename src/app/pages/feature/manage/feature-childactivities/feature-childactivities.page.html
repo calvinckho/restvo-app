@@ -8,7 +8,7 @@
   <ion-toolbar *ngIf="activities && view === '1'"> <!--Show always except in Plans-->
     <ion-list>
       <ion-item lines="none">
-        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
+        <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionInput)="renderUniqueParticipantList()" (ionCancel)="renderUniqueParticipantList()" placeholder="Search"></ion-searchbar>
       </ion-item>
       <ion-item *ngIf="selectedActivities.length" lines="none">
         <ion-label>{{selectedActivities.length}} Selected</ion-label>

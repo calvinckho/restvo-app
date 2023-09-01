@@ -100,7 +100,7 @@ export class CreatechatPage implements OnInit {
     async loadMorePeople(event){
         this.pageNum++;
         if (!this.reachedEnd){
-            const churchAppUsers: any = await this.churchService.loadChurchAppUsers(this.churchId, this.searchKeyword, this.pageNum);
+            const churchAppUsers: any = await this.churchService.loadPlatformAppUsers(this.churchId, this.searchKeyword, this.pageNum);
             this.ionSpinner = false;
             if (!churchAppUsers.length){
                 this.reachedEnd = true;

@@ -6,7 +6,7 @@
     <ion-title>Activities</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionChange)="executeSearch($event)"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" debounce="500" (ionInput)="executeSearch($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

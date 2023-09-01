@@ -32,7 +32,7 @@
       </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="step === 1" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
-    <ion-searchbar [(ngModel)]="searchKeyword" (ionChange)="executeSearch($event)" (ionCancel)="cancelSearch($event)" debounce="500" placeholder="Search"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchKeyword" (ionInput)="executeSearch($event)" (ionCancel)="cancelSearch($event)" debounce="500" placeholder="Search"></ion-searchbar>
   </ion-toolbar>
   <ion-toolbar class="filter" *ngIf="step === 1" [ngClass]="{ 'desktop-header-toolbar': platform.width() >= 768 }">
     <ion-segment [(ngModel)]="currentView">

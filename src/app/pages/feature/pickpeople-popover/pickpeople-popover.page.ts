@@ -143,7 +143,7 @@ export class PickpeoplePopoverPage implements OnInit {
     async loadMoreAppUsers(event) {
         this.pageNum++;
         if (!this.reachedEnd) {
-            const churchAppUsers: any = await this.churchService.loadChurchAppUsers(this.churchId, this.searchKeyword, this.pageNum);
+            const churchAppUsers: any = await this.churchService.loadPlatformAppUsers(this.churchId, this.searchKeyword, this.pageNum);
             this.ionSpinner = false;
             if (churchAppUsers.length) {
                 churchAppUsers.forEach((appuser) => {
@@ -183,6 +183,7 @@ export class PickpeoplePopoverPage implements OnInit {
                 return a.order - b.order; // preserve the order
             }
         });
+        console.log("check length", this.conversations.length)
     }
 
     selectFriend(obj) {

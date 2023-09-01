@@ -357,14 +357,14 @@ export class RegisterPage implements OnInit {
     async nextSlide() {
         if (!this.nameForm.get('first_name').errors && !this.nameForm.get('last_name').errors) { // ensure first name and last name have no error
             await this.regSlides.enable();
-            await this.regSlides.slideNext();
+            await this.regSlides.slideNext(100, true);
             await this.regSlides.disable();
         }
     }
 
     async goToSlide(number) {
         await this.regSlides.enable();
-        await this.regSlides.slideTo(number);
+        await this.regSlides.slideTo(number, 100, true);
         await this.regSlides.disable();
     }
 

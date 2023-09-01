@@ -33,7 +33,6 @@ import {Response} from '../../../../services/response.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {PaymentService} from '../../../../services/payment.service';
 import {CacheService} from 'ionic-cache';
-import {SwiperComponent} from "swiper/angular";
 
 @Component({
   selector: 'app-feature-subscription',
@@ -166,7 +165,7 @@ export class FeatureSubscriptionPage extends EditfeaturePage implements OnInit {
 
   nextSlide() {
     this.slides.enable();
-    this.slides.slideNext();
+    this.slides.slideNext(100, true);
     this.content.scrollToTop();
     this.slides.disable();
   }
