@@ -137,7 +137,7 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
         this.contentCalendarItems.push({
           _id: calendarItem._id,
           start: new Date(calendarItem.startDate),
-          end: new Date(calendarItem.startDate),
+          end: new Date(calendarItem.endDate),
           moment: calendarItem.moment,
           schedule: calendarItem.schedule,
           uniqueAnswersPerCalendar: calendarItem.uniqueAnswersPerCalendar,
@@ -208,21 +208,10 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
 
   async clickEvent(event: any) {
     let componentProps: any;
-    componentProps = { moment: { _id: event.moment }, momentId: event.moment, relationshipId: this.id, modalPage: this.platform.width() < 768, subpanel: true };
-    if (event.uniqueAnswersPerCalendar && event._id) {
+    componentProps = { moment: { _id: event.moment }, momentId: event.moment, relationshipId: this.id, calendarId: event._id, modalPage: this.platform.width() < 768, subpanel: true };
+    /*if (event.uniqueAnswersPerCalendar && event._id) {
       componentProps.calendarId = event._id;
-    }
-    this.momentService.openMoment(componentProps);
-  }
-
-  // open Content requires providing the relationshipId
-  async openContent(event, calendarItem) {
-    event.stopPropagation();
-    let componentProps: any;
-    componentProps = { moment: { _id: calendarItem.moment._id }, momentId: calendarItem.moment._id, relationshipId: this.programId, modalPage: this.platform.width() < 768, subpanel: true };
-    if (calendarItem.uniqueAnswersPerCalendar && calendarItem._id) {
-      componentProps.calendarId = calendarItem._id;
-    }
+    }*/
     this.momentService.openMoment(componentProps);
   }
 
