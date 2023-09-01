@@ -67,7 +67,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       recurrenceEndDate: new Date().toISOString(), // leave null to add events into infinity and beyond
       timezoneOffset: new Date().getTimezoneOffset() // store a schedule local timezone offset for accurate computation of weekend value when repeating by weekend
     },
-    array_boolean: [ true, true, true, false, true ] // default is to enable floating start date, unique answer for each content item, and to add to both participant's and mentor's timeline
+    array_boolean: [ true, false, true, false, true ] // default is to enable floating start date, unique answer for each content item, and to add to both participant's and mentor's timeline
   };
 
   calendarObj = { // create the calendar object for each timeline content
