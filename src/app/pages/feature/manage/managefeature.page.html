@@ -88,7 +88,7 @@
             <ion-label class="menu-label">Curriculum</ion-label>
           </ion-item>
         </ion-col>
-        <ion-col [ngClass]="{'selected': router.url.includes('onboarding')}" (click)="clickManageMenu('onboarding', null)" *ngIf="!moment.child_categories.length || (moment.child_categories.length && moment.child_categories.includes('5e17acd47b00ea76b75e5a71'))">
+        <ion-col [ngClass]="{'selected': router.url.includes('onboarding')}" (click)="clickManageMenu('onboarding', null)" *ngIf="(moment.child_categories.length && moment.child_categories.includes('5e17acd47b00ea76b75e5a71'))">
           <ion-item class="ion-no-padding" [color]="router.url.includes('onboarding') ? 'primary' : 'secondary'" lines="none">
             <ion-icon class="ion-no-margin" slot="start" name="onboarding"></ion-icon>
             <ion-label class="menu-label">Onboarding</ion-label>

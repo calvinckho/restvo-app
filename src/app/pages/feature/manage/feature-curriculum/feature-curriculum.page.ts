@@ -127,10 +127,9 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
 
   async loadContentCalendars() {
     // check to see if it relationship ID exists
-    this.contentCalendarItems = [];
     if (this.id) {
       this.loadedCalendarItems = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
-      //this.contentCalendarItems = results.map((c) => {c.start = new Date(c.startDate); c.end = new Date(c.endDate)}) || [];
+      this.contentCalendarItems = [];
       this.loadedCalendarItems.forEach((calendarItem, index) => {
         if (index === 0) {
           this.viewDate = new Date(calendarItem.startDate);

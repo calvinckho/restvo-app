@@ -45,7 +45,7 @@
         </ion-item>
         <ion-popover [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="feature-schedule-time1" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.startDate"></ion-datetime>
+            <ion-datetime id="feature-schedule-time1" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.startDate" max="2070-12-31T23:59:59"></ion-datetime>
           </ng-template>
         </ion-popover>
         <ion-item lines="none">
@@ -54,7 +54,7 @@
         </ion-item>
         <ion-popover [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="feature-schedule-time2" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.options.recurrenceEndDate"></ion-datetime>
+            <ion-datetime id="feature-schedule-time2" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.options.recurrenceEndDate" max="2070-12-31T23:59:59"></ion-datetime>
           </ng-template>
         </ion-popover>
       </ion-item-group>
@@ -316,5 +316,7 @@
   </div>
 </ion-content>
 <ion-toolbar *ngIf="view === 'settings'">
-  <ion-button shape="round" (click)="touchSchedule('update schedule', false)">Save</ion-button>
+  <ion-row class="ion-justify-content-center">
+    <ion-button shape="round" (click)="touchSchedule('update schedule', false)">Save</ion-button>
+  </ion-row>
 </ion-toolbar>

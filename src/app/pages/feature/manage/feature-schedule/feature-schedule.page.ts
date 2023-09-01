@@ -166,6 +166,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       if (this.includeCalendarItems) {
         await this.loadGoals();
       }
+      this.loadCompleted = true;
     }
   }
 
@@ -182,7 +183,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
       }
     }
     await this.refreshCalendarDisplay();
-    this.loadCompleted = true;
   }
 
   refreshCalendarDisplay() {
@@ -414,7 +414,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     } else { // pick other activities
       componentProps.parent_programId = this.momentId;
     }
-    if (this.platform.width() >= 992) {
+    if (this.platform.width() >= 992 && !this.modalPage) {
       componentProps.subpanel = true;
       this.router.navigate([{ outlets: { sub: ['pickfeature', componentProps ] }}]);
     } else {
