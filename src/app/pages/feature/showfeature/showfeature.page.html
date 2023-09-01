@@ -992,38 +992,40 @@
           <ion-row *ngIf="!matchedPeople.length && !loadAPIBusy && loadStatus === 'completed'" class="ion-justify-content-center">
             <p>The Directory is Empty.</p>
           </ion-row>
-          <div class="swiper-button-prev swiper-button-white" (click)="peopleSlides.slidePrev(100, true)" [hidden]="!matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
-          <swiper class="person-slides" #peopleSlides (activeIndexChange)="swipePeopleSlide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
-            <ng-template swiperSlide class="person-slide" *ngFor="let leader of moment.user_list_3" [hidden]="matchedPeople.length || !loadAPIBusy">
-              <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
-                <ion-card-header>
-                  <div class="person-photo-container">
-                    <ion-img class="person-photo" src="assets/img/avatar-default.jpg"></ion-img>
-                  </div>
-                </ion-card-header>
-                <div class="top-pattern"></div>
-                <div class="middle-pattern"></div>
-                <div class="bottom-pattern"></div>
-                <ion-card-content class="person-content ion-no-padding">
-                  <ion-item lines="none" class="person-content-item ion-no-margin">
-                    <div class="person-content-left" style="margin-top: 10px">
-                      <div class="person-name ion-text-md-uppercase" style="height: 18px">
-                        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
-                      </div>
-                      <div class="person-title">
-                        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-                      </div>
+          <div class="swiper-button-prev swiper-button-white" (click)="movePeopleSlide('prev')" [hidden]="!peopleSlides || !matchedPeople.length || disablePrevBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <swiper class="person-slides" #peopleSlides (init)="onSlidesLoaded($event)" (activeIndexChange)="swipePeopleSlide($event)" [slidesPerView]="'auto'" [spaceBetween]="10" [grabCursor]=true [updateOnWindowResize]=true>
+            <div *ngIf="!matchedPeople.length || loadAPIBusy">
+              <ng-template swiperSlide class="person-slide" *ngFor="let leader of moment.user_list_3">
+                <ion-card class="person-card">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
+                  <ion-card-header>
+                    <div class="person-photo-container">
+                      <ion-img class="person-photo" src="assets/img/avatar-default.jpg"></ion-img>
                     </div>
-                    <div class="person-content-right" [ngClass]="{'content-border': true }">
-                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
-                      <div><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></div>
-                    </div> <!--Short Biography-->
-                  </ion-item>
-                </ion-card-content>
-              </ion-card>
-            </ng-template>
+                  </ion-card-header>
+                  <div class="top-pattern"></div>
+                  <div class="middle-pattern"></div>
+                  <div class="bottom-pattern"></div>
+                  <ion-card-content class="person-content ion-no-padding">
+                    <ion-item lines="none" class="person-content-item ion-no-margin">
+                      <div class="person-content-left" style="margin-top: 10px">
+                        <div class="person-name ion-text-md-uppercase" style="height: 18px">
+                          <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                        </div>
+                        <div class="person-title">
+                          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+                        </div>
+                      </div>
+                      <div class="person-content-right" [ngClass]="{'content-border': true }">
+                        <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
+                        <div><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></div>
+                        <div><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></div>
+                        <div><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></div>
+                      </div> <!--Short Biography-->
+                    </ion-item>
+                  </ion-card-content>
+                </ion-card>
+              </ng-template>
+            </div>
             <ng-template swiperSlide class="person-slide" *ngFor="let person of matchedPeople; trackBy: customTrackBy">
               <ion-card class="person-card" (click)="seeUserInfo($event, person)">   <!--[ngStyle]="{'background-image': 'url(' + (activity.moment.assets?.length ? activity.moment.assets[0] : '') + ')'}"-->
                 <ion-card-header>
@@ -1049,7 +1051,7 @@
               </ion-card>
             </ng-template>
           </swiper>
-          <div class="swiper-button-next swiper-button-white" (click)="peopleSlides.slideNext(100, true)" [hidden]="!matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
+          <div class="swiper-button-next swiper-button-white" (click)="movePeopleSlide('next')" [hidden]="!peopleSlides || !matchedPeople.length || disableNextBtn || this.platform.is('cordova') || this.platform.is('mobileweb')"></div>
         </div>
         <!--List-->
         <div *ngIf="moment.matrix_number[i][3] === 1">

@@ -1886,11 +1886,18 @@ export class ShowfeaturePage implements OnInit, OnDestroy {
     }
   }
 
-    onSlidesLoaded (event) {
+    onSlidesLoaded(event) {
         const [swiper] = event;
         if (swiper) {
             this.peopleSlides = swiper;
-            swiper.disable();
+        }
+    }
+
+    async movePeopleSlide(direction) {
+        if (direction === 'prev') {
+            this.peopleSlides.slidePrev(100, true);
+        } else {
+            this.peopleSlides.slideNext(100, true);
         }
     }
 
