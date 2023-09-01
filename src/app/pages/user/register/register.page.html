@@ -1,9 +1,4 @@
 <ion-content id="register">
-  <ion-grid style="height: 100%" *ngIf="ionSpinner">
-    <ion-row class="ion-align-items-center" style="height: 100%">
-      <ion-spinner name="dots"></ion-spinner>
-    </ion-row>
-  </ion-grid>
   <div *ngIf="view === 'signin'" class="full-height fade-in">
     <ion-grid class="full-height">
       <ion-row class="ion-align-items-center full-height">
@@ -81,16 +76,16 @@
             <!--Intro slide 1-->
             <ng-template swiperSlide>
               <ion-list>
-                <ion-item class="ion-justify-content-center intro-graphics" style="margin-left: 2%; margin-right: 2%" lines="none">
+                <ion-item class="ion-justify-content-center intro-graphics" lines="none">
                   <div class="graphics-container">
-                    <img src="assets/img/intro_1.png" />
+                    <img src="assets/img/intro_3.png" />
                   </div>
                 </ion-item>
                 <ion-row class="ion-justify-content-center" lines="none">
-                  <div class="intro-title">Connect with mentors</div>
+                  <div class="intro-title">Designed for homeschoolers</div>
                 </ion-row>
                 <ion-row class="ion-justify-content-center" lines="none">
-                  <p class="intro-description">Restvo helps you discover new mentors</p>
+                  <p class="intro-description">Make your learning more organized</p>
                 </ion-row>
               </ion-list>
             </ng-template>
@@ -113,19 +108,20 @@
             <!--Intro slide 3-->
             <ng-template swiperSlide>
               <ion-list>
-                <ion-item class="ion-justify-content-center intro-graphics" lines="none">
+                <ion-item class="ion-justify-content-center intro-graphics" style="margin-left: 2%; margin-right: 2%" lines="none">
                   <div class="graphics-container">
-                    <img src="assets/img/intro_3.png" />
+                    <img src="assets/img/intro_1.png" />
                   </div>
                 </ion-item>
                 <ion-row class="ion-justify-content-center" lines="none">
-                  <div class="intro-title">Discover new communities</div>
+                  <div class="intro-title">Learn with mentors</div>
                 </ion-row>
                 <ion-row class="ion-justify-content-center" lines="none">
-                  <p class="intro-description">It is better to do it with others.</p>
+                  <p class="intro-description">Restvo helps you learn with others</p>
                 </ion-row>
               </ion-list>
             </ng-template>
+
           </swiper>
           <ion-row class="form">
             <ion-col>
@@ -138,372 +134,357 @@
   </div>
 
   <div class="full-height fade-in" *ngIf="view === 'register'">
-    <ion-grid class="full-height">
-      <ion-row class="ion-align-items-center full-height">
-        <ion-col size-sm="12" size-md="7" class="full-height">
-          <swiper id="registerSlides" [initialSlide]="this.slide ? this.slide : 0" scrollbar (init)="registerSlidesLoaded($event)">
-            <!--First Name-->
-            <!--slide index 0-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <ion-list lines="none" class="form">
-                    <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'">
-                      <ion-button fill="clear">
-                        <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                      </ion-button>
-                    </ion-buttons>
+    <swiper id="registerSlides" [initialSlide]="this.slide ? this.slide : 0" scrollbar (init)="registerSlidesLoaded($event)">
+      <!--First Name-->
+      <!--slide index 0-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <ion-list lines="none" class="form">
+              <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'">
+                <ion-button fill="clear">
+                  <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                </ion-button>
+              </ion-buttons>
 
-                    <ion-segment [value]="registerMode" (ionChange)="changeRegisterMode($event)">
-                      <ion-segment-button value="email">
-                        <ion-label>Email</ion-label>
-                      </ion-segment-button>
-                      <ion-segment-button value="mobile">
-                        <ion-label>Mobile</ion-label>
-                      </ion-segment-button>
-                    </ion-segment>
+              <ion-segment [value]="registerMode" (ionChange)="changeRegisterMode($event)">
+                <ion-segment-button value="email">
+                  <ion-label>Email</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="mobile">
+                  <ion-label>Mobile</ion-label>
+                </ion-segment-button>
+              </ion-segment>
 
-                    <div [hidden]="registerMode !== 'email'">
-                      <form [formGroup]="nameForm">
-                        <ion-item lines="full">
-                          <ion-input id="firstName" type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" autocomplete="given-name"></ion-input>
-                          <ion-input id="lastName" type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" autocomplete="family-name"></ion-input>
-                        </ion-item>
+              <div [hidden]="registerMode !== 'email'">
+                <form [formGroup]="nameForm">
+                  <ion-item lines="full">
+                    <ion-input id="firstName" type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" autocomplete="given-name"></ion-input>
+                    <ion-input id="lastName" type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" autocomplete="family-name"></ion-input>
+                  </ion-item>
 
-                        <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
-                          <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name?.errors?.minlength">
-                            First name must have at least 2 characters
-                          </div>
-                        </div>
-
-                        <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
-                          <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name?.errors?.minlength">
-                            Last name must have at least 2 characters
-                          </div>
-                        </div>
-                      </form>
-
-                      <form [formGroup]="emailPassForm">
-                        <ion-item lines="full">
-                          <!-- <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input> -->
-                          <ion-input id="newEmail" type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
-                        </ion-item>
-                        <div *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.email.pristine && emailPassForm.controls.email.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap"  *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
-                            Invalid email address.
-                          </div>
-                        </div>
-                        <ion-item lines="full">
-                          <ion-input id="newPassword1" [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
-                          <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
-                        </ion-item>
-                        <div *ngIf="!emailPassForm.controls.password.pristine && !emailPassForm.controls.password.valid">
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.password.pristine && emailPassForm.controls.password.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.password.pristine && emailPassForm.controls.password?.errors?.minlength">
-                            Password must have at least 6 characters
-                          </div>
-                        </div>
-                        <ion-item lines="full">
-                          <ion-input id="newPassword2" type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
-                        </ion-item>
-                        <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation?.errors?.minlength">
-                            Password must have at least 6 characters
-                          </div>
-                          <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.hasError('mismatchedPasswords')">
-                            Passwords do not match
-                          </div>
-                        </div>
-                      </form>
-                      <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
-                      <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/pillar/tos" target="_blank">Terms of Services</a>.</p>
-                      <ion-row>
-                        <ion-col>
-                          <ion-button id="createEmailAccount" [disabled]="!nameForm.valid || !emailPassForm.valid" shape="round" color="primary" (click)="registerEmail()">Create Account</ion-button>
-                        </ion-col>
-                      </ion-row>
+                  <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
+                    <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
+                      This is a required field.
                     </div>
-                    <div [hidden]="registerMode !== 'mobile'">
-                      <form [formGroup]="nameForm">
-                        <ion-item lines="full">
-                          <ion-input type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" id="first-name"></ion-input>
-                          <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" id="last-name"></ion-input>
-                        </ion-item>
-
-                        <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
-                          <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name?.errors?.minlength">
-                            First name must have at least 2 characters
-                          </div>
-                        </div>
-
-                        <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
-                          <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
-                            This is a required field.
-                          </div>
-                          <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name?.errors?.minlength">
-                            Last name must have at least 2 characters
-                          </div>
-                        </div>
-                      </form>
-                      <form [formGroup]="mobileForm">
-                        <ion-item lines="full">
-                          <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code" formControlName="mobile_calling_code" name='Country Calling Code'>
-                            <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
-                          </ion-select>
-                          <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number"></ion-input>
-                        </ion-item>
-                        <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
-                          Invalid mobile number.
-                        </div>
-                      </form>
-                      <p class="centered">We will send you a SMS message to verify this number. Standard SMS rate applies.</p>
-                      <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/pillar/tos" target="_blank">Terms of Services</a>.</p>
-                      <ion-row>
-                        <ion-col>
-                          <ion-button id="createMobileAccount" shape="round" color="primary" (click)="registerMobile()" [disabled]="!nameForm.valid || !mobileForm.valid">Send the SMS Code</ion-button>
-                        </ion-col>
-                      </ion-row>
+                    <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name?.errors?.minlength">
+                      First name must have at least 2 characters
                     </div>
-                  </ion-list>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--Verify SMS-->
-            <!--Slide index 1-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <form [formGroup]="verifyCodeForm"  class="form">
-                    <ion-list lines="none">
-                      <ion-buttons class="custom-back-button" slot="start" (click)="prevSlide()" *ngIf="!recovery_mode">
-                        <ion-button fill="clear">
-                          <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                        </ion-button>
-                      </ion-buttons>
-                      <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'" *ngIf="recovery_mode">
-                        <ion-button fill="clear">
-                          <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                        </ion-button>
-                      </ion-buttons>
-                      <ion-item lines="full">
-                        <ion-input type="text" inputmode="numeric" pattern="[0-9]*" formControlName="verification_code" placeholder="6-digit Verification Code" autocomplete="one-time-code" maxlength="6"></ion-input>
-                      </ion-item>
-                        <div class="form-error" *ngIf="!verifyCodeForm.controls.verification_code.pristine && !verifyCodeForm.controls.verification_code.valid">
-                          Invalid code.
-                        </div>
-                    </ion-list>
-                    <p style="text-align: center">We have sent you a 6-digit code via SMS that should arrive shortly. If you do not receive it, tap Back and make sure you entered your mobile number correctly.</p>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button expand="full" shape="round" color="primary" [disabled]="!(verifyCodeForm.valid && verifyCodeForm.value.verification_code.length === 6)" (click)="verifyMobile()">Verify Phone</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </form>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--My Email-->
-            <!--Slide index 2-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <form [formGroup]="emailForm" class="form">
-                    <ion-list lines="none">
-                      <div class="title" style="margin-bottom: 20%">My Email</div>
-                      <ion-item lines="full">
-                        <ion-label position="stacked" color="secondary">Email Address</ion-label>
-                        <ion-input type="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="Enter Email Address"></ion-input>
-                      </ion-item>
-                      <div *ngIf="!emailForm.controls.email.pristine && !emailForm.controls.email.valid">
-                        <div class="form-error" *ngIf="!emailForm.controls.email.pristine && emailForm.controls.email.hasError('required')">
-                          This is a required field.
-                        </div>
-                        <div class="form-error"  *ngIf="!emailForm.controls.email.pristine && !emailForm.controls.email.valid">
-                          Invalid email address.
-                        </div>
-                      </div>
-                    </ion-list>
-                    <ion-row style="margin: 10% 0 0 0;">
-                      <ion-col>
-                        <ion-button [disabled]="!emailForm.valid" expand="full" shape="round" color="primary" (click)="saveEmail()">Next</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </form>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--Pick Password-->
-              <!--Slide index 3-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <form [formGroup]="passForm" class="form">
-                    <ion-list lines="none">
-                      <ion-buttons class="custom-back-button" slot="start" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
-                        <ion-button fill="clear">
-                          <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                        </ion-button>
-                      </ion-buttons>
-                      <div class="title" style="margin-bottom: 20%">My Password</div>
-                      <ion-item lines="full">
-                        <ion-input #password [type]="passwordType" formControlName="password" placeholder="Pick a Password"></ion-input>
-                        <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
-                      </ion-item>
-                      <div *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
-                        <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
-                          This is a required field.
-                        </div>
-                        <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password?.errors?.minlength">
-                          Password must have at least 6 characters
-                        </div>
-                      </div>
-                      <ion-item lines="full">
-                        <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
-                      </ion-item>
-                      <div *ngIf="!passForm.controls.passwordConfirmation.pristine && (!passForm.controls.passwordConfirmation.valid || passForm.hasError('mismatchedPasswords'))">
-                        <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation.hasError('required')" >
-                          This is a required field.
-                        </div>
-                        <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation?.errors?.minlength" >
-                          Password must have at least 6 characters
-                        </div>
-                        <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.hasError('mismatchedPasswords')" >
-                          Password do not match
-                        </div>
-                      </div>
-                    </ion-list>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button [disabled]="!passForm.valid || !password" expand="full" shape="round" color="primary" (click)="savePassword()">Save</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </form>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--Upload Photo-->
-            <!--Slide index 4-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <ion-list class="form">
-                    <div class="title">Upload Your Photo</div>
-                    <p class="comment">People in the Restvo community will be able to easily identify you.</p>
-                    <ion-item class="ion-justify-content-center" lines="none">
-                      <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
-                        <img class="profile-pic" *ngIf="!userData || !userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"/>
-                        <img class="profile-pic" *ngIf="userData && userData.user && userData.user.avatar" [src]="userData.user.avatar" onerror="this.style.display='none'"/>
-                        <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
-                      </div>
-                    </ion-item>
-                    <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin" lines="none">
-                      <div class="browser-upload">
-                        <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
-                      </div>
-                    </ion-item>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button *ngIf="!userData || !userData.user || !userData.user.avatar" expand="full" shape="round" color="primary" (click)="finish()">Skip</ion-button>
-                        <ion-button *ngIf="userData && userData.user && userData.user.avatar" expand="full" shape="round" color="primary" (click)="finish()">Next</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </ion-list>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--Upload Contacts (not used)-->
-            <!--Slide index 5-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <div class="form">
-                    <div class="title" style="margin-bottom: 30%">Congrats! One last step...</div>
-                    <p class="comment">Connect your contacts to find friends, family, coworkers, and others on Restvo!</p>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button expand="full" shape="round" color="primary" (click)="importContacts()">Connect</ion-button>
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button fill="clear" (click)="finish()">
-                          <div class="text-link">Nah. Next time.</div>
-                        </ion-button>
-                      </ion-col>
-                    </ion-row>
                   </div>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-            <!--Slide Index 6-->
-            <!--Mobile Phone-->
-            <ng-template swiperSlide>
-              <ion-grid class="full-height">
-                <ion-row class="ion-align-items-center full-height">
-                  <form [formGroup]="mobileForm" class="form">
-                    <ion-list lines="none">
-                      <ion-buttons class="custom-back-button" slot="start">
-                        <ion-button fill="clear" *ngIf="exitType === 'slide'" (click)="goToSlide(1)">
-                          <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                        </ion-button>
-                        <ion-button fill="clear" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
-                          <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
-                        </ion-button>
-                      </ion-buttons>
-                      <ion-item lines="full">
-                        <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code" formControlName="mobile_calling_code">
-                          <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
-                        </ion-select>
-                        <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number" autocomplete="tel"></ion-input>
-                      </ion-item>
-                      <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
-                        Invalid mobile number.
-                      </div>
-                    </ion-list>
-                    <p class="centered">We will send you a SMS message to verify this number. Standard SMS rate applies.</p>
-                    <ion-row>
-                      <ion-col>
-                        <ion-button expand="full" shape="round" color="primary" (click)="registerMobile()" [disabled]="!mobileForm.valid">Send the SMS Code</ion-button>
-                      </ion-col>
-                    </ion-row>
-                    <ion-row [hidden]="exitType === 'dashboard'">
-                      <ion-col>
-                        <ion-button expand="full" fill="clear" (click)="goToSlide(1)" class="ion-text-wrap">Sign me up with email instead</ion-button>
-                      </ion-col>
-                    </ion-row>
-                  </form>
-                </ion-row>
-              </ion-grid>
-            </ng-template>
-          </swiper>
-        </ion-col>
 
-        <ion-col class="right-signUp" *ngIf="platform.width() >= 768">
-          <img class="background-img" src="assets/img/signUp.png"/>
-          <div [hidden]="exitType === 'dashboard'">
-            <div class="welcome-subtitle">Already a user? Sign in here</div>
-            <ion-button id="switchToSignIn" color="white" expand="full" shape="round" fill="outline clear" (click)="view = 'signin'">Sign in</ion-button>
-            <ion-button (click)="view = 'signin'; toggleRecoveryMode()" class="create-account" fill="clear">I forgot my password</ion-button>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+                  <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
+                    <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name?.errors?.minlength">
+                      Last name must have at least 2 characters
+                    </div>
+                  </div>
+                </form>
+
+                <form [formGroup]="emailPassForm">
+                  <ion-item lines="full">
+                    <!-- <ion-input id="email" class="email" type="email" formControlName="email" placeholder="Email" id="email"></ion-input> -->
+                    <ion-input id="newEmail" type="email" formControlName="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]{2,}$" placeholder="Email"></ion-input>
+                  </ion-item>
+                  <div *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.email.pristine && emailPassForm.controls.email.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap"  *ngIf="!emailPassForm.controls.email.pristine && !emailPassForm.controls.email.valid">
+                      Invalid email address.
+                    </div>
+                  </div>
+                  <ion-item lines="full">
+                    <ion-input id="newPassword1" [type]="passwordType" formControlName="password" placeholder="Password"></ion-input>
+                    <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
+                  </ion-item>
+                  <div *ngIf="!emailPassForm.controls.password.pristine && !emailPassForm.controls.password.valid">
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.password.pristine && emailPassForm.controls.password.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.password.pristine && emailPassForm.controls.password?.errors?.minlength">
+                      Password must have at least 6 characters
+                    </div>
+                  </div>
+                  <ion-item lines="full">
+                    <ion-input id="newPassword2" type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
+                  </ion-item>
+                  <div *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && (!emailPassForm.controls.passwordConfirmation.valid || emailPassForm.hasError('mismatchedPasswords'))">
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.controls.passwordConfirmation?.errors?.minlength">
+                      Password must have at least 6 characters
+                    </div>
+                    <div class="form-error ion-text-wrap" *ngIf="!emailPassForm.controls.passwordConfirmation.pristine && emailPassForm.hasError('mismatchedPasswords')">
+                      Passwords do not match
+                    </div>
+                  </div>
+                </form>
+                <div></div><!--Do not remove! This fixes the white line issue at the bottom-->
+                <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/pillar/tos" target="_blank">Terms of Services</a>.</p>
+                <ion-row>
+                  <ion-col>
+                    <ion-button id="createEmailAccount" [disabled]="!nameForm.valid || !emailPassForm.valid" shape="round" color="primary" (click)="registerEmail()">Create Account</ion-button>
+                  </ion-col>
+                </ion-row>
+              </div>
+              <div [hidden]="registerMode !== 'mobile'">
+                <form [formGroup]="nameForm">
+                  <ion-item lines="full">
+                    <ion-input type="text" formControlName="first_name" placeholder="First Name" autocapitalize="on" id="first-name"></ion-input>
+                    <ion-input type="text" formControlName="last_name" placeholder="Last Name" autocapitalize="on" id="last-name"></ion-input>
+                  </ion-item>
+
+                  <div *ngIf="!nameForm.controls.first_name.pristine && !nameForm.controls.first_name.valid">
+                    <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap"  *ngIf="!nameForm.controls.first_name.pristine && nameForm.controls.first_name?.errors?.minlength">
+                      First name must have at least 2 characters
+                    </div>
+                  </div>
+
+                  <div *ngIf="!nameForm.controls.last_name.pristine && !nameForm.controls.last_name.valid">
+                    <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name.hasError('required')">
+                      This is a required field.
+                    </div>
+                    <div class="form-error ion-text-wrap" *ngIf="!nameForm.controls.last_name.pristine && nameForm.controls.last_name?.errors?.minlength">
+                      Last name must have at least 2 characters
+                    </div>
+                  </div>
+                </form>
+                <form [formGroup]="mobileForm">
+                  <ion-item lines="full">
+                    <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code" formControlName="mobile_calling_code" name='Country Calling Code'>
+                      <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
+                    </ion-select>
+                    <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number"></ion-input>
+                  </ion-item>
+                  <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
+                    Invalid mobile number.
+                  </div>
+                </form>
+                <p class="centered">We will send you a SMS message to verify this number. Standard SMS rate applies.</p>
+                <p class="centered" style="text-align: center;">By proceeding, you agree to our <a href="https://restvo.com/pillar/tos" target="_blank">Terms of Services</a>.</p>
+                <ion-row>
+                  <ion-col>
+                    <ion-button id="createMobileAccount" shape="round" color="primary" (click)="registerMobile()" [disabled]="!nameForm.valid || !mobileForm.valid">Send the SMS Code</ion-button>
+                  </ion-col>
+                </ion-row>
+              </div>
+            </ion-list>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--Verify SMS-->
+      <!--Slide index 1-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <form [formGroup]="verifyCodeForm"  class="form">
+              <ion-list lines="none">
+                <ion-buttons class="custom-back-button" slot="start" (click)="prevSlide()" *ngIf="!recovery_mode">
+                  <ion-button fill="clear">
+                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+                <ion-buttons class="custom-back-button" slot="start" (click)="view = 'signin'" *ngIf="recovery_mode">
+                  <ion-button fill="clear">
+                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+                <ion-item lines="full">
+                  <ion-input type="text" inputmode="numeric" pattern="[0-9]*" formControlName="verification_code" placeholder="6-digit Verification Code" autocomplete="one-time-code" maxlength="6"></ion-input>
+                </ion-item>
+                <div class="form-error" *ngIf="!verifyCodeForm.controls.verification_code.pristine && !verifyCodeForm.controls.verification_code.valid">
+                  Invalid code.
+                </div>
+              </ion-list>
+              <p style="text-align: center">We have sent you a 6-digit code via SMS that should arrive shortly. If you do not receive it, tap Back and make sure you entered your mobile number correctly.</p>
+              <ion-row>
+                <ion-col>
+                  <ion-button expand="full" shape="round" color="primary" [disabled]="!(verifyCodeForm.valid && verifyCodeForm.value.verification_code.length === 6)" (click)="verifyMobile()">Verify Phone</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--My Email-->
+      <!--Slide index 2-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <form [formGroup]="emailForm" class="form">
+              <ion-list lines="none">
+                <div class="title" style="margin-bottom: 20%">My Email</div>
+                <ion-item lines="full">
+                  <ion-label position="stacked" color="secondary">Email Address</ion-label>
+                  <ion-input type="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="Enter Email Address"></ion-input>
+                </ion-item>
+                <div *ngIf="!emailForm.controls.email.pristine && !emailForm.controls.email.valid">
+                  <div class="form-error" *ngIf="!emailForm.controls.email.pristine && emailForm.controls.email.hasError('required')">
+                    This is a required field.
+                  </div>
+                  <div class="form-error"  *ngIf="!emailForm.controls.email.pristine && !emailForm.controls.email.valid">
+                    Invalid email address.
+                  </div>
+                </div>
+              </ion-list>
+              <ion-row style="margin: 10% 0 0 0;">
+                <ion-col>
+                  <ion-button [disabled]="!emailForm.valid" expand="full" shape="round" color="primary" (click)="saveEmail()">Next</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--Pick Password-->
+      <!--Slide index 3-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <form [formGroup]="passForm" class="form">
+              <ion-list lines="none">
+                <ion-buttons class="custom-back-button" slot="start" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
+                  <ion-button fill="clear">
+                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+                <div class="title" style="margin-bottom: 20%">My Password</div>
+                <ion-item lines="full">
+                  <ion-input #password [type]="passwordType" formControlName="password" placeholder="Pick a Password"></ion-input>
+                  <ion-icon slot="end" [name]="passwordIcon" class="new-password-icon" (click)='hideShowPassword()'></ion-icon>
+                </ion-item>
+                <div *ngIf="!passForm.controls.password.pristine && !passForm.controls.password.valid">
+                  <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password.hasError('required')">
+                    This is a required field.
+                  </div>
+                  <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.password.pristine && passForm.controls.password?.errors?.minlength">
+                    Password must have at least 6 characters
+                  </div>
+                </div>
+                <ion-item lines="full">
+                  <ion-input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password"></ion-input>
+                </ion-item>
+                <div *ngIf="!passForm.controls.passwordConfirmation.pristine && (!passForm.controls.passwordConfirmation.valid || passForm.hasError('mismatchedPasswords'))">
+                  <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation.hasError('required')" >
+                    This is a required field.
+                  </div>
+                  <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.controls.passwordConfirmation?.errors?.minlength" >
+                    Password must have at least 6 characters
+                  </div>
+                  <div class="form-error ion-text-wrap" *ngIf="!passForm.controls.passwordConfirmation.pristine && passForm.hasError('mismatchedPasswords')" >
+                    Password do not match
+                  </div>
+                </div>
+              </ion-list>
+              <ion-row>
+                <ion-col>
+                  <ion-button [disabled]="!passForm.valid || !password" expand="full" shape="round" color="primary" (click)="savePassword()">Save</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--Upload Photo-->
+      <!--Slide index 4-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <ion-list class="form">
+              <div class="title">Upload Your Photo</div>
+              <p class="comment">People in the Restvo community will be able to easily identify you.</p>
+              <ion-item class="ion-justify-content-center" lines="none">
+                <div class="image-cropper" (click)="selectPhotoFromDeviceAndUpload($event, true)">
+                  <img class="profile-pic" *ngIf="!userData || !userData.user || !userData.user.avatar" src="assets/img/avatar-default.jpg"/>
+                  <img class="profile-pic" *ngIf="userData && userData.user && userData.user.avatar" [src]="userData.user.avatar" onerror="this.style.display='none'"/>
+                  <ion-icon name="camera" class="camera-icon" color="primary"></ion-icon>
+                </div>
+              </ion-item>
+              <ion-item *ngIf="!platform.is('cordova')" class="ion-no-padding ion-no-margin" lines="none">
+                <div class="browser-upload">
+                  <input type="file" name="image" (change)="selectPhotoFromDeviceAndUpload($event, false)" accept="image/*"/>
+                </div>
+              </ion-item>
+              <ion-row>
+                <ion-col>
+                  <ion-button *ngIf="!userData || !userData.user || !userData.user.avatar" expand="full" shape="round" color="primary" (click)="finish()">Skip</ion-button>
+                  <ion-button *ngIf="userData && userData.user && userData.user.avatar" expand="full" shape="round" color="primary" (click)="finish()">Next</ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-list>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--Upload Contacts (not used)-->
+      <!--Slide index 5-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <div class="form">
+              <div class="title" style="margin-bottom: 30%">Congrats! One last step...</div>
+              <p class="comment">Connect your contacts to find friends, family, coworkers, and others on Restvo!</p>
+              <ion-row>
+                <ion-col>
+                  <ion-button expand="full" shape="round" color="primary" (click)="importContacts()">Connect</ion-button>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-button fill="clear" (click)="finish()">
+                    <div class="text-link">Nah. Next time.</div>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </div>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!--Slide Index 6-->
+      <!--Mobile Phone-->
+      <ng-template swiperSlide>
+        <ion-grid class="full-height">
+          <ion-row class="ion-align-items-center full-height">
+            <form [formGroup]="mobileForm" class="form">
+              <ion-list lines="none">
+                <ion-buttons class="custom-back-button" slot="start">
+                  <ion-button fill="clear" *ngIf="exitType === 'slide'" (click)="goToSlide(1)">
+                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                  </ion-button>
+                  <ion-button fill="clear" *ngIf="exitType === 'dashboard'" (click)="prevSlide()">
+                    <ion-icon name="chevron-back-outline" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+                <ion-item lines="full">
+                  <ion-select [interfaceOptions]="{cssClass: 'level-15'}" class="calling_code" formControlName="mobile_calling_code">
+                    <ion-select-option *ngFor="let calling_code of calling_codes" [value]="calling_code.value">{{calling_code.name}}</ion-select-option>
+                  </ion-select>
+                  <ion-input class="phone_number" type="tel" pattern="[0-9]{4,}$" formControlName="mobile_sig_number" placeholder="Mobile Number" autocomplete="tel"></ion-input>
+                </ion-item>
+                <div class="form-error" *ngIf="!mobileForm.controls.mobile_sig_number.pristine && !mobileForm.controls.mobile_sig_number.valid">
+                  Invalid mobile number.
+                </div>
+              </ion-list>
+              <p class="centered">We will send you a SMS message to verify this number. Standard SMS rate applies.</p>
+              <ion-row>
+                <ion-col>
+                  <ion-button expand="full" shape="round" color="primary" (click)="registerMobile()" [disabled]="!mobileForm.valid">Send the SMS Code</ion-button>
+                </ion-col>
+              </ion-row>
+              <ion-row [hidden]="exitType === 'dashboard'">
+                <ion-col>
+                  <ion-button expand="full" fill="clear" (click)="goToSlide(1)" class="ion-text-wrap">Sign me up with email instead</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+    </swiper>
   </div>
 </ion-content>

@@ -68,7 +68,8 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
 
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
-  viewDate: Date = new Date();
+  initDate = new Date();
+  viewDate = new Date(this.initDate);
   loadedCalendarItems: any = [];
   contentCalendarItems: any = [];
   refresh = new Subject<void>();
@@ -131,9 +132,6 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
       this.loadedCalendarItems = await this.calendarService.loadRelationshipContentCalendars(this.id, true);
       this.contentCalendarItems = [];
       this.loadedCalendarItems.forEach((calendarItem, index) => {
-        if (index === 0) {
-          this.viewDate = new Date(calendarItem.startDate);
-        }
         this.contentCalendarItems.push({
           _id: calendarItem._id,
           start: new Date(calendarItem.startDate),
@@ -150,6 +148,9 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
           },
           draggable: true });
       });
+      if (this.loadedCalendarItems.length && this.viewDate.getTime() === this.initDate.getTime()) { // only move the calendar viewDate during initiation
+        this.viewDate = new Date(this.loadedCalendarItems[0].startDate);
+      }
       //console.log("check", this.contentCalendarItems.length, this.contentCalendarItems[0])
     }
   }

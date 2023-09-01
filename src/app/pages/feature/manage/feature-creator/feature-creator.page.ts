@@ -154,7 +154,7 @@ export class FeatureCreatorPage extends EditfeaturePage implements OnInit {
         parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], // sends in the parent category ID
         component: FeatureSchedulePage,
         params: { parentCategoryId: (this.moment.categories && this.moment.categories.length) && this.moment.categories[0], categoryId: '5e1bbda67b00ea76b75e5a73', scheduleId: selectedSchedule ? selectedSchedule._id : null }, // sends in the parent category ID
-        modalOnly: true
+        //modalOnly: true
       },
       {
         url: 'new-schedule',

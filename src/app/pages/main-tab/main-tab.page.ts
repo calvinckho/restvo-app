@@ -459,11 +459,9 @@ export class MainTabPage implements OnInit, OnDestroy {
                 });
                 window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                 window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
-            } else if (this.electronService.isElectronApp) { // eletron app, open in browser window. In electron, it doesn't recognize window.location so need to hardcode the domain
-                window.open('https://app.restvo.com/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-            } else if (!this.platform.is('ios')) { // Desktop, Android, etc that is not iOS
-                window.open(window.location.protocol + '//' + window.location.host + '/app/video/' + this.pendingVideoChatRoomId + ';channelLastN=' + params.channelLastN + ';startWithAudioMuted=' + params.startWithAudioMuted + ';startWithVideoMuted=' + params.startWithVideoMuted + ';videoChatRoomSubject=' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, ''), '_blank');
-            } else { // on iOS
+            } else { // Desktop, Android, iOS
+                window.open('https://meet.jit.si/' + this.pendingVideoChatRoomId + '#config.subject="' + encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, '') + '"', '_blank');
+            } /*else { // on iOS
                 await this.menuCtrl.enable(false);
                 this.router.navigate(['/app/video/' + this.pendingVideoChatRoomId, { channelLastN: params.channelLastN, startWithAudioMuted: params.startWithAudioMuted, startWithVideoMuted: params.startWithVideoMuted, videoChatRoomSubject: encodeURIComponent(params.videoChatRoomSubject).replace(/\(/g, '').replace(/\)/g, '')}]);
                 if (this.userData.videoChatRoomId) { // if video chat wasn't exited correctly, reload the window
@@ -471,7 +469,7 @@ export class MainTabPage implements OnInit, OnDestroy {
                         window.location.reload();
                     }, 2000);
                 }
-            }
+            }*/
         } catch (err) {
             this.userData.readyToControlVideoChat = true;
             const networkAlert = await await this.alertCtrl.create({

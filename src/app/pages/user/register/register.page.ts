@@ -28,7 +28,6 @@ export class RegisterPage implements OnInit {
 
     public loginForm: UntypedFormGroup;
     view = 'signin';
-    ionSpinner: any;
     loginMode = 'email';
     registerMode = 'email';
     credentials: any;
@@ -371,10 +370,7 @@ export class RegisterPage implements OnInit {
     }
 
     async loadRegisterSlides() {
-        this.ionSpinner = true;
-        setTimeout(() => {
-            this.view = 'register';
-        }, 2000);
+        this.view = 'register';
     }
 
     async registerSlidesLoaded(event) {
@@ -382,7 +378,6 @@ export class RegisterPage implements OnInit {
         console.log("reg loaded", swiper);
         if (swiper) {
             await swiper.disable();
-            this.ionSpinner = false;
         }
     }
 
