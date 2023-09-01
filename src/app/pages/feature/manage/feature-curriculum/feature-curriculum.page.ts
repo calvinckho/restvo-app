@@ -137,7 +137,7 @@ export class FeatureCurriculumPage extends EditfeaturePage implements OnInit {
         this.contentCalendarItems.push({
           _id: calendarItem._id,
           start: new Date(calendarItem.startDate),
-          end: addHours(new Date(calendarItem.startDate), 1),
+          end: new Date(calendarItem.startDate),
           moment: calendarItem.moment,
           schedule: calendarItem.schedule,
           uniqueAnswersPerCalendar: calendarItem.uniqueAnswersPerCalendar,

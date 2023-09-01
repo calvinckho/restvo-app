@@ -162,7 +162,7 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
         if (schedule && this.selectedScheduleIds.includes(schedule._id) && schedule.options.recurrence === 'weekly' && schedule.child_moments && schedule.child_moments.length && schedule.options.recurrenceByDay.includes(days[addDays(new Date(this.populateStartDate), dayIndex).getDay()]) && (Math.floor(dayIndex / 7) % schedule.options.recurrenceInterval === 0)) {
           this.events.push({
             start: setHours(setMinutes(addDays(new Date(this.populateStartDate), dayIndex), new Date(schedule.startDate).getMinutes()), new Date(schedule.startDate).getHours()),
-            end: setHours(setMinutes(addDays(new Date(this.populateStartDate), dayIndex), new Date(schedule.startDate).getMinutes()), new Date(schedule.startDate).getHours() + 1),
+            end: setHours(setMinutes(addDays(new Date(this.populateStartDate), dayIndex), new Date(schedule.endDate).getMinutes()), new Date(schedule.endDate).getHours()),
             schedule: schedule._id,
             title: schedule.child_moments[contentIndex % schedule.child_moments.length].matrix_string[0],
             color: { ...colors.red },
@@ -177,6 +177,7 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
       }
     });
     this.closeOpenMonthViewDay();
+    console.log("check", this.events[0], this.schedules[0])
   }
 
   async addToCurriculum() {
@@ -188,6 +189,7 @@ export class FeatureTemplatePage extends EditfeaturePage implements OnInit {
         handler: async () => {
           const promises = this.schedules.map(async (schedule, index) => {
             schedule.startDate = new Date(new Date(this.populateStartDate).setUTCHours(new Date(schedule.startDate).getHours(), new Date(schedule.startDate).getMinutes())).toISOString();
+            schedule.endDate = new Date(new Date(this.populateStartDate).setUTCHours(new Date(schedule.endDate).getHours(), new Date(schedule.endDate).getMinutes())).toISOString();
             schedule.options.recurrenceEndDate = new Date(new Date(this.populateEndDate).setUTCHours(new Date(schedule.options.recurrenceEndDate).getHours(), new Date(schedule.options.recurrenceEndDate).getMinutes())).toISOString();
             schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
             // for Activity, either create schedule or send to the backend to repopulate the timeline

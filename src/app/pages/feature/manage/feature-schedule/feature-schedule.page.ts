@@ -263,8 +263,8 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
     let schedule;
     this.schedule.options.recurrenceByDay = this.recurrenceByDay.toString();
     if (this.schedule._id || operation === 'create schedule') {
-      this.schedule.endDate = this.schedule.startDate;
-      this.schedule.options.timezoneOffset = new Date().getTimezoneOffset(); // update with the start date's local timezone offset
+      //this.schedule.endDate = this.schedule.startDate;
+      this.schedule.options.timezoneOffset = new Date(this.schedule.startDate).getTimezoneOffset(); // update with the start date's local timezone offset
       // for Activity, either create schedule or send to the backend to repopulate the timeline
       this.schedule.operation = operation;
       schedule = await this.momentService.touchSchedule(this.schedule, true);
@@ -305,14 +305,6 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
   }
 
   async changeContentCalendarItem(calendaritem, type) {
-    if (type === 'date') {
-      calendaritem.endDate = calendaritem.startDate;
-      this.timeline.sort((a, b) => {
-        const e: any = new Date(a.startDate);
-        const f: any = new Date(b.startDate);
-        return (e - f);
-      });
-    }
     clearTimeout(this.timeoutHandle);
     this.timeoutHandle = setTimeout(async () => {
       this.momentService.touchContentCalendarItems(null, {
@@ -362,7 +354,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
             location: '',
             notes: '',
             startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
+            endDate: new Date(new Date().getTime() + 3600000).toISOString(),
             options: {
               firstReminderMinutes: 0,
               secondReminderMinutes: 0,
@@ -430,7 +422,7 @@ export class FeatureSchedulePage extends FeatureChildActivitiesPage implements O
           location: '',
           notes: '',
           startDate: new Date().toISOString(),
-          endDate: new Date().toISOString(),
+          endDate: new Date(new Date().getTime() + 3600000).toISOString(),
           options: {
             firstReminderMinutes: 0,
             secondReminderMinutes: 0,

@@ -40,21 +40,19 @@
           </ion-input>
         </ion-item>
         <ion-item lines="none">
-          <ion-label class="cursor-pointer">Start Date: </ion-label> <!--Start, Choose a date below-->
+          <ion-label class="cursor-pointer">First Lesson Duration: </ion-label> <!--Lesson duration-->
           <ion-datetime-button datetime="feature-schedule-time1"></ion-datetime-button>
-        </ion-item>
-        <ion-popover [keepContentsMounted]="true">
-          <ng-template>
-            <ion-datetime id="feature-schedule-time1" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.startDate" max="2070-12-31T23:59:59"></ion-datetime>
-          </ng-template>
-        </ion-popover>
-        <ion-item lines="none">
-          <ion-label class="cursor-pointer">End Date: </ion-label> <!--Start, Choose a date below-->
+          <span> - </span>
           <ion-datetime-button datetime="feature-schedule-time2"></ion-datetime-button>
         </ion-item>
         <ion-popover [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="feature-schedule-time2" minuteValues="0,15,30,45" presentation="date-time" [(ngModel)]="schedule.options.recurrenceEndDate" max="2070-12-31T23:59:59"></ion-datetime>
+            <ion-datetime id="feature-schedule-time1" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="date-time" [(ngModel)]="schedule.startDate" max="2070-12-31T23:59:59"></ion-datetime>
+          </ng-template>
+        </ion-popover>
+        <ion-popover [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="feature-schedule-time2" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="date-time" [(ngModel)]="schedule.endDate" max="2070-12-31T23:59:59"></ion-datetime>
           </ng-template>
         </ion-popover>
       </ion-item-group>
