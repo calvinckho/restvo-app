@@ -156,12 +156,13 @@ export class OnboardfeaturePage {
                 await this.addUserToProgramUserList('5d5785b462489003817fee18', this.type || 2, this.token, false);
                 this.completedDefaultOnboarding = true;
                 this.loadActivities();
-                // exit out the load animation after 8 secs. In case internet connection is lost
+                // exit out the load animation after 15 secs. In case internet connection is lost
                 this.loadActTimeoutHandle = setTimeout(() => {
                     if (!this.moment) {
                         this.ionSpinner = false;
                         this.reachedEnd = true;
                         this.loadCompleted = true;
+                        console.log("timed out")
                     }
                 }, 15000);
             } else { // when all is finished, the last slide is shown and the finish button will trigger join program (programId with token) API
