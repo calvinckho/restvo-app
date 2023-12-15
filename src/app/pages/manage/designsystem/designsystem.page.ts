@@ -3,6 +3,7 @@ import {IonSelect, Platform} from "@ionic/angular";
 import {Auth} from "../../../services/auth.service";
 import {Chat} from "../../../services/chat.service";
 import { Options } from '@angular-slider/ngx-slider';
+import { ContactPicker } from '@calvinckho/capacitor-contact-picker';
 
 @Component({
   selector: 'app-designsystem',
@@ -52,5 +53,14 @@ export class DesignsystemPage implements OnInit {
       startWithAudioMuted: true,
       startWithVideoMuted: false
     });
+  }
+
+  async openContactList() {
+    try {
+      const contact: any = await ContactPicker.open();
+      console.log("contact results", contact);
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

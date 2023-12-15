@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "^14.3.0",
     "@angular/router": "^14.3.0",
     "@angular/service-worker": "^14.3.0",
+    "@calvinckho/capacitor-contact-picker": "github:calvinckho/capacitor-contact-picker#capacitor-5",
     "@calvinckho/mic-recorder-to-mp3": "^2.2.4-beta.0",
     "@capacitor-community/electron": "^4.1.0",
     "@capacitor/android": "^5.0.0",

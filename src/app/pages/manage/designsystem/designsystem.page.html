@@ -46,6 +46,12 @@
         <ngx-slider [(value)]="value" [options]="options"></ngx-slider>
       </ion-item>
     </ion-toolbar>
+    <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Open Contact List</ion-badge>
+    <ion-toolbar>
+      <ion-row class="ion-justify-content-evenly">
+        <ion-button shape="round" (click)="openContactList()">Open Contact</ion-button>
+      </ion-row>
+    </ion-toolbar>
     <ion-badge [ngStyle]="{'background': 'color' }" class="badge-label">Jitsi Call</ion-badge>
     <ion-toolbar>
       <ion-row class="ion-justify-content-evenly">
