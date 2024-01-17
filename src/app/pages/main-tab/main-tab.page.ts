@@ -94,7 +94,7 @@ export class MainTabPage implements OnInit, OnDestroy {
 
     async ngOnInit() {
         console.log('platform info:', this.platform.platforms());
-        this.processAuth(); // first-time loading app and entering authentication section
+        await this.processAuth(); // first-time loading app and entering authentication section
         this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe((data) => {
             if (data && data.type === 'setup device') { // from recover page, or from re-logging in
                 this.setupDevice();
@@ -108,14 +108,14 @@ export class MainTabPage implements OnInit, OnDestroy {
             }
         });
         this.subscriptions['refreshUserCalendar'] = this.userData.refreshUserCalendar$.subscribe(async (res) => {
-            this.calendarService.getUserCalendar();
+            await this.calendarService.getUserCalendar();
         });
         if (this.platform.is('cordova')) {
             const status = await Network.getStatus();
             if (!status.connected) {
-                this.networkService.showNoNetworkAlert();
+                await this.networkService.showNoNetworkAlert();
             }
-            this.addNetworkListener();
+            await this.addNetworkListener();
             setTimeout(() => {
                 this.readyToDetectNetworkChange = true;
             }, 2000);
@@ -137,14 +137,14 @@ export class MainTabPage implements OnInit, OnDestroy {
                 if (this.router.url.includes('/app/video') && (this.platform.is('desktop') || this.platform.is('tablet'))) {
                     // menu remains disabled
                 } else {
-                    this.menuCtrl.enable(true);
+                    await this.menuCtrl.enable(true);
                 }
                 this.userData.user = user;
                 await this.userData.loadStoredCommunity();
-                this.setupDevice();
+                await this.setupDevice();
             }
         } catch (err) { // if err, still show the menu bar to allow access to the menu bar
-            this.menuCtrl.enable(true);
+            await this.menuCtrl.enable(true);
         }
     }
 
@@ -155,14 +155,14 @@ export class MainTabPage implements OnInit, OnDestroy {
                 console.log('Token authorized');
                 try {
                     this.userData.user = res.user;
-                    this.userData.processLoadedUserData();
+                    await this.userData.processLoadedUserData();
                     await this.userData.loadStoredCommunity();
                     // in the event of deep linking to tab pages, the tab page renders using user data from storage first and then listens to the following events to refresh its view with fresh user data from server
                     // publish event to refresh the dashboard page with new userData from server
                     // publish event to finish loading the Board page as it needs to wait for boardService.socket to start
                     this.userData.refreshAppPages();
                 } catch (err) {
-                    this.networkService.showNoNetworkAlert();
+                    await this.networkService.showNoNetworkAlert();
                 }
             } else if (res.content === 'Offline mode') {
                 console.log('offline mode');
@@ -263,16 +263,16 @@ export class MainTabPage implements OnInit, OnDestroy {
                     this.pushHandler = PushNotifications.addListener('registration', async (token) => {
                         if (token && token.value) {
                             console.log('device token ->', token.value);
-                            this.userData.addDeviceToken({token: token.value}).subscribe(() => {
+                            this.userData.addDeviceToken({token: token.value}).subscribe({next: () => {
                                 this.userData.deviceToken = token.value;
                                 if (token.value.length === 64) { // APN token is converted to lower case for Capacitor Push's (upper case) compatibility with cordova's Push (lower case) in database
                                     this.userData.deviceToken = token.value.toLowerCase();
                                 }
                                 this.userData.user.enablePushNotification = true;
                                 this.userData.refreshUserStatus({});
-                            }, (err) => {
+                            }, error: (err) => {
                                 console.log('cannot store device token in database.');
-                            });
+                            }});
                         }
                     });
                     PushNotifications.addListener('registrationError', async (error: any) => {
@@ -336,23 +336,23 @@ export class MainTabPage implements OnInit, OnDestroy {
                     if (!this.pushHandler) {
                         this.electronService.ipcRenderer.on(TOKEN_UPDATED, (_, deviceToken) => {
                             console.log('electron device token ->', deviceToken);
-                            this.userData.addDeviceToken({token: deviceToken}).subscribe(() => {
+                            this.userData.addDeviceToken({token: deviceToken}).subscribe({ next: () => {
                                 this.userData.deviceToken = deviceToken; // FCM token doesn't need to be modified
                                 this.userData.user.enablePushNotification = true;
                                 this.userData.refreshUserStatus({});
-                            }, (err) => {
+                            }, error: (err) => {
                                 console.log('cannot store device token in database.');
-                            });
+                            }});
                         });
                         this.electronService.ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, deviceToken) => {
                             console.log('electron loading previous token', deviceToken);
-                            this.userData.addDeviceToken({token: deviceToken}).subscribe(() => {
+                            this.userData.addDeviceToken({token: deviceToken}).subscribe({ next:() => {
                                 this.userData.deviceToken = deviceToken; // FCM token doesn't need to be modified
                                 this.userData.user.enablePushNotification = true;
                                 this.userData.refreshUserStatus({});
-                            }, (err) => {
+                            }, error: (err) => {
                                 console.log('cannot store device token in database.');
-                            });
+                            }});
                         });
                         this.electronService.ipcRenderer.on(NOTIFICATION_SERVICE_ERROR, (_, error) => {
                             console.log('electron push notification setup error', error);
@@ -368,14 +368,14 @@ export class MainTabPage implements OnInit, OnDestroy {
                     const pushSubscription = await this.swPush.requestSubscription({
                         serverPublicKey: 'BE4sP7Uc5NLOHj4yyIUbPSWdDnRQfoMv9Vj6jL3s3BqnWYbVLNoYE_wkZXu9-ej1KuEqOPzmu2W8v4fOA58J_FA'
                     });
-                    this.userData.addDeviceToken({token: pushSubscription}).subscribe(() => {
+                    this.userData.addDeviceToken({token: pushSubscription}).subscribe({next: () => {
                         this.userData.pushSubscription = pushSubscription;
                         this.userData.user.enablePushNotification = true;
                         this.userData.refreshUserStatus({});
                         console.log('Web Push Subscription Obj', this.userData.pushSubscription);
-                    }, (err) => {
+                    }, error: (err) => {
                         console.log('cannot store push subscription object in database.');
-                    });
+                    }});
                 } else {
                     console.log('no valid push strategy available.');
                 }
@@ -455,7 +455,8 @@ export class MainTabPage implements OnInit, OnDestroy {
                         'invite.enabled': false,
                         'recording.enabled': false,
                         'android.screensharing.enabled': false,
-                    }
+                    },
+                    //configOverrides: { 'lang': 'tr' },
                 });
                 window.addEventListener('onConferenceJoined', this.onJitsiLoaded);
                 window.addEventListener('onConferenceLeft', this.onJitsiUnloaded);
@@ -521,7 +522,6 @@ export class MainTabPage implements OnInit, OnDestroy {
                 this.initPushNotification(); // set up push notification
                 this.requestBadgePermission(); // badge API requires notification permission
             }
-
         });
         try {
             if (Capacitor.isNativePlatform() && Capacitor.isPluginAvailable('LocalNotifications')) { // do not register local notifications for android, !this.platform.is('android') && is included in capacitor 2.0. TODO: check if register actions now works in Android

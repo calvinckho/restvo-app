@@ -455,18 +455,14 @@
             <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)">{{resource['en-US'].value[36]}}</ion-button>
           </ion-item>
           <!--Upload Media-->
-          <ion-item-group *ngIf="item === 10300">
-            <ion-item lines="none">
-              <ion-label class="moment-input" *ngIf="resource['en-US'].value.length > 36">{{resource['en-US'].value[36]}}</ion-label>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)" *ngIf="platform.is('cordova')">Add</ion-button>
-              <ion-button fill="clear" *ngIf="!platform.is('cordova')">
-                <label for="image" class="toolbar-button label">Add</label>
-                <input type="file" class="file-picker" name="image" id="image" (change)="selectPhotoFromDeviceAndPreview($event)" accept="image/*" multiple/>
-              </ion-button>
-            </ion-item>
-          </ion-item-group>
+            <ion-item-group *ngIf="item === 10300">
+                <ion-item lines="none">
+                    <ion-label class="moment-input" *ngIf="resource['en-US'].value.length > 36">{{resource['en-US'].value[36]}}</ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-button shape="round" fill="solid" (click)="openUploadMedia(i, item)">Add</ion-button>
+                </ion-item>
+            </ion-item-group>
           <ion-item *ngIf="item === 10310" lines="none"> <!--Obsolete in 1.6.3 (51)+-->
             <ion-label class="moment-input" (click)="openUploadMedia(i, item)">
               <span>{{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][1]}} {{resource['en-US'].matrix_string[resource.matrix_number[0].indexOf(item)][0]}}</span>

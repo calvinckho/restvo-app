@@ -1424,35 +1424,16 @@ export class EditfeaturePage implements OnInit, OnDestroy {
     }
 
     async openUploadMedia(i, componentIndex) {
-        try {
-            if (this.platform.is('cordova')) { // if on native app
-                const image = await Camera.getPhoto({ // open native OS photo album
-                    quality: 60,
-                    width: 1280,
-                    allowEditing: false,
-                    resultType: CameraResultType.Uri,
-                    source: CameraSource.Photos,
-                    correctOrientation: false
-                });
-                console.log("photo on cordova: ", image.webPath);
-                const response = await fetch(image.webPath!);
-                const blob = await response.blob();
-                const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: 'prayer-media', mediaType: 'photo', files: [blob], modalPage: true }});
-                await modal.present();
-                const {data: media_list} = await modal.onDidDismiss();
-                if (media_list && media_list.length) {
-                    this.anyChangeMade = true;
-                    for (let i = 0; i < media_list.length; i++) {
-                        if (media_list[i] && media_list[i].file) {
-                            const compressed = await this.awsService.compressPhoto(media_list[i].file);
-                            await this.awsService.uploadFile('users', this.userData.user._id, compressed, 'prayer-media', media_list[i].height > media_list[i].width ? 1 : 0);
-                        }
-                    }
-                }
-                //await this.awsService.uploadImage('users', this.userData.user._id, image, 'prayer-media');
+        const modal = await this.modalCtrl.create({component: UploadmediaPage, componentProps: { sessionId: this.moment._id, modalPage: true }});
+        await modal.present();
+        const {data: media_list} = await modal.onDidDismiss();
+        // event is an a moment object see server/models/moment.js
+        // event contains a resource with info on the event see server/models/resource.js
+        if (media_list) {
+            if ((componentIndex === 10010 || componentIndex === 40010) && this.moment.matrix_string[i].length < 11) { // only when initiating textarea + media component
+                this.moment.matrix_string[i].length = 11;
             }
-        } catch (err) {
-            console.log(err);
+            this.moment.matrix_string[i].push(...media_list);
         }
     }
 
