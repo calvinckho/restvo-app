@@ -331,21 +331,8 @@ export class UserData {
         }
     }
 
-    loadMyChurches() {
-        return lastValueFrom(this.http.get(this.networkService.domain + '/api/mychurch', this.authService.httpAuthOptions));
-    }
-
     loadMyAdminChurches(searchKeyword, pageNum) {
         return lastValueFrom(this.http.get(this.networkService.domain + '/api/mychurch/adminchurches?searchKeyword=' + searchKeyword + '&pageNum=' + pageNum,  this.authService.httpAuthOptions));
-    }
-
-
-    loadMyGroups() {
-        return this.http.get(this.networkService.domain + '/api/mygroup', this.authService.httpAuthOptions);
-    }
-
-    loadMyFriends() {
-        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/friends', this.authService.httpAuthOptions));
     }
 
     loadMySystemMessages() {
@@ -711,10 +698,6 @@ export class UserData {
                 reject(err);
             });
         });
-    }
-
-    inviteFriends(data) {
-        return this.http.post(this.networkService.domain + '/api/auth/invitefriends', JSON.stringify(data), this.authService.httpAuthOptions);
     }
 
     permanentlyEraseUser() {

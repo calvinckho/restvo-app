@@ -23,11 +23,6 @@ export class Churches {
                 private userData: UserData) {
     }
 
-    findOnMap(userLocation, searchKeyword, searchRadius, searchType, pageNum, communityFilter) {
-        return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/findonmap?lat=' + userLocation.lat + '&lng=' + userLocation.lng + '&keyword=' + searchKeyword + '&radius=' + searchRadius + '&type=' + searchType + '&page=' + pageNum + '&community=' + communityFilter, this.authService.httpOptions)
-            );
-    }
-
     loadListOfChurchProfiles(searchPhrase) {
         return lastValueFrom(this.http.get(this.networkService.domain + '/api/church/search/' + searchPhrase, this.authService.httpAuthOptions)
             );
@@ -144,11 +139,6 @@ export class Churches {
 
     inviteNewAppUsers(data) {
         return lastValueFrom(this.http.post(this.networkService.domain + '/api/church/inviteNewAppUsers', JSON.stringify(data), this.authService.httpAuthOptions)
-            );
-    }
-
-    invitePendingMembers(data) {
-        return lastValueFrom(this.http.post(this.networkService.domain + '/api/church/invitePendingMembers', JSON.stringify(data), this.authService.httpAuthOptions)
             );
     }
 
