@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/calvinckho/restvo-app.svg?style=shield&circle-token=c7b71f9186e584aba1555a351c8fb5cf5d90384b)](https://app.circleci.com/pipelines/github/calvinckho/restvo-app)
 # Restvo Official Web App
 
-Welcome to the Restvo Web App Development Community. Your contribute is so valuable to this project to bring mentorship and coaching to more people around the world. 
+Welcome to the Restvo Web App Development Community. Your contribute is valuable to this project. 
 
 Click on Projects to see a list of projects you can contribute to. Please submit PRs to the app-dev-01 branch and I'll merge it. 
 
