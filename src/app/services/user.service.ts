@@ -11,7 +11,7 @@ import { Badge } from '@ionic-native/badge/ngx';
 import { Contacts, Contact } from '@ionic-native/contacts/ngx';
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 import {User} from '../interfaces/user';
 import {Capacitor} from '@capacitor/core';
@@ -25,7 +25,7 @@ export class UserData {
     @ViewChild('Contact') contact: Contact;
     user: any;
     communitiesboards: any; // [CommunitiesBoards];
-    socket: io;
+    socket: any;
     currentCommunityIndex: number; // Update page community carousel slide actual index, it can go beyond the total number of slides (x+1 = 0)
     currentManageActivityId: string;
     loginAt: any;
@@ -108,69 +108,69 @@ export class UserData {
     async createUserSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                this.socket = io(this.networkService.domain + '/users-namespace', {transports: ['websocket']});
+                this.socket = io(this.networkService.domain + '/users-namespace', {transports: ['websocket'], withCredentials: true});
             } else {
                 this.socket = io(this.networkService.domain + '/users-namespace');
             }
-        });
-        this.socket.on('connect', () => {
-            // console.log('user socket id: ', this.socket.id);
-            this.socket.emit('enter user', this.user._id);
-        });
-        this.socket.on('refresh user status', async (userId, data) => {
-            console.log('got refresh');
-            if (this.user._id === userId) { // only if user status update is for current user
-                if (data.type === 'update admin') {
-                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
-                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
-                    if (this.router.url.includes('/app/manage')) { // if user switches to a community where he is no longer an admin
-                        this.router.navigateByUrl('/app/me');
-                    } else {
+            this.socket.on('connect', () => {
+                // console.log('user socket id: ', this.socket.id);
+                this.socket.emit('enter user', this.user._id);
+            });
+            this.socket.on('refresh user status', async (userId, data) => {
+                console.log('got refresh');
+                if (this.user._id === userId) { // only if user status update is for current user
+                    if (data.type === 'update admin') {
+                        const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                        // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                        if (this.router.url.includes('/app/manage')) { // if user switches to a community where he is no longer an admin
+                            this.router.navigateByUrl('/app/me');
+                        } else {
+                            this.refreshAppPages();
+                        }
+                    } else if (data.type === 'connect conversation') {
+                        this.refreshMyConversations({action: 'reload', conversationId: 'all'});
+                    } else if (data.type === 'disconnect conversation') {
+                        await this.refreshMyConversations({action: 'disconnect chat view', conversationId: data.conversationId});
+                        this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
+                    } else if (data.type === 'update group participation') {
+                        // update user's group participation
+                        await this.load();
+                        this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
+                        this.refreshMyConversations({action: 'reload', conversationId: 'all'});
+                        // this.refreshUserStatus({ type: 'load user community boards' });
+                        this.refreshBoards({ type: 'refresh community board page' }); // when a user join a group with board
+                    } else if (data.type === 'leave group') {
+                        // update user's group participation,
+                        await this.load();
+                        this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
+                        this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
+                        this.refreshMyConversations({action: 'reload', conversationId: 'all'});
+                        // this.refreshUserStatus({ type: 'load user community boards' });
+                        this.refreshBoards({ type: 'refresh community board page' }); // when a user leave a group with board
+                        // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
+                        const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
+                        this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
+                        this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
+                        // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
+                        if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
+                            this.router.navigateByUrl('/app/me');
+                        }
+                    } else if (data.type === 'update church participation') {
+                        await this.load();
+                    } else if (data.type === 'update moment and calendar participation') {
+                        await this.refreshUserCalendar(true); // refresh and fetch the latest calendar items
+                        this.refreshUserStatus({type: 'change aux data'});
+                    } else if (data.type === 'update system messages') {
+                        this.refreshUserStatus({type: 'change aux data'});
+                    } else { // data.type === 'update user info' and the rest
+                        await this.load();
                         this.refreshAppPages();
+                        this.refreshUserStatus(data);
                     }
-                } else if (data.type === 'connect conversation') {
-                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                } else if (data.type === 'disconnect conversation') {
-                    await this.refreshMyConversations({action: 'disconnect chat view', conversationId: data.conversationId});
-                    this.refreshMyConversations({action: 'reload', conversationId: data.conversationId});
-                } else if (data.type === 'update group participation') {
-                    // update user's group participation
-                    await this.load();
-                    this.authService.refreshGroupStatus({conversationId: data.conversationId, data: data.group});
-                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    // this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshBoards({ type: 'refresh community board page' }); // when a user join a group with board
-                } else if (data.type === 'leave group') {
-                    // update user's group participation,
-                    await this.load();
-                    this.authService.refreshGroupStatus({conversationId: null, data: {_id: (data.groupId || data.id || null)}});
-                    this.refreshUserStatus({ type: 'close group view', data: { _id: (data.groupId || data.id || null) }});
-                    this.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                    // this.refreshUserStatus({ type: 'load user community boards' });
-                    this.refreshBoards({ type: 'refresh community board page' }); // when a user leave a group with board
-                    // update user's activitiesWithAdminAccess list and exit from manage view if user is kicked out as admin
-                    const result: any = await this.checkAdminAccess(this.user.churches[this.currentCommunityIndex]._id);
-                    this.hasPlatformAdminAccess = result ? result.hasPlatformAdminAccess : false;
-                    this.activitiesWithAdminAccess = result ? result.activitiesWithAdminAccess : [];
-                    // if the list has changed, check if currentManageActivityId is still in the list. If not, exit the Manage view
-                    if (this.router.url.includes('/app/manage') && this.activitiesWithAdminAccess && this.activitiesWithAdminAccess.length && !this.activitiesWithAdminAccess.includes(this.currentManageActivityId)) { // if user switches to a community where he is no longer an admin
-                        this.router.navigateByUrl('/app/me');
-                    }
-                } else if (data.type === 'update church participation') {
-                    await this.load();
-                } else if (data.type === 'update moment and calendar participation') {
-                    await this.refreshUserCalendar(true); // refresh and fetch the latest calendar items
-                    this.refreshUserStatus({type: 'change aux data'});
-                } else if (data.type === 'update system messages') {
-                    this.refreshUserStatus({type: 'change aux data'});
-                } else { // data.type === 'update user info' and the rest
-                    await this.load();
-                    this.refreshAppPages();
-                    this.refreshUserStatus(data);
                 }
-            }
+            });
         });
     }
 

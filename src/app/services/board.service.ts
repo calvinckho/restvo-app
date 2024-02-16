@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { Chat } from './chat.service';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 import { NetworkService } from './network-service.service';
 import {lastValueFrom} from "rxjs";
@@ -13,7 +13,7 @@ import {lastValueFrom} from "rxjs";
 @Injectable({ providedIn: 'root' })
 export class Board {
 
-    socket: io;
+    socket: any;
     subscriptions: any = {};
 
     constructor(private http: HttpClient,
@@ -30,22 +30,22 @@ export class Board {
     async createBoardSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                this.socket = io(this.networkService.domain + '/boards-namespace', {transports: ['websocket']});
+                this.socket = io(this.networkService.domain + '/boards-namespace', {transports: ['websocket'], withCredentials: true});
             } else {
                 this.socket = io(this.networkService.domain + '/boards-namespace');
             }
-        });
-        this.socket.on('connect', () => {
-            //console.log("board socket id: ", this.socket.id);
-        });
-        this.socket.on('refresh board', async (boardId, data) => {
-            this.userData.refreshBoards({ type: 'refresh board', boardId: boardId, data: data });
-        });
-        if (!this.subscriptions.hasOwnProperty('refreshUserStatus')) {
-            this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(() => {
-                this.loadUserChurchBoards();
+            this.socket.on('connect', () => {
+                //console.log("board socket id: ", this.socket.id);
             });
-        }
+            this.socket.on('refresh board', async (boardId, data) => {
+                this.userData.refreshBoards({ type: 'refresh board', boardId: boardId, data: data });
+            });
+            if (!this.subscriptions.hasOwnProperty('refreshUserStatus')) {
+                this.subscriptions['refreshUserStatus'] = this.userData.refreshUserStatus$.subscribe(() => {
+                    this.loadUserChurchBoards();
+                });
+            }
+        });
     }
 
     async loadUserChurchBoards() {

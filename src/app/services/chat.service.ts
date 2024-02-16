@@ -6,7 +6,7 @@ import { ElectronService } from 'ngx-electron';
 import { Auth } from './auth.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { Storage } from '@ionic/storage';
 import { Conversation } from '../interfaces/chat';
 import {Router} from "@angular/router";
@@ -15,7 +15,7 @@ import {BehaviorSubject, lastValueFrom, Observable} from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class Chat {
 
-    socket: io;
+    socket: any;
     conversations: any = [];
     connectTabBadge: number;
     currentChatProps: any = [];
@@ -71,149 +71,150 @@ export class Chat {
     async createConversationSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                this.socket = io(this.networkService.domain + '/', {transports: ['websocket']});
+                this.socket = io(this.networkService.domain + '/', {transports: ['websocket'], withCredentials: true});
             } else {
-                this.socket = io(this.networkService.domain + '/');
+                this.socket = io(this.networkService.domain + '/', {transports: ['websocket'], withCredentials: true});
                 // console.log("initiating chat socket io", this.socket ? this.socket.id : null)
             }
-        });
-        this.socket.on('connect', async () => { //callback after successful socket.io connection
-            const conversations = await this.storage.get('conversations');
-            this.conversations = conversations || [];
-            // console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
-            if (this.conversations.length){
-                for(let i = 0; i < this.conversations.length; i++) {
-                    // join conversation rooms in socket.io, also send online status if enabled
-                    this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
+            this.socket.on('connect', async () => { //callback after successful socket.io connection
+                const conversations = await this.storage.get('conversations');
+                this.conversations = conversations || [];
+                // console.log("chat socket id: ", this.socket.id, "conv in storage:", this.conversations.length);
+                if (this.conversations.length){
+                    for(let i = 0; i < this.conversations.length; i++) {
+                        // join conversation rooms in socket.io, also send online status if enabled
+                        this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
+                    }
                 }
-            }
-        });
-        this.socket.on('reconnect', async () => {
-            console.log('reconnect chat id', this.socket.id);
-            if (this.conversations.length) {
-                for (let i = 0; i < this.conversations.length; i++) {
-                    // join conversation rooms in socket.io, also send online status if enabled
-                    this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
+            });
+            this.socket.on('reconnect', async () => {
+                console.log('reconnect chat id', this.socket.id);
+                if (this.conversations.length) {
+                    for (let i = 0; i < this.conversations.length; i++) {
+                        // join conversation rooms in socket.io, also send online status if enabled
+                        this.socket.emit('enter conversation', this.conversations[i].conversation._id, this.userData.user._id, (await this.userData.checkRestExpired() ? { action: 'ping', state: 'online', origin: this.socket.id } : null));
+                    }
                 }
-            }
-        });
-        this.socket.on('online status', async (conversationId, userId, status) => { //socket.io update on change in friends' online status
-            try {
-                if (status.state === 'online') { //if a friend is entering active mode
-                    if (userId !== this.userData.user._id) { // only add to arrays if from other users
-                        if (status.action === 'ping') { //send a pong to update the friend about my online status
-                            if (await this.userData.checkRestExpired()) this.socket.emit('online status', conversationId, this.userData.user._id, { action: 'pong', state: 'online', origin: status.origin, videoChatRoomId: (conversationId === this.userData.videoChatRoomId ? this.userData.videoChatRoomId : '') });
-                        }
-                        if (this.onlineUsersSockets.indexOf(status.origin) < 0) { //only if unique
-                            this.onlineUsers.push(userId);
-                            this.onlineUsersSockets.push(status.origin);
-                        }
-                        if (!this.liveConversations.hasOwnProperty(conversationId)) { // if not yet initiated
-                            this.liveConversations[conversationId] = {users: [userId], sockets: [status.origin]};
-                            //console.log('add live conv', this.liveConversations[conversationId]);
-                        } else {
-                            if (this.liveConversations[conversationId].sockets.indexOf(status.origin) < 0) { //only if unique userId
-                                this.liveConversations[conversationId].users.push(userId);
-                                this.liveConversations[conversationId].sockets.push(status.origin);
-                                //console.log('add more live conv', this.liveConversations[conversationId]);
+            });
+            this.socket.on('online status', async (conversationId, userId, status) => { //socket.io update on change in friends' online status
+                try {
+                    if (status.state === 'online') { //if a friend is entering active mode
+                        if (userId !== this.userData.user._id) { // only add to arrays if from other users
+                            if (status.action === 'ping') { //send a pong to update the friend about my online status
+                                if (await this.userData.checkRestExpired()) this.socket.emit('online status', conversationId, this.userData.user._id, { action: 'pong', state: 'online', origin: status.origin, videoChatRoomId: (conversationId === this.userData.videoChatRoomId ? this.userData.videoChatRoomId : '') });
                             }
-                        }
-                        if (status.hasOwnProperty('videoChatRoomId') && status.videoChatRoomId.length) { //if the friend is in a chat room
-                            if (!this.liveVideoChats.hasOwnProperty(conversationId)) { // if user in a video chat room and not yet initiated
-                                this.liveVideoChats[conversationId] = {users: [userId], sockets: [status.origin]};
+                            if (this.onlineUsersSockets.indexOf(status.origin) < 0) { //only if unique
+                                this.onlineUsers.push(userId);
+                                this.onlineUsersSockets.push(status.origin);
+                            }
+                            if (!this.liveConversations.hasOwnProperty(conversationId)) { // if not yet initiated
+                                this.liveConversations[conversationId] = {users: [userId], sockets: [status.origin]};
+                                //console.log('add live conv', this.liveConversations[conversationId]);
                             } else {
-                                if (this.liveVideoChats[conversationId].sockets.indexOf(status.origin) < 0) { //only if unique userId
-                                    this.liveVideoChats[conversationId].users.push(userId);
-                                    this.liveVideoChats[conversationId].sockets.push(status.origin);
+                                if (this.liveConversations[conversationId].sockets.indexOf(status.origin) < 0) { //only if unique userId
+                                    this.liveConversations[conversationId].users.push(userId);
+                                    this.liveConversations[conversationId].sockets.push(status.origin);
+                                    //console.log('add more live conv', this.liveConversations[conversationId]);
                                 }
                             }
+                            if (status.hasOwnProperty('videoChatRoomId') && status.videoChatRoomId.length) { //if the friend is in a chat room
+                                if (!this.liveVideoChats.hasOwnProperty(conversationId)) { // if user in a video chat room and not yet initiated
+                                    this.liveVideoChats[conversationId] = {users: [userId], sockets: [status.origin]};
+                                } else {
+                                    if (this.liveVideoChats[conversationId].sockets.indexOf(status.origin) < 0) { //only if unique userId
+                                        this.liveVideoChats[conversationId].users.push(userId);
+                                        this.liveVideoChats[conversationId].sockets.push(status.origin);
+                                    }
+                                }
+                            }
+                            //console.log("online", conversationId, userId, status);
                         }
-                        //console.log("online", conversationId, userId, status);
+                    } else if (status.state === 'leave video chat') {
+                        if (this.liveVideoChats.hasOwnProperty(status.videoChatRoomId)) {
+                            let i = this.liveVideoChats[status.videoChatRoomId].sockets.indexOf(status.origin);
+                            if (i > -1) {
+                                this.liveVideoChats[status.videoChatRoomId].users.splice(i, 1); //remove userId from live chat users array
+                                this.liveVideoChats[status.videoChatRoomId].sockets.splice(i, 1); //remove userId from live chat users array
+                            }
+                        }
+                        this.onlineUsersSockets.forEach((socket, index) => { //remove userId and socket id from the online users arrays
+                            if (socket === status.origin) {
+                                this.onlineUsers.splice(index, 1);
+                                this.onlineUsersSockets.splice(index, 1);
+                            }
+                        });
+                    } else if (status.state === 'offline') { //if a friend's status became offline (including away mode)
+                        if (this.liveConversations.hasOwnProperty(conversationId)) {
+                            let i = this.liveConversations[conversationId].sockets.indexOf(status.origin);
+                            if (i > -1) {
+                                this.liveConversations[conversationId].users.splice(i, 1); //remove userId from live conversation users array
+                                this.liveConversations[conversationId].sockets.splice(i, 1); //remove userId from live conversation users array
+                                //console.log('offline', this.liveConversations[conversationId]);
+                            }
+                        }
+                        if (this.liveVideoChats.hasOwnProperty(conversationId)) {
+                            let j = this.liveVideoChats[conversationId].sockets.indexOf(status.origin);
+                            if (j > -1) {
+                                this.liveVideoChats[conversationId].users.splice(j, 1); //remove userId from live chat users array
+                                this.liveVideoChats[conversationId].sockets.splice(j, 1); //remove userId from live chat users array
+                            }
+                        }
+                        this.onlineUsersSockets.forEach((socket, index) => { //remove userId and socket id from the online users arrays
+                            if (socket === status.origin) {
+                                this.onlineUsers.splice(index, 1);
+                                this.onlineUsersSockets.splice(index, 1);
+                            }
+                        });
                     }
-                } else if (status.state === 'leave video chat') {
-                    if (this.liveVideoChats.hasOwnProperty(status.videoChatRoomId)) {
-                        let i = this.liveVideoChats[status.videoChatRoomId].sockets.indexOf(status.origin);
-                        if (i > -1) {
-                            this.liveVideoChats[status.videoChatRoomId].users.splice(i, 1); //remove userId from live chat users array
-                            this.liveVideoChats[status.videoChatRoomId].sockets.splice(i, 1); //remove userId from live chat users array
-                        }
-                    }
-                    this.onlineUsersSockets.forEach((socket, index) => { //remove userId and socket id from the online users arrays
-                        if (socket === status.origin) {
-                            this.onlineUsers.splice(index, 1);
-                            this.onlineUsersSockets.splice(index, 1);
-                        }
-                    });
-                } else if (status.state === 'offline') { //if a friend's status became offline (including away mode)
-                    if (this.liveConversations.hasOwnProperty(conversationId)) {
-                        let i = this.liveConversations[conversationId].sockets.indexOf(status.origin);
-                        if (i > -1) {
-                            this.liveConversations[conversationId].users.splice(i, 1); //remove userId from live conversation users array
-                            this.liveConversations[conversationId].sockets.splice(i, 1); //remove userId from live conversation users array
-                            //console.log('offline', this.liveConversations[conversationId]);
-                        }
-                    }
-                    if (this.liveVideoChats.hasOwnProperty(conversationId)) {
-                        let j = this.liveVideoChats[conversationId].sockets.indexOf(status.origin);
-                        if (j > -1) {
-                            this.liveVideoChats[conversationId].users.splice(j, 1); //remove userId from live chat users array
-                            this.liveVideoChats[conversationId].sockets.splice(j, 1); //remove userId from live chat users array
-                        }
-                    }
-                    this.onlineUsersSockets.forEach((socket, index) => { //remove userId and socket id from the online users arrays
-                        if (socket === status.origin) {
-                            this.onlineUsers.splice(index, 1);
-                            this.onlineUsersSockets.splice(index, 1);
-                        }
-                    });
+                } catch (err) {
+                    console.log('something went wrong with the online status algorithm', err);
                 }
-            } catch (err) {
-                console.log('something went wrong with the online status algorithm', err);
-            }
+            });
+            this.socket.on('refresh messages', async (message) => { //got an incoming message, including one's own send message confirmation
+                console.log('incoming message...', message);
+                this.broadcastChatMessage(message); // broadcast an incoming message
+                if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
+                    this.connectTabBadge++; // increment the Chat Tab badge count
+                    if (!this.router.url.includes('/app/myconversations') || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
+                        this.toastNotification({type: 'message', data: message});
+                    }
+                    const index = this.conversations.map((c) => c.conversation._id).indexOf(message.conversationId);
+                    if (index > -1) { // move the incoming message to top of list
+                        const conversation = this.conversations[index];
+                        this.conversations.splice(index, 1);
+                        this.conversations.unshift(conversation);
+                    }
+                    const currentChatProp = this.currentChatProps.find((c) => c.conversationId === message.conversationId);
+                    if (currentChatProp) {
+                        currentChatProp.badge++;
+                        console.log('chatProp badge...', currentChatProp.badge);
+                    }
+                }
+            });
+            //socket.io broadcasting refresh status update about a group/topic/conversation
+            this.socket.on('refresh status', async (conversationId, data) => {
+                console.log("receiving refresh", data);
+                if (data.action === 'update leader status'){
+                    this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
+                } else if (data.action === 'update group member list'){
+                    await this.userData.load(); //for the rare case that a user's other device is viewing the group info
+                    this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
+                } else if (data.action === 'leave group'){
+                    await this.userData.load();
+                    this.userData.refreshUserStatus({ type: 'close group view', data: { _id: data.groupId }});
+                } else if (data.action === 'refresh moment'){
+                    // sending moment update using moment's conversation socket.io
+                    // ex. Goal is due, Poll is due
+                    this.toastNotification({type: 'moment', data: data}); //this triggers app.component.ts line
+                } else {
+                    console.log("receiving refresh 2", data);
+                    await this.userData.load();
+                    this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
+                    this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
+                }
+            });
         });
-        this.socket.on('refresh messages', async (message) => { //got an incoming message, including one's own send message confirmation
-            console.log('incoming message...', message);
-            this.broadcastChatMessage(message); // broadcast an incoming message
-            if (message.author._id !== this.userData.user._id) { // incrementing the badges when incoming message is received from another user
-                this.connectTabBadge++; // increment the Chat Tab badge count
-                if (!this.router.url.includes('/app/myconversations') || !this.currentChatProps.length || (this.platform.width() < 768 && this.currentChatProps.length && this.currentChatProps[this.currentChatProps.length - 1].conversationId !== message.conversationId)) { // if the user is not in the chat room or is outside of the chat view
-                    this.toastNotification({type: 'message', data: message});
-                }
-                const index = this.conversations.map((c) => c.conversation._id).indexOf(message.conversationId);
-                if (index > -1) { // move the incoming message to top of list
-                    const conversation = this.conversations[index];
-                    this.conversations.splice(index, 1);
-                    this.conversations.unshift(conversation);
-                }
-                const currentChatProp = this.currentChatProps.find((c) => c.conversationId === message.conversationId);
-                if (currentChatProp) {
-                    currentChatProp.badge++;
-                    console.log('chatProp badge...', currentChatProp.badge);
-                }
-            }
-        });
-        //socket.io broadcasting refresh status update about a group/topic/conversation
-        this.socket.on('refresh status', async (conversationId, data) => {
-            console.log("receiving refresh", data);
-            if (data.action === 'update leader status'){
-                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-            } else if (data.action === 'update group member list'){
-                await this.userData.load(); //for the rare case that a user's other device is viewing the group info
-                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-            } else if (data.action === 'leave group'){
-                await this.userData.load();
-                this.userData.refreshUserStatus({ type: 'close group view', data: { _id: data.groupId }});
-            } else if (data.action === 'refresh moment'){
-                // sending moment update using moment's conversation socket.io
-                // ex. Goal is due, Poll is due
-                this.toastNotification({type: 'moment', data: data}); //this triggers app.component.ts line
-            } else {
-                console.log("receiving refresh 2", data);
-                await this.userData.load();
-                this.userData.refreshMyConversations({action: 'reload', conversationId: 'all'});
-                this.authService.refreshGroupStatus({conversationId: conversationId, data: data});
-            }
-        });
+
     };
 
     getAllUserConversationIds() {

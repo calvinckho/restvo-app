@@ -9,7 +9,7 @@ import { Resource } from './resource.service';
 import { UserData } from './user.service';
 import { NetworkService } from './network-service.service';
 
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import {PickpeoplePopoverPage} from '../pages/feature/pickpeople-popover/pickpeople-popover.page';
 import {SuccessPopoverPage} from '../pages/feature/success-popover/success-popover.page';
 import {Observable, BehaviorSubject, lastValueFrom} from 'rxjs';
@@ -20,7 +20,7 @@ import {Router} from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class Moment {
 
-    socket: io;
+    socket: any;
     ionSpinner = false;
     icons = [
         {
@@ -122,15 +122,15 @@ export class Moment {
     async createMomentSocket() {
         this.zone.runOutsideAngular(() => {
             if (this.networkService.domain !== 'https://server.restvo.com') { // for debugging purpose only: socket.io disconnects regularly with localhost
-                this.socket = io(this.networkService.domain + '/moments-namespace', {transports: ['websocket']});
+                this.socket = io(this.networkService.domain + '/moments-namespace', {transports: ['websocket'], withCredentials: true});
             } else {
                 this.socket = io(this.networkService.domain + '/moments-namespace');
             }
-        });
-        this.socket.on('connect', () => {});
-        this.socket.on('refresh moment', async (momentId, data) => {
-            this.refreshMoment({ momentId: momentId, data: data});
-            console.log('refresh moment');
+            this.socket.on('connect', () => {});
+            this.socket.on('refresh moment', async (momentId, data) => {
+                this.refreshMoment({ momentId: momentId, data: data});
+                console.log('refresh moment');
+            });
         });
     }
 
