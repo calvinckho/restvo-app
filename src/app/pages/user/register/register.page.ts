@@ -313,12 +313,12 @@ export class RegisterPage implements OnInit {
             verification_code: ['', Validators.required]
         });
         this.emailPassForm = this.formBuilder.group({
-            email: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
             passwordConfirmation: ['', Validators.compose([Validators.required, Validators.minLength(6)])]
         }, {validator: this.matchingPasswords('password', 'passwordConfirmation')});
         this.emailForm = this.formBuilder.group({
-            email: ['', Validators.required]
+            email: ['', [Validators.required, Validators.email]]
         });
         this.passForm = this.formBuilder.group({
             password: ['', Validators.compose([Validators.required, Validators.minLength(6)])],

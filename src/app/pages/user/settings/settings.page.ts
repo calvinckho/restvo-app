@@ -125,31 +125,21 @@ export class SettingsPage implements OnInit, OnDestroy {
                     if (this.userData.user.avatar && this.userData.user.avatar.length) {
                         await this.awsService.removeFile(this.userData.user.avatar);
                     }
-                    this.userData.permanentlyEraseUser().subscribe(async () => {
-                        this.storage.clear();
-                        this.cache.clearAll();
-                        if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
-                            this.badge.set(0);
-                        }
-                        if (this.electronService.isElectronApp) {
-                            this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', 0);
-                        }
-                        setTimeout(() => {
-                            loading.dismiss();
-                            this.userData.resetUserData();
-                            this.menuCtrl.enable(false);
-                            this.router.navigate(['/discover']);
-                        }, 500);
-                    }, async (err) => {
+                    await this.userData.permanentlyEraseUser()
+                    await this.storage.clear();
+                    await this.cache.clearAll();
+                    if (this.platform.is('cordova') && this.userData.user.enablePushNotification) {
+                        await this.badge.set(0);
+                    }
+                    if (this.electronService.isElectronApp) {
+                        this.electronService.ipcRenderer.send('SYSTEM_TRAY:::SET_BADGE', 0);
+                    }
+                    setTimeout(() => {
                         loading.dismiss();
-                        const networkAlert = await this.alertCtrl.create({
-                            header: 'No Internet Connection',
-                            subHeader: 'Please connect to the internet connection to complete the log out process.',
-                            buttons: ['Dismiss'],
-                            cssClass: 'level-15'
-                        });
-                        await networkAlert.present();
-                    });
+                        this.userData.resetUserData();
+                        this.menuCtrl.enable(false);
+                        this.router.navigate(['/discover']);
+                    }, 500);
                 }}, { text: 'No, I changed my mind.' }]
         });
         await alert.present();

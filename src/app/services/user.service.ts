@@ -701,7 +701,7 @@ export class UserData {
     }
 
     permanentlyEraseUser() {
-        return this.http.get(this.networkService.domain + '/api/auth/permanentlyeraseuser', this.authService.httpAuthOptions);
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/auth/permanentlyeraseuser', this.authService.httpAuthOptions));
     }
 
     loadMyOnboardingAnswers() {
