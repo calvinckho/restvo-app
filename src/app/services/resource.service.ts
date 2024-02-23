@@ -8,8 +8,6 @@ import {
 } from "@ionic/angular";
 import { Auth } from './auth.service';
 import { NetworkService } from './network-service.service';
-
-import { Storage } from "@ionic/storage";
 import { CacheService } from "ionic-cache";
 import {UserData} from "./user.service";
 import {lastValueFrom} from "rxjs";
@@ -161,7 +159,7 @@ export class Resource {
     }
 
     update(resource) {
-        return this.http.put(this.networkService.domain + '/api/resource/update', JSON.stringify(resource), this.authService.httpAuthOptions).toPromise();
+        return lastValueFrom(this.http.put(this.networkService.domain + '/api/resource/update', JSON.stringify(resource), this.authService.httpAuthOptions));
     }
 
     clickVideo(event, sources) {
@@ -173,11 +171,11 @@ export class Resource {
     }
 
     assignVideoEndpoint(videoChatRoomId) {
-        return this.http.get(this.networkService.domain + '/api/resource/videoendpoint' + '?videoChatRoomId=' + videoChatRoomId, this.authService.httpOptions).toPromise();
+        return lastValueFrom(this.http.get(this.networkService.domain + '/api/resource/videoendpoint' + '?videoChatRoomId=' + videoChatRoomId, this.authService.httpOptions));
     }
 
     forwardGeocode(address) {
-        return this.http.get('https://us1.locationiq.com/v1/search.php?key=pk.e5797fe100f9aa5732d5346f742b243f&q=' + encodeURIComponent(address) + '&format=json').toPromise();
+        return lastValueFrom(this.http.get('https://us1.locationiq.com/v1/search.php?key=pk.e5797fe100f9aa5732d5346f742b243f&q=' + encodeURIComponent(address) + '&format=json'));
     }
 
     async searchPixabay() {
@@ -187,7 +185,7 @@ export class Resource {
     }
 
     pixabaySearch(searchKeyword, pageNum) {
-        return this.http.get('https://pixabay.com/api/?key=11622064-8698a5beb77de4a9e9677e4c3&q=' + encodeURIComponent(searchKeyword) + '&per_page=200&image_type=photo&pretty=true&page=' + pageNum.toString() ).toPromise();
+        return lastValueFrom(this.http.get('https://pixabay.com/api/?key=11622064-8698a5beb77de4a9e9677e4c3&q=' + encodeURIComponent(searchKeyword) + '&per_page=200&image_type=photo&pretty=true&page=' + pageNum.toString() ));
     }
 }
 
